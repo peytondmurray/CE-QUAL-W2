@@ -32,7 +32,7 @@ save
       NACD_E=0
       CONE=NUNIT; NUNIT=NUNIT+1
       open(CONE,file='w2_envirprf.npt',status='old')
-      
+
      CSVFORMAT=.FALSE.
      READ(CONE,'(//A)')CHAR30
      DO J=1,30
@@ -63,7 +63,7 @@ save
         READ(CONE,*)
         DO JD=1,NDC
         READ (CONE,*) CHAR8, CD_E(JD),CD_INT(JD), CD_TOP(JD)
-        CD_E(JD)=ADJUSTR(CD_E(JD))        
+        CD_E(JD)=ADJUSTR(CD_E(JD))
         ENDDO
       ELSE
       READ (CONE,1200) I_SEGINT,numclass,selectivec,sjday1,sjday2,istart(1),iend(1),(istart(I),iend(I),I=2,I_SEGINT)
@@ -102,7 +102,7 @@ save
         cd_class=0.0
         c_tot=0.0
         cd_tot=0.0
-        
+
         v_cnt=0.0
         v_class=0.0
         v_tot=0.0
@@ -110,7 +110,7 @@ save
         t_cnt=0.0
         t_class=0.0
         t_tot=0.0
-        
+
         d_cnt=0.0
         d_class=0.0
         d_tot=0.0
@@ -121,13 +121,13 @@ save
   end if
 
   if(iopenfish.eq.3)go to 650     !iopenfish=3 is end of simulation deallocate arrays
-  
+
   if(selectivec == ' ON')then
       if(jdayG < sjday1  .or. jdayG > sjday2)go to 650
   endif
-  
-DO N=1,I_SEGINT            ! LOOP OVER SEGMENT INTERVALS BASED ON INPUT DATA  
-  
+
+DO N=1,I_SEGINT            ! LOOP OVER SEGMENT INTERVALS BASED ON INPUT DATA
+
    volgL(N)=0.0
 ! start loop for succeeding calls to subroutine
 
@@ -136,13 +136,13 @@ do JW=1,NWB
       do i=cus(jb),ds(jb)
         if(selectivec == ' ON')then
             !if(i < istart(N) .or. i > iend(N))then
-            IF(i < istart(N))THEN 
+            IF(i < istart(N))THEN
                 CYCLE    ! SW 2/16/2017   exit
             ELSEIF(i > iend(N))THEN
                 EXIT
             endif
         endif
-          
+
 ! Depth
            if(depth_vpr.eq.' ON')then
             d_tot(N)=d_tot(N)+depthb(kb(i),i)*dltt
@@ -163,14 +163,14 @@ do JW=1,NWB
           end if
 300       continue
 
-          
-          
-          
-          
+
+
+
+
         do k=KTWB(JW),kb(i)
             volgL(N)=volgL(N)+vol(K,I)
 
-! Temperature 
+! Temperature
 
         if(temp_vpr.eq.' ON')then
 
@@ -236,9 +236,9 @@ do JW=1,NWB
                 c_class(N,jc,jj)=c_class(N,jc,jj)+dltt*vol(k,i)
               end if
             end do
-          
+
 220       continue
-    
+
 
             end do
 
@@ -267,7 +267,7 @@ do JW=1,NWB
   240       continue
 
             end do
-  ENDIF            
+  ENDIF
        end do
      end do
   end do
@@ -287,8 +287,8 @@ end do
         c_sum=0.0
         T_SUM=0.0
         V_SUM=0.0
-        WRITE (I_INT,'(I1)') N   
-        
+        WRITE (I_INT,'(I1)') N
+
         if(temp_vpr.eq.' ON')then
           if(t_cnt(N).gt.0.0)then
           t_avg=t_tot(N)/t_cnt(N)
@@ -331,8 +331,8 @@ end do
         write(CONE,'(" Average, ",e12.4)')v_avg
         close(CONE)
         end if
-        
-        
+
+
         if(depth_vpr.eq.' ON')then
           if(d_cnt(N).gt.0.0)then
           d_avg=d_tot(N)/d_cnt(N)
@@ -353,7 +353,7 @@ end do
         write(CONE,'(" Average, ",e12.4)')d_avg
         close(CONE)
         end if
-        
+
 if(nac_e > 0)then
        open(CONE,file='envrprf_c'//I_INT//'.csv',status='unknown')
        write(CONE,4000)(cname2(cn_e(jc)),jc=1,nac_e)
@@ -377,12 +377,12 @@ if(nac_e > 0)then
         write(CONE,126)(conc_c(jc,i),c_class(N,jc,i)/sumvolt(N),jc=1,nac_e)
         end do
         write(CONE,'(1x)')
-        write(CONE,'(<nac_e>("Sum_of_fractions,",f9.4,","))')(c_sum(jc),jc=1,nac_e)     
+        write(CONE,'(<nac_e>("Sum_of_fractions,",f9.4,","))')(c_sum(jc),jc=1,nac_e)
         write(CONE,'(1x)')
-        write(CONE,'(<nac_e>("Average,",e12.4,","))')(c_avg(jc),jc=1,nac_e)     
+        write(CONE,'(<nac_e>("Average,",e12.4,","))')(c_avg(jc),jc=1,nac_e)
         close(CONE)
-      
-  if(nacd_e > 0)then     
+
+  if(nacd_e > 0)then
        open(CONE,file='envrprf_cd'//I_INT//'.csv',status='unknown')
      write(CONE,4001)(cdname2(cdn_e(jc)),jc=1,nacd_e)
 4001 format(<nacd_e>(a8,'_interval, Fraction_of_volume,'))
@@ -417,7 +417,7 @@ ENDDO
        DEallocate(conc_c,conc_cd)
        DEallocate(cc_e,c_int,c_top,cd_e,cd_int,cd_top,c_avg,cd_avg,cn_e,cdn_e)
        DEALLOCATE(T_TOT,T_CNT,V_TOT,V_CNT,D_TOT,D_CNT,D_CLASS,VOLGL,SUMVOLT)
-       
+
 124       format(<nacd_e>(f10.4,',',e12.4,','))
 125       format((f6.2,',',e12.4,','))
 126       format(<nac_e>(f10.4,',',e12.4,','))
@@ -430,4 +430,3 @@ ENDDO
 timlast=jday
 
       END SUBROUTINE ENVIRP
-

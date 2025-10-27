@@ -69,7 +69,7 @@ ENTRY INTERPOLATION_MULTIPLIERS
       SF8X(K,I,1)  =  0.50D0*(         DLX(I)-DLX(I+1))*DLXMIN
       SF9X(K,I,1)  =  0.50D0*(DLXT+2.0D0*DLX(I)-DLX(I+1))*DLXMIN
       SF10X(K,I,1) =  0.50D0*(DLXT+3.0D0*DLX(I))         *DLXMIN
-      !SF11X(K,I,1) =  SF8X(K,I,1) /SF5X(K,I,1)/SF1X(K,I)           
+      !SF11X(K,I,1) =  SF8X(K,I,1) /SF5X(K,I,1)/SF1X(K,I)
       !SF12X(K,I,1) =  SF9X(K,I,1) /SF6X(K,I,1)/SF1X(K,I)
       !SF13X(K,I,1) =  SF10X(K,I,1)/SF7X(K,I,1)/SF1X(K,I)
       SF11X(K,I,1) =  SF8X(K,I,1) /(SF5X(K,I,1)*SF1X(K,I))             ! SW 4/20/16 SPEED
@@ -163,7 +163,7 @@ ENTRY INTERPOLATION_MULTIPLIERS
 
 ! Ultimate multipliers
 
-  IF (ULTIMATE(JW)) THEN    !also called during UPDATE since surface layer properties change 
+  IF (ULTIMATE(JW)) THEN    !also called during UPDATE since surface layer properties change
     DO K=2,KMX
       RATZ(K,JW)  =  AVH2(K-1,DS(BE(JW)))/AVH2(K,DS(BE(JW)))                                         ! SW 5/20/05
       !CURZ1(K,JW) =  2.0*H(K,JW)**2/(AVH2(K-1,DS(BE(JW)))+AVH2(K,DS(BE(JW))))/AVH2(K-1,DS(BE(JW)))   ! SW 5/20/05
@@ -384,10 +384,10 @@ ENTRY VERTICAL_MULTIPLIERS1    ! FIRST PASS
             HMIN          =  DMIN1(HT,HM)
             RATSZ(K,I)          =  AVH1(KT,I)/AVH1(K,I)
             !CURS1Z(K,I)         =  2.0D0*HM*HM/(AVH1(KT,I)+AVH1(K,I))/AVH1(KT,I)        ! SW 4/20/16 SPEED
-            CURS1Z(K,I)         =  2.0D0*HM*HM/((AVH1(KT,I)+AVH1(K,I))*AVH1(KT,I))       
+            CURS1Z(K,I)         =  2.0D0*HM*HM/((AVH1(KT,I)+AVH1(K,I))*AVH1(KT,I))
             CURS2Z(K,I)         = -2.0D0*HM*HM/(AVH1(KT,I)*AVH1(K,I))
             !CURS3Z(K,I)         =  2.0D0*HM*HM/(AVH1(KT,I)+AVH1(K,I))/AVH1(K,I)          ! SW 4/20/16 SPEED
-            CURS3Z(K,I)         =  2.0D0*HM*HM/((AVH1(KT,I)+AVH1(K,I))*AVH1(K,I))   
+            CURS3Z(K,I)         =  2.0D0*HM*HM/((AVH1(KT,I)+AVH1(K,I))*AVH1(K,I))
             SF1Z(K,JW)    = (HM+HT)*0.5D0
             !SF2Z(K,2,JW)  =  HM**2
             SF2Z(K,2,JW)  =  HM*HM      ! SW 4/20/16
@@ -500,15 +500,15 @@ RETURN
 !      DO K=KT,KB(I)     !CONCURRENT(K=KT:KB(I))    !FORALL                                                        !DO K=KT,KB(I)
 !        CNEW(K,I) = (COLD(K,I)*BH2(K,I)/DLT+(ADX(K,I)*BHR1(K,I)-ADX(K,I-1)*BHR1(K,I-1))/DLX(I)+(1.0D0-THETA(JW))                     &
 !                    *(ADZ(K,I)*BB(K,I)-ADZ(K-1,I)*BB(K-1,I))+SSB(K,I)/DLX(I))*DLT/BH1(K,I)+SSK(K,I)*DLT
-!      END DO                                                    
-!    END DO                                            
+!      END DO
+!    END DO
 !  ELSE
 !    DO I=IU,ID
 !      DO K=KT,KB(I)     !CONCURRENT(K=KT:KB(I))      !FORALL                                         !DO K=KT,KB(I)
 !        CNEW(K,I) = (COLD(K,I)*BH2(K,I)/DLT+(ADX(K,I)*BHR1(K,I)-ADX(K,I-1)*BHR1(K,I-1))/DLX(I)+(1.0D0-THETA(JW))                     &
 !                    *(ADZ(K,I)*BB(K,I)-ADZ(K-1,I)*BB(K-1,I))+SSB(K,I)/DLX(I))*DLT/BH1(K,I)
 !      END DO
-!    END DO                                           
+!    END DO
 !  END IF
 !RETURN
 ENTRY DEALLOCATE_TRANSPORT

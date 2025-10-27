@@ -7,9 +7,9 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   Use CEMAVars
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
-  
+
   REAL(R8) :: BTA1(1000),GMA1(1000)   ! places a limit of 1000 vertical layers
-  REAL     :: RN1    
+  REAL     :: RN1
 
 DO JW=1,NWB
       IF (READ_EXTINCTION(JW))GAMMA(:,US(BS(JW)):DS(BE(JW))) = EXH2O(JW)      ! SW 1/28/13
@@ -110,7 +110,7 @@ DO JW=1,NWB
                 RIMT = -0.0545*TDS(KT,I)                                         ! REGRESSION FOR TDS BETWEEN 0 AND 35 PPT
                 ELSE
                 RIMT=-0.31462-0.04177*TDS(KT,I)-0.000166*TDS(KT,I)*TDS(KT,I)     ! REGRESSION EQN FOR TDS>35 PPT
-                ENDIF                                                                                
+                ENDIF
               ELSE
               RIMT=0.0
               ENDIF
@@ -141,8 +141,8 @@ DO JW=1,NWB
                     ENDIF
                     RN1=SRON(JW)/REFL*SHADE(I)*(1.0D0-ALBEDO(JW))*BETAI(JW)+RANLW(JW)               ! SW 4/19/10 eliminate spurious divsion of SRO by RHOCP
                   DO WHILE (ABS(DEL) > 1.0 .AND. J < 500)                                         ! SW 4/21/10 Should have been ABS of DEL
-                    CALL SURFACE_TERMS (TICE)      
-                    RN(I) = RN1-RB(I)-RE(I)-RC(I)    ! 4/19/10 
+                    CALL SURFACE_TERMS (TICE)
+                    RN(I) = RN1-RB(I)-RE(I)-RC(I)    ! 4/19/10
 !                    RN(I) = SRON(JW)/(REFL*RHOWCP)*SHADE(I)*(1.0-ALBEDO(JW))*BETAI(JW)+RANLW(JW)-RB(I)-RE(JW)-RC(I)
                     DEL   = RN(I)+RK1*(RIMT-TICE)/ICETH(I)     ! RK1 is ice conductivity 2.12 W/m/oC
                     IF (ABS(DEL) > 1.0) TICE = TICE+DEL/500.0D0
@@ -197,21 +197,21 @@ DO JW=1,NWB
                             ICE(II) = .FALSE.
                             ENDDO
                         ENDIF
-                        
+
                     ELSE
                         ICEQSS(I)=-(ICETHICKNESSCHANGE/ICETH(I))*ICEBANK(I)*0.917/DLT     ! SW 9/29/15
                         ICEBANK(I)=(1.+ICETHICKNESSCHANGE/ICETH(I))*ICEBANK(I)            ! Note: ICETHICKNESSCHANGE is negative
                         IF(I==IU .AND. US(JB) < IU)THEN    ! CHECK SUBTRACTED SEGMENTS THAT MAY HAVE ICE, MELT THEM AND PUT WATER IN SEGMENT IU
                             DO II=US(JB),IU-1
-                                ICEQSS(IU)=ICEQSS(IU)-(ICETHICKNESSCHANGE/ICETH(IU))*ICEBANK(II)*0.917/DLT 
+                                ICEQSS(IU)=ICEQSS(IU)-(ICETHICKNESSCHANGE/ICETH(IU))*ICEBANK(II)*0.917/DLT
                                 ICEBANK(II)=(1.+ICETHICKNESSCHANGE/ICETH(IU))*ICEBANK(II)
                             ENDDO
                         ENDIF
                     ENDIF
                   ENDIF
                   !VolIce(jb)=VolIce(jb)+iceqss(i)*dlt   ! since this flow is not exercised until the next time step - moved code to main program calculation of qss
-                 ENDIF 
-                  
+                 ENDIF
+
                 IF (ICETH(I) < ICE_TOL) ICETH(I) = 0.0D0
      !           IF (WINTER .AND. (.NOT. ICE_IN(JB))) THEN            ! RC 4/28/11 No reason for this
      !             IF (.NOT. ALLOW_ICE(I)) ICETH(I) = 0.0
@@ -399,7 +399,7 @@ IF(NIT==0)THEN
         CALL TEMPERATURE_RATES
         CALL KINETIC_RATES
         IF(CDWBC(PH_DER,JW)=='      ON')CALL PH_CO2
-        ENDDO        
+        ENDDO
         CALL DERIVED_CONSTITUENTS
         ENDDO
     ENDIF
@@ -423,15 +423,15 @@ ENDIF
      !   SSB  => TSS(:,:)
      !   SSK  => CSSB(:,:,1)
      !   CALL HORIZONTAL_TRANSPORT
-        
+
         DO I=IU,ID    !CONCURRENT(I=IU:ID)   !
         DO K=KT,KB(I)     !CONCURRENT(K=KT:KB(I))      !FORALL                                         !DO K=KT,KB(I)
         DT(K,I) = (COLD(K,I)*BH2(K,I)/DLT+(ADX(K,I)*BHR1(K,I)-ADX(K,I-1)*BHR1(K,I-1))/DLX(I)+(1.0D0-THETA(JW))                     &
                     *(ADZ(K,I)*BB(K,I)-ADZ(K-1,I)*BB(K-1,I))+TSS(K,I)/DLX(I))*DLT/BH1(K,I)
        END DO
        END DO
-        
-        
+
+
         DO I=IU,ID   !CONCURRENT(I=IU:ID)   !
           DO K=KT,KB(I)
             AT(K,I) = 0.0D0; CT(K,I) = 0.0D0; VT(K,I) = 0.0D0    !; DT(:,I) = 0.0D0    SW CODE SPEEDUP 6/15/13

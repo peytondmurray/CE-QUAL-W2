@@ -33,7 +33,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   AVHR   = 0.0D0; GRAV   = 0.0D0; KBP    = 0  ; DZT    = 0.0D0; AZT    = 0.0D0; KFJW   = 0.0; QC     = 0.0D0; YSS    = 0.0; YSTS   = 0.0
   QWD    = 0.0D0; QDTR   = 0.0D0; TTR    = 0.0; CTR    = 0.0; TDTR   = 0.0; QOLDS  = 0.0D0; DTPS   = 0.0; VSTS   = 0.0; VSS    = 0.0
   EGT2   = 0.0; HAB    = 100.0; sedpinflux=0.0; sedninflux=0.0 ; FPSS=0.0; FPFE=0.0  ! SR 3/2019
-  RS=0.0;RN=0.0;RB=0.0;RE=0.0;RC=0.0;RANLW=0.0;TICAP=0.0;TICZR=0.0;TICEP=0.0;TICMC=0.0; VOL=0.0             
+  RS=0.0;RN=0.0;RB=0.0;RE=0.0;RC=0.0;RANLW=0.0;TICAP=0.0;TICZR=0.0;TICEP=0.0;TICMC=0.0; VOL=0.0
   sdfirstadd=.true.   ! cb 9/3/17
   BR_NOTECPLOT=.TRUE.    ! SW 8/27/2019
   IF (.NOT. RESTART_IN) THEN
@@ -84,7 +84,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
 
 ! Logical controls
   NEW_PAGE              = .TRUE.;  VOLUME_WARNING = .TRUE.;  INITIALIZE_GRAPH = .TRUE.;  UPDATE_GRAPH    = .TRUE.
-  ICE                   = .FALSE.; FLUX           = .FALSE.; PUMPON           = .FALSE.          
+  ICE                   = .FALSE.; FLUX           = .FALSE.; PUMPON           = .FALSE.
   TDG_GATE              = .FALSE.; TDG_SPILLWAY   = .FALSE.; INTERNAL_WEIR    = .FALSE.; SURFACE_WARNING = .FALSE.
   PRINT_CONST    = .FALSE.; PRINT_DERIVED    = .FALSE.; ERROR_OPEN      = .FALSE.
   LIMITING_FACTOR       = .FALSE.
@@ -106,14 +106,14 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   INTERP_METEOROLOGY    = METIC       == '      ON'
   if(WDOC== '      ON' .or. WDOC   == '     ONH' .or. WDOC        == '     ONS')DOWNSTREAM_OUTFLOW = .TRUE.  ! cb 4/11/18
   CELERITY_LIMIT        = CELC        == '      ON'; VISCOSITY_LIMIT    = VISC   == '      ON'
-  PRINT_HYDRO        = HPRWBC == '      ON'    ! HYDRO_PLOT            = HPLTC       == '      ON'; 
+  PRINT_HYDRO        = HPRWBC == '      ON'    ! HYDRO_PLOT            = HPLTC       == '      ON';
   LIMITING_DLT          = HPRWBC(1,:) == '      ON'; FETCH_CALC         = FETCHC == '      ON'
   SCREEN_OUTPUT         = SCRC        == '      ON'; SNAPSHOT           = SNPC   == '      ON'
   CONTOUR               = CPLC        == '      ON'; VECTOR             = VPLC   == '      ON'
-  PROFILE               = PRFC        == '      ON'                 !; SPREADSHEET        = SPRC   == '      ON'; 
+  PROFILE               = PRFC        == '      ON'                 !; SPREADSHEET        = SPRC   == '      ON';
   SPREADSHEET = .FALSE.   ! INITIALIZE SW 2/10/2019
   ATM_DEPOSITION        = ATM_DEPOSITIONC == '      ON'
-  
+
   GAS_TRANSFER_UPDATE=.FALSE.
  IF(CAC(NDO)=='      ON' .OR. CAC(NCH4)=='      ON' .OR. CAC(NH2S)=='      ON'.OR. CAC(NN2)=='      ON'.OR. CAC(NTIC)=='      ON'.OR. CAC(NDGP)=='      ON')THEN
          GAS_TRANSFER_UPDATE  =.TRUE.
@@ -126,9 +126,9 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
          ENDDO
  ENDIF
 
-  
-  
-  
+
+
+
   DO JW=1,NWB
   IF(SPRC(JW)   == '      ON')THEN           ! SW 9/28/2018
       SPREADSHEET(JW)=.TRUE.
@@ -136,7 +136,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       SPREADSHEET(JW)=.TRUE.
   ENDIF
   ENDDO
-  
+
   TIME_SERIES           = TSRC        == '      ON'; READ_RADIATION     = SROC   == '      ON'
   ICE_CALC              = ICEC        == '      ON' .OR.                  ICEC   == '    ONWB'
   INTERP_EXTINCTION     = EXIC        == '      ON'; READ_EXTINCTION    = EXC    == '      ON'
@@ -153,13 +153,13 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   MASS_BALANCE          = CONSTITUENTS .AND. MBC         == '      ON'
   SUSP_SOLIDS           = CONSTITUENTS .AND. CAC(NSSS)   == '      ON'
   OXYGEN_DEMAND         = CONSTITUENTS .AND. CAC(NDO)    == '      ON'
-  WATER_AGE_ACTIVE      = CONSTITUENTS .AND. CAC(NWAGE)  == '      ON' 
+  WATER_AGE_ACTIVE      = CONSTITUENTS .AND. CAC(NWAGE)  == '      ON'
   SEDIMENT_CALC         = CONSTITUENTS .AND. SEDCc        == '      ON'
   zooplankton_CALC      = CONSTITUENTS .AND. cac(nzooS) == '      ON'
   SEDIMENT_RESUSPENSION = CONSTITUENTS .AND. SEDRC       == '      ON'
 !  DERIVED_PLOT          = CONSTITUENTS .AND. CDPLTC      == '      ON'
   DERIVED_CALC          = CONSTITUENTS .AND. ANY(CDWBC   == '      ON')
-  PH_CALC               = CONSTITUENTS .AND. CDWBC(PH_DER,:) == '      ON' 
+  PH_CALC               = CONSTITUENTS .AND. CDWBC(PH_DER,:) == '      ON'
   IF(.NOT. PH_CALC(1))PH_CALC  = CAC(NTIC) == '      ON'    ! CALL THIS ROUTINE EVEN IF Ph IS OFF FOR CO2 GAS CALCULATION
   PRINT_EPIPHYTON       = CONSTITUENTS .AND. EPIPRC      == '      ON' .AND. EPIPHYTON_CALC
   PRINT_SEDIMENT        = CONSTITUENTS .AND. SEDPRC      == '      ON' .AND. SEDIMENT_CALC
@@ -198,7 +198,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
     DSI_CALC                   =              CAC(NDSI)== '      ON'                                   ! cb 10/12/11
     PO4_CALC                   =              CAC(NPO4)== '      ON'                                   ! cb 10/12/11
     N_CALC                     =              CAC(NNH4)== '      ON'  .OR.  CAC(NNO3)== '      ON'     ! cb 10/12/11
-    
+
   END IF
   JBDAM = 0
   CDHS  = DHS
@@ -249,8 +249,8 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   END DO
   WHERE (CAC == '     OFF') CPLTC = '     OFF'
   ! systdg - Add WBSEG
-  WBSEG(1:IMX)=1                                           
-  DO JW =1, NWB                                             
+  WBSEG(1:IMX)=1
+  DO JW =1, NWB
     DO JB=BS(JW), BE(JW)
         DO I=1, IMX
           IF ( I>=US(JB) .AND. I<= DS(JB)) THEN
@@ -258,7 +258,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           END IF
         END DO
     END DO
-  END DO 
+  END DO
   ! systdg - Add WBSEG END
 ! Kinetic flux variables
 
@@ -284,7 +284,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   KFNAME(36) = 'DSi SOD release  - source, kg/day            '; KFNAME(37) = 'DSi net settling - source/sink, kg/day       '
   KFNAME(38) = 'PBSi algal mortality  - source, kg/day       '; KFNAME(39) = 'PBSi net settling - source/sink, kg/day      '
   KFNAME(40) = 'PBSi decay - sink, kg/day                    '
-  
+
   KFNAME(41) = 'LDOM decay - sink, kg/day                    '
   KFNAME(42) = 'LDOM decay to RDOM - sink, kg/day            '; KFNAME(43) = 'RDOM decay - sink, kg/day                    '
   KFNAME(44) = 'LDOM algal mortality - source, kg/day        '; KFNAME(45) = 'LDOM epiphyton mortality - source, kg/day    '
@@ -344,7 +344,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   KFNAME(KF_DOH2S)=  'DO H2S decay - sink, kg/day                  '
   KFNAME(122)=  'H2S gas exchange air/water interface, kg/day '
   KFNAME(123)=  'H2S decay - sink, kg/day                     '
-  KFNAME(124)=  'H2S release 0 order model   - source, kg/day ' 
+  KFNAME(124)=  'H2S release 0 order model   - source, kg/day '
   KFNAME(KF_DOCH4)=  'DO CH4 decay - sink, kg/day                  '
   KFNAME(126)=  'CH4 gas exchange air/water interface, kg/day '
   KFNAME(127)=  'CH4 decay - sink, kg/day                     '
@@ -361,13 +361,13 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   KFNAME(138)=  'N to Sed. Diagenesis module - source, kg/day '
   KFNAME(139)=  'P to Sed. Diagenesis module - source, kg/day '
   KFNAME(140)=  'DO sediment diagenesis uptake - sink, kg/day '
-    
+
   KFNAME(KF_SEDD)=  'Labile standing biomass decay- sink, kg/day  '    ! OPTIONAL VARIABLE FOR STANDING ORGANIC MATTER LIKE TREES IN A WATER COLUMN
   KFNAME(142)=  'Refract. stand. biomass decay- sink, kg/day  '
 
 ! Convert rates from per-day to per-second
 
-  IF (CONSTITUENTS) THEN   
+  IF (CONSTITUENTS) THEN
     AE     = AE    /DAY; AM     = AM    /DAY; AR     = AR    /DAY; AG    = AG    /DAY; AS     = AS    /DAY
     EE     = EE    /DAY; EM     = EM    /DAY; ER     = ER    /DAY; EG    = EG    /DAY; EB     = EB    /DAY
     CGS    = CGS   /DAY; CG0DK  = CG0DK /DAY; CG1DK  = CG1DK /DAY; SSS   = SSS   /DAY
@@ -378,7 +378,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
     PSIS   = PSIS  /DAY; POMS   = POMS  /DAY; SDK    = SDK   /DAY; NH4DK = NH4DK /DAY; NO3DK  = NO3DK /DAY
     NO3S   = NO3S  /DAY; PSIDK  = PSIDK /DAY; LRDDK  = LRDDK /DAY; LRPDK = LRPDK /DAY; LDOMDK = LDOMDK/DAY
     LPOMDK = LPOMDK/DAY; RDOMDK = RDOMDK/DAY; RPOMDK = RPOMDK/DAY; KBOD  = KBOD  /DAY; seds   = seds/day   !v3.5
-    !   
+    !
     LPOMHK  = LPOMHK/DAY;  RPOMHK = RPOMHK/DAY
     LDOMPDK = LDOMPDK/DAY; RDOMPDK= RDOMPDK/DAY; LRDOMPDK = LRDOMPDK/DAY
     LPOMPDK = LPOMPDK/DAY; RPOMPDK= RPOMPDK/DAY; LRPOMPDK = LRPOMPDK/DAY
@@ -445,9 +445,9 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       IF (TMSTRT > RSOD(J)) RSOD(J) = TMSTRT; IF (TMSTRT > DLTD(J)) DLTD(J) = TMSTRT
     END DO
     NXTMTS = TSRD(TSRDP);  NXTMRS = RSOD(RSODP); NXTMWD = WDOD(WDODP)
-    
-    NXTMWD_SEC = WDOD(WDODP)*86400.    ! cb 4/6/18 frequency test seconds 
-    
+
+    NXTMWD_SEC = WDOD(WDODP)*86400.    ! cb 4/6/18 frequency test seconds
+
     if(bioexp)then
         BIODP = 1 ! MLM BIOEXP -BIOENERGETICS
         NXBIO = BIOD(1) !BIOD(BIODP) ! MLM BIOEXP  BIOENERGETICS
@@ -472,7 +472,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           EXIT
       ENDIF
   ENDDO
-  
+
   DLTMAXX=DLTMAX(DLTDP)
   DLTFF=DLTF(DLTDP)
   CURMAX = DLTMAX(DLTDP)/DLTF(DLTDP)
@@ -507,7 +507,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           IF (JB >= BS(JW) .AND. JB <= BE(JW)) EXIT
         END DO
         JWDSP(JS) = JW
-      ELSE                    
+      ELSE
       JBDSP(JS)=1
       JWDSP(JS)=1
       END IF
@@ -541,7 +541,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           IF (JB >= BS(JW) .AND. JB <= BE(JW)) EXIT
         END DO
         JWDPI(JP) = JW
-        ELSE  
+        ELSE
         JBDPI(JP)=1
         JWDPI(JP)=1
       END IF
@@ -575,7 +575,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           IF (JB >= BS(JW) .AND. JB <= BE(JW)) EXIT
         END DO
         JWDGT(JG) = JW
-      ELSE  
+      ELSE
         JBDGT(JG)=1             ! SW 3/24/10
         JWDGT(JG)=1             ! SW 3/24/10
       END IF
@@ -609,14 +609,14 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           IF (JB >= BS(JW) .AND. JB <= BE(JW)) EXIT
         END DO
         JWDPU(JP) = JW
-      ELSE  
+      ELSE
         JBDPU(JP)=1
         JWDPU(JP)=1
       END IF
     END DO
   END IF
 
-  ALLOCATE (ESTR(NST,NBR),WSTR(NST,NBR),QSTR(NST,NBR),KTSW(NST,NBR),KBSW(NST,NBR),SINKC(NST,NBR),POINT_SINK(NST,NBR),QNEW(KMX),tavg(nst,nbr), tavgw(NWD+NSP+NGT+NPI+NPU),CAVG(NST,NBR,NCT),CDAVG(NST,NBR,NDC),CAVGW(NWD+NSP+NGT+NPI+NPU,NCT),CDAVGW(NWD+NSP+NGT+NPI+NPU,NDC))   
+  ALLOCATE (ESTR(NST,NBR),WSTR(NST,NBR),QSTR(NST,NBR),KTSW(NST,NBR),KBSW(NST,NBR),SINKC(NST,NBR),POINT_SINK(NST,NBR),QNEW(KMX),tavg(nst,nbr), tavgw(NWD+NSP+NGT+NPI+NPU),CAVG(NST,NBR,NCT),CDAVG(NST,NBR,NDC),CAVGW(NWD+NSP+NGT+NPI+NPU,NCT),CDAVGW(NWD+NSP+NGT+NPI+NPU,NDC))
   ALLOCATE (ACTIVE_RULE_W2SELECTIVE(NST,NBR)); ACTIVE_RULE_W2SELECTIVE=.FALSE.
   TAVGW=0.0
   TAVG=0.0
@@ -624,7 +624,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   CDAVG=0.0
   CAVGW=0.0
   CDAVGW=0.0
-  
+
   QSTR = 0.0
   DO JB=1,NBR
     ESTR(1:NSTR(JB),JB)  = ESTRT(1:NSTR(JB),JB)
@@ -634,7 +634,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
     SINKC(1:NSTR(JB),JB) = SINKCT(1:NSTR(JB),JB)
     POINT_SINK(1:NSTR(JB),JB) = SINKC(1:NSTR(JB),JB) == '   POINT'   ! SW 9/27/13
   END DO
-  DEALLOCATE (ESTRT,KBSWT,KTSWT,WSTRT,SINKCT)  
+  DEALLOCATE (ESTRT,KBSWT,KTSWT,WSTRT,SINKCT)
 
 ! Active constituents, derived constituents, and fluxes
 
@@ -678,35 +678,35 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           KFCN(NAF(JW),JW) = JF
         ELSEIF(PH_CALC(jw).and. JF==KF_CO2X)then
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF       
+          KFCN(NAF(JW),JW) = JF
         ELSEIF(CAC(NH2S)=='      ON' .AND. JF>=KF_DOH2S .AND. JF < KF_DOCH4)THEN
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF       
+          KFCN(NAF(JW),JW) = JF
         ELSEIF(CAC(NCH4)=='      ON' .AND. JF>=KF_DOCH4 .AND. JF < KF_FE2D)THEN
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF       
+          KFCN(NAF(JW),JW) = JF
          ELSEIF(CAC(NFEII)=='      ON' .AND. JF>=KF_FE2D .AND. JF < KF_MN2D)THEN
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF       
+          KFCN(NAF(JW),JW) = JF
          ELSEIF(CAC(NMNII)=='      ON' .AND. JF>=KF_MN2D .AND. JF < KF_SDINC)THEN
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF                   
+          KFCN(NAF(JW),JW) = JF
         ELSEIF(JF >= KF_SDINC .and. JF<KF_SEDD .AND. CEMARelatedCode)then   ! CEMA turning on flux output FOR SEDIMENT DIAGENESIS
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF       
+          KFCN(NAF(JW),JW) = JF
         ELSEIF(JF >= KF_SEDD .and. STANDING_BIOMASS_DECAY)then   ! STANDING ORGANIC MATTER
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF       
+          KFCN(NAF(JW),JW) = JF
         END IF
       END DO
         IF(ATM_DEPOSITION(JW))THEN
         DO JC=1,NCT
-        IF(C_ATM_DEPOSITION(JC,JW)=='      ON')THEN  
+        IF(C_ATM_DEPOSITION(JC,JW)=='      ON')THEN
         NACATD(JW)          = NACATD(JW)+1
-        ATMDCN(NACATD(JW),JW) = JC         
+        ATMDCN(NACATD(JW),JW) = JC
         ENDIF
         ENDDO
-        ENDIF   
+        ENDIF
     END DO   ! JW LOOP
   END IF
 
@@ -749,27 +749,27 @@ IF(IncludeCEMASedDiagenesis) call InitCond_SedFlux
 
   IF (WEIR_CALC) THEN   ! MOVED FROM ABOVE AFTER GEOMETRY SETUP  SW 3/16/18
     DO JWR=1,NIW
-        IF (EKTWR(JWR) == 0.0) THEN  
+        IF (EKTWR(JWR) == 0.0) THEN
             DO JW=1,NWB
             IF(IWR(JWR) >= US(BS(JW)) .AND. IWR(JWR) <= DS(BE(JW)))THEN
             KTWR(JWR)=KTWB(JW)
             EXIT
             ENDIF
             ENDDO
-        ELSE  
-          KTWR(JWR) = INT(EKTWR(JWR))  
-        END IF 
-        IF (EKBWR(JWR) <= 0.0) THEN  
-            DO K=KTWR(JWR),KB(IWR(JWR))  
+        ELSE
+          KTWR(JWR) = INT(EKTWR(JWR))
+        END IF
+        IF (EKBWR(JWR) <= 0.0) THEN
+            DO K=KTWR(JWR),KB(IWR(JWR))
             IF (DEPTHB(K,IWR(JWR)) >= ABS(EKBWR(JWR))) THEN
                 KBWR(JWR)=K
-                EXIT  
+                EXIT
             ENDIF
-            END DO   
-        ELSE  
-          KBWR(JWR) = INT(EKBWR(JWR))  
-        END IF  
-        
+            END DO
+        ELSE
+          KBWR(JWR) = INT(EKBWR(JWR))
+        END IF
+
       DO K=2,KMX-1
         IF ((K >= KTWR(JWR) .AND. K <= KBWR(JWR))) INTERNAL_WEIR(K,IWR(JWR)) = .TRUE.
       END DO

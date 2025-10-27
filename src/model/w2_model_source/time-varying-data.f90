@@ -14,7 +14,7 @@ SUBROUTINE TIME_VARYING_DATA
 
   CHARACTER(1)                           :: INFORMAT
   CHARACTER(2)                           :: INFORMAT2
-  REAL                                   :: NXQGT2                  
+  REAL                                   :: NXQGT2
   REAL                                   :: NXQWD1, NXQWD2, NXQGT,  NXTVD, NXQPT
   REAL                                   :: NXWSC
   REAL(R8)                               :: RATIO,QRATIO,TRATIO,CRATIO,HRATIO
@@ -27,16 +27,16 @@ SUBROUTINE TIME_VARYING_DATA
   REAL,    ALLOCATABLE, DIMENSION(:)     :: NXPR1,  NXTPR1, NXCPR1, NXEUH1, NXTUH1, NXCUH1, NXEDH1, NXTDH1, NXCDH1, NXQOT1, NXMET1
   REAL,    ALLOCATABLE, DIMENSION(:)     :: NXQTR2, NXTTR2, NXCTR2, NXQIN2, NXTIN2, NXCIN2, NXQDT2, NXTDT2, NXCDT2, NXSPDO, NXGTDO
   REAL,    ALLOCATABLE, DIMENSION(:)     :: NXPR2,  NXTPR2, NXCPR2, NXEUH2, NXTUH2, NXCUH2, NXEDH2, NXTDH2, NXCDH2, NXQOT2, NXMET2
-  REAL,    ALLOCATABLE, DIMENSION(:)     :: WSCNX, BPNX,EPU2,EONPU2,EOFFPU2,QPU2,NXPUMP,NXATMDEP,AGASSPNX, AGASGTNX  
+  REAL,    ALLOCATABLE, DIMENSION(:)     :: WSCNX, BPNX,EPU2,EONPU2,EOFFPU2,QPU2,NXPUMP,NXATMDEP,AGASSPNX, AGASGTNX
   REAL,    ALLOCATABLE, DIMENSION(:,:)   :: NXESTRT, ATM_DEP_LOADINGNX,ATM_DEP_LOADING0
   REAL(R8),ALLOCATABLE, DIMENSION(:,:)   :: CTRO,   CINO,   QOUTO,  CDTRO,  TUHO,   TDHO,   QSTRO
   REAL(R8),ALLOCATABLE, DIMENSION(:,:)   :: CTRNX,  CINNX,  QOUTNX, CDTRNX, CPRNX,  TUHNX,  TDHNX,  QSTRNX
   REAL,    ALLOCATABLE, DIMENSION(:,:,:) :: CUHO,   CDHO,   CUHNX,  CDHNX
-  INTEGER                                :: WDQ,    GTQ,    WSH,    SHD, PIPED, IOPENPIPE,L,NJS                                    
+  INTEGER                                :: WDQ,    GTQ,    WSH,    SHD, PIPED, IOPENPIPE,L,NJS
   REAL(R8)                               :: TWERATIO, NXTWE1, NXTWE2, TWE_TSNX, TWE_TSO  ! systdg - TWE
   INTEGER                                :: TWEFNNO                                      ! systdg - TWE
   LOGICAL                                :: TWEF                                         ! systdg - TWE
-  REAL(R8), ALLOCATABLE, DIMENSION(:)    :: DO_SAT, N2_SAT, DO_SATJ, N2_SATJ, DO_SATD, N2_SATD, DO_SATP, N2_SATP                  ! systdg - DO_SATJ, N2_SATJ, DO_SATD, N2_SATD, DO_SATP, N2_SATP 
+  REAL(R8), ALLOCATABLE, DIMENSION(:)    :: DO_SAT, N2_SAT, DO_SATJ, N2_SATJ, DO_SATD, N2_SATD, DO_SATP, N2_SATP                  ! systdg - DO_SATJ, N2_SATJ, DO_SATD, N2_SATD, DO_SATP, N2_SATP
   INTEGER                                :: NPT,J,JT,JAC,JS,K,JG,JWD
   INTEGER, ALLOCATABLE, DIMENSION(:)     :: TRQ,    TRT,    TRC,    INQ,    DTQ,    PRE,    UHE,    DHE,    INFT,   DTT,PUMPD, JJS, ATMDEP, FGASSP, FGASGT
   INTEGER, ALLOCATABLE, DIMENSION(:)     :: PRT,    UHT,    DHT,    INC,    DTC,    PRC,    UHC,    DHC,    OTQ,    MET,    EXT, ODYNS,DYNPUMPF
@@ -44,7 +44,7 @@ SUBROUTINE TIME_VARYING_DATA
   LOGICAL                                :: WDQF,WSHF, GATEF,ATMDEPCSV   ! SW 9/26/2017
   INTEGER, ALLOCATABLE, DIMENSION(:)     :: EUHF,TUHF,CUHF,EDHF,TDHF,CDHF    ! =0 Old format for head BCs, =1 Time series format no vertical variation, =2 csv format vertical variation             SW 2/28/17
   CHARACTER(240), ALLOCATABLE, DIMENSION(:)   :: FILE_GAS_GT,FILE_GAS_SP
-  
+
   !RESULT1               -- integer variable holding success or failure result from SYSTEMQQ command
   !ITER                  -- integer variable holding the number of iterations for an awaited file read (see code)
   !LAST_JDAY             -- real variable typically used to hold the last available date in awaited input file
@@ -57,14 +57,14 @@ SUBROUTINE TIME_VARYING_DATA
   !WAIT_FOR_BRANCH_INPUT -- logical array (branch index) used to determine which branch has awaited input
   !TR_FILEDIR            -- character array (tributary index) to hold the directory names of any awaited tributary input files
   !BR_FILEDIR            -- character array (branch index) to hold the directory names of any awaited branch input files
-  
+
   INTEGER                                :: RESULT1, ITER, N                                                               !SR 11/28/19
   REAL                                   :: LAST_JDAY, GET_LAST_JDAY                                                    !SR 11/28/19
   CHARACTER(240)                         :: FULL_FILE_NAME                                                              !SR 11/28/19
   LOGICAL                                :: INPUT_FILE_EXISTS                                                           !SR 11/28/19
   EXTERNAL GET_LAST_JDAY                                                                                                !SR 11/28/19
   EXTERNAL PRINT_ERROR_AND_STOP                                                                                         !SR 11/28/19
-  
+
   SAVE
 ! Allocation declarations
 
@@ -75,10 +75,10 @@ SUBROUTINE TIME_VARYING_DATA
   ENDIF
   !
   ! systdg - time series input
-  ALLOCATE (DO_SAT(NTR), N2_SAT(NTR))                                             
-  ALLOCATE (DO_SATJ(NBR), N2_SATJ(NBR))                                            
-  ALLOCATE (DO_SATD(NBR), N2_SATD(NBR))                                           
-  ALLOCATE (DO_SATP(NBR), N2_SATP(NBR))                                          
+  ALLOCATE (DO_SAT(NTR), N2_SAT(NTR))
+  ALLOCATE (DO_SATJ(NBR), N2_SATJ(NBR))
+  ALLOCATE (DO_SATD(NBR), N2_SATD(NBR))
+  ALLOCATE (DO_SATP(NBR), N2_SATP(NBR))
   !
   ALLOCATE (NXQTR1(NTR), NXTTR1(NTR), NXCTR1(NTR), NXQIN1(NBR), NXTIN1(NBR), NXCIN1(NBR), NXQDT1(NBR), NXTDT1(NBR), NXCDT1(NBR))
   ALLOCATE (NXPR1(NBR),  NXTPR1(NBR), NXCPR1(NBR), NXEUH1(NBR), NXTUH1(NBR), NXCUH1(NBR), NXEDH1(NBR), NXTDH1(NBR), NXCDH1(NBR))
@@ -101,7 +101,7 @@ SUBROUTINE TIME_VARYING_DATA
   ALLOCATE (INFLOW_CONST(NBR), TRIB_CONST(NTR),   DTRIB_CONST(NBR),   PRECIP_CONST(NBR), OTQF(NBR), TRCF(NTR), DTCF(NBR), INCF(NBR),TRQF(NTR), TRTF(NTR), DTTF(NBR), DTQF(NBR), INQF(NBR), INTF(NBR))
   ALLOCATE (EUHF(NBR), TUHF(NBR), CUHF(NBR), EDHF(NBR), TDHF(NBR), CDHF(NBR))
   ALLOCATE (ATM_DEP_LOADINGNX(NCT,NWB),ATMDEP(NWB),NXATMD(NWB),NXATMD2(NWB),ATM_DEP_LOADING0(NCT,NWB))
-  
+
   IF(NGT>0)ALLOCATE(NXGTDO(NGT), FGASGT(NGT),FILE_GAS_GT(NGT),AGASGTNX(NGT))
   IF(NSP>0)ALLOCATE(NXSPDO(NSP), FGASSP(NSP),FILE_GAS_SP(NSP),AGASSPNX(NSP))
 
@@ -164,7 +164,7 @@ SUBROUTINE TIME_VARYING_DATA
   READ (WSH,'(/)')
   READ (WSH,*) NXWSC,(WSCNX(I),I=1,IMX)
   WSC = WSCNX
-  READ (WSH,*)    NXWSC,(WSCNX(I),I=1,IMX)  
+  READ (WSH,*)    NXWSC,(WSCNX(I),I=1,IMX)
   ELSE
   READ (WSH,'(//10F8.0:/(8X,9F8.0))') NXWSC,(WSCNX(I),I=1,IMX)
   WSC = WSCNX
@@ -189,9 +189,9 @@ SUBROUTINE TIME_VARYING_DATA
     ELSE
       IF(METF(JW))THEN
       READ (MET(JW),'(/)')
-      READ (MET(JW),*) NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW), PALT_JWNX(JW)             ! systdg - time series input PALT      
+      READ (MET(JW),*) NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW), PALT_JWNX(JW)             ! systdg - time series input PALT
       ELSE
-      READ (MET(JW),'(//7F8.0)') NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW), PALT_JWNX(JW)   ! systdg - time series input PALT     
+      READ (MET(JW),'(//7F8.0)') NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW), PALT_JWNX(JW)   ! systdg - time series input PALT
       ENDIF
     END IF
     ELSE
@@ -208,14 +208,14 @@ SUBROUTINE TIME_VARYING_DATA
     ELSE
       IF(METF(JW))THEN
       READ (MET(JW),'(/)')
-      READ (MET(JW),*) NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW)     
+      READ (MET(JW),*) NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW)
       ELSE
-      READ (MET(JW),'(//7F8.0)') NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW)    
+      READ (MET(JW),'(//7F8.0)') NXMET2(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW)
       ENDIF
     END IF
-        
+
     ENDIF
-    
+
     TAIR(JW)   = TAIRNX(JW)
     TDEW(JW)   = TDEWNX(JW)
     WIND(JW)   = WINDNX(JW)
@@ -239,30 +239,30 @@ SUBROUTINE TIME_VARYING_DATA
     DO N=1,NSP              ! SW 1/18/2022
         IF(GASSPC(N)=='      ON' .AND.  EQSP(N)==4 .AND. BGASSP(N)==1)THEN
          FGASSP(N)=NPT; NPT=NPT+1
-         WRITE (SEGNUM,'(I0)') N 
-         SEGNUM = ADJUSTL(SEGNUM)  
-         L = LEN_TRIM(SEGNUM) 
+         WRITE (SEGNUM,'(I0)') N
+         SEGNUM = ADJUSTL(SEGNUM)
+         L = LEN_TRIM(SEGNUM)
          FILE_GAS_SP(N)='w2_sp'//SEGNUM(1:L)//'DO.csv'
          OPEN (FGASSP(N), FILE=FILE_GAS_SP(N),STATUS='OLD')
          READ(FGASSP(N),*);READ(FGASSP(N),*);READ(FGASSP(N),*)   ! SKIP 3 LINES
-         READ(FGASSP(N),*)NXSPDO(N),AGASSPNX(N) 
+         READ(FGASSP(N),*)NXSPDO(N),AGASSPNX(N)
          AGASSP(N)=AGASSPNX(N)
         ENDIF
     ENDDO
     DO N=1,NGT
         IF(GASGTC(N)=='      ON' .AND. EQGT(N)==4 .AND. BGASGT(N)==1.0)THEN
          FGASGT(N)=NPT; NPT=NPT+1
-         WRITE (SEGNUM,'(I0)') N 
-         SEGNUM = ADJUSTL(SEGNUM)  
-         L = LEN_TRIM(SEGNUM) 
+         WRITE (SEGNUM,'(I0)') N
+         SEGNUM = ADJUSTL(SEGNUM)
+         L = LEN_TRIM(SEGNUM)
          FILE_GAS_GT(N)='w2_gt'//SEGNUM(1:L)//'DO.csv'
          OPEN (FGASGT(N), FILE=FILE_GAS_GT(N),STATUS='OLD')
          READ(FGASGT(N),*);READ(FGASGT(N),*);READ(FGASGT(N),*)   ! SKIP 3 LINES
-         READ(FGASGT(N),*)NXGTDO(N),AGASGTNX(N) 
+         READ(FGASGT(N),*)NXGTDO(N),AGASGTNX(N)
          AGASGT(N)=AGASGTNX(N)
         ENDIF
     ENDDO
-    
+
     IF(SYSTDG)THEN
     IF (READ_RADIATION(JW)) THEN
             IF(METF(JW))THEN
@@ -294,7 +294,7 @@ SUBROUTINE TIME_VARYING_DATA
             ENDIF
         END IF
     ENDIF
-    
+
     IF (READ_EXTINCTION(JW)) THEN
       EXT(JW) = NPT; NPT = NPT+1
       OPEN (EXT(JW),FILE=EXTFN(JW),STATUS='OLD')
@@ -306,10 +306,10 @@ SUBROUTINE TIME_VARYING_DATA
       ELSE
       READ (EXT(JW),'(///2F8.0)') NXEXT2(JW), EXTNX(JW)
       ENDIF
-      
+
       EXH2O(JW) = EXTNX(JW)
       EXTO(JW)  = EXTNX(JW)
-      
+
       IF(EXTF(JW))THEN
       READ (EXT(JW),*)    NXEXT1(JW), EXTNX(JW)
           ELSE
@@ -346,7 +346,7 @@ SUBROUTINE TIME_VARYING_DATA
     DO JT=1,NTR
       TRQ(JT) = NPT; NPT = NPT+1
       TRT(JT) = NPT; NPT = NPT+1
-      
+
         IF (WAIT_FOR_TRIB_INPUT(JT)) THEN                                       ! Wait for input from tributary flow file !SR 11/28/19
         FULL_FILE_NAME = TRIM(ADJUSTL(TR_FILEDIR(JT)))//'\'//TRIM(ADJUSTL(QTRFN(JT)))                                   !SR 11/28/19
         INQUIRE (FILE=TRIM(FULL_FILE_NAME), EXIST=INPUT_FILE_EXISTS)          ! Check that file exists                  !SR 11/28/19
@@ -449,10 +449,10 @@ SUBROUTINE TIME_VARYING_DATA
         ELSE
           READ (TRC(JT),'(//1000F8.0)') NXCTR2(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))
         END IF
-      
+
  !     OPEN (TRQ(JT),FILE=QTRFN(JT),STATUS='OLD')
  !     OPEN (TRT(JT),FILE=TTRFN(JT),STATUS='OLD')
- !     
+ !
  !      READ( TRQ(JT),'(A1)')INFORMAT
  !      IF(INFORMAT=='$')TRQF(JT)=.TRUE.
  !           IF(TRQF(JT))THEN
@@ -469,7 +469,7 @@ SUBROUTINE TIME_VARYING_DATA
  !           ELSE
  !           READ (TRT(JT),'(//2F8.0)') NXTTR2(JT),TTRNX(JT)
  !           ENDIF
- !     
+ !
  !!     READ (TRQ(JT),'(///2F8.0)') NXQTR2(JT),QTRNX(JT)
  !!     READ (TRT(JT),'(///2F8.0)') NXTTR2(JT),TTRNX(JT)
  !     IF (TRIB_CONST(JT)) THEN
@@ -492,16 +492,16 @@ SUBROUTINE TIME_VARYING_DATA
     CTR(:,1:NTR)  = CTRNX(:,1:NTR)
     CTRO(:,1:NTR) = CTRNX(:,1:NTR)
     !
-    ! systdg - time series input 
+    ! systdg - time series input
     IF(SYSTDG)THEN
-    IF (DOBND .OR. N2BND .OR. DGPBND) THEN                                   
+    IF (DOBND .OR. N2BND .OR. DGPBND) THEN
       DO JT=1,NTR
-        IF (DOBND) THEN                                          
+        IF (DOBND) THEN
           DO_SAT(JT)=EXP(7.7117 - 1.31403 * (LOG(TTR(JT)+45.93))) * PALT(ITR(JT))
           CTR(NDO,JT)  = DO_SAT(JT) * CTR(NDO,JT)
         END IF
         IF (N2BND) THEN
-          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(ITR(JT)))/(TDEW(WBSEG(ITR(JT)))+237.3D0)+0.6609D0))*0.001316                  
+          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(ITR(JT)))/(TDEW(WBSEG(ITR(JT)))+237.3D0)+0.6609D0))*0.001316
           N2_SAT(JT) = (1.5568D06*0.79*(PALT(ITR(JT))-EA)*(1.8816D-5 - 4.116D-7 * TTR(JT) + 4.6D-9 * TTR(JT)*TTR(JT)))
           CTR(NN2,JT) = N2_SAT(JT) * CTR(NN2,JT)
         END IF
@@ -510,9 +510,9 @@ SUBROUTINE TIME_VARYING_DATA
       END DO
     END IF
     ENDIF
-    
+
     !
-    ! systdg - add for time series input 
+    ! systdg - add for time series input
     DO JT=1,NTR
       IF(TRQF(JT))THEN
         READ (TRQ(JT),*) NXQTR1(JT),QTRNX(JT)   ! cb 5/22/14
@@ -535,7 +535,7 @@ SUBROUTINE TIME_VARYING_DATA
   END IF
   !
   ! systdg - time series input TWE
-  IF (SYSTDG) THEN                                                                  
+  IF (SYSTDG) THEN
      IF (TWETSC=='      ON') THEN
         TWEFNNO=NPT; NPT=NPT+1
         OPEN (TWEFNNO,FILE=TWEFN,STATUS='OLD')
@@ -555,9 +555,9 @@ SUBROUTINE TIME_VARYING_DATA
             READ (TWEFNNO,'(2F8.3)') NXTWE1, TWE_TSNX
         END IF
      END IF
-  END IF   
+  END IF
   !
-  ! systdg - time series input TWE 
+  ! systdg - time series input TWE
    DO JW=1,NWB
     DO JB=BS(JW),BE(JW)
       IF (UP_FLOW(JB)) THEN
@@ -629,7 +629,7 @@ SUBROUTINE TIME_VARYING_DATA
             READ (INFT(JB),*) NXTIN2(JB),TINNX(JB)
           ELSE
             READ (INFT(JB),'(//2F8.0)') NXTIN2(JB),TINNX(JB)
-          END IF      
+          END IF
 
           IF (INFLOW_CONST(JB)) THEN
             INC(JB) = NPT; NPT = NPT+1
@@ -681,8 +681,8 @@ SUBROUTINE TIME_VARYING_DATA
   !          READ (INFT(JB),*) NXTIN2(JB),TINNX(JB)
   !          ELSE
   !          READ (INFT(JB),'(//2F8.0)') NXTIN2(JB),TINNX(JB)
-  !          ENDIF      
-  !        
+  !          ENDIF
+  !
   !   !     READ (INQ(JB), '(///2F8.0)') NXQIN2(JB),QINNX(JB)
   !   !     READ (INFT(JB),'(///2F8.0)') NXTIN2(JB),TINNX(JB)
   !        IF (INFLOW_CONST(JB)) THEN
@@ -708,15 +708,15 @@ SUBROUTINE TIME_VARYING_DATA
         CIND(:,JB) = CINNX(:,JB)
         CINO(:,JB) = CINNX(:,JB)
         !
-        ! systdg - time series input 
+        ! systdg - time series input
         IF(SYSTDG)THEN
-        IF (DOBND) THEN                                          
+        IF (DOBND) THEN
           DO_SATJ(JB)=EXP(7.7117 - 1.31403 * (LOG(TIN(JB)+45.93))) * PALT(CUS(JB))
           CIN(NDO,JB)  = DO_SATJ(JB) * CIN(NDO,JB)
           CIND(NDO,JB)  = DO_SATJ(JB) * CIND(NDO,JB)
         END IF
         IF (N2BND) THEN
-          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316                 
+          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
           N2_SATJ(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TIN(JB) + 4.6D-9 * TIN(JB)*TIN(JB)))
           CIN(NN2,JB) = N2_SATJ(JB) * CIN(NN2,JB)
           CIND(NN2,JB) = N2_SATJ(JB) * CIND(NN2,JB)
@@ -725,22 +725,22 @@ SUBROUTINE TIME_VARYING_DATA
         IF(DGPBND) CIND(NDGP,JB) = PALT(CUS(JB)) * CIND(NDGP,JB)
         ENDIF
         !
-        ! systdg - time series input                                              
+        ! systdg - time series input
         IF (.NOT. INTERNAL_FLOW(JB) .AND. .NOT. DAM_INFLOW(JB)) THEN                                                  !TC 08/03/04  RA 1/13/06
             IF(INQF(JB))THEN
             READ (INQ(JB),*) NXQIN1(JB),QINNX(JB)
             ELSE
           READ (INQ(JB), '(2F8.0)') NXQIN1(JB),QINNX(JB)
-            ENDIF          
+            ENDIF
             IF(INTF(JB))THEN
             READ (INFT(JB),*) NXTIN1(JB),TINNX(JB)
             ELSE
           READ (INFT(JB),'(2F8.0)') NXTIN1(JB),TINNX(JB)
-            ENDIF 
+            ENDIF
 
           IF (INFLOW_CONST(JB)) THEN
             IF(INCF(JB))THEN
-            READ (INC(JB),*) NXCIN1(JB),(CINNX(INCN(JC,JB),JB),JC=1,NACIN(JB))  
+            READ (INC(JB),*) NXCIN1(JB),(CINNX(INCN(JC,JB),JB),JC=1,NACIN(JB))
                   ELSE
             READ (INC(JB),'(1000F8.0)') NXCIN1(JB),(CINNX(INCN(JC,JB),JB),JC=1,NACIN(JB))
             ENDIF
@@ -765,12 +765,12 @@ SUBROUTINE TIME_VARYING_DATA
             QSTRO(:,JB) = QSTRNX(:,JB)
             READ (OTQ(JB),'(10F8.0:/(8X,9F8.0))')    NXQOT1(JB),(QSTRNX(JS,JB),JS=1,NSTR(JB))
            ENDIF
-           
+
            IF(DYNSTRUC(JB) == '      ON')THEN
                ODYNS(JB)=NPT; NPT=NPT+1
-               WRITE (SEGNUM,'(I0)') JB     
+               WRITE (SEGNUM,'(I0)') JB
                SEGNUM = ADJUSTL(SEGNUM)
-               L      = LEN_TRIM(SEGNUM)   
+               L      = LEN_TRIM(SEGNUM)
                OPEN (ODYNS(JB),FILE='dynselev'//SEGNUM(1:L)//'.npt',STATUS='OLD')
                READ (ODYNS(JB),'(A1)')INFORMAT
                IF(INFORMAT == '$')DYNEF(JB)=.TRUE.
@@ -784,7 +784,7 @@ SUBROUTINE TIME_VARYING_DATA
                READ (ODYNS(JB),*)NXDYNS(JB),(NXESTRT(JJS(J),JB), J=1,NJS)
                ELSE
                READ (ODYNS(JB),'(/10F8.0:/(8X,9F8.0))')NXDYNS(JB),(ESTR(JJS(J),JB), J=1,NJS)
-               READ (ODYNS(JB),'(10F8.0:/(8X,9F8.0))')NXDYNS(JB),(NXESTRT(JJS(J),JB), J=1,NJS) 
+               READ (ODYNS(JB),'(10F8.0:/(8X,9F8.0))')NXDYNS(JB),(NXESTRT(JJS(J),JB), J=1,NJS)
                ENDIF
             ENDIF
         END IF
@@ -809,8 +809,8 @@ SUBROUTINE TIME_VARYING_DATA
             READ (PRT(JB),*) NXTPR2(JB),TPRNX(JB)
             ELSE
             READ (PRT(JB),'(//2F8.0)') NXTPR2(JB),TPRNX(JB)
-            ENDIF      
-        
+            ENDIF
+
         !READ (PRE(JB),'(///2F8.0)') NXPR2(JB), PRNX(JB)
         !READ (PRT(JB),'(///2F8.0)') NXTPR2(JB),TPRNX(JB)
         IF (PRECIP_CONST(JB)) THEN
@@ -829,33 +829,33 @@ SUBROUTINE TIME_VARYING_DATA
         TPR(JB)   = TPRNX(JB)
         CPR(:,JB) = CPRNX(:,JB)
         !
-        ! systdg - time series input 
+        ! systdg - time series input
         IF(SYSTDG)THEN
-        IF (DOBND) THEN                                          
+        IF (DOBND) THEN
           DO_SATP(JB)=EXP(7.7117 - 1.31403 * (LOG(TPR(JB)+45.93))) * PALT(CUS(JB))
           CPR(NDO,JB)  = DO_SATP(JB) * CPR(NDO,JB)
         END IF
         IF (N2BND) THEN
-          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316                 
+          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
           N2_SATP(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TPR(JB) + 4.6D-9 * TPR(JB)*TPR(JB)))
           CPR(NN2,JB) = N2_SATP(JB) * CPR(NN2,JB)
         END IF
         !
-        IF(DGPBND) CPR(NDGP,JB) = PALT(CUS(JB)) * CPR(NDGP,JB)  
+        IF(DGPBND) CPR(NDGP,JB) = PALT(CUS(JB)) * CPR(NDGP,JB)
         ENDIF
         !
-        ! systdg - time series input 
+        ! systdg - time series input
             IF(PRQF(JB))THEN
             READ (PRE(JB),*) NXPR1(JB), PRNX(JB)
             ELSE
             READ (PRE(JB), '(2F8.0)') NXPR1(JB), PRNX(JB)
             ENDIF
-            
+
             IF(PRTF(JB))THEN
             READ (PRT(JB),*) NXTPR1(JB),TPRNX(JB)
             ELSE
             READ (PRT(JB),'(2F8.0)') NXTPR1(JB),TPRNX(JB)
-            ENDIF  
+            ENDIF
         !READ (PRE(JB),'(2F8.0)') NXPR1(JB), PRNX(JB)
         !READ (PRT(JB),'(2F8.0)') NXTPR1(JB),TPRNX(JB)
         IF (PRECIP_CONST(JB)) THEN
@@ -871,7 +871,7 @@ SUBROUTINE TIME_VARYING_DATA
         DTT(JB) = NPT; NPT = NPT+1
         OPEN (DTQ(JB),FILE=QDTFN(JB),STATUS='OLD')
         OPEN (DTT(JB),FILE=TDTFN(JB),STATUS='OLD')
-        
+
         READ( DTQ(JB),'(A1)')INFORMAT
        IF(INFORMAT=='$')DTQF(JB)=.TRUE.
             IF(DTQF(JB))THEN
@@ -888,8 +888,8 @@ SUBROUTINE TIME_VARYING_DATA
             ELSE
             READ (DTT(JB),'(//2F8.0)') NXTDT2(JB),TDTRNX(JB)
             ENDIF
-        
-        
+
+
   !      READ (DTQ(JB),'(///2F8.0)') NXQDT2(JB),QDTRNX(JB)
   !      READ (DTT(JB),'(///2F8.0)') NXTDT2(JB),TDTRNX(JB)
         IF (DTRIB_CONST(JB)) THEN
@@ -911,28 +911,28 @@ SUBROUTINE TIME_VARYING_DATA
         CDTR(:,JB)  = CDTRNX(:,JB)
         CDTRO(:,JB) = CDTRNX(:,JB)
         !
-        ! systdg - time series input 
+        ! systdg - time series input
         IF(SYSTDG)THEN
-        IF (DOBND) THEN                                          
+        IF (DOBND) THEN
           DO_SATD(JB)=EXP(7.7117 - 1.31403 * (LOG(TDTR(JB)+45.93))) * PALT(CUS(JB))
           CDTR(NDO,JB)  = DO_SATD(JB) * CDTR(NDO,JB)
         END IF
         IF (N2BND) THEN
-          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316                 
+          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
           N2_SATD(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TDTR(JB) + 4.6D-9 * TDTR(JB)*TDTR(JB)))
           CDTR(NN2,JB) = N2_SATD(JB) * CDTR(NN2,JB)
         END IF
         !
-        IF(DGPBND) CDTR(NDGP,JB) = PALT(CUS(JB)) * CDTR(NDGP,JB)  
+        IF(DGPBND) CDTR(NDGP,JB) = PALT(CUS(JB)) * CDTR(NDGP,JB)
         ENDIF
         !
-        ! systdg - time series input                                         
+        ! systdg - time series input
             IF(DTQF(JB))THEN
             READ (DTQ(JB),*) NXQDT1(JB),QDTRNX(JB)
             ELSE
         READ (DTQ(JB),'(2F8.0)') NXQDT1(JB),QDTRNX(JB)
             ENDIF
-               
+
             IF(DTTF(JB))THEN
             READ (DTT(JB),*) NXTDT1(JB),TDTRNX(JB)
             ELSE
@@ -952,26 +952,26 @@ SUBROUTINE TIME_VARYING_DATA
         UHT(JB) = NPT; NPT = NPT+1
         OPEN (UHE(JB),FILE=EUHFN(JB),STATUS='OLD')
         OPEN (UHT(JB),FILE=TUHFN(JB),STATUS='OLD')
-        
+
           READ( UHE(JB),'(A1)')INFORMAT
           IF(INFORMAT=='$')THEN
               EUHF(JB)=1
           ENDIF
-          
+
           READ( UHT(JB),'(A2)')INFORMAT2
           IF(INFORMAT2=='$T')THEN
               TUHF(JB)=1
           ELSEIF(INFORMAT2(1:1)=='$')THEN
               TUHF(JB)=2
           ENDIF
-          
+
           IF(EUHF(JB)>0)THEN
           READ(UHE(JB),'(/)')
           READ (UHE(JB),*)  NXEUH2(JB), ELUHNX(JB)
           ELSE
           READ (UHE(JB),'(//2F8.0)')NXEUH2(JB), ELUHNX(JB)
           ENDIF
-          
+
           IF(TUHF(JB)==1)THEN
           READ(UHT(JB),'(/)')
           READ (UHT(JB),*)  NXTUH2(JB),XX(1)
@@ -982,46 +982,46 @@ SUBROUTINE TIME_VARYING_DATA
           ELSE
           READ (UHT(JB),'(//10F8.0:/(8X,9F8.0))')NXTUH2(JB),(TUHNX(K,JB),K=2,KB(US(JB)))
           ENDIF
-        
+
        ! READ (UHE(JB),'(///2F8.0)')              NXEUH2(JB), ELUHNX(JB)
        ! READ (UHT(JB),'(///10F8.0:/(8X,9F8.0))') NXTUH2(JB),(TUHNX(K,JB),K=2,KB(US(JB)))
         IF (CONSTITUENTS) THEN
           UHC(JB) = NPT; NPT = NPT+1
           OPEN (UHC(JB),FILE=CUHFN(JB),STATUS='OLD')
-          
+
           READ( UHC(JB),'(A2)')INFORMAT2
           IF(INFORMAT2=='$T')THEN
               CUHF(JB)=1
           ELSEIF(INFORMAT2(1:1)=='$')THEN
               CUHF(JB)=2
           ENDIF
-          
+
           READ (UHC(JB),'(/)')
-          
+
         !  READ (UHC(JB),'(//)')
           IF(CUHF(JB)==1)THEN
               READ (UHC(JB),*)  NXCUH2(JB),(XX(CN(JAC)),JAC=1,NAC)
               DO JAC=1,NAC
               CUHNX(2:KB(US(JB)),CN(JAC),JB)=XX(CN(JAC))
               ENDDO
-              
+
           ELSE
-              
-          
+
+
           DO JAC=1,NAC
             !IF (ADJUSTL(CNAME2(CN(JAC))) /= 'AGE     ') READ (UHC(JB),'(10F8.0:/(8X,9F8.0))') NXCUH2(JB),(CUHNX(K,CN(JAC),JB),     &
             !                                                  K=2,KB(US(JB)))
-            
+
             IF(CUHF(JB)==2)THEN
             READ (UHC(JB),*)  NXCUH2(JB),(CUHNX(K,CN(JAC),JB),K=2,KB(US(JB)))
             ELSE
             READ (UHC(JB),'(10F8.0:/(8X,9F8.0))') NXCUH2(JB),(CUHNX(K,CN(JAC),JB),K=2,KB(US(JB)))
             ENDIF
-            
-            
+
+
           END DO
           END IF
-          
+
           ENDIF
         ELUH(JB)     = ELUHNX(JB)
         ELUHO(JB)    = ELUHNX(JB)
@@ -1029,15 +1029,15 @@ SUBROUTINE TIME_VARYING_DATA
         TUHO(:,JB)   = TUHNX(:,JB)
         CUH(:,:,JB)  = CUHNX(:,:,JB)
         CUHO(:,:,JB) = CUHNX(:,:,JB)
-        
+
           IF(EUHF(JB)>0)THEN
           READ (UHE(JB),*)  NXEUH1(JB), ELUHNX(JB)
           ELSE
           READ (UHE(JB),'(2F8.0)')NXEUH1(JB), ELUHNX(JB)
           ENDIF
-        
+
         !READ (UHE(JB),'(2F8.0)')              NXEUH1(JB), ELUHNX(JB)
-          
+
           IF(TUHF(JB)==1)THEN
           READ (UHT(JB),*)  NXTUH1(JB),XX(1)
           TUHNX(2:KB(US(JB)),JB)=XX(1)
@@ -1046,31 +1046,31 @@ SUBROUTINE TIME_VARYING_DATA
           ELSE
           READ (UHT(JB),'(10F8.0:/(8X,9F8.0))')NXTUH1(JB),(TUHNX(K,JB),K=2,KB(US(JB)))
           ENDIF
-          
+
        ! READ (UHT(JB),'(10F8.0:/(8X,9F8.0))') NXTUH1(JB),(TUHNX(K,JB),K=2,KB(US(JB)))
         IF (CONSTITUENTS) THEN
-            
+
            IF(CUHF(JB)==1)THEN
               READ (UHC(JB),*)  NXCUH1(JB),(XX(CN(JAC)),JAC=1,NAC)
               DO JAC=1,NAC
               CUHNX(2:KB(US(JB)),CN(JAC),JB)=XX(CN(JAC))
               ENDDO
-              
+
           ELSE
-              
-          
+
+
           DO JAC=1,NAC
- 
+
             IF(CUHF(JB)==2)THEN
             READ (UHC(JB),*)  NXCUH1(JB),(CUHNX(K,CN(JAC),JB),K=2,KB(US(JB)))
             ELSE
             READ (UHC(JB),'(10F8.0:/(8X,9F8.0))') NXCUH1(JB),(CUHNX(K,CN(JAC),JB),K=2,KB(US(JB)))
             ENDIF
-            
+
           END DO
           END IF
-            
-            
+
+
           !DO JAC=1,NAC
           !  IF (ADJUSTL(CNAME2(CN(JAC))) /= 'AGE     ') READ (UHC(JB),'(10F8.0:/(8X,9F8.0))') NXCUH1(JB),(CUHNX(K,CN(JAC),JB),     &
           !                                                    K=2,KB(US(JB)))
@@ -1082,26 +1082,26 @@ SUBROUTINE TIME_VARYING_DATA
         DHT(JB) = NPT; NPT = NPT+1
         OPEN (DHE(JB),FILE=EDHFN(JB),STATUS='OLD')
         OPEN (DHT(JB),FILE=TDHFN(JB),STATUS='OLD')
-        
+
          READ( DHE(JB),'(A1)')INFORMAT
           IF(INFORMAT=='$')THEN
               EDHF(JB)=1
           ENDIF
-          
+
           READ( DHT(JB),'(A2)')INFORMAT2
           IF(INFORMAT2=='$T')THEN
               TDHF(JB)=1
           ELSEIF(INFORMAT2(1:1)=='$')THEN
               TDHF(JB)=2
           ENDIF
-          
+
           IF(EDHF(JB)>0)THEN
           READ(DHE(JB),'(/)')
           READ (DHE(JB),*)  NXEDH2(JB), ELDHNX(JB)
           ELSE
           READ (DHE(JB),'(//2F8.0)')NXEDH2(JB), ELDHNX(JB)
           ENDIF
-          
+
           IF(TDHF(JB)==1)THEN
           READ(DHT(JB),'(/)')
           READ (DHT(JB),*)  NXTDH2(JB),XX(1)
@@ -1111,30 +1111,30 @@ SUBROUTINE TIME_VARYING_DATA
           READ (DHT(JB),*)  NXTDH2(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
           ELSE
           READ (DHT(JB),'(//10F8.0:/(8X,9F8.0))')NXTDH2(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
-          ENDIF     
-        
+          ENDIF
+
         !READ (DHE(JB),'(///10F8.0)')             NXEDH2(JB),ELDHNX(JB)
         !READ (DHT(JB),'(///10F8.0:/(8X,9F8.0))') NXTDH2(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
         IF (CONSTITUENTS) THEN
           DHC(JB) = NPT; NPT = NPT+1
           OPEN (DHC(JB),FILE=CDHFN(JB),STATUS='OLD')
-          
+
            READ( DHC(JB),'(A2)')INFORMAT2
           IF(INFORMAT2=='$T')THEN
               CDHF(JB)=1
           ELSEIF(INFORMAT2(1:1)=='$')THEN
               CDHF(JB)=2
           ENDIF
-          
+
           READ (DHC(JB),'(/)')
-          
+
           IF(CDHF(JB)==1)THEN
               READ (DHC(JB),*)  NXCDH2(JB),(XX(CN(JAC)),JAC=1,NAC)
               DO JAC=1,NAC
-              CDHNX(2:KB(DS(JB)),CN(JAC),JB)=XX(CN(JAC)) 
+              CDHNX(2:KB(DS(JB)),CN(JAC),JB)=XX(CN(JAC))
               ENDDO
           ELSE
-          DO JAC=1,NAC          
+          DO JAC=1,NAC
             IF(CDHF(JB)==2)THEN
             READ (DHC(JB),*)  NXCDH2(JB),(CDHNX(K,CN(JAC),JB),K=2,KB(DS(JB)))
             ELSE
@@ -1155,13 +1155,13 @@ SUBROUTINE TIME_VARYING_DATA
         TDHO(:,JB)   = TDHNX(:,JB)
         CDH(:,:,JB)  = CDHNX(:,:,JB)
         CDHO(:,:,JB) = CDHNX(:,:,JB)
-        
+
           IF(EDHF(JB)>0)THEN
           READ (DHE(JB),*)  NXEDH1(JB), ELDHNX(JB)
           ELSE
           READ (DHE(JB),'(2F8.0)')NXEDH1(JB), ELDHNX(JB)
           ENDIF
-          
+
           IF(TDHF(JB)==1)THEN
           READ (DHT(JB),*)  NXTDH1(JB),XX(1)
           TDHNX(2:KB(DS(JB)),JB)=XX(1)
@@ -1169,19 +1169,19 @@ SUBROUTINE TIME_VARYING_DATA
           READ (DHT(JB),*)  NXTDH1(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
           ELSE
           READ (DHT(JB),'(10F8.0:/(8X,9F8.0))')NXTDH1(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
-          ENDIF     
-        
+          ENDIF
+
         !READ (DHE(JB),'(10F8.0)')             NXEDH1(JB),ELDHNX(JB)
         !READ (DHT(JB),'(10F8.0:/(8X,9F8.0))') NXTDH1(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
         IF (CONSTITUENTS) THEN
-            
+
           IF(CDHF(JB)==1)THEN
               READ (DHC(JB),*)  NXCDH1(JB),(XX(CN(JAC)),JAC=1,NAC)
               DO JAC=1,NAC
-              CDHNX(2:KB(DS(JB)),CN(JAC),JB)=XX(CN(JAC))      
+              CDHNX(2:KB(DS(JB)),CN(JAC),JB)=XX(CN(JAC))
               ENDDO
           ELSE
-          DO JAC=1,NAC          
+          DO JAC=1,NAC
             IF(CDHF(JB)==2)THEN
             READ (DHC(JB),*)  NXCDH1(JB),(CDHNX(K,CN(JAC),JB),K=2,KB(DS(JB)))
             ELSE
@@ -1189,7 +1189,7 @@ SUBROUTINE TIME_VARYING_DATA
             ENDIF
           END DO
           END IF
-            
+
           !DO JAC=1,NAC
           !  IF (ADJUSTL(CNAME2(CN(JAC))) /= 'AGE     ') READ (DHC(JB),'(10F8.0:/(8X,9F8.0))') NXCDH1(JB),(CDHNX(K,CN(JAC),JB),     &
           !                                                    K=2,KB(DS(JB)))
@@ -1199,25 +1199,25 @@ SUBROUTINE TIME_VARYING_DATA
     END DO  ! JB LOOP
       IF(CONSTITUENTS)THEN
         IF(ATM_DEPOSITION(JW))THEN
-           
+
           ATMDEP(JW) = NPT; NPT = NPT+1
           OPEN (ATMDEP(JW),FILE=ATMDEPFN(JW),STATUS='OLD')
-          
+
           READ( ATMDEP(JW),'(A1)')INFORMAT
           IF(INFORMAT=='$')ATMDEPCSV=.TRUE.
           READ (ATMDEP(JW),'(/)')
-          
+
           IF(ATMDEPCSV)THEN
-            READ (ATMDEP(JW),*)  NXATMD2(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))         
+            READ (ATMDEP(JW),*)  NXATMD2(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
           ELSE
-            READ (ATMDEP(JW),'(100F8.0)') NXATMD2(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW)) 
+            READ (ATMDEP(JW),'(100F8.0)') NXATMD2(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
           ENDIF
           ATM_DEP_LOADING=ATM_DEP_LOADINGNX
           ATM_DEP_LOADING0=ATM_DEP_LOADINGNX
           IF(ATMDEPCSV)THEN
-            READ (ATMDEP(JW),*)  NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW)) 
+            READ (ATMDEP(JW),*)  NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
           ELSE
-            READ (ATMDEP(JW),'(100F8.0)') NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW)) 
+            READ (ATMDEP(JW),'(100F8.0)') NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
           ENDIF
         END IF
     ENDIF
@@ -1231,15 +1231,15 @@ SUBROUTINE TIME_VARYING_DATA
     !READ(GTQ,*)                           ! SW 2/25/11
      IF(GATEF)THEN
              READ(GTQ,'(A8)')GT2CHAR
-    
+
     IF(GT2CHAR == 'EGT2ELEV')THEN
     REWIND(GTQ)
-    READ(GTQ,*) 
+    READ(GTQ,*)
     READ(GTQ,*)GT2CHAR,(EGT2(JG),JG=1,NGT)
     ENDIF
-    
+
     READ(GTQ,*)
-    READ (GTQ,*) NXQGT2,(BGTNX(JG),JG=1,NGT)                                         
+    READ (GTQ,*) NXQGT2,(BGTNX(JG),JG=1,NGT)
     WHERE (DYNGTC == '     ZGT')
       EGT  = BGTNX
 	  egto=bgtnx
@@ -1253,18 +1253,18 @@ SUBROUTINE TIME_VARYING_DATA
     READ (GTQ,*)    NXQGT,(BGTNX(JG),JG=1,NGT)
 
      ELSE
-         
+
     READ(GTQ,'(A8)')GT2CHAR
-    
+
     IF(GT2CHAR == 'EGT2ELEV')THEN
     REWIND(GTQ)
-    READ(GTQ,*) 
+    READ(GTQ,*)
     READ(GTQ,'(8X,1000F8.0)')(EGT2(JG),JG=1,NGT)
     ENDIF
-    
+
     READ(GTQ,*)
-    READ (GTQ,'(1000F8.0)') NXQGT2,(BGTNX(JG),JG=1,NGT)    
-!    READ (GTQ,'(///1000F8.0)') NXQGT2,(BGTNX(JG),JG=1,NGT)                                       
+    READ (GTQ,'(1000F8.0)') NXQGT2,(BGTNX(JG),JG=1,NGT)
+!    READ (GTQ,'(///1000F8.0)') NXQGT2,(BGTNX(JG),JG=1,NGT)
     WHERE (DYNGTC == '     ZGT')
       EGT  = BGTNX
 	  egto=bgtnx
@@ -1277,7 +1277,7 @@ SUBROUTINE TIME_VARYING_DATA
     END WHERE
     READ (GTQ,'(1000F8.0)')    NXQGT,(BGTNX(JG),JG=1,NGT)
  ENDIF
-     
+
   END IF
    IF (PIPES)THEN                                         ! SW 5/5/10
     IOPENPIPE=0
@@ -1295,14 +1295,14 @@ SUBROUTINE TIME_VARYING_DATA
       READ (PIPED,'(1000F8.0)')    NXQPT,(BPNX(J),J=1,NPI)
      END IF
   ENDIF
-  IF (PUMPS)THEN                                         
+  IF (PUMPS)THEN
     DO J=1,NPU
      if(DYNPUMP(j) == '      ON')then
-     WRITE (SEGNUM,'(I0)') J      
+     WRITE (SEGNUM,'(I0)') J
      SEGNUM = ADJUSTL(SEGNUM)
-     L      = LEN_TRIM(SEGNUM)   
-     PUMPD(J) = NPT; NPT = NPT+1  
-     OPEN (PUMPD(J),FILE='dynpump'//SEGNUM(1:L)//'.npt',STATUS='OLD') 
+     L      = LEN_TRIM(SEGNUM)
+     PUMPD(J) = NPT; NPT = NPT+1
+     OPEN (PUMPD(J),FILE='dynpump'//SEGNUM(1:L)//'.npt',STATUS='OLD')
      READ( PUMPD(J),'(A1)')INFORMAT
      IF(INFORMAT=='$')DYNPUMPF(J)=.TRUE.
      If(DYNPUMPF(J))then
@@ -1330,7 +1330,7 @@ SUBROUTINE TIME_VARYING_DATA
      END IF
     ENDDO
   ENDIF
-  
+
   NOPEN         = NPT-1
   DYNAMIC_SHADE = SHADEI < 0
   NUNIT=NPT
@@ -1391,7 +1391,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
         ENDIF
         SRONX(JW) = SRONX(JW)*REFL
       ELSE
-        IF(METF(JW))THEN  
+        IF(METF(JW))THEN
         READ (MET(JW),*) NXMET1(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW), PALT_JWNX(JW)                ! systdg - time series input PALT_JW
         ELSE
         READ (MET(JW),'(7F8.0)') NXMET1(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW), PALT_JWNX(JW)        ! systdg - time series input PALT_JW
@@ -1408,15 +1408,15 @@ ENTRY READ_INPUT_DATA (NXTVD)
         ENDIF
         SRONX(JW) = SRONX(JW)*REFL
       ELSE
-        IF(METF(JW))THEN  
+        IF(METF(JW))THEN
         READ (MET(JW),*) NXMET1(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW)
         ELSE
         READ (MET(JW),'(7F8.0)') NXMET1(JW),TAIRNX(JW),TDEWNX(JW),WINDNX(JW),PHINX(JW),CLOUDNX(JW)
         ENDIF
       END IF
-          
+
       ENDIF
-      
+
     END DO
     NXTVD = MIN(NXTVD,NXMET1(JW))
     IF (READ_EXTINCTION(JW)) THEN
@@ -1446,34 +1446,34 @@ ENTRY READ_INPUT_DATA (NXTVD)
         QWDO(JWD) = QWDNX(JWD)
       END DO
       IF(WDQF)THEN
-      READ (WDQ,*) NXQWD1,(QWDNX(JWD),JWD=1,NWD)  
+      READ (WDQ,*) NXQWD1,(QWDNX(JWD),JWD=1,NWD)
       ELSE
       READ (WDQ,'(10F8.0:/(8X,9F8.0))') NXQWD1,(QWDNX(JWD),JWD=1,NWD)
       ENDIF
     END DO
     NXTVD = MIN(NXTVD,NXQWD1)
   END IF
-  
+
   ! Spillways DO gas
   DO N=1,NSP              ! SW 1/18/2022
     IF(GASSPC(N)=='      ON' .AND. EQSP(N)==4 .AND. BGASSP(N)==1)THEN
     DO WHILE (JDAY >= NXSPDO(N))
         AGASSP(N)=AGASSPNX(N)
-        READ(FGASSP(N),*)NXSPDO(N),AGASSPNX(N) 
+        READ(FGASSP(N),*)NXSPDO(N),AGASSPNX(N)
     ENDDO
     ENDIF
   ENDDO
-  
+
   ! gates DO gas
-    
+
     DO N=1,NGT             ! SW 1/18/2022
     IF(GASGTC(N)=='      ON' .AND. EQGT(N)==4 .AND. BGASGT(N)==1.0)THEN
     DO WHILE (JDAY >= NXGTDO(N))
-        AGASGT(N)=AGASGTNX(N) 
-        READ(FGASGT(N),*)NXGTDO(N),AGASGTNX(N) 
+        AGASGT(N)=AGASGTNX(N)
+        READ(FGASGT(N),*)NXGTDO(N),AGASGTNX(N)
     ENDDO
     ENDIF
-  ENDDO  
+  ENDDO
 
 ! Tributaries
 
@@ -1485,7 +1485,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
         QTR(JT)    = QTRNX(JT)
         QTRO(JT)   = QTRNX(JT)
         NXQTR2(JT) = NXQTR1(JT)
-        
+
         IF (TRQF(JT)) THEN
           READ (TRQ(JT),*,END=8710) NXQTR1(JT),QTRNX(JT)                                                                !SR 11/28/19
         ELSE
@@ -1553,7 +1553,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
   !      QTR(JT)    = QTRNX(JT)
   !      QTRO(JT)   = QTRNX(JT)
   !      NXQTR2(JT) = NXQTR1(JT)
-  !      
+  !
   !        IF(TRQF(JT))THEN
   !        READ (TRQ(JT),*) NXQTR1(JT),QTRNX(JT)
   !        ELSE
@@ -1630,20 +1630,20 @@ ENTRY READ_INPUT_DATA (NXTVD)
         END IF                                                                                                          !SR 11/28/19
 8722    CONTINUE                                                                                                        !SR 11/28/19
   END DO
-  
+
    !   IF (JDAY >= NXTTR1(JT)) THEN
    !     DO WHILE (JDAY >= NXTTR1(JT))
    !       TTR(JT)    = TTRNX(JT)
    !       TTRO(JT)   = TTRNX(JT)
    !       NXTTR2(JT) = NXTTR1(JT)
-   !       
+   !
    !       IF(TRTF(JT))THEN
    !       READ (TRT(JT),*) NXTTR1(JT),TTRNX(JT)
    !       ELSE
    !       READ (TRT(JT),'(2F8.0)') NXTTR1(JT),TTRNX(JT)
    !       ENDIF
-   !       
-   !       
+   !
+   !
    !!       READ (TRT(JT),'(2F8.0)') NXTTR1(JT),TTRNX(JT)
    !     END DO
    !   END IF
@@ -1663,14 +1663,14 @@ ENTRY READ_INPUT_DATA (NXTVD)
             CTR(NDO,JT)  = CTRNX(NDO,JT)  * DO_SAT(JT)
           END IF
           IF (N2BND) THEN
-            EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(ITR(JT)))/(TDEW(WBSEG(ITR(JT)))+237.3D0)+0.6609D0))*0.001316       
-   
+            EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(ITR(JT)))/(TDEW(WBSEG(ITR(JT)))+237.3D0)+0.6609D0))*0.001316
+
             N2_SAT(JT) = (1.5568D06*0.79*(PALT(ITR(JT))-EA)*(1.8816D-5 - 4.116D-7 * TTR(JT) + 4.6D-9 * TTR(JT)*TTR(JT)))
             CTR(NN2,JT) = CTRNX(NN2,JT) * N2_SAT(JT)
           END IF
-          IF(DGPBND) CTR(NDGP,JT) = PALT(ITR(JT)) * CTRNX(NDGP,JT)   
+          IF(DGPBND) CTR(NDGP,JT) = PALT(ITR(JT)) * CTRNX(NDGP,JT)
         ENDIF
-        
+
           ! systdg - time series input
           !
           NXCTR2(JT)                    = NXCTR1(JT)
@@ -1736,7 +1736,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
             END IF                                                                                                      !SR 11/28/19
           END IF                                                                                                        !SR 11/28/19
 8732      CONTINUE                                                                                                      !SR 11/28/19
-      
+
         !  READ (TRC(JT),*) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))
         !  ELSE
         !  READ (TRC(JT),'(1000F8.0)') NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))
@@ -1748,7 +1748,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
   END IF
   !
   ! systdg - time series input TWE
-  IF (SYSTDG) THEN                                                     
+  IF (SYSTDG) THEN
       IF (TWETSC=='      ON') THEN
           DO WHILE (JDAY >= NXTWE1)
             TWE_TS  = TWE_TSNX
@@ -1762,7 +1762,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
           END DO
           NXTVD = MIN(NXTVD,NXTWE1)
       END IF
-  END IF   
+  END IF
   ! systdg - time series input TWE
 
 ! Branch related inputs
@@ -1782,7 +1782,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
               READ (INQ(JB),*,END=8810) NXQIN1(JB),QINNX(JB)                                                            !SR 11/28/19
             ELSE
               READ (INQ(JB),'(2F8.0)',END=8810) NXQIN1(JB),QINNX(JB)                                                    !SR 11/28/19
-            ENDIF 
+            ENDIF
             GO TO 8812                                                             ! Isolate error instructions         !SR 11/28/19
 8810        IF (EOF(INQ(JB))) THEN                                                 ! End of file, but more data needed  !SR 11/28/19
               IF (WAIT_FOR_BRANCH_INPUT(JB)) THEN                                  ! Additional data might be available !SR 11/28/19
@@ -1845,7 +1845,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
         !  READ (INQ(JB),*) NXQIN1(JB),QINNX(JB)
         !  ELSE
         !    READ (INQ(JB),'(2F8.0)') NXQIN1(JB),QINNX(JB)
-        !  ENDIF 
+        !  ENDIF
         !  END DO
           NXTVD = MIN(NXTVD,NXQIN1(JB))
 
@@ -1859,7 +1859,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
              READ (INFT(JB),*,END=8820) NXTIN1(JB),TINNX(JB)                                                           !SR 11/28/19
             ELSE
               READ (INFT(JB),'(2F8.0)',END=8820) NXTIN1(JB),TINNX(JB)                                                   !SR 11/28/19
-            ENDIF 
+            ENDIF
             GO TO 8822                                                             ! Isolate error instructions         !SR 11/28/19
 8820        IF (EOF(INFT(JB))) THEN                                                ! End of file, but more data needed  !SR 11/28/19
               IF (WAIT_FOR_BRANCH_INPUT(JB)) THEN                                  ! Additional data might be available !SR 11/28/19
@@ -1918,13 +1918,13 @@ ENTRY READ_INPUT_DATA (NXTVD)
             END IF                                                                                                      !SR 11/28/19
 8822        CONTINUE                                                                                                    !SR 11/28/19
         END DO
-        
+
      !     IF(INTF(JB))THEN
      !     READ (INFT(JB),*) NXTIN1(JB),TINNX(JB)
      !     ELSE
      !       READ (INFT(JB),'(2F8.0)') NXTIN1(JB),TINNX(JB)
-     !     ENDIF 
-     !       
+     !     ENDIF
+     !
      !!       READ (INFT(JB),'(2F8.0)') NXTIN1(JB),TINNX(JB)
      !     END DO
           NXTVD = MIN(NXTVD,NXTIN1(JB))
@@ -1943,15 +1943,15 @@ ENTRY READ_INPUT_DATA (NXTVD)
                 CIND(NDO,JB)  = CIND(NDO,JB)  * DO_SATJ(JB)
               END IF
               IF (N2BND) THEN
-                EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316        
-   
+                EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
+
                 N2_SATJ(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TIND(JB) + 4.6D-9 * TIND(JB)*TIND(JB)))
                 CIND(NN2,JB) = CIND(NN2,JB) * N2_SATJ(JB)
               END IF
-              IF(DGPBND) CIND(NDGP,JB) = CIND(NDGP,JB) * PALT(CUS(JB)) 
+              IF(DGPBND) CIND(NDGP,JB) = CIND(NDGP,JB) * PALT(CUS(JB))
               ENDIF
               ! systdg - time series input
-              
+
               NXCIN2(JB)                    = NXCIN1(JB)
               IF (INCF(JB)) THEN
                 READ (INC(JB),*,END=8830) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))                           !SR 11/28/19
@@ -2017,7 +2017,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
 8832          CONTINUE                                                                                                  !SR 11/28/19
             END DO
             !  IF(INCF(JB))THEN
-            !  READ (INC(JB),*) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))    
+            !  READ (INC(JB),*) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))
             !  ELSE
             !  READ (INC(JB),'(1000F8.0)') NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))
             !  ENDIF
@@ -2066,13 +2066,13 @@ ENTRY READ_INPUT_DATA (NXTVD)
           QDTR(JB)   = QDTRNX(JB)
           QDTRO(JB)  = QDTRNX(JB)
           NXQDT2(JB) = NXQDT1(JB)
-          
+
           IF(DTQF(JB))THEN
           READ (DTQ(JB),*) NXQDT1(JB),QDTRNX(JB)
           ELSE
           READ (DTQ(JB),'(2F8.0)') NXQDT1(JB),QDTRNX(JB)
-          ENDIF        
-          
+          ENDIF
+
   !        READ (DTQ(JB),'(2F8.0)') NXQDT1(JB),QDTRNX(JB)
         END DO
         NXTVD = MIN(NXTVD,NXQDT1(JB))
@@ -2083,13 +2083,13 @@ ENTRY READ_INPUT_DATA (NXTVD)
           TDTR(JB)   = TDTRNX(JB)
           TDTRO(JB)  = TDTRNX(JB)
           NXTDT2(JB) = NXTDT1(JB)
-          
+
           IF(DTTF(JB))THEN
           READ (DTT(JB),*) NXTDT1(JB),TDTRNX(JB)
           ELSE
           READ (DTT(JB),'(2F8.0)') NXTDT1(JB),TDTRNX(JB)
-          ENDIF 
-          
+          ENDIF
+
  !         READ (DTT(JB),'(2F8.0)') NXTDT1(JB),TDTRNX(JB)
         END DO
         NXTVD = MIN(NXTVD,NXTDT1(JB))
@@ -2108,18 +2108,18 @@ ENTRY READ_INPUT_DATA (NXTVD)
                 CDTR(NDO,JB)  = CDTR(NDO,JB)  * DO_SATD(JB)
               END IF
               IF (N2BND) THEN
-                EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316        
+                EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
                 N2_SATD(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TDTR(JB) + 4.6D-9 * TDTR(JB)*TDTR(JB)))
                 CDTR(NN2,JB) = CDTR(NN2,JB) * N2_SATD(JB)
-              END IF       
+              END IF
               IF (DGPBND) CDTR(NDGP,JB) = CDTR(NDGP,JB) * PALT(CUS(JB))
             ENDIF
-            
+
               ! systdg - time series input
-              
+
             NXCDT2(JB)                     = NXCDT1(JB)
             IF(DTCF(JB))THEN
-            READ (DTC(JB),*) NXCDT1(JB),(CDTRNX(DTCN(JAC,JB),JB),JAC=1,NACDT(JB))   
+            READ (DTC(JB),*) NXCDT1(JB),(CDTRNX(DTCN(JAC,JB),JB),JAC=1,NACDT(JB))
                 ELSE
             READ (DTC(JB),'(1000F8.0)') NXCDT1(JB),(CDTRNX(DTCN(JAC,JB),JB),JAC=1,NACDT(JB))
             ENDIF
@@ -2134,13 +2134,13 @@ ENTRY READ_INPUT_DATA (NXTVD)
         DO WHILE (JDAY >= NXPR1(JB))
           PR(JB)    = PRNX(JB)
           NXPR2(JB) = NXPR1(JB)
-          
+
           IF(PRQF(JB))THEN
           READ (PRE(JB),*) NXPR1(JB),PRNX(JB)
           ELSE
           READ (PRE(JB),'(2F8.0)') NXPR1(JB),PRNX(JB)
-          ENDIF        
-          
+          ENDIF
+
           !READ (PRE(JB),'(2F8.0)') NXPR1(JB),PRNX(JB)
         END DO
         NXTVD = MIN(NXTVD,NXPR1(JB))
@@ -2150,13 +2150,13 @@ ENTRY READ_INPUT_DATA (NXTVD)
         DO WHILE (JDAY >= NXTPR1(JB))
           TPR(JB)    = TPRNX(JB)
           NXTPR2(JB) = NXTPR1(JB)
-          
+
           IF(PRTF(JB))THEN
           READ (PRT(JB),*) NXTPR1(JB),TPRNX(JB)
           ELSE
           READ (PRT(JB),'(2F8.0)') NXTPR1(JB),TPRNX(JB)
-          ENDIF        
-          
+          ENDIF
+
           !READ (PRT(JB),'(2F8.0)') NXTPR1(JB),TPRNX(JB)
         END DO
         NXTVD = MIN(NXTVD,NXTPR1(JB))
@@ -2174,18 +2174,18 @@ ENTRY READ_INPUT_DATA (NXTVD)
                 CPR(NDO,JB)  = CPR(NDO,JB)  * DO_SATP(JB)
             END IF
             IF (N2BND) THEN
-                EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316        
+                EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
                 N2_SATP(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TPR(JB) + 4.6D-9 * TPR(JB)*TPR(JB)))
                 CPR(NN2,JB) = CPR(NN2,JB) * N2_SATP(JB)
             END IF
             IF(DGPBND) CPR(NDGP,JB) = CPR(NDGP,JB) * PALT(CUS(JB))
             ENDIF
-            
+
             ! systdg - time series input
-            
+
             NXCPR2(JB)                   = NXCPR1(JB)
             IF(PRCF(JB))THEN
-            READ (PRC(JB),*) NXCPR1(JB),(CPRNX(PRCN(JAC,JB),JB),JAC=1,NACPR(JB))   
+            READ (PRC(JB),*) NXCPR1(JB),(CPRNX(PRCN(JAC,JB),JB),JAC=1,NACPR(JB))
                 ELSE
             READ (PRC(JB),'(1000F8.0)') NXCPR1(JB),(CPRNX(PRCN(JAC,JB),JB),JAC=1,NACPR(JB))
             ENDIF
@@ -2204,7 +2204,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
           ELUH(JB)   = ELUHNX(JB)
           ELUHO(JB)  = ELUHNX(JB)
           NXEUH2(JB) = NXEUH1(JB)
-          
+
           IF(EUHF(JB)>0)THEN
           READ (UHE(JB),*)  NXEUH1(JB), ELUHNX(JB)
           ELSE
@@ -2222,7 +2222,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
             TUHO(K,JB) = TUHNX(K,JB)
           END DO
           NXTUH2(JB) = NXTUH1(JB)
-          
+
           IF(TUHF(JB)==1)THEN
           READ (UHT(JB),*)  NXTUH1(JB),XX(1)
           TUHNX(2:KB(US(JB)),JB)=XX(1)
@@ -2231,8 +2231,8 @@ ENTRY READ_INPUT_DATA (NXTVD)
           ELSE
           READ (UHT(JB),'(10F8.0:/(8X,9F8.0))')NXTUH1(JB),(TUHNX(K,JB),K=2,KB(US(JB)))
           ENDIF
-          
-          
+
+
           !READ (UHT(JB),'(10F8.0:/(8X,9F8.0))') NXTUH1(JB),(TUHNX(K,JB),K=2,KB(US(JB)))
         END DO
         NXTVD = MIN(NXTVD,NXTUH1(JB))
@@ -2246,14 +2246,14 @@ ENTRY READ_INPUT_DATA (NXTVD)
               CUHO(K,CN(1:NAC),JB) = CUHNX(K,CN(1:NAC),JB)
             END DO
             NXCUH2(JB) = NXCUH1(JB)
-            
+
             IF(CUHF(JB)==1)THEN
               READ (UHC(JB),*)  NXCUH1(JB),(XX(CN(JAC)),JAC=1,NAC)
               DO JAC=1,NAC
               CUHNX(2:KB(US(JB)),CN(JAC),JB)=XX(CN(JAC))
               ENDDO
             ELSE
-              
+
             DO JAC=1,NAC
             IF(CUHF(JB)==2)THEN
             READ (UHC(JB),*)  NXCUH1(JB),(CUHNX(K,CN(JAC),JB),K=2,KB(US(JB)))
@@ -2281,7 +2281,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
           ELDH(JB)   = ELDHNX(JB)
           ELDHO(JB)  = ELDHNX(JB)
           NXEDH2(JB) = NXEDH1(JB)
-          
+
           IF(EDHF(JB)>0)THEN
           READ (DHE(JB),*)  NXEDH1(JB), ELDHNX(JB)
           ELSE
@@ -2306,7 +2306,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
           READ (DHT(JB),*)  NXTDH1(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
           ELSE
           READ (DHT(JB),'(10F8.0:/(8X,9F8.0))')NXTDH1(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
-          ENDIF     
+          ENDIF
           !READ (DHT(JB),'(10F8.0:/(8X,9F8.0))') NXTDH1(JB),(TDHNX(K,JB),K=2,KB(DS(JB)))
         END DO
         NXTVD = MIN(NXTVD,NXTDH1(JB))
@@ -2323,10 +2323,10 @@ ENTRY READ_INPUT_DATA (NXTVD)
             IF(CDHF(JB)==1)THEN
               READ (DHC(JB),*)  NXCDH1(JB),(XX(CN(JAC)),JAC=1,NAC)
               DO JAC=1,NAC
-              CDHNX(2:KB(DS(JB)),CN(JAC),JB)=XX(CN(JAC))    
+              CDHNX(2:KB(DS(JB)),CN(JAC),JB)=XX(CN(JAC))
               ENDDO
           ELSE
-          DO JAC=1,NAC          
+          DO JAC=1,NAC
             IF(CDHF(JB)==2)THEN
             READ (DHC(JB),*)  NXCDH1(JB),(CDHNX(K,CN(JAC),JB),K=2,KB(DS(JB)))
             ELSE
@@ -2351,14 +2351,14 @@ ENTRY READ_INPUT_DATA (NXTVD)
           ATM_DEP_LOADING=ATM_DEP_LOADINGNX
           ATM_DEP_LOADING0=ATM_DEP_LOADINGNX
           IF(ATMDEPCSV)THEN
-            READ (ATMDEP(JW),*)  NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW)) 
+            READ (ATMDEP(JW),*)  NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
           ELSE
-            READ (ATMDEP(JW),'(100F8.0)') NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW)) 
-          ENDIF       
+            READ (ATMDEP(JW),'(100F8.0)') NXATMD(JW),(ATM_DEP_LOADINGNX(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
+          ENDIF
         END DO
-        NXTVD = MIN(NXTVD,NXATMD(JW))            
+        NXTVD = MIN(NXTVD,NXATMD(JW))
         ENDIF
-    ENDIF   
+    ENDIF
   END DO
 
 ! Gate height opening
@@ -2377,7 +2377,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
 		bgto = bgtnx
       ENDWHERE
       IF(GATEF)THEN
-                READ (GTQ,*) NXQGT,(BGTNX(JG),JG=1,NGT)  
+                READ (GTQ,*) NXQGT,(BGTNX(JG),JG=1,NGT)
       ELSE
                 READ (GTQ,'(1000F8.0)') NXQGT,(BGTNX(JG),JG=1,NGT)
       ENDIF
@@ -2477,8 +2477,8 @@ ENTRY INTERPOLATE_INPUTS
       ENDDO
       DO WHILE(PHINX(JW)>2.*PI)
           PHINX(JW)=PHINX(JW)-2.*PI
-      ENDDO     
-      IF (PHIO(JW)-PHINX(JW) > PI) THEN                      
+      ENDDO
+      IF (PHIO(JW)-PHINX(JW) > PI) THEN
         PHI(JW) = (1.0-RATIO)*(PHINX(JW)+2.0*PI)+RATIO*PHIO(JW)
       ELSEIF (PHIO(JW)-PHINX(JW) < -PI) THEN                       ! WX 2/13/15
         PHI(JW) = (1.0-RATIO)*PHINX(JW)+RATIO*(PHIO(JW) +2.0*PI)   ! WX 2/13/15
@@ -2496,7 +2496,7 @@ ENTRY INTERPOLATE_INPUTS
       !
       IF(SYSTDG)THEN
       ! systdg - time series input PALT_JW
-      PALT_JW(JW)= (1.0-RATIO)*PALT_JWNX(JW) +RATIO*PALT_JWO(JW)            
+      PALT_JW(JW)= (1.0-RATIO)*PALT_JWNX(JW) +RATIO*PALT_JWO(JW)
       IF (PALT_JW(JW)<=0.0) PALT_JW(JW) = 760.0
         DO I=US(BS(JW))-1,DS(BE(JW))+1
         PALT(I) = PALT_JW(JW)/760.0*(1.0-ELWS_INI(I)/1000.0/44.3)**5.25  ! systdg - time series input PALT
@@ -2504,7 +2504,7 @@ ENTRY INTERPOLATE_INPUTS
        !PALT(:) = PALT_JW(JW)/760.0*(1.0-ELWS_INI(:)/1000.0/44.3)**5.25
        ! systdg - time series input PALT_JW
       ENDIF
-      
+
       IF (READ_RADIATION(JW)) SRON(JW) = (1.0-RATIO)*SRONX(JW)+RATIO*SROO(JW)
     END IF
     IF (READ_EXTINCTION(JW).AND.INTERP_EXTINCTION(JW)) THEN    ! 6/30/15 SW
@@ -2515,10 +2515,10 @@ ENTRY INTERPOLATE_INPUTS
     IF(CONSTITUENTS)THEN
         IF(ATM_DEPOSITION(JW) .AND. ATM_DEPOSITION_INTERPOLATION(JW)=='      ON')THEN
             RATIO= (NXATMD(JW)-JDAY)/(NXATMD(JW)-NXATMD2(JW))
-            ATM_DEP_LOADING(:,JW)=  (1.0-RATIO)*ATM_DEP_LOADINGNX(:,JW)+RATIO*ATM_DEP_LOADING0(:,JW)           
+            ATM_DEP_LOADING(:,JW)=  (1.0-RATIO)*ATM_DEP_LOADINGNX(:,JW)+RATIO*ATM_DEP_LOADING0(:,JW)
         ENDIF
-    ENDIF  
-    
+    ENDIF
+
   END DO
 
 ! Withdrawals
@@ -2530,7 +2530,7 @@ ENTRY INTERPOLATE_INPUTS
     END DO
   END IF
 
-! Gates  adding interpolation cb 8/13/2010  
+! Gates  adding interpolation cb 8/13/2010
   IF (gates) THEN
     QRATIO = (NXQgt-JDAY)/(NXQgt-NXQgt2)
     DO Jg=1,ngt
@@ -2539,7 +2539,7 @@ ENTRY INTERPOLATE_INPUTS
 	      egt(jg) = (1.0-QRATIO)*bgtNX(jg)+QRATIO*egtO(jg)
 		else
           bgt(jg) = (1.0-QRATIO)*bgtNX(Jg)+QRATIO*bgtO(Jg)
-		end if   
+		end if
 	  end if
     END DO
   END IF
@@ -2563,26 +2563,26 @@ ENTRY INTERPOLATE_INPUTS
           CTR(NDO,JT) = CTR(NDO,JT)  * DO_SAT(JT)
         END IF
         IF (N2BND) THEN
-          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(ITR(JT)))/(TDEW(WBSEG(ITR(JT)))+237.3D0)+0.6609D0))*0.001316             
+          EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(ITR(JT)))/(TDEW(WBSEG(ITR(JT)))+237.3D0)+0.6609D0))*0.001316
           N2_SAT(JT) = (1.5568D06*0.79*(PALT(ITR(JT))-EA)*(1.8816D-5 - 4.116D-7 * TTR(JT) + 4.6D-9 * TTR(JT)*TTR(JT)))
             CTR(NN2,JT)= CTR(NN2,JT) * N2_SAT(JT)
           END IF
           !
-          IF(DGPBND) CTR(NDGP,JT)= CTR(NDGP,JT) * PALT(ITR(JT))  
+          IF(DGPBND) CTR(NDGP,JT)= CTR(NDGP,JT) * PALT(ITR(JT))
         ENDIF
-        
+
          ! systdg - time series input
       END IF
     END DO
   END IF
   !
  ! systdg - time series input TWE
- IF (SYSTDG) THEN                                         
+ IF (SYSTDG) THEN
     IF (TWETSC=='      ON') THEN
        TWERATIO = (NXTWE1-JDAY)/(NXTWE1-NXTWE2)
-       TWE_TS = (1.0-TWERATIO)*TWE_TSNX+TWERATIO*TWE_TSO 
+       TWE_TS = (1.0-TWERATIO)*TWE_TSNX+TWERATIO*TWE_TSO
     END IF
- END IF                                     
+ END IF
 ! systdg - time series input TWE
 
 ! Branch related inputs
@@ -2608,14 +2608,14 @@ ENTRY INTERPOLATE_INPUTS
             CIND(NDO,JB)  = CIND(NDO,JB)  * DO_SATJ(JB)
           END IF
           IF (N2BND) THEN
-            EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316       
-   
+            EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
+
             N2_SATJ(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TIND(JB) + 4.6D-9 * TIND(JB)*TIND(JB)))
               CIND(NN2,JB) = CIND(NN2,JB) * N2_SATJ(JB)
             END IF
             !
             IF(DGPBND) CIND(NDGP,JB) = CIND(NDGP,JB) * PALT(CUS(JB))
-          ENDIF      
+          ENDIF
           ! systdg - time series input
         END IF
       END IF
@@ -2642,19 +2642,19 @@ ENTRY INTERPOLATE_INPUTS
         CDTR(DTCN(1:NACDT(JB),JB),JB) = (1.0-CRATIO)*CDTRNX(DTCN(1:NACDT(JB),JB),JB)+CRATIO*CDTRO(DTCN(1:NACDT(JB),JB),JB)
         !
         ! systdg - time series input
-    IF(SYSTDG)THEN        
+    IF(SYSTDG)THEN
         IF (DOBND) THEN
             DO_SATD(JB)= EXP(7.7117 - 1.31403 * (LOG(TDTR(JB)+45.93))) * PALT(CUS(JB))
             CDTR(NDO,JB)  = CDTR(NDO,JB)  * DO_SATD(JB)
         END IF
         IF (N2BND) THEN
-            EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316       
+            EA = DEXP(2.3026D0*(7.5D0*TDEW(WBSEG(CUS(JB)))/(TDEW(WBSEG(CUS(JB)))+237.3D0)+0.6609D0))*0.001316
             N2_SATD(JB) = (1.5568D06*0.79*(PALT(CUS(JB))-EA)*(1.8816D-5 - 4.116D-7 * TDTR(JB) + 4.6D-9 * TDTR(JB)*TDTR(JB)))
                 CDTR(NN2,JB) = CDTR(NN2,JB) * N2_SATD(JB)
             END IF
             !
             IF(DGPBND) CDTR(NDGP,JB) = CDTR(NDGP,JB) * PALT(CUS(JB))
-        ENDIF  
+        ENDIF
        ! systdg - time series input
       END IF
     END IF
@@ -2693,10 +2693,10 @@ RETURN
 ENTRY DEALLOCATE_TIME_VARYING_DATA
   !
   ! systdg
-  DEALLOCATE (DO_SAT, N2_SAT)                                            
-  DEALLOCATE (DO_SATJ, N2_SATJ)                                         
-  DEALLOCATE (DO_SATD, N2_SATD)                                            
-  DEALLOCATE (DO_SATP, N2_SATP)                                            
+  DEALLOCATE (DO_SAT, N2_SAT)
+  DEALLOCATE (DO_SATJ, N2_SATJ)
+  DEALLOCATE (DO_SATD, N2_SATD)
+  DEALLOCATE (DO_SATP, N2_SATP)
   !
   DEALLOCATE (NXQTR1, NXTTR1, NXCTR1, NXQIN1, NXTIN1, NXCIN1, NXQDT1, NXTDT1, NXCDT1, NXPR1,  NXTPR1, NXCPR1, NXEUH1, NXTUH1)
   DEALLOCATE (NXCUH1, NXEDH1, NXTDH1, NXCDH1, NXQOT1, NXMET1, NXQTR2, NXTTR2, NXCTR2, NXQIN2, NXTIN2, NXCIN2, NXQDT2, NXTDT2)

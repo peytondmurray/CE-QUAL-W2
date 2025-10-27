@@ -6,7 +6,7 @@
 SUBROUTINE KINETICS
   USE SCREENC; USE GLOBAL; USE KINETIC; USE GEOMC; USE TVDC; USE LOGICC; USE SURFHE
   USE MACROPHYTEC; USE ZOOPLANKTONC; USE MAIN, ONLY:NPBALC, EPIPHYTON_CALC, BOD_CALC, &
-      ALG_CALC, BOD_CALCN, BOD_CALCP, PO4_CALC, N_CALC, DSI_CALC, STANDING_BIOMASS_DECAY, NH3_DER, & 
+      ALG_CALC, BOD_CALCN, BOD_CALCP, PO4_CALC, N_CALC, DSI_CALC, STANDING_BIOMASS_DECAY, NH3_DER, &
       CDWBC,KF_NH4_SR,KF_NH4_SD,KF_PO4_SR,KF_PO4_SD,NLDOM, NRDOM, NLPOM, NRPOM, NDGP, ORGC_CALC, CO2_DER, HCO3_DER, CO3_DER,  &
       CBODU_DER,TOTSS_DER,O2DG_DER,TURB_DER,SECCHI_DER, CHLA_DER, GAS_TRANSFER_UPDATE
   USE ALGAE_TOXINS
@@ -14,7 +14,7 @@ SUBROUTINE KINETICS
 
 ! Type declarations
   IMPLICIT NONE
-  
+
   REAL                                :: LAM1,   LAM2,   NH4PR,  NO3PR,  LIMIT,  LIGHT,  L, L0, L1, EA, N2SAT  ! SW 10/17/15
   REAL                                :: KW,     INCR,   OH,     K1,     K2, bicart, DLT13
   REAL                                :: CART,ALKT,T1K,S2,SQRS2,DH1,DH2,H2CO3T,CO3T,PHT,F,HION,HCO3T
@@ -33,7 +33,7 @@ SUBROUTINE KINETICS
   ! enhanced pH buffering end
   REAL, ALLOCATABLE, DIMENSION(:,:)   :: OMTRM,  SODTRM, NH4TRM, NO3TRM, BIBH2
   REAL, ALLOCATABLE, DIMENSION(:,:)   :: DOM,    POM,    PO4BOD, NH4BOD, TICBOD
-  REAL, ALLOCATABLE, DIMENSION(:,:)   :: LAM2M  
+  REAL, ALLOCATABLE, DIMENSION(:,:)   :: LAM2M
   REAL, ALLOCATABLE, DIMENSION(:,:,:) :: ATRM,   ATRMR,  ATRMF
   REAL, ALLOCATABLE, DIMENSION(:,:,:) :: ETRM,   ETRMR,  ETRMF
   REAL, ALLOCATABLE, DIMENSION(:,:,:) :: ASETTLE, DEN_AVG, DENP, DEN1, DEN2, ALLIM_OLD  ! CO 6/9/2019
@@ -42,7 +42,7 @@ SUBROUTINE KINETICS
   REAL, ALLOCATABLE, DIMENSION(:)     :: I_C, C_DENINC_1, C_DENINC_2, C_DENDEC_1, C_DENDEC_2, DENP_MINS, DENP_MINB, DENP_MIN, DEN_COR, EXP_DEPTH    ! CO 6/10/2019
   REAL, ALLOCATABLE, DIMENSION(:,:)   :: MIGON, MIGOFF, LOLD, TWQ    ! CO 6/12/2019
   INTEGER, ALLOCATABLE, DIMENSION(:)  :: MIGRATE_GROUP, MIGRATE_MODEL, TS_DEC, DEPTH_LIM_ONOFF, NMINT, DEN_USE, DEPTH_CALC_ONOFF    ! CO 6/3/2019
-  LOGICAL, ALLOCATABLE, DIMENSION(:)  :: ALGAE_SETTLING    ! CO 6/5/2019  
+  LOGICAL, ALLOCATABLE, DIMENSION(:)  :: ALGAE_SETTLING    ! CO 6/5/2019
   INTEGER                             :: K, JA, JE, M, JS, JT, JJ, JJZ, JG, JCB, JBOD, LLM,J,JD,LL
   INTEGER                             :: MI,JAF,N,ITER,IBOD,ISETTLE
 
@@ -51,7 +51,7 @@ SUBROUTINE KINETICS
   real                                :: ticch4, DK1_BACT, SET_BACT, PHOTO_BACT, KADG, SODTRMDDO3, OMTRMDO3                                              !h2sex,ch4ex,ticch4
   real                                :: sdalgc,sdepc,sdbodc,sdalgn,sdepn,sdbodn,sdalgp,sdepp,sdbodp
   REAL                                :: AIN, AINA, AINB, AOUT, AOUTA, AOUTB, AVG_LIGHT, LAM3, LAM4, VISCK, TOLD, iday    ! co 6/10/2019
-  logical                             :: FeMn, ZOOP_SETTLING_EXIST 
+  logical                             :: FeMn, ZOOP_SETTLING_EXIST
   CHARACTER(2)                        :: MIGRATION  ! CO 6/3/2019
   SAVE
 
@@ -62,9 +62,9 @@ SUBROUTINE KINETICS
   ALLOCATE (ATRM(KMX,IMX,NAL), ATRMR(KMX,IMX,NAL), ATRMF(KMX,IMX,NAL))
   ALLOCATE (ETRM(KMX,IMX,NEP), ETRMR(KMX,IMX,NEP), ETRMF(KMX,IMX,NEP))
   ALLOCATE (lam2m(KMX,kmx),    BIBH2(KMX,IMX), ALGAE_SETTLING(NAL))
-  ALLOCATE (FE(KMX,IMX))       
+  ALLOCATE (FE(KMX,IMX))
   TICBOD=0.0; FE=0.0
-  
+
   !ZS=0.0    ! SW 1/29/2019
   !ZSR=0.0
   !ZOOP_SETTLING_EXIST=.FALSE.
@@ -81,7 +81,7 @@ SUBROUTINE KINETICS
   !ALGAE_SETTLING_EXIST=.FALSE.  ! CO 6/4/2019
   ALGAE_SETTLING(:)=.FALSE.  ! CO 6/5/2019
   NITWQ=0
-  !INQUIRE(FILE='w2_AlgaeMigration.csv',EXIST=ALGAE_SETTLING_EXIST)    
+  !INQUIRE(FILE='w2_AlgaeMigration.csv',EXIST=ALGAE_SETTLING_EXIST)
   IF(ALGAE_SETTLING_EXIST)THEN
       OPEN(2450,FILE='w2_AlgaeMigration.csv',STATUS='OLD')
       READ(2450,*)  ! SKIP HEADER
@@ -93,7 +93,7 @@ SUBROUTINE KINETICS
           OPEN(2451,file='algae_migration_debug.csv',status='unknown')
           WRITE(2451,*)'Method,K,I,JA,NITWQ,JDAY,Asettle,Dens2'
       ENDIF
-      
+
       READ(2450,*)
       ALLOCATE(MIGRATE_GROUP(NMIG),MIGRATE_MODEL(NMIG),AMP(NMIG),PHASE(NMIG),C_COEFF_EXT(NMIG),RAD(NMIG),MIND(NMIG),MAXD(NMIG),DENSI(NMIG),DENBI(NMIG),T_DEC(NMIG),TS_DEC(NMIG),C_DENINC(NMIG),C_DENDEC(NMIG),&
           DEPTH_LIM_ONOFF(NMIG),DEPTH_LIM(NMIG),LOSS_FRAC(NMIG),I_C(NMIG),C_DENINC_1(NMIG),C_DENINC_2(NMIG),C_DENDEC_1(NMIG),C_DENDEC_2(NMIG),DENP_MINS(NMIG),DENP_MINB(NMIG),DEN_COR(MIGI),&
@@ -125,12 +125,12 @@ SUBROUTINE KINETICS
             READ(2450,*)
         ELSE
             READ(2450,*)
-            READ(2450,*)            
             READ(2450,*)
-            READ(2450,*)            
+            READ(2450,*)
+            READ(2450,*)
             READ(2450,*)RAD(I),MIND(I),MAXD(I),DENSI(I),DENBI(I),I_C(I),C_DENINC_1(I),C_DENINC_2(I),C_DENDEC_1(I),C_DENDEC_2(I),DENP_MINS(I),DENP_MINB(I),DEN_COR(I),DEPTH_LIM_ONOFF(I),&
                 DEPTH_LIM(I),LOSS_FRAC(I)
-            READ(2450,*)            
+            READ(2450,*)
         ENDIF
         ALGAE_SETTLING(MIGRATE_GROUP(I)) = .TRUE.  ! CO 6/5/2019
       ENDDO
@@ -140,14 +140,14 @@ SUBROUTINE KINETICS
   ENDIF
 
 !ALGAE_TOXIN=.FALSE.
-!INQUIRE(FILE='w2_Algae_Toxin.csv',EXIST=ALGAE_TOXIN_FILE)    
+!INQUIRE(FILE='w2_Algae_Toxin.csv',EXIST=ALGAE_TOXIN_FILE)
   IF(ALGAE_TOXIN)THEN
       OPEN(2450,FILE='w2_Algae_Toxin.csv',STATUS='OLD')
       READ(2450,*)  ! SKIP HEADER
       READ(2450,*)ATOX,ATOX_DEBUG     ! '(A2)'
       IF(ATOX == 'ON')THEN
       ALLOCATE(CTP(NUMATOXINS,NAL),CTB(NUMATOXINS,NAL),IN_TOXIN(KMX,IMX,NUMATOXINS))
-      
+
       READ(2450,*)
       READ(2450,*)(CTP(1,JA),JA=1,NAL)
       READ(2450,*)(CTB(1,JA),JA=1,NAL)
@@ -176,18 +176,18 @@ SUBROUTINE KINETICS
       !READ(2450,*) CTDI(4)    !(CTDI(4,JA),JA=1,NAL)
       !READ(2450,*) CTA(4)     !(CTA(4,JA),JA=1,NAL)
       READ(2450,*) CTD(4)    !(CTDE(4,JA),JA=1,NAL)
-      
-      ! 
+
+      !
       DO JJ=1,NUMATOXINS
           CTREL(JJ)=CTREL(JJ)/86400.
           CTD(JJ)=CTD(JJ)/86400.
       ENDDO
-      
+
       ELSE
-      ALGAE_TOXIN=.FALSE.   
+      ALGAE_TOXIN=.FALSE.
       ENDIF
   ENDIF
-      
+
 !!**** Cyanotoxin Constants
 !CTP(J) =fraction of algae concentration producing toxin
 !CTB(J) =ratio of intracellular toxin to dry weight OM
@@ -198,7 +198,7 @@ SUBROUTINE KINETICS
 !NOT USED CTDIR(J) = CTDI(J) !intracellular decay
 !CTD !extracellular decay
 
-      
+
 RETURN
 
 !***********************************************************************************************************************************
@@ -265,14 +265,14 @@ ENTRY KINETIC_RATES
 ! Decay rates
 !!$OMP PARALLEL DO
   DO I=IU,ID
-      
+
       ! Gas Transfer
       IF(GAS_TRANSFER_UPDATE)THEN
           CALL GAS_TRANSFER
       ENDIF
 
     DO K=KT,KB(I)
-      DO1(K,I)          = O2(K,I)/(O2(K,I)+KDO)                  
+      DO1(K,I)          = O2(K,I)/(O2(K,I)+KDO)
       DO2(K,I)          = 1.0 - DO1(K,I)                         !O2(K,I)/(O2(K,I)+KDO)
       DO3(K,I)          = (1.0+SIGN(1.0,O2(K,I)-1.E-10)) *0.5
       SODTRMDDO3        =   SODTRM(K,I)*SDKV(K,I)*DO3(K,I)
@@ -291,7 +291,7 @@ ENTRY KINETIC_RATES
       SEDBRN(K,I)        =  SEDB(JW)    *SEDN(K,I)                          !CB 11/30/06
       SEDBRC(K,I)        =  SEDB(JW)    *SEDC(K,I)                          !CB 11/30/06
       NH4D(K,I)         =  NH4TRM(K,I) *NH4DK(JW) *NH4(K,I) *DO1(K,I)
-      
+
       IF(CDWBC(NH3_DER,JW)=='      ON')THEN              ! if nh3 is ON as a derived variable
           KH_NH3= 0.00000001270002*T2(K,I)*T2(K,I) + 0.00000016769649*T2(K,I) + 0.000004794059   ! Henry's Law constant for ammonia, atm/m3/mole
           K_NH3_NH4=10**(-0.09018-2729.92/(T2(K,I)+273.15))                                       ! Equilibrium constant [-]
@@ -302,7 +302,7 @@ ENTRY KINETIC_RATES
               NH3GAS(K,I)=K_NH3*NH4(K,I)*F_NH3(K,I)*BI(KT,I)/BH2(KT,I)
          ENDIF
       ENDIF
-      
+
       NO3D(K,I)         =  NO3TRM(K,I) *NO3DK(JW) *NO3(K,I) *DO2(K,I)
       IF(ORGC_CALC)THEN
         OMTRMDO3        =  OMTRM(K,I)*DO3(K,I)/ORGC(JW)
@@ -312,7 +312,7 @@ ENTRY KINETIC_RATES
         RPOMD(K,I)      =  OMTRMDO3*RPOMCDK(JW)*RPOMC(K,I) !OMTRM(K,I)  *RPOMCDK(JW)*RPOMC(K,I)/ORGC(JW)*DO3(K,I)
         LRDOMD(K,I)     =  OMTRMDO3*LRDDK(JW) *LDOMC(K,I)  !OMTRM(K,I)  *LRDDK(JW) *LDOMC(K,I)/ORGC(JW)*DO3(K,I)
         LRPOMD(K,I)     =  OMTRMDO3*LRPDK(JW) *LPOMC(K,I)  !OMTRM(K,I)  *LRPDK(JW) *LPOMC(K,I)/ORGC(JW)*DO3(K,I)
-        LPOMHD(K,I)     =  OMTRMDO3*LPOMHK(JW)*LPOMC(K,I)  !OMTRM(K,I)  *LPOMHK(JW)*LPOMC(K,I)/ORGC(JW)*DO3(K,I)     
+        LPOMHD(K,I)     =  OMTRMDO3*LPOMHK(JW)*LPOMC(K,I)  !OMTRM(K,I)  *LPOMHK(JW)*LPOMC(K,I)/ORGC(JW)*DO3(K,I)
         RPOMHD(K,I)     =  OMTRMDO3*RPOMHK(JW)*RPOMC(K,I)  !OMTRM(K,I)  *RPOMHK(JW)*RPOMC(K,I)/ORGC(JW)*DO3(K,I)
       ELSE
         OMTRMDO3        =  OMTRM(K,I)*DO3(K,I)
@@ -322,13 +322,13 @@ ENTRY KINETIC_RATES
         RPOMD(K,I)      =  OMTRMDO3*RPOMDK(JW)*RPOM(K,I)   !OMTRM(K,I)  *RPOMDK(JW)*RPOM(K,I)*DO3(K,I)
         LRDOMD(K,I)     =  OMTRMDO3*LRDDK(JW) *LDOM(K,I)   !OMTRM(K,I)  *LRDDK(JW) *LDOM(K,I)*DO3(K,I)
         LRPOMD(K,I)     =  OMTRMDO3*LRPDK(JW) *LPOM(K,I)   !OMTRM(K,I)  *LRPDK(JW) *LPOM(K,I)*DO3(K,I)
-        LPOMHD(K,I)     =  OMTRMDO3*LPOMHK(JW)*LPOM(K,I)   !OMTRM(K,I)  *LPOMHK(JW)*LPOM(K,I)*DO3(K,I)           
+        LPOMHD(K,I)     =  OMTRMDO3*LPOMHK(JW)*LPOM(K,I)   !OMTRM(K,I)  *LPOMHK(JW)*LPOM(K,I)*DO3(K,I)
         RPOMHD(K,I)     =  OMTRMDO3*RPOMHK(JW)*RPOM(K,I)   !OMTRM(K,I)  *RPOMHK(JW)*RPOM(K,I)*DO3(K,I)
       END IF
       !
       IF(CAC(NLDOMP) == '      ON')THEN
         LDOMPD(K,I)     =  OMTRM(K,I)  *LDOMPDK(JW) *LDOMP(K,I)*DO3(K,I)
-        LRDOMPD(K,I)    =  OMTRM(K,I)  *LRDOMPDK(JW)*LDOMP(K,I)*DO3(K,I) 
+        LRDOMPD(K,I)    =  OMTRM(K,I)  *LRDOMPDK(JW)*LDOMP(K,I)*DO3(K,I)
       ELSE
         LDOMPD(K,I)     =  ORGP(JW)    *LDOMD(K,I)
         LRDOMPD(K,I)    =  ORGP(JW)    *LRDOMD(K,I)
@@ -416,13 +416,13 @@ ENTRY KINETIC_RATES
       FPSS(K,I) = PARTP(JW)         /(PARTP(JW)*TISS(K,I)+PARTP(JW)*FE(K,I)*DO1(K,I)+1.0)
         FPFE(K,I) = PARTP(JW)*FE(K,I)*DO1(K,I) /(PARTP(JW)*TISS(K,I)+PARTP(JW)*FE(K,I)*DO1(K,I)+1.0)   !8/2020 corrected
     ENDIF
-    
+
       IF(K.NE.KT)THEN
           SSSI(K,I) = SSSO(K-1,I)*BI(K,I)/BI(K-1,I)   ! SR 3/2019
       ELSE
           SSSI(K,I)=0.0                               ! SW 3/2019
       ENDIF
-      
+
       TOTSS0    = 0.0
       DO JS=1,NSS
         TOTSS0 = TOTSS0+SSS(JS)*FPSS(K,I)*SS(K,I,JS)
@@ -436,48 +436,48 @@ ENTRY KINETIC_RATES
       LDOP(K,I) = LDOMP(K,I)
     ELSE IF(ORGC_CALC)THEN
       LDOP(K,I) = LDOMC(K,I)/ORGC(JW) * ORGP(JW)
-    ELSE 
-      LDOP(K,I) = LDOM(K,I) * ORGP(JW)  
+    ELSE
+      LDOP(K,I) = LDOM(K,I) * ORGP(JW)
         END IF
         IF(CAC(NRDOMP) == '      ON')THEN
       RDOP(K,I) = RDOMP(K,I)
     ELSE IF(ORGC_CALC)THEN
-      RDOP(K,I) = RDOMC(K,I)/ORGC(JW) * ORGP(JW)  
+      RDOP(K,I) = RDOMC(K,I)/ORGC(JW) * ORGP(JW)
           ELSE
       RDOP(K,I) = RDOM(K,I) * ORGP(JW)
         END IF
         IF(CAC(NLPOMP) == '      ON')THEN
       LPOP(K,I) = LPOMP(K,I)
     ELSE IF(ORGC_CALC)THEN
-      LPOP(K,I) = LPOMC(K,I)/ORGC(JW) * ORGP(JW)  
+      LPOP(K,I) = LPOMC(K,I)/ORGC(JW) * ORGP(JW)
         ELSE
       LPOP(K,I) = LPOM(K,I) * ORGP(JW)
         END IF
         IF(CAC(NRPOMP) == '      ON')THEN
       RPOP(K,I) = RPOMP(K,I)
     ELSE IF(ORGC_CALC)THEN
-      RPOP(K,I) = RPOMC(K,I)/ORGC(JW) * ORGP(JW)  
+      RPOP(K,I) = RPOMC(K,I)/ORGC(JW) * ORGP(JW)
           ELSE
       RPOP(K,I) = RPOM(K,I) * ORGP(JW)
         END IF
         IF(CAC(NLDOMN) == '      ON')THEN
       LDON(K,I) = LDOMN(K,I)
     ELSE IF(ORGC_CALC)THEN
-      LDON(K,I) = LDOMC(K,I)/ORGC(JW) * ORGN(JW)  
+      LDON(K,I) = LDOMC(K,I)/ORGC(JW) * ORGN(JW)
           ELSE
       LDON(K,I) = LDOM(K,I) * ORGN(JW)
         END IF
         IF(CAC(NRDOMN) == '      ON')THEN
       RDON(K,I) = RDOMN(K,I)
     ELSE IF(ORGC_CALC)THEN
-      RDON(K,I) = RDOMC(K,I)/ORGC(JW) * ORGN(JW)  
+      RDON(K,I) = RDOMC(K,I)/ORGC(JW) * ORGN(JW)
         ELSE
       RDON(K,I) = RDOM(K,I) * ORGN(JW)
         END IF
         IF(CAC(NLPOMN) == '      ON')THEN
       LPON(K,I) = LPOMN(K,I)
     ELSE IF(ORGC_CALC)THEN
-      LPON(K,I) = LPOMC(K,I)/ORGC(JW) * ORGN(JW)  
+      LPON(K,I) = LPOMC(K,I)/ORGC(JW) * ORGN(JW)
           ELSE
       LPON(K,I) = LPOM(K,I) * ORGN(JW)
     END IF
@@ -485,12 +485,12 @@ ENTRY KINETIC_RATES
     IF(CAC(NRPOMN) == '      ON')THEN
       RPON(K,I) = RPOMN(K,I)
     ELSE IF(ORGC_CALC)THEN
-      RPON(K,I) = RPOMC(K,I)/ORGC(JW) * ORGN(JW)  
+      RPON(K,I) = RPOMC(K,I)/ORGC(JW) * ORGN(JW)
         ELSE
       RPON(K,I) = RPOM(K,I) * ORGN(JW)
         END IF
     !
-    IF(ORGC_CALC)THEN  
+    IF(ORGC_CALC)THEN
       LDOC(K,I) = LDOMC(K,I)
       RDOC(K,I) = RDOMC(K,I)
       LPOC(K,I) = LPOMC(K,I)
@@ -499,8 +499,8 @@ ENTRY KINETIC_RATES
       LDOC(K,I) = LDOM(K,I) * ORGC(JW)
       RDOC(K,I) = RDOM(K,I) * ORGC(JW)
       LPOC(K,I) = LPOM(K,I) * ORGC(JW)
-      RPOC(K,I) = RPOM(K,I) * ORGC(JW)  
-          END IF        
+      RPOC(K,I) = RPOM(K,I) * ORGC(JW)
+          END IF
 
 ! Light Extinction Coefficient
       IF (.NOT. READ_EXTINCTION(JW)) THEN
@@ -535,7 +535,7 @@ ENTRY KINETIC_RATES
       ELSE
         GAMMA(K,I) = GAMMA(K,I)+EXOM(JW)*(LPOM(K,I)+RPOM(K,I))
       END IF
-		
+
 	    IF(NMC>0)THEN    ! cb 4/20/11
 	      MACEXT1=0.0    ! cb 4/20/11
           IF(KTICOL(I))THEN
@@ -568,7 +568,7 @@ ENTRY KINETIC_RATES
 ! Zooplankton Rates
    IF(ZOOPLANKTON_CALC)THEN
       DO JZ=1,NZP
-        IF(ORGC_CALC)THEN 
+        IF(ORGC_CALC)THEN
           TGRAZE(K,I,JZ) = PREFP(JZ)*LPOMC(K,I)/ORGC(JW)
         ELSE
           TGRAZE(K,I,JZ) = PREFP(JZ)*LPOM(K,I)
@@ -597,22 +597,22 @@ ENTRY KINETIC_RATES
         END IF
         ZMT(K,I,JZ) = MAX(1.0-ZOORMF(K,I,JZ),0.02)*ZM(JZ)*ZMINFAC
         ! zooplankton settling - adapted from SR 01/12/2004 Hagg Lake Model - in prep for dynamic vertical motion calculation SW 1/28/2019
-        IF (ZS(JZ) >= 0.0) THEN                                                                                            
+        IF (ZS(JZ) >= 0.0) THEN
               IF (K == KT) THEN
               ZSR(K,I,JZ) = -ZS(JZ)*ZOO(K,I,JZ)*BI(K,I)/BH2(K,I)
               ELSE
-              ZSR(K,I,JZ) =  ZS(JZ)*(ZOO(K-1,I,JZ)-ZOO(K,I,JZ))*BI(K,I)/BH2(K,I)  
+              ZSR(K,I,JZ) =  ZS(JZ)*(ZOO(K-1,I,JZ)-ZOO(K,I,JZ))*BI(K,I)/BH2(K,I)
               ENDIF
-        ELSE                                                                                                           
+        ELSE
           IF (K == KT) THEN
-              ZSR(K,I,JZ) = -ZS(JZ)*ZOO(K+1,I,JZ)*BI(K+1,I)*DLX(I)/VOL(K,I)   
+              ZSR(K,I,JZ) = -ZS(JZ)*ZOO(K+1,I,JZ)*BI(K+1,I)*DLX(I)/VOL(K,I)
           ELSEIF(K == KB(I))THEN
-              ZSR(K,I,JZ) =  ZS(JZ)*ZOO(K,I,JZ)*BI(K,I)/BH2(K,I) 
+              ZSR(K,I,JZ) =  ZS(JZ)*ZOO(K,I,JZ)*BI(K,I)/BH2(K,I)
           ELSE
-              ZSR(K,I,JZ) = -ZS(JZ)*(ZOO(K+1,I,JZ)*BI(K+1,I)/BH2(K,I)-ZOO(K,I,JZ)*BI(K,I)/BH2(K,I))    
-          ENDIF                     
-        END IF                                                                                                                   
-      END DO   ! ZOOP LOOP 
+              ZSR(K,I,JZ) = -ZS(JZ)*(ZOO(K+1,I,JZ)*BI(K+1,I)/BH2(K,I)-ZOO(K,I,JZ)*BI(K,I)/BH2(K,I))
+          ENDIF
+        END IF
+      END DO   ! ZOOP LOOP
    ENDIF
 
     END DO ! K LOOP
@@ -659,7 +659,7 @@ ENTRY KINETIC_RATES
         ARR(K,I,JA) =  ATRM(K,I,JA)*AR(JA)*DO3(K,I)
         AMR(K,I,JA) = (ATRMR(K,I,JA)+1.0-ATRMF(K,I,JA))*AM(JA)
         AER(K,I,JA) =  MIN((1.0-ALLIM(K,I,JA))*AE(JA)*ATRM(K,I,JA),AGR(K,I,JA))
-                    
+
         IF(ALGAE_SETTLING(JA) .AND. ISETTLE==1)THEN
             IF(MIGRATE_MODEL(MIGI) == 1)THEN     !   TIME VARYING VELOCTY
                 ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*COS(2.*PI*JDAY + PHASE(MIGI))
@@ -669,15 +669,15 @@ ENTRY KINETIC_RATES
                     LIGHT=(1.0-BETA(JW))*SRON(JW)*SHADE(I)
                     LAM3=LIGHT
                     KK=KT
-                    DO WHILE(LAM3 > 0.01*LIGHT) 
+                    DO WHILE(LAM3 > 0.01*LIGHT)
                         KK=KK+1
-                        IF(KK==KB(I))EXIT  
+                        IF(KK==KB(I))EXIT
                         LAM3=LAM3*EXP(-GAMMA(KK,I)*H2(KK,I))
                     ENDDO
                     IF(DEPTHM(K,I)<=DEPTHM(KK,I))THEN
                         IF(LIGHT>0.0)THEN
-                            ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*EXP(-C_COEFF_EXT(MIGI)*GAMMA(K,I)*(DEPTHM(KK,I)-DEPTHM(K,I)))*COS(2.*PI*JDAY+PHASE(MIGI)) 
-                        ELSE 
+                            ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*EXP(-C_COEFF_EXT(MIGI)*GAMMA(K,I)*(DEPTHM(KK,I)-DEPTHM(K,I)))*COS(2.*PI*JDAY+PHASE(MIGI))
+                        ELSE
                             ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*COS(2.*PI*JDAY+PHASE(MIGI))
                         ENDIF
                     ELSE
@@ -686,13 +686,13 @@ ENTRY KINETIC_RATES
                 ELSE    ! SET DEPTH LIMIT FOR INCREASING MIGRATION
                     IF(DEPTHM(K,I)<=EXP_DEPTH(MIGI))THEN
                         IF(LIGHT>0.0)THEN
-                            ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*EXP(-C_COEFF_EXT(MIGI)*GAMMA(K,I)*(EXP_DEPTH(MIGI)-DEPTHM(K,I)))*COS(2.*PI*JDAY+PHASE(MIGI)) 
-                        ELSE 
+                            ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*EXP(-C_COEFF_EXT(MIGI)*GAMMA(K,I)*(EXP_DEPTH(MIGI)-DEPTHM(K,I)))*COS(2.*PI*JDAY+PHASE(MIGI))
+                        ELSE
                             ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*COS(2.*PI*JDAY+PHASE(MIGI))
                         ENDIF
                     ELSE
                         ASETTLE(K,I,JA) = AMP(MIGI)*(2.*PI/86400.)*COS(2.*PI*JDAY+PHASE(MIGI))
-                    ENDIF  
+                    ENDIF
                 ENDIF
                 IF(ALGMIGRATION_DEBUG==1)WRITE(2451,'("Model2:,",3(I3,","),3(F15.5,","))')K,I,JA,JDAY,ASETTLE(K,I,JA)
             ELSEIF(MIGRATE_MODEL(MIGI) == 3)THEN    ! DENSITY CHANGE VELOCITY
@@ -708,8 +708,8 @@ ENTRY KINETIC_RATES
                         DEN(K,I,NITWQ,MIGI) = DENSI(MIGI)+(DENBI(MIGI)-DENSI(MIGI))*(1.-EXP(-DEPTHM(K,I)));
                     ENDIF
                     RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
-                    ASETTLE(K,I,JA) = 2.*G*(RAD(MIGI)**2)*(DEN(K,I,NITWQ,MIGI)/RHO(K,I)-1.)/(9.*VISCK) ! stoke's settling velocity  
-                    ALLIM_OLD(K,I,MIGI) = ALLIM(K,I,JA)      
+                    ASETTLE(K,I,JA) = 2.*G*(RAD(MIGI)**2)*(DEN(K,I,NITWQ,MIGI)/RHO(K,I)-1.)/(9.*VISCK) ! stoke's settling velocity
+                    ALLIM_OLD(K,I,MIGI) = ALLIM(K,I,JA)
                     IF(ALGMIGRATION_DEBUG==1)WRITE(2451,'("Model3:,",4(I6,","),4(F15.5,","))')K,I,JA,nitwq,JDAY,ASETTLE(K,I,JA),DEN_avg(K,I,MIGI),den(k,i,min(nitwq,ts_dec(migi)),migi)
                 ELSEIF(NITWQ <= TS_DEC(MIGI))THEN  ! STORE ALL DENSITY VALUES UNTIL MAXIMUM NUMBER IS REACHED
                     IF(K==KT .AND. I==IU) TWQ(NITWQ,MIGI)=JDAY
@@ -732,14 +732,14 @@ ENTRY KINETIC_RATES
                     DEN_AVG(K,I,MIGI) = SUM(DEN(K,I,den_use,MIGI)*EXP(-T_DEC(MIGI)*(JDAY-TWQ(den_use,MIGI))))/SUM(EXP(-T_DEC(MIGI)*(JDAY-TWQ(den_use,MIGI))))
                     ASETTLE(K,I,JA) = 2.*G*(RAD(MIGI)**2)*(DEN_AVG(K,I,MIGI)/RHO(K,I)-1.)/(9.*VISCK) ! stoke's settling velocity
                         DEALLOCATE(DEN_USE)
-                    ALLIM_OLD(K,I,MIGI) = ALLIM(K,I,JA)      
+                    ALLIM_OLD(K,I,MIGI) = ALLIM(K,I,JA)
                     IF(ALGMIGRATION_DEBUG==1)WRITE(2451,'("Model3:,",4(I6,","),4(F15.5,","))')K,I,JA,nitwq,JDAY,ASETTLE(K,I,JA),DEN_avg(K,I,MIGI),den(k,i,min(nitwq,ts_dec(migi)),migi)
-                ELSE  ! STORE SPECIFIED MAXIMUM NUMBER OF PAST DENSITY VALUES 
+                ELSE  ! STORE SPECIFIED MAXIMUM NUMBER OF PAST DENSITY VALUES
                     IF(K==KT .AND. I==IU)THEN
                         TWQ(1:TS_DEC(MIGI)-1,MIGI) = TWQ(2:TS_DEC(MIGI),MIGI)
                         TWQ(TS_DEC(MIGI),MIGI) = JDAY
                     ENDIF
-                    DEN(K,I,1:TS_DEC(MIGI)-1,MIGI) = DEN(K,I,2:TS_DEC(MIGI),MIGI)                 
+                    DEN(K,I,1:TS_DEC(MIGI)-1,MIGI) = DEN(K,I,2:TS_DEC(MIGI),MIGI)
                     if(den(k,i,ts_dec(migi)-1,migi)<=0)then
                         den(k,i,ts_dec(migi)-1,migi) = den(k+1,i,ts_dec(migi)-1,migi)
                         RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
@@ -759,7 +759,7 @@ ENTRY KINETIC_RATES
                     DEN_AVG(K,I,MIGI) = SUM(DEN(K,I,DEN_USE,MIGI)*EXP(-T_DEC(MIGI)*(JDAY-TWQ(DEN_USE,MIGI))))/SUM(EXP(-T_DEC(MIGI)*(JDAY-TWQ(DEN_USE,MIGI)))) ! weighted density with time decay
                     ASETTLE(K,I,JA) = 2.*G*(RAD(MIGI)**2)*(DEN_AVG(K,I,MIGI)/RHO(K,I)-1.)/(9.*VISCK) ! stoke's settling velocity
                         DEALLOCATE(DEN_USE)
-                    ALLIM_OLD(K,I,MIGI) = ALLIM(K,I,JA)      
+                    ALLIM_OLD(K,I,MIGI) = ALLIM(K,I,JA)
                     IF(ALGMIGRATION_DEBUG==1)WRITE(2451,'("Model3:,",4(I6,","),4(F15.5,","))')K,I,JA,nitwq,JDAY,ASETTLE(K,I,JA),DEN_avg(K,I,MIGI),den(k,i,min(nitwq,ts_dec(migi)),migi)
                 ENDIF
             ELSE     ! DENSITY CHANGE VELOCITY (VISSER)
@@ -794,7 +794,7 @@ ENTRY KINETIC_RATES
                         LAM4 = LAM3*EXP(-GAMMA(KK,I)*H2(KK,I))
                     ENDDO
                     AVG_LIGHT = LAM3*(EXP(-GAMMA(K,I)*H2(K,I))-1.)/(-GAMMA(K,I)*H2(K,I))
-                    IF(AVG_LIGHT >= I_C(MIGI))THEN              
+                    IF(AVG_LIGHT >= I_C(MIGI))THEN
                         DEN2(K,I,MIGI) = (C_DENINC_1(MIGI)*AVG_LIGHT*EXP(-AVG_LIGHT/ASAT(JA))+C_DENINC_2(MIGI))*(JDAY-TOLD)*86400. + DEN1(K,I,MIGI) ! new colony density
                         DEN2(K,I,MIGI) = MIN(DEN2(K,I,MIGI),MAXD(MIGI)) ! maximum allowable colony density
                         DEN2(K,I,MIGI) = MAX(DEN2(K,I,MIGI),MIND(MIGI)) ! minimum allowable colony density
@@ -804,7 +804,7 @@ ENTRY KINETIC_RATES
                         DEN2(K,I,MIGI) = MIN(DEN2(K,I,MIGI),MAXD(MIGI)) ! maximum allowable colony density
                         DEN2(K,I,MIGI) = MAX(DEN2(K,I,MIGI),MIND(MIGI)) ! minimum allowable colony density
                         DENP(K,I,MIGI) = MAX(DENP(K,I,MIGI),DENP_MIN(K))
-                    ENDIF 
+                    ENDIF
                     ASETTLE(K,I,JA) = 2.*G*(RAD(MIGI)**2)*(DEN2(K,I,MIGI)/RHO(K,I)-1.)/(9.*VISCK) ! stoke's settling velocity
                     if(abs(asettle(k,i,ja))>1000.) asettle(k,1,ja)=0.
                     DEN1(K,I,MIGI) = DEN2(K,I,MIGI)
@@ -829,7 +829,7 @@ ENTRY KINETIC_RATES
           ELSE
             ASR(K,I,JA) = -AS(JA)*(ALG(K+1,I,JA)*BI(K+1,I)/BH2(K,I)-ALG(K,I,JA)*BI(K,I)/BH2(K,I))             !SP 8/27/07
           END IF
-            END IF 
+            END IF
         ENDIF
       ENDDO   ! K LOOP
 
@@ -837,39 +837,39 @@ ENTRY KINETIC_RATES
          do k=kt,kb(i)
             IF(K==KT)THEN
                 IF(ASETTLE(K+1,I,JA) >= 0)THEN    ! incoming velocity from cell below
-                    AIN = 0                
-                ELSE 
+                    AIN = 0
+                ELSE
                     AIN = -ASETTLE(K+1,I,JA)
-                ENDIF             
+                ENDIF
                 IF(ASETTLE(K,I,JA) >= 0)THEN    ! outgoing velocity for surface layer cell
                     AOUT = ASETTLE(K,I,JA)
-                ELSE 
+                ELSE
                     AOUT = 0
-                ENDIF             
-                ASR(K,I,JA) =  -AOUT*(ALG(K,I,JA))*BI(K,I)/BH2(K,I) + AIN*ALG(K+1,I,JA)*BI(K+1,I)*DLX(I)/VOL(K,I)                  
+                ENDIF
+                ASR(K,I,JA) =  -AOUT*(ALG(K,I,JA))*BI(K,I)/BH2(K,I) + AIN*ALG(K+1,I,JA)*BI(K+1,I)*DLX(I)/VOL(K,I)
             ELSEIF(K==KB(I))THEN
                 IF(ASETTLE(K-1,I,JA) >= 0)THEN    ! incoming velocity from cell ABOVE
-                    AIN = ASETTLE(K-1,I,JA)              
-                ELSE 
+                    AIN = ASETTLE(K-1,I,JA)
+                ELSE
                     AIN = 0
-                ENDIF    
+                ENDIF
                 IF(ASETTLE(K,I,JA) >= 0)THEN    ! outgoing velocity for BOTTOM layer cell
                     AOUTB = ASETTLE(K,I,JA)
-                ELSE 
+                ELSE
                     AOUTA = -ASETTLE(K,I,JA)
-                ENDIF      
-                ASR(K,I,JA) = (AIN*ALG(K-1,I,JA) - (LOSS_FRAC(MIGI)*AOUTB + AOUTA)*ALG(K,I,JA))*BI(K,I)/BH2(K,I)      
+                ENDIF
+                ASR(K,I,JA) = (AIN*ALG(K-1,I,JA) - (LOSS_FRAC(MIGI)*AOUTB + AOUTA)*ALG(K,I,JA))*BI(K,I)/BH2(K,I)
             ELSE
                 IF(ASETTLE(K-1,I,JA) >= 0)THEN    ! incoming velocity from cell ABOVE
-                    AINA = ASETTLE(K-1,I,JA)              
-                ELSE 
+                    AINA = ASETTLE(K-1,I,JA)
+                ELSE
                     AINA = 0
-                ENDIF    
+                ENDIF
                 IF(ASETTLE(K+1,I,JA) >= 0)THEN    ! incoming velocity from cell below
-                    AINB = 0                
-                ELSE 
+                    AINB = 0
+                ELSE
                     AINB = -ASETTLE(K+1,I,JA)
-                ENDIF  
+                ENDIF
                 AOUT = ABS(ASETTLE(K,I,JA))
                 ASR(K,I,JA) =  (AINA*ALG(K-1,I,JA)-AOUT*ALG(K,I,JA))*BI(K,I)/BH2(K,I) + AINB*ALG(K+1,I,JA)*BI(K+1,I)/BH2(K,I)    ! NOT NECESSARY TO DO THE DIVISION - JUST DIVIDE BY H !SP 8/27/07
             ENDIF
@@ -879,7 +879,7 @@ ENTRY KINETIC_RATES
     ENDIF
   END DO    ! ALGAE LOOP
    if(algae_settling_exist) iday=jday
-      
+
 ! Macrophyte Light/Nutrient Limitation and kinetic rates
   do m=1,nmc
   mGR(:,:,iu:id,m)=0.0; mRR(:,iu:id,m)=0.0; mmR(:,iu:id,m)=0.0  ! cb 3/8/16
@@ -964,7 +964,7 @@ RETURN
 !***********************************************************************************************************************************
 
 ENTRY GENERIC_CONST (JG)
-    
+
   XX=0.0
     DO I=IU,ID
     LIGHT =  (1.0-BETA(JW))*SRON(JW)*SHADE(I)                  !LCJ 2/26/15
@@ -1003,7 +1003,7 @@ ENTRY GENERIC_CONST (JG)
      IF(CGKLF(JG) /= 0.0)THEN
          IF (.NOT. ICE(I)) THEN                                                                             ! REAER in units of s-1
          CGSS(KT,I,JG) = CGSS(KT,I,JG)+REAER(I)*CGKLF(JG)*(CGCS(JG)-CG(KT,I,JG))                            ! this calculation performed in Gas-transfer.f90: *BI(KT,I)/BH2(KT,I)
-        END IF    
+        END IF
      ENDIF
     !CGSS(K,I,JG) = CGSS(K,I,JG) + CGR(JG)*SODD(K,I)*DO2(K,I)
   END DO
@@ -1015,12 +1015,12 @@ RETURN
 !***********************************************************************************************************************************
 
 ENTRY SUSPENDED_SOLIDS (J)
-    
+
     If(IncludeBedConsolidation)Then
         !All resuspension done in CEMA code
         SEDIMENT_RESUSPENSION(J) = .FALSE.
     End If
-    
+
   DO I=IU,ID
     SSR = 0.0
     IF (SEDIMENT_RESUSPENSION(J)) THEN
@@ -1104,7 +1104,7 @@ ENTRY SUSPENDED_SOLIDS (J)
     !  SSSS(K,I,J) = SSSS(K,I,J) + SSF
     !END DO                                                                        !End new section on flocculation      !SR 04/21/13
     End If
-    
+
   END DO
 RETURN
 
@@ -1124,37 +1124,37 @@ RETURN
 !***********************************************************************************************************************************
 ENTRY BACTERIA
   DO I=IU,ID
-    LIGHT = (1.0-BETA(JW))*SRON(JW)*SHADE(I)                
+    LIGHT = (1.0-BETA(JW))*SRON(JW)*SHADE(I)
     LAM1  = LIGHT
     LAM2  = LIGHT
     DO K=KT,KB(I)
       LAM1  = LAM2
       LAM2  = LAM1*EXP(-GAMMA(K,I)*H2(K,I))
-      LIGHT = LAM1*(1.-EXP(-GAMMA(K,I)*H2(K,I)))/(GAMMA(K,I)*H2(K,I))  
+      LIGHT = LAM1*(1.-EXP(-GAMMA(K,I)*H2(K,I)))/(GAMMA(K,I)*H2(K,I))
       ! SETTELING
-      IF(BACTS(JW) >= 0.0)THEN   
+      IF(BACTS(JW) >= 0.0)THEN
         IF(K == KT)THEN
-          SET_BACT =  BACTS(JW)*(-BACT(K,I))*BI(K,I)/BH2(K,I) 
+          SET_BACT =  BACTS(JW)*(-BACT(K,I))*BI(K,I)/BH2(K,I)
         ELSE
           SET_BACT =  BACTS(JW)*(BACT(K-1,I)-BACT(K,I))*BI(K,I)/BH2(K,I)
         END IF
       ELSE IF(BACTS(JW)<0.0)THEN
         IF(K == KB(I))THEN
-          SET_BACT = -BACTS(JW)*(-BACT(K,I))*BI(K,I)/BH2(K,I)                                         
+          SET_BACT = -BACTS(JW)*(-BACT(K,I))*BI(K,I)/BH2(K,I)
         ELSE IF(K == KT)THEN
-          SET_BACT = -BACTS(JW)*BACT(K+1,I)*BI(K+1,I)*DLX(I)/VOL(K,I)                                    
+          SET_BACT = -BACTS(JW)*BACT(K+1,I)*BI(K+1,I)*DLX(I)/VOL(K,I)
         ELSE
-          SET_BACT = -BACTS(JW)*(BACT(K+1,I)*BI(K+1,I)/BH2(K,I)-BACT(K,I)*BI(K,I)/BH2(K,I))   
+          SET_BACT = -BACTS(JW)*(BACT(K+1,I)*BI(K+1,I)/BH2(K,I)-BACT(K,I)*BI(K,I)/BH2(K,I))
         END IF
       END IF
       !FIRST-ORDER DECAY
       IF(BACTQ10(JW) /= 0.0)THEN
-        DK1_BACT = -BACT1DK(JW)*BACTQ10(JW)**(T1(K,I)-20.0)*BACT(K,I)*DO3(K,I) 
+        DK1_BACT = -BACT1DK(JW)*BACTQ10(JW)**(T1(K,I)-20.0)*BACT(K,I)*DO3(K,I)
       ELSE
-        DK1_BACT = -BACT1DK(JW)*BACT(K,I)*DO3(K,I) 
+        DK1_BACT = -BACT1DK(JW)*BACT(K,I)*DO3(K,I)
       END IF
       !PHOTODEGRADATION
-      PHOTO_BACT = -BACTLDK(JW) * LIGHT * BACT(K,I) 
+      PHOTO_BACT = -BACTLDK(JW) * LIGHT * BACT(K,I)
       !
       BACTSS(K,I) = SET_BACT + DK1_BACT + PHOTO_BACT
     END DO
@@ -1169,12 +1169,12 @@ ENTRY DISSOLVED_GAS
   DO I=IU,ID
     IF (.NOT. ICE(I)) THEN
         ! REAER in units of s-1
-      DISGSS(KT,I) = -REAER(I)*DGPO2(JW)*(DGP(KT,I)-PALT(I))      ! this computation done in gas-transfer.f90 :*BI(KT,I)/BH2(KT,I)   
+      DISGSS(KT,I) = -REAER(I)*DGPO2(JW)*(DGP(KT,I)-PALT(I))      ! this computation done in gas-transfer.f90 :*BI(KT,I)/BH2(KT,I)
     END IF
     !
     DO K=KT,KB(I)
       TDG(K,I) = 100.*DGP(K,I)/PALT(I)
-    END DO 
+    END DO
   END DO
 RETURN
 
@@ -1185,14 +1185,14 @@ ENTRY DISSOLVED_N2
   N2SS(:,IU:ID)=0.0
   DO I=IU,ID
      IF(.NOT. ICE(I))THEN
-      EA = DEXP(2.3026D0*(7.5D0*TDEW(JW)/(TDEW(JW)+237.3D0)+0.6609D0))*0.001316   ! EA (atm)   0.0098692atm=7.5006151mmHg   
+      EA = DEXP(2.3026D0*(7.5D0*TDEW(JW)/(TDEW(JW)+237.3D0)+0.6609D0))*0.001316   ! EA (atm)   0.0098692atm=7.5006151mmHg
       N2SAT = 1.5568D06*0.79*(PALT(I)-EA)*(1.8816D-5 - 4.116D-7 * T1(KT,I) + 4.6D-9 * T1(KT,I)**2)
       N2SS(KT,I) = 1.034*REAER(I)*(N2SAT-N2(KT,I))      !This computation is done in gas-transfer.f90 *BI(KT,I)/BH2(KT,I)             ! KLN2=1.034*KLO2    ! ! REAER in units of s-1
       !
       DO K=KT,KB(I)
         DOSAT = SATO(T1(K,I),TDS(K,I),PALT(I),SALT_WATER(JW))
         TDG(K,I) = 100.*((0.79*N2(K,I)/N2SAT) + O2(K,I)/DOSAT*0.21)
-      END DO 
+      END DO
     END IF
   END DO
 RETURN
@@ -1203,11 +1203,11 @@ RETURN
 ENTRY SULFIDE
   H2SD(:,IU:ID) = 0.0; H2SREAER(:,IU:ID) = 0.0; H2SSR(:,IU:ID) = 0.0
   DO I=IU,ID
-    DO K=KT,KB(I) 
+    DO K=KT,KB(I)
       IF(H2SQ10(JW) /= 0.0)THEN
-        H2SD(K,I) = -H2S1DK(JW)*H2SQ10(JW)**(T1(K,I)-20.0)*H2S(K,I)*DO3(K,I) 
+        H2SD(K,I) = -H2S1DK(JW)*H2SQ10(JW)**(T1(K,I)-20.0)*H2S(K,I)*DO3(K,I)
       ELSE
-        H2SD(K,I) = -H2S1DK(JW)*H2S(K,I)*DO3(K,I) 
+        H2SD(K,I) = -H2S1DK(JW)*H2S(K,I)*DO3(K,I)
       END IF
       H2SSR(K,I)  = H2SR(JW)*SODD(K,I)*DO2(K,I)
       H2SSS(K,I)  = H2SD(K,I) + H2SSR(K,I)
@@ -1228,9 +1228,9 @@ ENTRY METHANE
   DO I=IU,ID
     DO K=KT,KB(I)
       IF(CH4Q10(JW) /= 0.0)THEN
-        CH4D(K,I) = -CH41DK(JW)*CH4Q10(JW)**(T1(K,I)-20.0)*CH4(K,I)  *DO3(K,I) 
+        CH4D(K,I) = -CH41DK(JW)*CH4Q10(JW)**(T1(K,I)-20.0)*CH4(K,I)  *DO3(K,I)
       ELSE
-        CH4D(K,I) = -CH41DK(JW)*CH4(K,I) *DO3(K,I) 
+        CH4D(K,I) = -CH41DK(JW)*CH4(K,I) *DO3(K,I)
       END IF
       CH4SR(K,I)  = CH4R(JW)*SODD(K,I)*DO2(K,I)
       CH4SS(K,I)  = CH4D(K,I) + CH4SR(K,I)
@@ -1261,23 +1261,23 @@ ENTRY FERROUS
   FE2D(:,IU:ID) = 0.0; FEIISR(:,IU:ID) = 0.0
   DO I=IU,ID
     DO K=KT,KB(I)
-      
+
       IF(FEII(K,I) > 1.0E-7)THEN   ! skip calculations if FE2 is negligible anyway
       IF(.NOT. PH_CALC(JW))THEN
           FE2D(K,I)    = -KFE_OXID(JW)*O2(K,I)*FEII(K,I)    ! assuming pH(K,I) = 7.0
       ELSEIF(PH(K,I) <= 4.0)THEN
-          FE2D(K,I)    = -KFE_OXID(JW)*O2(K,I)*(1.0E-6)*FEII(K,I) 
+          FE2D(K,I)    = -KFE_OXID(JW)*O2(K,I)*(1.0E-6)*FEII(K,I)
       ELSEIF(PH(K,I) >= 8.0)THEN
-          FE2D(K,I)    = -KFE_OXID(JW)*O2(K,I)*(1.0E+2)*FEII(K,I) 
-      ELSE   
-          FE2D(K,I)    = -KFE_OXID(JW)*O2(K,I)*10**(2.0*(pH(K,I)-7.0))*FEII(K,I) 
+          FE2D(K,I)    = -KFE_OXID(JW)*O2(K,I)*(1.0E+2)*FEII(K,I)
+      ELSE
+          FE2D(K,I)    = -KFE_OXID(JW)*O2(K,I)*10**(2.0*(pH(K,I)-7.0))*FEII(K,I)
       ENDIF
       ENDIF
-      
+
       FEIISR(K,I)  = FEIIR(JW)*SODD(K,I)*DO2(K,I)
 
       FEIISS(K,I)  = FEIISR(K,I) + FE2D(K,I) + KFE_RED(JW)*(KFEOOH_HalfSat(JW)/(O2(K,I)+KFEOOH_HalfSat(JW)))*FEOOH(K,I)
-    END DO 
+    END DO
   END DO
 RETURN
 
@@ -1287,14 +1287,14 @@ RETURN
 ENTRY OXIDIZEDFE
   SDINFEOOH(:,IU:ID)=0.0
   DO I=IU,ID
-    DO K=KT,KB(I)  
+    DO K=KT,KB(I)
       IF(K == KT)THEN
-        SDINFEOOH(K,I) = FeSetVel(JW)*(-FEOOH(K,I))*BI(K,I)/BH2(K,I)      !(FEOOH(K-1,I)-FEOOH(K,I))*BI(K,I)/BH2(K,I) 
+        SDINFEOOH(K,I) = FeSetVel(JW)*(-FEOOH(K,I))*BI(K,I)/BH2(K,I)      !(FEOOH(K-1,I)-FEOOH(K,I))*BI(K,I)/BH2(K,I)
       ELSE
-        SDINFEOOH(K,I) = FeSetVel(JW)*(FEOOH(K-1,I)-FEOOH(K,I))*BI(K,I)/BH2(K,I) 
+        SDINFEOOH(K,I) = FeSetVel(JW)*(FEOOH(K-1,I)-FEOOH(K,I))*BI(K,I)/BH2(K,I)
       END IF
       FEOOHSS(K,I) = -FE2D(K,I) - KFE_RED(JW)*(KFEOOH_HalfSat(JW)/(O2(K,I)+KFEOOH_HalfSat(JW)))*FEOOH(K,I) + SDINFEOOH(K,I)
-    END DO 
+    END DO
   END DO
 RETURN
 
@@ -1312,7 +1312,7 @@ ENTRY BIVALENTMN
           MN2D(K,I)   =  -KMN_OXID(JW)*O2(K,I)*(1.0E-6)*MNII(K,I)
       ELSEIF(PH(K,I) >= 8.0)THEN
           MN2D(K,I)   =   -KMN_OXID(JW)*O2(K,I)*(1.0E+2)*MNII(K,I)
-      ELSE   
+      ELSE
           MN2D(K,I)   = -KMN_OXID(JW)*O2(K,I)*10**(2.0*(pH(K,I)-7.0))*MNII(K,I)
       ENDIF
       ENDIF
@@ -1330,11 +1330,11 @@ ENTRY OXIDIZEDMN
   DO I=IU,ID
     DO K=KT,KB(I)
       IF(K == KT)THEN
-        SDINMNO2(K,I) = MnSetVel(JW)*(-MNO2(K,I))*BI(K,I)/BH2(K,I) 
+        SDINMNO2(K,I) = MnSetVel(JW)*(-MNO2(K,I))*BI(K,I)/BH2(K,I)
       ELSE
-        SDINMNO2(K,I) = MnSetVel(JW)*(MNO2(K-1,I)-MNO2(K,I))*BI(K,I)/BH2(K,I) 
+        SDINMNO2(K,I) = MnSetVel(JW)*(MNO2(K-1,I)-MNO2(K,I))*BI(K,I)/BH2(K,I)
       END IF
-      MNO2SS(K,I) = -MN2D(K,I) - KMN_RED(JW)*(KMNO2_HalfSat(JW)/(O2(K,I)+KMNO2_HalfSat(JW)))*MNO2(K,I) + SDINMNO2(K,I)     
+      MNO2SS(K,I) = -MN2D(K,I) - KMN_RED(JW)*(KMNO2_HalfSat(JW)/(O2(K,I)+KMNO2_HalfSat(JW)))*MNO2(K,I) + SDINMNO2(K,I)
     END DO
   END DO
 RETURN
@@ -1345,14 +1345,14 @@ RETURN
 
 ENTRY PHOSPHORUS
   PO4AR(:,IU:ID) = 0.0; PO4AG(:,IU:ID) = 0.0; PO4ER(:,IU:ID) = 0.0; PO4EG(:,IU:ID) = 0.0; PO4BOD(:,IU:ID) = 0.0
-  PO4MR(:,IU:ID) = 0.0; PO4MG(:,IU:ID) = 0.0; PO4ZR(:,IU:ID)=0.0  
+  PO4MR(:,IU:ID) = 0.0; PO4MG(:,IU:ID) = 0.0; PO4ZR(:,IU:ID)=0.0
 
   DO I=IU,ID
     DO K=KT,KB(I)
       DO JCB=1,NBOD
 !        IF(BOD_CALC(JCB))PO4BOD(K,I) = PO4BOD(K,I)+CBODD(K,I,JCB)*CBOD(K,I,JCB)*BODP(JCB)
          IF(BOD_CALCp(JCB))then                                                ! cb 5/19/11
-           PO4BOD(K,I) = PO4BOD(K,I)+CBODD(K,I,JCB)*CBODp(K,I,JCB)    
+           PO4BOD(K,I) = PO4BOD(K,I)+CBODD(K,I,JCB)*CBODp(K,I,JCB)
          else
            PO4BOD(K,I) = PO4BOD(K,I)+CBODD(K,I,JCB)*CBOD(K,I,JCB)*BODP(JCB)
          end if
@@ -1372,8 +1372,8 @@ ENTRY PHOSPHORUS
       PO4EP(K,I)  = PO4ER(K,I)-PO4EG(K,I)
       PO4AP(K,I)  = PO4AR(K,I)-PO4AG(K,I)
       !
-      PO4POM(K,I) = LPOMPD(K,I)+RPOMPD(K,I)     
-      PO4DOM(K,I) = LDOMPD(K,I)+RDOMPD(K,I)     
+      PO4POM(K,I) = LPOMPD(K,I)+RPOMPD(K,I)
+      PO4DOM(K,I) = LDOMPD(K,I)+RDOMPD(K,I)
       PO4OM(K,I)  = PO4POM(K,I)+PO4DOM(K,I)
             IF(STANDING_BIOMASS_DECAY)THEN  ! SW 5/26/15
            ! PO4SD(K,I)  = SEDDp(K,I)+sedd1(k,i)*orgp(jw) + sedd2(k,i)*orgp(jw)   ! Amaila
@@ -1383,7 +1383,7 @@ ENTRY PHOSPHORUS
             ENDIF
       PO4SR(K,I)  = PO4R(JW)*SODD(K,I)*DO2(K,I)
       PO4NS(K,I)  = (SSSI(K,I)*PO4(K-1,I)-SSSO(K,I)*PO4(K,I))*BI(K,I)/BH2(K,I)   !8/2020 corrected
-      
+
       DO M=1,NMC
         IF(MACROPHYTE_CALC(JW,M))THEN
           IF(K.EQ.KT)THEN
@@ -1407,7 +1407,7 @@ ENTRY PHOSPHORUS
 	  ENDIF
 
       PO4SS(K,I)  = PO4AP(K,I)+PO4EP(K,I)+PO4OM(K,I)+PO4SD(K,I)+PO4SR(K,I)+PO4NS(K,I)+PO4BOD(K,I)  &
-                    +PO4MR(K,I)-PO4MG(K,I) +PO4ZR(K,I)    
+                    +PO4MR(K,I)-PO4MG(K,I) +PO4ZR(K,I)
 
     END DO
   END DO
@@ -1419,7 +1419,7 @@ RETURN
 
 ENTRY AMMONIUM
   NH4AG(:,IU:ID) = 0.0; NH4AR(:,IU:ID) = 0.0; NH4ER(:,IU:ID) = 0.0; NH4EG(:,IU:ID) = 0.0; NH4BOD(:,IU:ID) = 0.0
-  NH4MG(:,IU:ID) = 0.0; NH4MR(:,IU:ID) = 0.0; NH4ZR(:,IU:ID)=0.0   
+  NH4MG(:,IU:ID) = 0.0; NH4MR(:,IU:ID) = 0.0; NH4ZR(:,IU:ID)=0.0
   DO I=IU,ID
     DO K=KT,KB(I)
       DO JCB=1,NBOD
@@ -1457,8 +1457,8 @@ ENTRY AMMONIUM
       NH4EP(K,I)  =  NH4ER(K,I) -NH4EG(K,I)
       NH4AP(K,I)  =  NH4AR(K,I) -NH4AG(K,I)
       !
-      NH4DOM(K,I) = LDOMND(K,I)+RDOMND(K,I)  
-      NH4POM(K,I) = LPOMND(K,I)+RPOMND(K,I)  
+      NH4DOM(K,I) = LDOMND(K,I)+RDOMND(K,I)
+      NH4POM(K,I) = LPOMND(K,I)+RPOMND(K,I)
       NH4OM(K,I)  =  NH4DOM(K,I)+NH4POM(K,I)
 
             IF(STANDING_BIOMASS_DECAY)THEN  ! SW 5/26/15
@@ -1485,14 +1485,14 @@ ENTRY AMMONIUM
         END IF
       END DO
       NH4MR(K,I) = NH4MR(K,I)/(DLX(I)*BH2(K,I))  !8/2020 corrected
-      NH4MG(K,I) = NH4MG(K,I)/(DLX(I)*BH2(K,I))  ! 
+      NH4MG(K,I) = NH4MG(K,I)/(DLX(I)*BH2(K,I))  !
 	  IF(ZOOPLANKTON_CALC)THEN
 	  DO JZ = 1,NZP
-	    NH4ZR(K,I) = NH4ZR(K,I) + ZRT(K,I,JZ)*ZOO(K,I,JZ)*ZN(JZ) 
+	    NH4ZR(K,I) = NH4ZR(K,I) + ZRT(K,I,JZ)*ZOO(K,I,JZ)*ZN(JZ)
 	  END DO
 	  ENDIF
       NH4SS(K,I)  =  NH4AP(K,I)+NH4EP(K,I)+NH4OM(K,I)+NH4SD(K,I)+NH4SR(K,I)+NH4BOD(K,I)-NH4D(K,I)  &
-         +NH4MR(K,I)-NH4MG(K,I) +NH4ZR(K,I)     
+         +NH4MR(K,I)-NH4MG(K,I) +NH4ZR(K,I)
       IF(K==KT.AND.CDWBC(NH3_DER,JW)=='      ON')NH4SS(K,I)  = NH4SS(K,I)  - NH3GAS(K,I)     ! NH3 VOLATILIZATION IF PH IS ON AND NH3 DER ON
     END DO
   END DO
@@ -1571,7 +1571,7 @@ ENTRY PARTICULATE_SILICA
       ENDIF
       END DO
       DO JE=1,NEP
-        IF (EPIPHYTON_CALC(JW,JE)) PSIEM(K,I) = PSIEM(K,I)+EMR(K,I,JE)*EPC(K,I,JE)*ESI(JE)                  
+        IF (EPIPHYTON_CALC(JW,JE)) PSIEM(K,I) = PSIEM(K,I)+EMR(K,I,JE)*EPC(K,I,JE)*ESI(JE)
       END DO
       PSID(K,I)  = PSIDK(JW)*PSI(K,I)
       PSINS(K,I) = PSIS(JW)*(PSI(K-1,I)*DO1(K-1,I)-PSI(K,I)*DO1(K,I))*BI(K,I)/BH2(K,I)
@@ -1585,7 +1585,7 @@ RETURN
 !***********************************************************************************************************************************
 
 ENTRY LABILE_DOM
-  LDOMAP(:,IU:ID) = 0.0; LDOMEP(:,IU:ID) = 0.0; LDOMMAC(:,IU:ID)= 0.0  
+  LDOMAP(:,IU:ID) = 0.0; LDOMEP(:,IU:ID) = 0.0; LDOMMAC(:,IU:ID)= 0.0
   DO I=IU,ID
     DO K=KT,KB(I)
       DO JA=1,NAL
@@ -1608,7 +1608,7 @@ ENTRY LABILE_DOM
           END DO
         END IF
       END DO
-      LDOMMAC(K,I) = LDOMMAC(K,I)/(DLX(I)*BH2(K,I))               !8/2020 
+      LDOMMAC(K,I) = LDOMMAC(K,I)/(DLX(I)*BH2(K,I))               !8/2020
       LDOMSS(K,I) = LDOMAP(K,I)+LDOMEP(K,I)-LDOMD(K,I)-LRDOMD(K,I)+LDOMMAC(K,I)+LPOMHD(K,I)
 
     END DO
@@ -1686,7 +1686,7 @@ ENTRY REFRACTORY_POM
           END DO
         END IF
       END DO
-      RPOMMAC(K,I) = RPOMMAC(K,I)/(DLX(I)*BH2(K,I))              !8/2020   
+      RPOMMAC(K,I) = RPOMMAC(K,I)/(DLX(I)*BH2(K,I))              !8/2020
       RPOMSS(K,I) = LRPOMD(K,I)+RPOMNS(K,I)-RPOMD(K,I)+RPOMMAC(K,I)-RPOMHD(K,I)
     END DO
   END DO
@@ -1705,7 +1705,7 @@ ENTRY ALGAE (J)
 	  AGZT(K,I,J) = AGZT(K,I,J) + AGZ(K,I,J,JZ)                       ! CB 5/26/07
 	  END DO
 	  ENDIF
-      ASS(K,I,J) = ASR(K,I,J)+(AGR(K,I,J)-AER(K,I,J)-AMR(K,I,J)-ARR(K,I,J))*ALG(K,I,J)-AGZT(K,I,J)	
+      ASS(K,I,J) = ASR(K,I,J)+(AGR(K,I,J)-AER(K,I,J)-AMR(K,I,J)-ARR(K,I,J))*ALG(K,I,J)-AGZT(K,I,J)
     END DO
   END DO
 RETURN
@@ -1718,27 +1718,27 @@ ENTRY INTRACELLULAR_TOXIN (J)
 IN_TOXIN(KT:KMX-1,IU:ID,J)=0.0
   DO I=IU,ID
     DO K=KT,KB(I)
-      DO JA=1,NAL 
+      DO JA=1,NAL
        IF(ALG_CALC(JA))THEN
-       IN_TOXIN(K,I,J)=IN_TOXIN(K,I,J) + CTP(J,JA)*CTB(J,JA)*ALG(K,I,JA)                               !CTISS(K,I,J) = CTISS(K,I,J) + CTP(J,JA)*CTB(J,JA)*(AGR(K,I,JA)-AER(K,I,JA)-AMR(K,I,JA)-ARR(K,I,JA))*ALG(K,I,JA) 
+       IN_TOXIN(K,I,J)=IN_TOXIN(K,I,J) + CTP(J,JA)*CTB(J,JA)*ALG(K,I,JA)                               !CTISS(K,I,J) = CTISS(K,I,J) + CTP(J,JA)*CTB(J,JA)*(AGR(K,I,JA)-AER(K,I,JA)-AMR(K,I,JA)-ARR(K,I,JA))*ALG(K,I,JA)
        END IF
       END DO
-      !CTISS(K,I,J) = CTISS(K,I,J) + (-CTL(J)-CTA(J)-CTDI(J))*INTOXIN(K,I,J) 
+      !CTISS(K,I,J) = CTISS(K,I,J) + (-CTL(J)-CTA(J)-CTDI(J))*INTOXIN(K,I,J)
     END DO
   END DO
 RETURN
 
-        
+
 ENTRY EXTRACELLULAR_TOXIN (J)
 CTESS(KT:KMX-1,IU:ID,J)=0.0
   DO I=IU,ID
     DO K=KT,KB(I)
       DO JA=1,NAL
         IF(ALG_CALC(JA))THEN
-        CTESS(K,I,J) = CTESS(K,I,J) + CTP(J,JA)*CTB(J,JA)*AMR(K,I,JA)*ALG(K,I,JA) 
+        CTESS(K,I,J) = CTESS(K,I,J) + CTP(J,JA)*CTB(J,JA)*AMR(K,I,JA)*ALG(K,I,JA)
         END IF
       END DO
-      CTESS(K,I,J) = CTESS(K,I,J) + CTREL(J)*IN_TOXIN(K,I,J)-CTD(J)*EX_TOXIN(K,I,J) 
+      CTESS(K,I,J) = CTESS(K,I,J) + CTREL(J)*IN_TOXIN(K,I,J)-CTD(J)*EX_TOXIN(K,I,J)
     END DO
   END DO
 RETURN
@@ -1796,9 +1796,9 @@ RETURN
 
 ENTRY DISSOLVED_OXYGEN
   DOAP(:,IU:ID) = 0.0; DOAR(:,IU:ID) = 0.0; DOEP(:,IU:ID) = 0.0; DOER(:,IU:ID) = 0.0; DOBOD(:,IU:ID) = 0.0
-  DOMP(:,IU:ID) = 0.0; DOMR(:,IU:ID) = 0.0; DOZR(:,IU:ID)=0.0    
-  DOH2S(:,IU:ID)= 0.0; DOCH4(:,IU:ID)= 0.0; DOFE2(:,IU:ID) = 0.0; DOMN2(:,IU:ID) = 0.0 
-  
+  DOMP(:,IU:ID) = 0.0; DOMR(:,IU:ID) = 0.0; DOZR(:,IU:ID)=0.0
+  DOH2S(:,IU:ID)= 0.0; DOCH4(:,IU:ID)= 0.0; DOFE2(:,IU:ID) = 0.0; DOMN2(:,IU:ID) = 0.0
+
   DO I=IU,ID
     DOSS(KT,I) = 0.0
     DO K=KT,KB(I)
@@ -1836,7 +1836,7 @@ ENTRY DISSOLVED_OXYGEN
       DOMR(K,I)=DOMR(K,I)/(DLX(I)*BH2(K,I))
       DOPOM(K,I) = (LPOMD(K,I)+RPOMD(K,I))*O2OM(JW)
       DODOM(K,I) = (LDOMD(K,I)+RDOMD(K,I))*O2OM(JW)
-      DOOM(K,I)  =  DOPOM(K,I)+DODOM(K,I)+DOBOD(K,I)      
+      DOOM(K,I)  =  DOPOM(K,I)+DODOM(K,I)+DOBOD(K,I)
       DONIT(K,I) =  NH4D(K,I)*O2NH4(JW)
             IF(STANDING_BIOMASS_DECAY)THEN  ! SW 5/26/15
             DOSED(K,I) =  SEDD(K,I)*O2OM(JW) +SEDD1(K,I)*O2OM(JW)+SEDD2(K,I)*O2OM(JW)   !Amaila
@@ -1844,8 +1844,8 @@ ENTRY DISSOLVED_OXYGEN
             DOSED(K,I) =  SEDD(K,I)*O2OM(JW)
             ENDIF
       DOSOD(K,I) =  SODD(K,I)*DO3(K,I)
-      
-      DOCH4(K,I) = CH4D(K,I)*O2CH4      
+
+      DOCH4(K,I) = CH4D(K,I)*O2CH4
       DOH2S(K,I) = H2SD(K,I)*O2H2S
       DOFE2(K,I) = FE2D(K,I)*O2FE2
       DOMN2(K,I) = MN2D(K,I)*O2MN2
@@ -1903,9 +1903,9 @@ ENTRY INORGANIC_CARBON
       DO JZ = 1,NZP
         TICZR(K,I)=TICZR(K,I)+ZRT(K,I,JZ)*ZOO(K,I,JZ)*ZC(JZ) !MLM
       END DO
-      
+
       ticCH4=ch4d(k,i)
-      
+
       ENDIF
 
             IF(STANDING_BIOMASS_DECAY)THEN  ! SW 5/26/15
@@ -1915,19 +1915,19 @@ ENTRY INORGANIC_CARBON
 
             ELSE
                 TICSS(K,I) = TICAP(K,I)+TICEP(K,I)+SEDDC(K,I)+ORGC(JW)*(LPOMD(K,I)+RPOMD(K,I)+LDOMD(K,I)+RDOMD(K,I))                          &
-              +CO2R(JW)*SODD(K,I)*DO3(K,I)+TICBOD(K,I)+TICMC(K,I)+TICZR(K,I) + ticch4      !!8/2020   
+              +CO2R(JW)*SODD(K,I)*DO3(K,I)+TICBOD(K,I)+TICMC(K,I)+TICZR(K,I) + ticch4      !!8/2020
             ENDIF
-      
+
     END DO
     IF (.NOT. ICE(I)) THEN
      ! IF (REAER(I) == 0.0) CALL GAS_TRANSFER
       CO2EX       = REAER(I)*0.923
       KHCO2=12000.*10**(2385.73/(T2(KT,I)+273.15)-14.0184+0.0152642*(T2(KT,I)+273.15))   ! KH CO2 in mg/l/atm as C    SW 8/16/2020
 
-     ! CO2REAER(KT,I)=CO2EX*(0.286*EXP(-0.0314*(T2(KT,I))*PALT(I))-CO2(KT,I))*BI(KT,I)/BH2(KT,I)     ! SW 8/16/2020 
-      
+     ! CO2REAER(KT,I)=CO2EX*(0.286*EXP(-0.0314*(T2(KT,I))*PALT(I))-CO2(KT,I))*BI(KT,I)/BH2(KT,I)     ! SW 8/16/2020
+
       CO2REAER(KT,I)=CO2EX*(PCO2*KHCO2-CO2(KT,I))         !This computation is done in gas-transfer.f90: *BI(KT,I)/BH2(KT,I)   REAER in units of s-1
-      
+
       TICSS(KT,I) = TICSS(KT,I)+CO2REAER(KT,I)
     END IF
   END DO
@@ -1953,17 +1953,17 @@ ENTRY SEDIMENT
       SEDEM = 0.0   ! CB 5/19/06
       DO JE=1,NEP
 !        LPOMEP(K,I) = LPOMEP(K,I)+EPOM(JE)*(EMR(K,I,JE)*EPC(K,I,JE))
-        IF (EPIPHYTON_CALC(JW,JE))SEDEM = SEDEM+EBR(K,I,JE)*EPC(K,I,JE)    ! SW 3/2019 SEDEM = SEDEM+EBR(K,I,JE)/H1(K,I)*EPC(K,I,JE)    ! cb 5/19/06     
+        IF (EPIPHYTON_CALC(JW,JE))SEDEM = SEDEM+EBR(K,I,JE)*EPC(K,I,JE)    ! SW 3/2019 SEDEM = SEDEM+EBR(K,I,JE)/H1(K,I)*EPC(K,I,JE)    ! cb 5/19/06
       END DO
       DO JD=1,NBOD
         IF(BOD_CALC(JD))SEDCB(K,I) = SEDCB(K,I)+MAX(CBODS(JD),0.0)*CBOD(K,I,JD)*BIBH2(K,I)/O2OM(JW)           !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))
       END DO
       !
       IF(ORGC_CALC)THEN
-        SEDOMS(K,I) = POMS(JW)*LPOMC(K,I)/ORGC(JW)*BIBH2(K,I)+POMS(JW)*RPOMC(K,I)/ORGC(JW)*BIBH2(K,I) 
+        SEDOMS(K,I) = POMS(JW)*LPOMC(K,I)/ORGC(JW)*BIBH2(K,I)+POMS(JW)*RPOMC(K,I)/ORGC(JW)*BIBH2(K,I)
       ELSE
         SEDOMS(K,I) = POMS(JW)*LPOM(K,I)*BIBH2(K,I)+POMS(JW)*RPOM(K,I)*BIBH2(K,I)
-      END IF  
+      END IF
       IF(K==KB(I))THEN
       SEDSO       = 0.0
       ELSE
@@ -1991,27 +1991,27 @@ ENTRY SEDIMENTP
     SEDSIP=0.0
     DO K=KT,KB(I)
       DO JA=1,NAL
-        IF(ALG_CALC(JA))then 
+        IF(ALG_CALC(JA))then
           SEDASP(K,I) = SEDASP(K,I)+MAX(AS(JA),0.0)*AP(JA)*ALG(K,I,JA)*BIBH2(K,I)          !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))
         end if
       END DO
-      SEDEM = 0.0   
+      SEDEM = 0.0
       DO JE=1,NEP
         IF (EPIPHYTON_CALC(JW,JE))then
           !LPOMEPP(K,I) = LPOMEPP(K,I)+EPOM(JE)*EP(JE)*(EMR(K,I,JE)*EPC(K,I,JE))
-          SEDEM = SEDEM+EBR(K,I,JE)*EPC(K,I,JE)*EP(JE)   ! SW 3/2019  
+          SEDEM = SEDEM+EBR(K,I,JE)*EPC(K,I,JE)*EP(JE)   ! SW 3/2019
         end if
       END DO
       DO JD=1,NBOD
 !        IF(BOD_CALC(JD))SEDCBP(K,I)=SEDCBP(K,I)+MAX(CBODS(JD),0.0)*BODP(JD)*CBOD(K,I,JD)*BIBH2(K,I)      !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))
-        !IF(BOD_CALC(JD))then 
+        !IF(BOD_CALC(JD))then
         !    SEDCBP(K,I)=SEDCBP(K,I)+MAX(CBODS(JD),0.0)*CBODP(K,I,JD)*BIBH2(K,I)    ! CB 6/6/10
         !end if
         IF(BOD_CALCP(JD))THEN
           SEDCBP(K,I) = SEDCBP(K,I) + MAX(CBODS(JD), 0.0)*CBODP(K,I,JD)*RBOD(JD)*BIBH2(K,I)
         ELSE
           SEDCBP(K,I) = SEDCBP(K,I) + MAX(CBODS(JD), 0.0)*CBOD(K,I,JD)*RBOD(JD)*BODP(JD)*BIBH2(K,I)
-        END IF  
+        END IF
       END DO
       !SEDOMSP(K,I) = POMS(JW)*(LPOMP(K,I)+RPOMP(K,I))*BIBH2(K,I)
       SEDOMSP(K,I) = POMS(JW)*(LPOP(K,I)+RPOP(K,I))*BIBH2(K,I)
@@ -2048,8 +2048,8 @@ ENTRY SEDIMENTN
     SEDSIN=0.0
     DO K=KT,KB(I)
       DO JA=1,NAL
-        IF(ALG_CALC(JA))then 
-            SEDASN(K,I) = SEDASN(K,I)+MAX(AS(JA),0.0)*AN(JA)*ALG(K,I,JA)*BIBH2(K,I)            !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))   
+        IF(ALG_CALC(JA))then
+            SEDASN(K,I) = SEDASN(K,I)+MAX(AS(JA),0.0)*AN(JA)*ALG(K,I,JA)*BIBH2(K,I)            !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))
         end if
       END DO
       SEDEM=0.0
@@ -2061,16 +2061,16 @@ ENTRY SEDIMENTN
       END DO
       DO JD=1,NBOD
 !        IF(BOD_CALC(JD))SEDCBN(K,I)=SEDCBN(K,I)+MAX(CBODS(JD),0.0)*BODN(JD)*CBOD(K,I,JD)*BIBH2(K,I)        !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))
-        !IF(BOD_CALC(JD))then  
+        !IF(BOD_CALC(JD))then
         !    SEDCBN(K,I)=SEDCBN(K,I)+MAX(CBODS(JD),0.0)*CBODN(K,I,JD)*BIBH2(K,I)    ! CB 6/6/10
         !end if
         IF(BOD_CALCN(JD))then
-          SEDCBN(K,I) = SEDCBN(K,I) + MAX(CBODS(JD), 0.0)*CBODN(K,I,JD)*RBOD(JD)*BIBH2(K,I)    
+          SEDCBN(K,I) = SEDCBN(K,I) + MAX(CBODS(JD), 0.0)*CBODN(K,I,JD)*RBOD(JD)*BIBH2(K,I)
         ELSE
-          SEDCBN(K,I) = SEDCBN(K,I) + MAX(CBODS(JD), 0.0)*CBOD(K,I,JD)*BODN(JD)*RBOD(JD)*BIBH2(K,I)     
-        END IF  
-      END DO 
-      !SEDOMSN(K,I) = POMS(JW)*(LPOMN(K,I)+RPOMN(K,I))*BIBH2(K,I)                           !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))  !CB 10/22/06 
+          SEDCBN(K,I) = SEDCBN(K,I) + MAX(CBODS(JD), 0.0)*CBOD(K,I,JD)*BODN(JD)*RBOD(JD)*BIBH2(K,I)
+        END IF
+      END DO
+      !SEDOMSN(K,I) = POMS(JW)*(LPOMN(K,I)+RPOMN(K,I))*BIBH2(K,I)                           !BI(K,I)/BH2(K,I)*(1.0-BI(K+1,I)/BI(K,I))  !CB 10/22/06
       SEDOMSN(K,I) = POMS(JW)*(LPON(K,I) + RPON(K,I))*BIBH2(K,I)
       IF(K == KB(I)) THEN      ! SW 12/16/07
       SEDSON       = 0.0
@@ -2082,9 +2082,9 @@ ENTRY SEDIMENTN
       SEDSIN       = SEDSON
 ! CEMA start
       SEDNINFLUX(K,I)=(SEDEM+SEDASN(K,I)+SEDOMSN(K,I)+SEDCBN(K,I))*DLT                 !SW 3/2019 (LPOMEPN(K,I)+SEDASN(K,I)+SEDOMSN(K,I)+SEDCBN(K,I))*DLT
-      if(k < kb(i))then      
-      SEDN(K,I)    = MAX(SEDN(K,I)+SEDNINFLUX(K,I)+(SEDNSN(K,I)+SEDNO3(K,I)   &          
-                     -SEDDN(K,I)-SEDBRN(K,I))*DLT,0.0)  !CB 11/30/06                    
+      if(k < kb(i))then
+      SEDN(K,I)    = MAX(SEDN(K,I)+SEDNINFLUX(K,I)+(SEDNSN(K,I)+SEDNO3(K,I)   &
+                     -SEDDN(K,I)-SEDBRN(K,I))*DLT,0.0)  !CB 11/30/06
       else if(k == kb(i))then
         SEDN(K,I)    = MAX(SEDN(K,I)+SEDNINFLUX(K,I)+(SEDNSN(K,I)+SEDNO3(K,I)   &
                      -SEDDN(K,I)-SEDBRN(K,I))*DLT,0.0)  !CB 11/30/06
@@ -2111,7 +2111,7 @@ ENTRY SEDIMENTC
       DO JE=1,NEP
         IF (EPIPHYTON_CALC(JW,JE))then
          ! LPOMEPC(K,I) = LPOMEPC(K,I)+EPOM(JE)*EC(JE)*(EMR(K,I,JE)*EPC(K,I,JE))
-            SEDEM=SEDEM+EBR(K,I,JE)*EPC(K,I,JE)*EC(JE)   ! SW 3/2019  
+            SEDEM=SEDEM+EBR(K,I,JE)*EPC(K,I,JE)*EC(JE)   ! SW 3/2019
         end if
       END DO
       DO JD=1,NBOD
@@ -2131,7 +2131,7 @@ ENTRY SEDIMENTC
 ! CEMA start
       if(k < kb(i))then
       SEDC(K,I)    = MAX(SEDC(K,I)+(SEDEM+SEDASC(K,I)+SEDOMSC(K,I)+SEDCBC(K,I)+SEDNSC(K,I)-SEDDC(K,I)    &            !(LPOMEPC(K,I)+SEDASC(K,I)+SEDOMSC(K,I)+SEDCBC(K,I)+SEDNSC(K,I)-SEDDC(K,I)    &
-                     -SEDBRC(K,I))*DLT,0.0)           
+                     -SEDBRC(K,I))*DLT,0.0)
       else if(k == kb(i) .and. .not. sediment_diagenesis)then
         SEDC(K,I)    = MAX(SEDC(K,I)+(SEDEM+SEDASC(K,I)+SEDOMSC(K,I)+SEDCBC(K,I)+SEDNSC(K,I)-SEDDC(K,I)    &   ! (LPOMEPC(K,I)+SEDASC(K,I)+SEDOMSC(K,I)+SEDCBC(K,I)+SEDNSC(K,I)-SEDDC(K,I)    &
                      -SEDBRC(K,I))*DLT,0.0)
@@ -2151,7 +2151,7 @@ ENTRY SEDIMENT_DECAY_RATE
     DO K=KT,KB(I)
       SEDSUM=0.0
       SEDSUMK=0.0
-      
+
       DO JA=1,NAL
         IF(ALG_CALC(JA))THEN
         XDUM=MAX(AS(JA),0.0)*ALG(K,I,JA)*BIBH2(K,I)
@@ -2163,7 +2163,7 @@ ENTRY SEDIMENT_DECAY_RATE
         SEDSUM  = SEDSUM  + XDUM
         ENDIF
       END DO
-      
+
       DO JE=1,NEP
         IF (EPIPHYTON_CALC(JW,JE))THEN
         XDUM=EPOM(JE)*(EMR(K,I,JE)*EPC(K,I,JE))
@@ -2175,46 +2175,46 @@ ENTRY SEDIMENT_DECAY_RATE
         SEDSUM  = SEDSUM  + XDUM
         ENDIF
       END DO
-      
+
       DO JD=1,NBOD
         IF(BOD_CALC(JD))THEN
         XDUM=MAX(CBODS(JD),0.0)*CBOD(K,I,JD)*BIBH2(K,I)*RBOD(JD)/O2OM(JW)
-        SEDSUMK = SEDSUMK+XDUM*CBODD(K,I,JD)               
+        SEDSUMK = SEDSUMK+XDUM*CBODD(K,I,JD)
         SEDSUM  = SEDSUM + XDUM
         ENDIF
       END DO
       !
       IF(ORGC_CALC)THEN
           SEDSUMK = SEDSUMK + POMS(JW)*LPOMC(K,I)/ORGC(JW)*LPOMCDK(JW)*BIBH2(K,I)+POMS(JW)*RPOMC(K,I)/ORGC(JW)*RPOMCDK(JW)*BIBH2(K,I)
-          SEDSUM  = SEDSUM  + POMS(JW)*LPOMC(K,I)/ORGC(JW)*BIBH2(K,I)+POMS(JW)*RPOMC(K,I)/ORGC(JW)*BIBH2(K,I)      
+          SEDSUM  = SEDSUM  + POMS(JW)*LPOMC(K,I)/ORGC(JW)*BIBH2(K,I)+POMS(JW)*RPOMC(K,I)/ORGC(JW)*BIBH2(K,I)
       ELSE
           SEDSUMK = SEDSUMK + POMS(JW)*LPOM(K,I)*LPOMDK(JW)*BIBH2(K,I)+POMS(JW)*RPOM(K,I)*RPOMDK(JW)*BIBH2(K,I)
           SEDSUM  = SEDSUM  + POMS(JW)*LPOM(K,I)*BIBH2(K,I)+POMS(JW)*RPOM(K,I)*BIBH2(K,I)
       END IF
-      
+
       SEDSUMK = SEDSUMK*DLT
-      SEDSUM  = SEDSUM*DLT  
-    
+      SEDSUM  = SEDSUM*DLT
+
       IF((SEDSUM+SED(K,I)) > 0.0)THEN
       SDKV(K,I)    = (SEDSUMK+SED(K,I) * SDKV(K,I))/(SEDSUM+ SED(K,I))
       ELSE
       SDKV(K,I)=0.0
       ENDIF
-            
+
     END DO
   END DO
 RETURN
 
-! 
+!
 ! additional sediment compartments simulate slow and fast decaying OM left in standing trees
 !***********************************************************************************************************************************
 !**                                                      S E D I M E N T  1                                                       **
 !***********************************************************************************************************************************
 
-ENTRY SEDIMENT1  
-  DO I=IU,ID    
-    DO K=KT,KB(I)    
-      SED1(K,I)    = MAX(SED1(K,I)+(-SEDD1(K,I))*DLT,0.0)      
+ENTRY SEDIMENT1
+  DO I=IU,ID
+    DO K=KT,KB(I)
+      SED1(K,I)    = MAX(SED1(K,I)+(-SEDD1(K,I))*DLT,0.0)
     END DO
   END DO
 RETURN
@@ -2223,10 +2223,10 @@ RETURN
 !**                                                      S E D I M E N T  2                                                       **
 !***********************************************************************************************************************************
 
-ENTRY SEDIMENT2  
-  DO I=IU,ID    
-    DO K=KT,KB(I)    
-      SED2(K,I)    = MAX(SED2(K,I)+(-SEDD2(K,I))*DLT,0.0)      
+ENTRY SEDIMENT2
+  DO I=IU,ID
+    DO K=KT,KB(I)
+      SED2(K,I)    = MAX(SED2(K,I)+(-SEDD2(K,I))*DLT,0.0)
     END DO
   END DO
 RETURN
@@ -2334,9 +2334,9 @@ ENTRY LABILE_POM_P
       DO JA=1,NAL
         IF(ALG_CALC(JA))LPOMPAP(K,I) = LPOMPAP(K,I)+APOM(JA)*(AMR(K,I,JA)*ALG(K,I,JA))*AP(JA)
       END DO
-      DO JE=1,NEP                                                          
-        IF (EPIPHYTON_CALC(JW,JE))LPOMEPP(K,I) = LPOMEPP(K,I)+EPOM(JE)*EP(JE)*(EMR(K,I,JE)*EPC(K,I,JE))    
-      END DO                                                              
+      DO JE=1,NEP
+        IF (EPIPHYTON_CALC(JW,JE))LPOMEPP(K,I) = LPOMEPP(K,I)+EPOM(JE)*EP(JE)*(EMR(K,I,JE)*EPC(K,I,JE))
+      END DO
 
       DO M=1,NMC
         IF(MACROPHYTE_CALC(JW,M))THEN
@@ -2354,17 +2354,17 @@ ENTRY LABILE_POM_P
         LPZOOOUTP(K,I)=LPZOOOUTP(K,I) + ZOO(K,I,JZ)*(ZMT(K,I,JZ)+(ZMU(K,I,JZ)-(ZMU(K,I,JZ)*ZEFF(JZ))))*ZP(JZ)
         IF(ORGC_CALC)THEN
           LPZOOINP(K,I) = LPZOOINP(K,I) + ZOO(K,I,JZ)*ZMU(K,I,JZ)*PREFP(JZ)*LPOMC(K,I)/ORGC(JW)/TGRAZE(K,I,JZ)*ZP(JZ)
-        ELSE    
+        ELSE
           LPZOOINP(K,I) = LPZOOINP(K,I) + ZOO(K,I,JZ)*ZMU(K,I,JZ)*PREFP(JZ)*LPOM(K,I)/TGRAZE(K,I,JZ)*ZP(JZ)
-        END IF 
+        END IF
       ELSE
         LPZOOOUTP(K,I)=LPZOOOUTP(K,I)+ZOO(K,I,JZ)*(ZMT(K,I,JZ)+(ZMU(K,I,JZ)-(ZMU(K,I,JZ)*ZEFF(JZ))))*ZP(JZ)
         LPZOOINP(K,I)=0.0
       END IF
     END DO
     ENDIF
-	  LPOMPNS(K,I) = POMS(JW) * (LPOMP(K-1,I)-LPOMP(K,I)) *BI(K,I)/BH2(K,I)                                                
-    LPOMPSS(K,I) = LPOMPAP(K,I) + LPOMPEP(K,I) + LPOMPMP(K,I) - LPOMPD(K,I) + LPOMPNS(K,I) - LRPOMPD(K,I) - LPOMPHD(K,I)    
+	  LPOMPNS(K,I) = POMS(JW) * (LPOMP(K-1,I)-LPOMP(K,I)) *BI(K,I)/BH2(K,I)
+    LPOMPSS(K,I) = LPOMPAP(K,I) + LPOMPEP(K,I) + LPOMPMP(K,I) - LPOMPD(K,I) + LPOMPNS(K,I) - LRPOMPD(K,I) - LPOMPHD(K,I)
 	  IF(ZOOPLANKTON_CALC)THEN
 	!  DO JZ = 1,NZP                                           ! KV 4/24/12
 	   LPOMPSS(K,I) =LPOMPSS(K,I) + LPZOOOUTP(K,I)-LPZOOINP(K,I)
@@ -2393,8 +2393,8 @@ ENTRY REFRACTORY_POM_P
         END IF
       END DO
       RPOMPMP(K,I) = RPOMPMP(K,I)/(DLX(I)*BH2(K,I))       !8/2020
-      RPOMPNS(K,I) = POMS(JW) * (RPOMP(K-1,I) - RPOMP(K,I)) * BI(K,I)/BH2(K,I)     
-      RPOMPSS(K,I) = LRPOMPD(K,I) + RPOMPNS(K,I) - RPOMPD(K,I) + RPOMPMP(K,I) - RPOMPHD(K,I)  
+      RPOMPNS(K,I) = POMS(JW) * (RPOMP(K-1,I) - RPOMP(K,I)) * BI(K,I)/BH2(K,I)
+      RPOMPSS(K,I) = LRPOMPD(K,I) + RPOMPNS(K,I) - RPOMPD(K,I) + RPOMPMP(K,I) - RPOMPHD(K,I)
     END DO
   END DO
 RETURN
@@ -2427,7 +2427,7 @@ ENTRY LABILE_DOM_N
         END IF
       END DO
       LDOMNMP(K,I) = LDOMNMP(K,I)/(DLX(I)*BH2(K,I))        !8/2020
-      LDOMNSS(K,I) = LDOMNAP(K,I) + LDOMNEP(K,I) + LDOMNMP(K,I) - LDOMND(K,I) - LRDOMND(K,I) + LPOMNHD(K,I) 
+      LDOMNSS(K,I) = LDOMNAP(K,I) + LDOMNEP(K,I) + LDOMNMP(K,I) - LDOMND(K,I) - LRDOMND(K,I) + LPOMNHD(K,I)
     END DO
   END DO
 RETURN
@@ -2456,9 +2456,9 @@ ENTRY LABILE_POM_N
       DO JA=1,NAL
         IF(ALG_CALC(JA))LPOMNAP(K,I) = LPOMNAP(K,I)+APOM(JA)*(AMR(K,I,JA)*ALG(K,I,JA))*AN(JA)
       END DO
-       DO JE=1,NEP                                                          
-        IF (EPIPHYTON_CALC(JW,JE))LPOMEPN(K,I) = LPOMEPN(K,I)+EPOM(JE)*EN(JE)*(EMR(K,I,JE)*EPC(K,I,JE))    
-      END DO                                                              
+       DO JE=1,NEP
+        IF (EPIPHYTON_CALC(JW,JE))LPOMEPN(K,I) = LPOMEPN(K,I)+EPOM(JE)*EN(JE)*(EMR(K,I,JE)*EPC(K,I,JE))
+      END DO
 
       DO M=1,NMC
         IF(MACROPHYTE_CALC(JW,M))THEN
@@ -2485,7 +2485,7 @@ ENTRY LABILE_POM_N
       END IF
 	END DO
 	ENDIF
-    LPOMNNS(K,I) = POMS(JW) * (LPOMN(K-1,I) - LPOMN(K,I)) * BI(K,I)/BH2(K,I)      
+    LPOMNNS(K,I) = POMS(JW) * (LPOMN(K-1,I) - LPOMN(K,I)) * BI(K,I)/BH2(K,I)
     LPOMNSS(K,I) = LPOMNAP(K,I) + LPOMNEP(K,I) + LPOMNMP(K,I) - LPOMND(K,I) + LPOMNNS(K,I) - LRPOMND(K,I) - LPOMNHD(K,I)   &
                    + LPZOOOUTN(K,I) - LPZOOINN(K,I)
     END DO
@@ -2510,8 +2510,8 @@ ENTRY REFRACTORY_POM_N
         END IF
       END DO
       RPOMNMP(K,I) = RPOMNMP(K,I)/(DLX(I)*BH2(K,I))
-      RPOMNNS(K,I) = POMS(JW) * (RPOMN(K-1,I) - RPOMN(K,I)) * BI(K,I)/BH2(K,I)             
-      RPOMNSS(K,I) = LRPOMND(K,I) + RPOMNNS(K,I) - RPOMND(K,I) + RPOMNMP(K,I) - RPOMNHD(K,I)   
+      RPOMNNS(K,I) = POMS(JW) * (RPOMN(K-1,I) - RPOMN(K,I)) * BI(K,I)/BH2(K,I)
+      RPOMNSS(K,I) = LRPOMND(K,I) + RPOMNNS(K,I) - RPOMND(K,I) + RPOMNMP(K,I) - RPOMNHD(K,I)
     END DO
   END DO
 RETURN
@@ -2542,8 +2542,8 @@ ENTRY LABILE_DOM_C
           END DO
         END IF
       END DO
-      LDOMCMP(K,I) = LDOMCMP(K,I) / (DLX(I)*BH2(K,I)) 
-      LDOMCSS(K,I) = LDOMCAP(K,I) + LDOMCEP(K,I) + LDOMCMP(K,I) - LDOMCD(K,I) - LRDOMCD(K,I) + LPOMCHD(K,I) 
+      LDOMCMP(K,I) = LDOMCMP(K,I) / (DLX(I)*BH2(K,I))
+      LDOMCSS(K,I) = LDOMCAP(K,I) + LDOMCEP(K,I) + LDOMCMP(K,I) - LDOMCD(K,I) - LRDOMCD(K,I) + LPOMCHD(K,I)
     END DO
   END DO
 RETURN
@@ -2630,7 +2630,7 @@ ENTRY REFRACTORY_POM_C
       END DO
       RPOMCMP(K,I) = RPOMCMP(K,I) / (DLX(I)*BH2(K,I))
       RPOMCNS(K,I) = POMS(JW) * (RPOMC(K-1,I)-RPOMC(K,I)) * BI(K,I)/BH2(K,I)
-      RPOMCSS(K,I) = LRPOMCD(K,I) + RPOMCNS(K,I) - RPOMCD(K,I) + RPOMCMP(K,I) - RPOMCHD(K,I) 
+      RPOMCSS(K,I) = LRPOMCD(K,I) + RPOMCNS(K,I) - RPOMCD(K,I) + RPOMCMP(K,I) - RPOMCHD(K,I)
     END DO
   END DO
 RETURN
@@ -2781,14 +2781,14 @@ ENTRY KINETIC_FLUXES
     END DO
   ENDDO
 
-  IF(NPBALC=='      ON') THEN      
+  IF(NPBALC=='      ON') THEN
     DLT13=DLT*0.001     !/1000.
     DO JB=BS(JW),BE(JW)                ! SW 3/9/16
     DO I=CUS(JB),DS(JB)
       DO K=KT,KB(I)
             TN_SEDSOD_NH4(JW)= TN_SEDSOD_NH4(JW)+KF(K,I,KF_NH4_SR)*VOL(K,I)*DLT13+KF(K,I,KF_NH4_SD)*VOL(K,I)*DLT13
-            TP_SEDSOD_PO4(JW)= TP_SEDSOD_PO4(JW)+KF(K,I,KF_PO4_SR)*VOL(K,I)*DLT13+KF(K,I,KF_PO4_SD)*VOL(K,I)*DLT13 
-            IF(K==KT.AND.CDWBC(NH3_DER,JW)=='      ON')NH3GASLOSS(JW)=NH3GASLOSS(JW)+NH3GAS(K,I)*VOL(K,I)*DLT13    ! NH3GAS in g/m3/s, convert to kg, cumulative      
+            TP_SEDSOD_PO4(JW)= TP_SEDSOD_PO4(JW)+KF(K,I,KF_PO4_SR)*VOL(K,I)*DLT13+KF(K,I,KF_PO4_SD)*VOL(K,I)*DLT13
+            IF(K==KT.AND.CDWBC(NH3_DER,JW)=='      ON')NH3GASLOSS(JW)=NH3GASLOSS(JW)+NH3GAS(K,I)*VOL(K,I)*DLT13    ! NH3GAS in g/m3/s, convert to kg, cumulative
       END DO
     END DO
     END DO
@@ -2982,24 +2982,24 @@ ENTRY DERIVED_CONSTITUENTS
             IF(ALG_CALC(JA))ATOT(K,I) = ATOT(K,I)+ALG(K,I,JA)
           END DO
           DO IBOD=1,NBOD
-          IF(BOD_CALC(IBOD))THEN      
+          IF(BOD_CALC(IBOD))THEN
             !CBODCt  = CBODCt+CBOD(K,I,IBOD)*BODC(IBOD)    ! cb 6/6/10
             !CBODNt  = CBODNt+CBODn(K,I,IBOD)              ! cb 6/6/10
             !CBODPt  = CBODPt+CBODp(K,I,IBOD)              ! cb 6/6/10
             !BODTOT = BODTOT+CBOD(K,I,IBOD)
-            IF(BOD_CALC(IBOD))THEN      
-              CBODCT  = CBODCT+CBOD(K,I,IBOD)*RBOD(IBOD)*BODC(IBOD)                          
-              BODTOT  = BODTOT+CBOD(K,I,IBOD)*RBOD(IBOD)                                             
+            IF(BOD_CALC(IBOD))THEN
+              CBODCT  = CBODCT+CBOD(K,I,IBOD)*RBOD(IBOD)*BODC(IBOD)
+              BODTOT  = BODTOT+CBOD(K,I,IBOD)*RBOD(IBOD)
             ENDIF
-            IF(BOD_CALCP(IBOD)) THEN                                                
-              CBODPT  = CBODPT+CBODP(K,I,IBOD)*RBOD(IBOD)                                    
-            ELSE 
-              CBODPT  = CBODPT+CBOD(K,I,IBOD)*RBOD(IBOD)*BODP(IBOD)                        
+            IF(BOD_CALCP(IBOD)) THEN
+              CBODPT  = CBODPT+CBODP(K,I,IBOD)*RBOD(IBOD)
+            ELSE
+              CBODPT  = CBODPT+CBOD(K,I,IBOD)*RBOD(IBOD)*BODP(IBOD)
             END IF
-            IF(BOD_CALCN(IBOD)) THEN                                                
-              CBODNT  = CBODNT+CBODN(K,I,IBOD)*RBOD(IBOD)                                   
-            ELSE 
-              CBODNT  = CBODNT+CBOD(K,I,IBOD)*RBOD(IBOD)*BODN(IBOD)                          
+            IF(BOD_CALCN(IBOD)) THEN
+              CBODNT  = CBODNT+CBODN(K,I,IBOD)*RBOD(IBOD)
+            ELSE
+              CBODNT  = CBODNT+CBOD(K,I,IBOD)*RBOD(IBOD)*BODN(IBOD)
             END IF
             IF(CBODS(IBOD)>0.0)TOTSS(K,I) = TOTSS(K,I)+CBOD(K,I,IBOD)/O2OM(JW)               ! SW 9/5/13  Added particulate CBOD to TSS computation
           ENDIF
@@ -3014,8 +3014,8 @@ ENTRY DERIVED_CONSTITUENTS
           !
           !DOC(K,I) = DOM(K,I)*ORGC(JW)+CBODCt             ! cb 6/6/10
           !POC(K,I) = POM(K,I)*ORGC(JW)
-          DOC(K,I) = LDOC(K,I) + RDOC(K,I) + CBODCT          
-          POC(K,I) = LPOC(K,I) + RPOC(K,I)                 
+          DOC(K,I) = LDOC(K,I) + RDOC(K,I) + CBODCT
+          POC(K,I) = LPOC(K,I) + RPOC(K,I)
           DO JA=1,NAL
           IF(ALG_CALC(JA))THEN
             POC(K,I) = POC(K,I)+ALG(K,I,JA)*AC(JA)
@@ -3033,7 +3033,7 @@ ENTRY DERIVED_CONSTITUENTS
 	        END DO
 	      ENDIF
           TOC(K,I)   = DOC(K,I)+POC(K,I)
-          DOP(K,I)   = LDOP(K,I)+RDOP(K,I)+CBODPT       
+          DOP(K,I)   = LDOP(K,I)+RDOP(K,I)+CBODPT
           DON(K,I)   = LDON(K,I)+RDON(K,I)+CBODNT
           POP(K,I)   = LPOP(K,I)+RPOP(K,I)+ALGP+ZOOP
           PON(K,I)   = LPON(K,I)+RPON(K,I)+ALGN+ZOON
@@ -3052,7 +3052,7 @@ ENTRY DERIVED_CONSTITUENTS
           !END DO
           TP(K,I)   =  TOP(K,I)+PO4(K,I)     !+TPSS   SR 3/17/2019
           TN(K,I)   =  TON(K,I)+NH4(K,I)+NO3(K,I)   ! note nh4 is total ammonia including nh3 if ON
-          IF(CDWBC(O2DG_DER,JW)=='      ON')O2DG(K,I) = (O2(K,I)/SATO(T1(K,I),TDS(K,I),PALT(I),SALT_WATER(JW)))*100.0          
+          IF(CDWBC(O2DG_DER,JW)=='      ON')O2DG(K,I) = (O2(K,I)/SATO(T1(K,I),TDS(K,I),PALT(I),SALT_WATER(JW)))*100.0
           IF(CDWBC(CHLA_DER,JW)=='      ON')THEN
             DO JA=1,NAL
                IF(ALG_CALC(JA))THEN
@@ -3070,8 +3070,8 @@ ENTRY DERIVED_CONSTITUENTS
           ENDIF
           IF(CDWBC(TURB_DER,JW)=='      ON')TURB(K,I)    = EXP(CoeffA_Turb(JW)*LOG(TOTSS(K,I)) + CoeffB_Turb(JW))
           IF(CDWBC(SECCHI_DER,JW)=='      ON')SECCHID(K,I) = SECC_PAR(JW)/GAMMA(K,I)        ! Secchi Disk
-          FE(K,I)      = FEII(K,I) + FEOOH(K,I)         ! Total Fe    
-          !IF(CAC(NDGP)== '      ON') TDG(K,I) = 100.*DGP(K,I)/PALT(I)       
+          FE(K,I)      = FEII(K,I) + FEOOH(K,I)         ! Total Fe
+          !IF(CAC(NDGP)== '      ON') TDG(K,I) = 100.*DGP(K,I)/PALT(I)
         END DO
       END DO
     END DO
@@ -3091,7 +3091,7 @@ ENTRY ALKALINITY ! entire subroutine added ! SR 01/01/12
 ! Alkalinity is represented as mg/L CaCO3 (MW=100.088). CaCO3 has 2 equivalents of alk per mole.
 ! Nitrogen has an atomic mass of 14.00674. These numbers account for the factor of 50.044/14.00674 used below.
 
- 
+
  DO I=IU,ID
    DO K=KT,KB(I)
        if(noncon_alkalinity)then
@@ -3103,15 +3103,14 @@ ENTRY ALKALINITY ! entire subroutine added ! SR 01/01/12
        end if
    END DO
  END DO
- 
+
 RETURN
 
 ENTRY DEALLOCATE_KINETICS
   DEALLOCATE (OMTRM,  SODTRM, NH4TRM, NO3TRM, DOM, POM, PO4BOD, NH4BOD, TICBOD, ATRM,   ATRMR,  ATRMF, ETRM,   ETRMR,  ETRMF, BIBH2)
-  DEALLOCATE (LAM2M, ALGAE_SETTLING,FE)       
+  DEALLOCATE (LAM2M, ALGAE_SETTLING,FE)
   IF(MIGRATION == 'ON')DEALLOCATE (ASETTLE, DEN_AVG, DENP, DEN1, DEN2, ALLIM_OLD, DEN, AMP, PHASE, C_COEFF_EXT, RAD, MIND, MAXD, DENSI, DENBI, T_DEC, C_DENINC, C_DENDEC, DEPTH_LIM, LOSS_FRAC, TWQ, &
       I_C, C_DENINC_1, C_DENINC_2, C_DENDEC_1, C_DENDEC_2, DENP_MINS, DENP_MINB, DENP_MIN, DEN_COR, MIGRATE_GROUP, MIGRATE_MODEL, TS_DEC, DEPTH_LIM_ONOFF,&
       NMINT, MIGON, MIGOFF, LOLD, DEPTH_CALC_ONOFF, EXP_DEPTH)    ! CO 6/12/2019
   RETURN
 END SUBROUTINE KINETICS
-

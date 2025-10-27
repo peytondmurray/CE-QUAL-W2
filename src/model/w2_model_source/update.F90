@@ -3,14 +3,14 @@ SUBROUTINE UPDATE
 USE MAIN
 USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC  
+  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
 
 !***********************************************************************************************************************************
 !*                                       Task 2.7: Variable updates for next timestep                                             **
 !***********************************************************************************************************************************
-    
+
     SZ     = Z
     SKTI   = KTI
     SBKT   = BKT
@@ -22,7 +22,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
      KT = KTWB(JW)
       ELKT(JW) = ELWS(DS(BS(JW)))     !EL(KT,DS(BS(JW)))-Z(DS(BS(JW)))*COSA(BS(JW))
       DO JB=BS(JW),BE(JW)
-          
+
     !** Horizontal diffusivities   ! SW 8/2/2017
       IF(DXI(JW) < 0.0)THEN
       DO I=CUS(JB),DS(JB)-1
@@ -32,7 +32,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
         END DO
       END DO
       ENDIF
-          
+
  ! CODE MOVED to after wse computation       ELWS(CUS(JB):DS(JB)+1) = EL(KT,CUS(JB):DS(JB)+1)-Z(CUS(JB):DS(JB)+1)*COSA(JB)
         DO I=US(JB)-1,DS(JB)
           AVHR(KT,I) = H1(KT,I)+(H1(KT,I+1)-H1(KT,I))/(0.5D0*(DLX(I)+DLX(I+1)))*0.5D0*DLX(I)                               !SW 07/29/04
@@ -52,7 +52,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
             AVH2(K,I)  = AVH1(K,I)
             SAVH2(K,I) = AVH2(K,I)
             SAVHR(K,I) = AVHR(K,I)
-          END DO                     
+          END DO
         END DO
       END DO
     END DO
@@ -116,7 +116,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       END DO
     END DO
 
-  DO JW = 1,NWB 
+  DO JW = 1,NWB
     IF (ULTIMATE(JW)) THEN   ! SR 5/15/06
       IF(LAYERCHANGE(JW) == .TRUE.)THEN
       DO K=KTWB(JW),KMX    ! only need to update this for KT - if layer change then update for all variables to be safe                                               !DO K=2,KMX
@@ -167,7 +167,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
 
     IF (DLT  >  DLTMAXX)DLT=DLTMAXX
     CURMAX = DLTMAXX/DLTFF           ! SW 7/13/2010
-    
+
     IF (INT(JDAY) == JDAYNX) THEN
       JDAYG  = JDAYG+1
       JDAYNX = JDAYNX+1
@@ -176,7 +176,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
     CALL GREGORIAN_DATE
     IF(CONSTITUENTS.AND.YEAR/=YEAROLD.AND.CO2YEARLYPPM=='      ON')THEN   ! UPDATE PCO2 FOR PH/TIC IF YEAR CHANGES STEP CHANGES
             IF(YEAR<1980)THEN
-             PCO2 = (0.000041392*REAL(YEAR*YEAR*YEAR) - 0.231409975*REAL(YEAR*YEAR) + 430.804190829*REAL(YEAR) - 266735.857433224)*PALT(DS(BE(1)))*1.0E-6      ! PPM CO2 AND ALTITUDE CORRECTION 
+             PCO2 = (0.000041392*REAL(YEAR*YEAR*YEAR) - 0.231409975*REAL(YEAR*YEAR) + 430.804190829*REAL(YEAR) - 266735.857433224)*PALT(DS(BE(1)))*1.0E-6      ! PPM CO2 AND ALTITUDE CORRECTION
             ELSE
              PCO2  = (0.015903*YEAR*YEAR - 61.799598*YEAR + 60357.055057)*PALT(DS(BE(1)))*1.0E-6
             ENDIF

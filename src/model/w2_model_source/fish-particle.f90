@@ -25,8 +25,8 @@ Module Fishy
       DOUBLE PRECISION FX00COUNT,FZ00COUNT,nfsfreq,RUNDIFF
       REAL ::   wmax,zmin,zmax  ! SW 2/16/01
       REAL            FXLOC,FYLOC,FZLOC,XREFL,YREFL,ZBOTREFL,ZSURREFL
-      REAL            UFISH,VFISH,WFISH,FYVEL,SEDVEL,ALPHAX,ALPHAZ   
-      REAL            OUTFREQ,JDAYDIFF,TSETP2MULT 
+      REAL            UFISH,VFISH,WFISH,FYVEL,SEDVEL,ALPHAX,ALPHAZ
+      REAL            OUTFREQ,JDAYDIFF,TSETP2MULT
       REAL            FROMKTBOT,RRR,RMAT,RDX,RDY,RDZ,FYLOCTMP
       REAL            FSIZE,FAGE,LJDAY
       REAL            OUTFREQJAN,OUTFREQFEB,OUTFREQMAR,OUTFREQAPR
@@ -104,7 +104,7 @@ Module Fishy
       integer, allocatable, dimension  (:) :: ifish,ifisht,ifishb  ! SW 1/16/01
       integer, allocatable, dimension  (:) :: icoll,icollt,icollb  ! SW 2/16/01
       real, allocatable, dimension (:,:,:) :: BRCHFISH
-      
+
       INTEGER :: DIAGFN=8001, DATADEBUGFN=8002, BARCHRTXFN=8003,BARCHRTZFN=8004,GILFN=8005,HYACFN=8006,FINALFN=8007
 
 End Module Fishy
@@ -119,7 +119,7 @@ End Module Fishy
 
      USE SURFHE; Use Fishy; Use GDAYC;  Use SCREENC; Use GEOMC; USE GLOBAL
      IMPLICIT NONE
-     
+
      REAL :: DZ
      INTEGER :: JF,KK,N
 
@@ -198,8 +198,8 @@ End Module Fishy
             dz=h(fishes(fn,3),fjr)/nfishpcel
             klast=fishes(fn,3)
            else
-            fishes(fn,4)=fishes(fn-1,4)+dz          
-           endif 
+            fishes(fn,4)=fishes(fn-1,4)+dz
+           endif
          ENDIF
           FISHES(FN,2)  = FXLOC   !0.0   ! FXLOC   = Location of fish within segment IMP from upstream side
           FISHES(FN,5)  = B(INT(FISHES(FN,3)),INT(FISHES(FN,1)))*.5
@@ -483,7 +483,7 @@ End Module Fishy
 
       IF (NIT.EQ.0) LJDAY = JDAY                              ! LJDAY is used for TecPlot output frequency purposes
       JDAYDIFF = JDAY - LJDAY                                 ! JDAYDIFF is used for TecPlot output frequency purposes
-          
+
       IF (IMON.EQ.1)   OUTFREQ = OUTFREQJAN
       IF (IMON.EQ.2)   OUTFREQ = OUTFREQFEB
       IF (IMON.EQ.3)   OUTFREQ = OUTFREQMAR
@@ -496,7 +496,7 @@ End Module Fishy
       IF (IMON.EQ.10)  OUTFREQ = OUTFREQOCT
       IF (IMON.EQ.11)  OUTFREQ = OUTFREQNOV
       IF (IMON.EQ.12)  OUTFREQ = OUTFREQDEC
-      
+
      ! IF (JDAY.GT.366) THEN
      !   WRITE(DATADEBUGFN,*) 'ERROR: Must modify OUTFREQ calculations in Subroutine FISH'
      !   STOP
@@ -1309,15 +1309,15 @@ ENDIF
 
   if(fyvel.eq.0.0)then   ! SW 2/01/01 logic for removing particles laterally also
         IF (FYLOC.LT.0) THEN    ! reflect particles
-           FYLOC = B(FKMP,FIMP)*YREFL 
+           FYLOC = B(FKMP,FIMP)*YREFL
         ELSE IF (FYLOC.GT.B(FKMP,FIMP)) THEN
-           FYLOC = B(FKMP,FIMP)*(1-YREFL) 
+           FYLOC = B(FKMP,FIMP)*(1-YREFL)
         ELSE
         END IF
   else
         IF (FYLOC.LT.0.and.fyvel.lt.0.0) THEN  ! Particle is reflected since only remove from RHS Inflow has pushed it to one side of bank
-           FYLOC = B(FKMP,FIMP)*YREFL 
-        ELSE IF (FYLOC.GT.B(FKMP,FIMP).and.fyvel.gt.0.0) THEN   
+           FYLOC = B(FKMP,FIMP)*YREFL
+        ELSE IF (FYLOC.GT.B(FKMP,FIMP).and.fyvel.gt.0.0) THEN
            ISWITCH = 1
            ! SW 2/01/01 Track timing of fish movement from system
            fishes(fn,14)=JDAY               ! Time fish left system
@@ -1327,9 +1327,9 @@ ENDIF
            GOTO 20
            ! Particle is removed
         ELSEIF (FYLOC.GT.B(FKMP,FIMP).and.fyvel.lt.0.0) THEN   ! reflect - rarely occurs if ever
-           FYLOC = B(FKMP,FIMP)*(1-YREFL) 
+           FYLOC = B(FKMP,FIMP)*(1-YREFL)
         ELSEIF (FYLOC.LT.0.and.fyvel.gt.0.0) THEN  ! reflect - rarely occurs if ever
-           FYLOC = B(FKMP,FIMP)*YREFL 
+           FYLOC = B(FKMP,FIMP)*YREFL
         END IF
   end if
 
@@ -1342,7 +1342,7 @@ ENDIF
           IF (RIMPBR(FIMP+1,1).GT.0) TAG = 2                            ! Branch joining right bank at new segment
           IF ((RIMPBR(FIMP+1,1).GT.0).AND.(LIMPBR(FIMP+1,1).GT.0))TAG = 3  ! Branches joining at both banks
           IF (PREVENTBRCHSWITCH) TAG = 0                         ! Prevents fish from moving upstream into another branch
-          IF (FIMP.EQ.DS(DNBP)) THEN  
+          IF (FIMP.EQ.DS(DNBP)) THEN
             if(fxvel(5).gt.0.0)then   ! fish leaves the system if there is a structure outflow
               IF (DEBUG) WRITE(DATADEBUGFN,*) 'FIMP+1 GT DS(DNBP)'
               WRITE(DATADEBUGFN,9110) JDAY,FNBP
@@ -1391,7 +1391,7 @@ ENDIF
 !              WRITE(*,*) 'ERROR: Inappropriate DHS(FNBP)'
 !              WRITE(*,9160) FNBP, DHS(FNBP)
 ! 9160         FORMAT(' Branch = ',I6,'   DHS(FNBP) = ',I6)
-!              STOP 
+!              STOP
              END IF
           ELSE IF ((TAG.EQ.1).OR.(TAG.EQ.2)) THEN
             IF (DEBUG) WRITE(DATADEBUGFN,*) 'CALLING TAG124578:FXLOC GT DLX'
@@ -1411,7 +1411,7 @@ ENDIF
              write(FINALFN,*)'JDAY=',jday,' FN,FIMP,FKMP:',fn,fimp,fkmp
              do jf=1,3         !fn
              write(FINALFN,'(i7,1x,<fpara>(f10.3,1x))')jf,(fishes(jf,i),i=1,fpara)
-             end do 
+             end do
              GOTO 10                        ! More thought needs to go into this overshooting logic
           ENDIF
         ELSE IF (FXLOC.LT.0) THEN
@@ -1426,15 +1426,15 @@ ENDIF
 !     .             /,' via Layer FKMP ',I6)
 !            ISWITCH = 1
 !            GOTO 20
-             FXLOC = DLX(FIMP)*XREFL   
+             FXLOC = DLX(FIMP)*XREFL
           ELSE IF (FIMP.EQ.CUS(FNBP)) THEN
              IF (DEBUG) WRITE(DIAGFN,*) 'FIMP EQ CUS(FNBP)'
-!             if(fxloc.lt.(dlx(fimp)*xrefl))FXLOC = DLX(FIMP)*XREFL   
-             FXLOC = DLX(FIMP)*XREFL  
+!             if(fxloc.lt.(dlx(fimp)*xrefl))FXLOC = DLX(FIMP)*XREFL
+             FXLOC = DLX(FIMP)*XREFL
           ELSE
              IF (LIMPBR(FIMP-1,1).GT.0) TAG = 4
              IF (RIMPBR(FIMP-1,1).GT.0) TAG = 5
-             IF ((RIMPBR(FIMP-1,1).GT.0).AND.(LIMPBR(FIMP-1,1).GT.0)) THEN 
+             IF ((RIMPBR(FIMP-1,1).GT.0).AND.(LIMPBR(FIMP-1,1).GT.0)) THEN
              TAG = 6
           ELSE
           END IF
@@ -1456,10 +1456,10 @@ ENDIF
             FXLOC = DLX(FIMP) + FXLOC                          !    move to
           END IF
 ! These are problems that need correcting !!!     SW 2/1/01
-          IF (FXLOC.GT.DLX(FIMP)) GOTO 10 
+          IF (FXLOC.GT.DLX(FIMP)) GOTO 10
           IF (FXLOC.LT.0) GOTO 10
 !        ELSEIF(FXLOC.EQ.0.0.and.cus(fnbp).eq.fimp.and.fxvel(5).eq.0.)then
-!             FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off boundary 
+!             FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off boundary
         ELSE
           TAG = 0
           IF (LIMPBR(FIMP,1).GT.0) TAG = 7                          ! Branch joining left bank at current segment
@@ -1600,7 +1600,7 @@ ENDIF
             FKMP = FKMP - 1
             FZLOC = H(FKMP,FJR) + FZLOC
             IF (FZLOC.LT.0) GOTO 30                    ! Did fish move up more than one layer - must improve this.
-            SURFCALC = 0 
+            SURFCALC = 0
           END IF
           IF (SURFCALC.EQ.1) THEN
             FKMPTEMP = KTWBF
@@ -1627,9 +1627,9 @@ ENDIF
 !Check for Boundary Violations: Lateral Direction Check (2 of 2)
 
         IF (FYLOC.LT.0) THEN
-          FYLOC = B(FKMP,FIMP)*YREFL 
+          FYLOC = B(FKMP,FIMP)*YREFL
         ELSE IF (FYLOC.GT.B(FKMP,FIMP)) THEN
-          FYLOC = B(FKMP,FIMP)*(1-YREFL) 
+          FYLOC = B(FKMP,FIMP)*(1-YREFL)
         ELSE
         END IF
 
@@ -1711,10 +1711,10 @@ END DO   ! END OF NDT LOOP
         ENDIF
 
         IF (NIT.EQ.0) THEN
-          WRITE(BARCHRTXFN,9552) 
+          WRITE(BARCHRTXFN,9552)
  9552     FORMAT('TITLE = "Bar Chart: % of X-Directional Movement due to&
        Each Influence Factor"')
-          WRITE(BARCHRTXFN,9553) 
+          WRITE(BARCHRTXFN,9553)
  9553     FORMAT('VARIABLES = "% X-dir Movement", "Infl Factor"')
         ELSE
           WRITE(BARCHRTXFN,*) ' '
@@ -1727,19 +1727,19 @@ END DO   ! END OF NDT LOOP
         WRITE(BARCHRTXFN,9530) FXREACTRND, 1
  9530   FORMAT(F5.1,'   ',I2)
         IF (NIT.EQ.0) THEN
-          WRITE(BARCHRTXFN,9542) 
+          WRITE(BARCHRTXFN,9542)
  9542     FORMAT('TEXT X=51.5, Y=5.1, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=MIDCENTER, C=BLACK, H=11, T="X-Movement"')
-          WRITE(BARCHRTXFN,9543) 
+          WRITE(BARCHRTXFN,9543)
  9543     FORMAT('TEXT X=-5, Y=4, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=MIDRIGHT, C=CUSTOM7, H=10, T="VEL"')
-          WRITE(BARCHRTXFN,9544) 
+          WRITE(BARCHRTXFN,9544)
  9544     FORMAT('TEXT X=-5, Y=3, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=MIDRIGHT, C=CUSTOM7, H=10, T="TMP"')
-          WRITE(BARCHRTXFN,9545) 
+          WRITE(BARCHRTXFN,9545)
  9545     FORMAT('TEXT X=-5, Y=2, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=MIDRIGHT, C=CUSTOM7, H=10, T="DO"')
-          WRITE(BARCHRTXFN,9546) 
+          WRITE(BARCHRTXFN,9546)
  9546     FORMAT('TEXT X=-5, Y=1, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=MIDRIGHT, C=CUSTOM7, H=10, T="RND"')
         END IF
@@ -1768,15 +1768,15 @@ END DO   ! END OF NDT LOOP
         FZREACTTMP = 0
         FZREACTDO  = 0
         FZREACTRND = 0
-            
+
         ENDIF
-        
+
 
         IF (NIT.EQ.0) THEN
-          WRITE(BARCHRTZFN,9554) 
+          WRITE(BARCHRTZFN,9554)
  9554     FORMAT('TITLE = "Bar Chart: % of Z-Directional Movement due to&
        Each Influence Factor"')
-          WRITE(BARCHRTZFN,9555) 
+          WRITE(BARCHRTZFN,9555)
  9555     FORMAT('VARIABLES = "Infl Factor", "% Z-dir Movement"')
         ELSE
           WRITE(BARCHRTZFN,*) ' '
@@ -1788,19 +1788,19 @@ END DO   ! END OF NDT LOOP
         WRITE(BARCHRTZFN,9535) 4, FZREACTRND
  9535   FORMAT(I2,'   ',F5.1)
         IF (NIT.EQ.0) THEN
-          WRITE(BARCHRTZFN,9547) 
+          WRITE(BARCHRTZFN,9547)
  9547     FORMAT('TEXT X=2.5, Y=130, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=CENTER, C=BLACK, H=11, T="Z-Movement"')
-          WRITE(BARCHRTZFN,9548) 
+          WRITE(BARCHRTZFN,9548)
  9548     FORMAT('TEXT X=1, Y=-5, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=HEADCENTER, C=CUSTOM7, H=10, T="VEL"')
-          WRITE(BARCHRTZFN,9549) 
+          WRITE(BARCHRTZFN,9549)
  9549     FORMAT('TEXT X=2, Y=-5, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=HEADCENTER, C=CUSTOM7, H=10, T="TMP"')
-          WRITE(BARCHRTZFN,9550) 
+          WRITE(BARCHRTZFN,9550)
  9550     FORMAT('TEXT X=3, Y=-5, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=HEADCENTER, C=CUSTOM7, H=10, T="DO"')
-          WRITE(BARCHRTZFN,9551) 
+          WRITE(BARCHRTZFN,9551)
  9551     FORMAT('TEXT X=4, Y=-5, F=HELV-BOLD, CS=GRID, HU=FRAME,&
       AN=HEADCENTER, C=CUSTOM7, H=10, T="RND"')
         END IF
@@ -1819,7 +1819,7 @@ END DO   ! END OF NDT LOOP
       END IF
 
       IF (DEBUG) WRITE(DATADEBUGFN,*) 'SUBROUTINE FISH COMPLETED'
-   
+
 
    97 CONTINUE
 
@@ -1841,7 +1841,7 @@ END DO   ! END OF NDT LOOP
                                                !   77 for Engineers and Scientists, 5th
       INTEGER   SEED                           !   Edition - Author: Delores M. Etter"
       REAL      RNDX                           !   The random # is between 0.0 and 1.0
-      
+
 
       SEED = 2045*SEED + 1
       SEED = SEED - (SEED/1048576)*1048576
@@ -1863,7 +1863,7 @@ END DO   ! END OF NDT LOOP
       SUBROUTINE FIMPBR
 
       Use FISHY; Use GEOMC; USE GLOBAL;USE SURFHE
-      
+
       IMPLICIT NONE
       REAL    :: BRANGLE
 
@@ -1890,7 +1890,7 @@ END DO   ! END OF NDT LOOP
               RIMPBR(I,2) = JB
             ELSE
               NL = NL + 1
-              LIMPBR(I,1) = DS(JB) 
+              LIMPBR(I,1) = DS(JB)
               LIMPBR(I,2) = JB
             END IF
           ELSE
@@ -1921,9 +1921,9 @@ END DO   ! END OF NDT LOOP
 
 
       SUBROUTINE FINDNEWBR
-      
+
     Use Fishy; Use GEOMC; USE GLOBAL
-    
+
     IMPLICIT NONE
     integer trib
 
@@ -1954,11 +1954,11 @@ END DO   ! END OF NDT LOOP
 !  This Subroutine Calls No Other Subroutines
 
       SUBROUTINE WHATJR
-      
+
       Use FISHY
       USE GLOBAL
       IMPLICIT NONE
-      
+
       INTEGER  WBDY
 
       WBDY = 0                                              ! WBDY = Water Body
@@ -1997,7 +1997,7 @@ END DO   ! END OF NDT LOOP
       SUBROUTINE TAG124578
       Use FISHY;USE GLOBAL; Use GEOMC
       IMPLICIT NONE
-      
+
       REAL       USBRFLOW,FLOWHERE,CBID,CBIDL,CBIDR
       REAL       WIDTH,TOTBRAREA,AVEBRVEL
 
@@ -2010,7 +2010,7 @@ END DO   ! END OF NDT LOOP
       IF (TAG.EQ.5) USBRIMP = RIMPBR(FIMP-1,1)     ! USBRIMP = UpStream right BRanch IMP
       IF (TAG.EQ.7) USBRIMP = LIMPBR(FIMP,1)       ! USBRIMP = UpStream left BRanch IMP
       IF (TAG.EQ.8) USBRIMP = RIMPBR(FIMP,1)       ! USBRIMP = UpStream right BRanch IMP
-      
+
       IF (DEBUG) THEN
         WRITE(DATADEBUGFN,9170) TAG,FIMP,USBRIMP
  9170   FORMAT(' TAG=',I4,' INITIAL FIMP=',I6,' USBRIMP=',I6)
@@ -2084,7 +2084,7 @@ END DO   ! END OF NDT LOOP
       IF (DEBUG) WRITE(DATADEBUGFN,9190) FYLOC
  9190 FORMAT(' THE NEW FYLOC=',F9.3)
 
-! Calculating New Fish Location: FIMP, FXLOC, FYLOC, and FNBP (and FKMP, if necessary) 
+! Calculating New Fish Location: FIMP, FXLOC, FYLOC, and FNBP (and FKMP, if necessary)
 
       WIDTH = B(FKMPTMP,FIMPTMP)
       IF ((FYLOC.LT.0).AND.((TAG.EQ.1).OR.(TAG.EQ.4).OR.(TAG.EQ.7))) THEN          ! ((CASE 1))
@@ -2198,12 +2198,12 @@ END DO   ! END OF NDT LOOP
 
       SUBROUTINE TAG369
 
-      
+
       Use FISHY
       USE GLOBAL
       Use GEOMC
-      
-      
+
+
       IMPLICIT NONE
 
       REAL       USBRFLOW,FLOWHERE,CBID,CBIDR
@@ -2293,7 +2293,7 @@ END DO   ! END OF NDT LOOP
         END IF
       END IF
 
-! Calculating New Fish Location: FIMP, FXLOC, FYLOC, and FNBP (and FKMP, if necessary) 
+! Calculating New Fish Location: FIMP, FXLOC, FYLOC, and FNBP (and FKMP, if necessary)
 
       IF (FYLOC.LT.0) THEN
           FYLOCTMP = FYLOC
@@ -2385,7 +2385,7 @@ END DO   ! END OF NDT LOOP
       USE GLOBAL
       Use GEOMC
       Use SCREENC
-      
+
       IMPLICIT NONE
 
       INTEGER     WB,NN,NNLAST,WATER
@@ -2512,7 +2512,7 @@ END DO   ! END OF NDT LOOP
                   else
                       zdist=elws(i)-depthm(k,i)
                   endif
-                  
+
                 WRITE(20000+JB,9260) XDIST,zdist,WATER,&            ! Outputting node information  SW output elevation in m
                         FLOWFIELD(K,I,1),-VERTFLOW/ASPRATIO,&           !   to a file for TecPlot to display
                         WQFIELD(K,I,1),WQFIELD(K,I,2)
@@ -2521,7 +2521,7 @@ END DO   ! END OF NDT LOOP
 !     .                   F10.2,I5)
                                                  ! XDIST                 = X Distance to Node in Branch JB
                                                  ! ZDIST                 = Depth to Node in Branch JB
-                                                 ! NN                    = Global Node # 
+                                                 ! NN                    = Global Node #
                                                  ! BRCHNN                = Branch Node #
                                                  ! K                     = Layer #
                                                  ! I                     = Segment #
@@ -2542,7 +2542,7 @@ END DO   ! END OF NDT LOOP
               XDIST = XDIST + DLX(I)
     !ENDDO
     !ENDDO
-    
+
   118       CONTINUE
   117     CONTINUE
           IF (FEGRID) THEN                                 ! If FEGRID = .TRUE., then FE connectivity already set up
@@ -2633,7 +2633,7 @@ END DO   ! END OF NDT LOOP
       SUBROUTINE INTERCONST
 
       Use FISHY; USE GLOBAL; Use GEOMC; Use SCREENC; USE KINETIC
-      
+
       IMPLICIT NONE
 
       REAL        DV,DW,DX,DY
@@ -2658,7 +2658,7 @@ END DO   ! END OF NDT LOOP
                 KK = NDINFO(NN,3)                                  ! PRE-CHECK CALCULATION
                 II = NDINFO(NN,4)                                  ! PRE-CHECK CALCULATION
                 IF ((I.NE.II).OR.(K.NE.KK)) THEN                   ! CHECK
-                  
+
                   WRITE(DATADEBUGFN,*) 'ERROR: Nodes not matching up for Constituent Interpolation'
                   write(DATADEBUGFN,*)'JDAY=',jday
                   write(DATADEBUGFN,*)'WB=',wb,' JR=', JB
@@ -2839,7 +2839,7 @@ END DO   ! END OF NDT LOOP
 
       Use FISHY; USE GLOBAL; Use GEOMC; Use SCREENC
       IMPLICIT NONE
-      
+
       REAL        UVERT,HVERT,WHORZ,DLXHO
       REAL        XV,FDDU,FDDW,LASTJDAY
       REAL        XRANGE,YRANGE
@@ -2854,7 +2854,7 @@ END DO   ! END OF NDT LOOP
       SAVE        LASTJDAY,TOPK
 
       DIMENSION   UVERT(N+1),HVERT(N+1),WHORZ(N+1),DLXHO(N+1),FDDU(N+1,N+1),FDDW(N+1,N+1)
-                  
+
       NN = 0                                                       ! NN = Global Node # (UpperLeft Corner of cell(K,I))
       DO 123 WB=1,NWB                                              ! WB = Water Body # / NWB = Total # of Water Bodies
         DO 124 JB=BS(WB),BE(WB)                                  ! JB = Branch #
@@ -2985,7 +2985,7 @@ END DO   ! END OF NDT LOOP
                     DLXHO(1) = -DLX(I-1)-0.5*DLX(I-2)
                     DLXHO(2) = -0.5*DLX(I-1)
                   END IF
-                  IF (I.GT.DS(JB)) THEN           !Both Right Nodes are Downstream of Water Body 
+                  IF (I.GT.DS(JB)) THEN           !Both Right Nodes are Downstream of Water Body
                     WHORZ(3) = 0                    ! Helps satisfy no-slip condition at Downstream Boundary
                     WHORZ(4) = 0                    ! Helps satisfy no-slip condition at Downstream Boundary
                     DLXHO(3) = DLX(I-1)/10001       ! Arbitrary value
@@ -3144,11 +3144,11 @@ END DO   ! END OF NDT LOOP
 
       SUBROUTINE FISHPLOT                ! This Subroutine preps fish information for TecPlot
 
-      
+
       Use FISHY; Use GEOMC; USE GLOBAL; Use GDAYC; Use SCREENC
-      
+
       IMPLICIT NONE
-            
+
       REAL        XLOC,ZLOC,YLOC,FSZ,FAG,UF,VF,WF
       REAL        NETXPUT,NETZTOP,NETZBOT,SNDXUPS
       REAL        SNDXDWN,SNDZTOP,WBBOTTOM
@@ -3187,7 +3187,7 @@ END DO   ! END OF NDT LOOP
               BRCHFISH(JB,NBRF(JB),11) = FISHES(FN,11)    ! WFISH   = Vertical velocity of the fish
             ELSE
             if(JB.eq.1)then
-            write(DATADEBUGFN,*)'Lost particle JB=1:JDAY,FN,fimp,fkmp,fishes(fn,6),fishnbp:',jday,fn,fimp,fkmp,fishes(fn,6),fishnbp  ! DEBUG SW 
+            write(DATADEBUGFN,*)'Lost particle JB=1:JDAY,FN,fimp,fkmp,fishes(fn,6),fishnbp:',jday,fn,fimp,fkmp,fishes(fn,6),fishnbp  ! DEBUG SW
             end if
             END IF
   134     CONTINUE
@@ -3333,7 +3333,7 @@ END DO   ! END OF NDT LOOP
 !  The Following is Used for Creating and Positioning Static Text in the TecPlot Animation
 
           IF (NIT.EQ.0) THEN
-            WRITE(30000+JB,9541) 
+            WRITE(30000+JB,9541)
  9541       FORMAT('TEXT X=25.0, Y=25.0, F=HELV-BOLD, HU=FRAME,&
       AN=MIDCENTER, C=BLACK, H=2.1, T="# of Fish/Particles"')
 !            WRITE(30000+JB,9519) TXTSTIMRULE
@@ -3369,7 +3369,7 @@ END DO   ! END OF NDT LOOP
 !already commented out            WRITE(30000+JB,9540) INFLSPAN     ! This variable is not defined ! SW 1/9/01
 !      WRITE(30000+JB,9540)               ! SW 1/9/01
 ! 9540       FORMAT('TEXT X=38, Y=31, F=HELV-BOLD, HU=FRAME,&
-!      AN=MIDCENTER, C=BLACK, H=2.2, T="% Influence for Timestep"') 
+!      AN=MIDCENTER, C=BLACK, H=2.2, T="% Influence for Timestep"')
           END IF
   133   CONTINUE
   132 CONTINUE
@@ -3412,9 +3412,9 @@ END DO   ! END OF NDT LOOP
       Use FISHY
       USE GLOBAL                             !    ALGORITHMS - Author: Helmuth Spath"
       Use GEOMC
-      
+
       IMPLICIT NONE
-     
+
       REAL      XH1,XH2,H3,H4,DV,DW,DX,DY
 
  !Check for Boundary Violations: Horizontal Plane
@@ -3511,7 +3511,7 @@ END DO   ! END OF NDT LOOP
 !  This Subroutine Calls the Following Subroutines:
 !      SPLINE
 
-      SUBROUTINE VGILLNETS      
+      SUBROUTINE VGILLNETS
       USE GLOBAL; Use FISHY; USE GEOMC
       IMPLICIT NONE
 
@@ -3605,7 +3605,7 @@ END DO   ! END OF NDT LOOP
       SUBROUTINE ACOUSTICS
     Use FISHY; USE GEOMC
     IMPLICIT NONE
-    
+
       REAL            OLDXDIST,OLDYDISTFROMCENTER,OLDZDIST,NEWXDIST
       REAL            NEWYDISTFROMCENTER,NEWZDIST
       REAL            SNDYLFT,SNDYRGT,SNDZTOP,SNDZBOT
@@ -3776,9 +3776,9 @@ if(fishon.eq.' ON')then
 !Manipulate Virtual Gillnet Sampling Data for Output                                !FISH
 
       OPEN (GILFN,FILE='VGILLNETS.OUT',STATUS='UNKNOWN')
-      WRITE(GILFN,9563) 
+      WRITE(GILFN,9563)
  9563 FORMAT('TITLE = "Gillnet Results"')
-      WRITE(GILFN,9508) 
+      WRITE(GILFN,9508)
  9508 FORMAT('VARIABLES = "Ave Depth", "Num of Fish", "Ave Temp",&
       "Ave DO", "Max Temp", "Min Temp", "Max DO", "Min DO"')
 
@@ -3805,7 +3805,7 @@ if(fishon.eq.' ON')then
           MINTEMP   = 1E6                                     ! Used to Track the Min Temperature in Each Depth Interval
           MAXDO     = 0                                       ! Used to Track the Max Dissolved Oxygen in Each Depth Interval
           MINDO     = 1E6                                     ! Used to Track the Min Dissolved Oxygen in Each Depth Interval
-          
+
           DO CATCH=1,SNAGCOUNT(NET)                        ! SNAGCOUNT(NET) = The Total # of Fish Caught in Each Gillnet
             CATCHDEPTH = NETCATCH(NET,CATCH,3)                ! Depth Below Water Surface (m) of Fish Caught in Gillnet
             IF ((CATCHDEPTH.LE.DINTLAST).AND.(CATCHDEPTH.GT.DINT)) THEN
@@ -3822,7 +3822,7 @@ if(fishon.eq.' ON')then
                   MINDO   = NETCATCH(NET,CATCH,5)
             END IF
           ENDDO
-          
+
           AVEDEPTH   = DINTLAST + (DINT-DINTLAST)/2
           IF (DINTCOUNT.GT.0) THEN
             AVEINTTEMP = TEMPTALLY / DINTCOUNT
@@ -3872,9 +3872,9 @@ if(fishon.eq.' ON')then
 !Manipulate Virtual Hydroacoustics Sampling Results for Output                      !FISH
 
       OPEN (HYACFN,FILE='VACOUSTICS.OUT',STATUS='UNKNOWN')
-      WRITE(HYACFN,9565) 
+      WRITE(HYACFN,9565)
  9565 FORMAT('TITLE = "Hydroacoustic Survey Results"')
-      WRITE(HYACFN,9558) 
+      WRITE(HYACFN,9558)
  9558 FORMAT('VARIABLES = "Ave Depth", "Num of Fish"')
 
       IF (ACOUSTICSAMPLING) THEN
@@ -3946,7 +3946,7 @@ if(fishon.eq.' ON')then
         CLOSE(FVAR3)
       END DO
       CLOSE(GILFN)                                                                   !FISH
-      CLOSE(HYACFN) 
+      CLOSE(HYACFN)
 
 ! final fish output
     do jf=1,3   !nfish
@@ -4014,11 +4014,11 @@ INTEGER :: NG,I,J,NA
     IF(PARTICLE)THEN
         READ(DIAGFN,1001)FXLOC,FZLOC,OUTFREQP
     ELSE
-        
+
     READ(DIAGFN,1001)FXLOC,FZLOC,FSIZE,FAGE,UFISH,VFISH,WFISH
-    
+
     ENDIF
-    
+
 
 !          ! FXLOC   = Location of fish within segment IMP from upstream side
 !          ! FZLOC   = Location of fish within layer KMP from top side
@@ -4030,7 +4030,7 @@ INTEGER :: NG,I,J,NA
 !          ! VFISH   = Initial lateral velocity of the fish relative to water
 !          ! WFISH   = Initial vertical velocity of the fish relative to water
 
-    READ(DIAGFN,1000)NDT    ! SW 
+    READ(DIAGFN,1000)NDT    ! SW
     READ(DIAGFN,1002)Char(1)
     !If(char(1).eq.' ON')then
     !MULTIRESPONSE=.true.
@@ -4039,9 +4039,9 @@ INTEGER :: NG,I,J,NA
     !end if
     READ(DIAGFN,1001)HVXWEIGT,VVXWEIGT
     READ(DIAGFN,1001)HVZWEIGT,VVZWEIGT
-    READ(DIAGFN, 1001)TPXWEIGT,TPZWEIGT,TEMPTHRES,TSTEP1,TSTEP1MULT,TSTEP2,TSETP2MULT 
-    READ(DIAGFN,1001)  DOXWEIGT,  DOZWEIGT,  DOTHRES2, DOSTEP1MULT  
-    READ(DIAGFN,1001) RDXWEIGT,  RDYWEIGT,  RDZWEIGT, EPSILONRD  
+    READ(DIAGFN, 1001)TPXWEIGT,TPZWEIGT,TEMPTHRES,TSTEP1,TSTEP1MULT,TSTEP2,TSETP2MULT
+    READ(DIAGFN,1001)  DOXWEIGT,  DOZWEIGT,  DOTHRES2, DOSTEP1MULT
+    READ(DIAGFN,1001) RDXWEIGT,  RDYWEIGT,  RDZWEIGT, EPSILONRD
 !      NFSFREQ  = 0.006250            ! The number (or fraction thereof) of JDAYs between successive runs of the NFS module
 ! REPLACED WITH NDT
 !______________________________________________________
@@ -4211,9 +4211,9 @@ INTEGER :: NG,I,J,NA
 !
     READ(DIAGFN,'(//i10,7x,a3,f10.0)')NUMACOUSTICS,char(1), HADEPTHINT
     if(char(1).eq.' ON')then
-    ACOUSTICSAMPLING = .TRUE. 
+    ACOUSTICSAMPLING = .TRUE.
     else
-    ACOUSTICSAMPLING = .FALSE. 
+    ACOUSTICSAMPLING = .FALSE.
     end if
 
     Allocate(HAOPERAT(NUMACOUSTICS,14),OLDHALOC(NUMACOUSTICS,2),SNDCOUNT(NUMACOUSTICS))
@@ -4255,104 +4255,104 @@ INTEGER :: NG,I,J,NA
 
     READ(DIAGFN,'(//7x,a3,7x,a3,2i10)')char(1),char(2),VARYTEMP, VARYDO
     if(char(1).eq.' ON')then
-    NULLFIELDWQ = .TRUE. 
+    NULLFIELDWQ = .TRUE.
     else
-    NULLFIELDWQ = .FALSE. 
+    NULLFIELDWQ = .FALSE.
     end if
     if(char(2).eq.' ON')then
-    WQNULLLINEAR = .TRUE. 
+    WQNULLLINEAR = .TRUE.
     else
-    WQNULLLINEAR = .FALSE. 
+    WQNULLLINEAR = .FALSE.
     end if
 
     READ(DIAGFN,'(//2f10.0,i10,f10.0,i10)') TOPTEMP, MIDKTEMP,  MIDKT,  BOTTEMP,   BOTK
-    READ(DIAGFN,'(//2f10.0,i10,f10.0)') LFTTEMP, MIDITEMP,  MIDIT,  RGTTEMP 
-    READ(DIAGFN,'(//2f10.0,i10,f10.0,i10)')TOPDO, MIDKDO,MIDKD, BOTDO   
-    READ(DIAGFN,'(//2f10.0,i10,f10.0)') LFTDO,    MIDIDO,      MIDID,     RGTDO 
+    READ(DIAGFN,'(//2f10.0,i10,f10.0)') LFTTEMP, MIDITEMP,  MIDIT,  RGTTEMP
+    READ(DIAGFN,'(//2f10.0,i10,f10.0,i10)')TOPDO, MIDKDO,MIDKD, BOTDO
+    READ(DIAGFN,'(//2f10.0,i10,f10.0)') LFTDO,    MIDIDO,      MIDID,     RGTDO
 
     READ(DIAGFN,'(//f10.0,7x,a3,7x,a3,2i10)')VVELCAP,char(1),char(2),VARYHVEL,VARYVVEL
 
     if(char(1).eq.' ON')then
-    NULLFIELDFF = .TRUE. 
+    NULLFIELDFF = .TRUE.
     else
-    NULLFIELDFF = .FALSE. 
+    NULLFIELDFF = .FALSE.
     end if
     if(char(2).eq.' ON')then
-    FFNULLLINEAR = .TRUE. 
+    FFNULLLINEAR = .TRUE.
     else
-    FFNULLLINEAR = .FALSE. 
+    FFNULLLINEAR = .FALSE.
     end if
 
-    READ(DIAGFN,'(//2f10.0,i10,f10.0,i10)')TOPHVEL,  MIDKHVEL, MIDKH, BOTHVEL, BOTKK  
-    READ(DIAGFN,'(//2f10.0,i10,f10.0)')  LFTHVEL,  MIDIHVEL,     MIDIH,   RGTHVEL  
+    READ(DIAGFN,'(//2f10.0,i10,f10.0,i10)')TOPHVEL,  MIDKHVEL, MIDKH, BOTHVEL, BOTKK
+    READ(DIAGFN,'(//2f10.0,i10,f10.0)')  LFTHVEL,  MIDIHVEL,     MIDIH,   RGTHVEL
     READ(DIAGFN,'(//2f10.0,i10,f10.0,i10)')TOPVVEL,  MIDKVVEL, MIDKV, BOTVVVEL
-    READ(DIAGFN,'(//2f10.0,i10,f10.0)')  LFTVVEL,  MIDIVVEL,     MIDIV,   RGTVVEL  
+    READ(DIAGFN,'(//2f10.0,i10,f10.0)')  LFTVVEL,  MIDIVVEL,     MIDIV,   RGTVVEL
 
 
     READ(DIAGFN,1002)(char(i),i=1,7)
     if(char(1).eq.' ON')then
-    STIMULIRULES = .TRUE. 
+    STIMULIRULES = .TRUE.
     else
-    STIMULIRULES = .FALSE. 
+    STIMULIRULES = .FALSE.
     end if
     if(char(2).eq.' ON')then
-    VELOCITYRULES = .TRUE. 
+    VELOCITYRULES = .TRUE.
     else
-    VELOCITYRULES = .FALSE. 
+    VELOCITYRULES = .FALSE.
     end if
     if(char(3).eq.' ON')then
-    TEMPRULES = .TRUE. 
-    else   
-    TEMPRULES = .FALSE. 
+    TEMPRULES = .TRUE.
+    else
+    TEMPRULES = .FALSE.
     end if
     if(char(4).eq.' ON')then
-    DORULES = .TRUE. 
+    DORULES = .TRUE.
     else
-    DORULES = .FALSE. 
+    DORULES = .FALSE.
     end if
     if(char(5).eq.' ON')then
-    RANDOMIZATION = .TRUE. 
+    RANDOMIZATION = .TRUE.
     else
-    RANDOMIZATION = .FALSE. 
+    RANDOMIZATION = .FALSE.
     end if
     if(char(6).eq.' ON')then
-    PASSIVETRANSPORT = .TRUE. 
+    PASSIVETRANSPORT = .TRUE.
     else
-    PASSIVETRANSPORT = .FALSE. 
+    PASSIVETRANSPORT = .FALSE.
     end if
     if(char(7).eq.' ON')then
-    SCHOOLING = .TRUE. 
+    SCHOOLING = .TRUE.
     else
-    SCHOOLING = .FALSE. 
-    end if
-    
-    READ(DIAGFN,'(//2(7x,a3),i10,2(7x,a3))') char(1),char(2),WBRUN,char(3),char(4)
-    if(char(1).eq.' ON')then
-    DEBUG = .TRUE. 
-    else
-    DEBUG  = .FALSE. 
-    end if
-    if(char(2).eq.' ON')then
-    WBSKIP= .TRUE. 
-    else
-    WBSKIP = .FALSE. 
-    end if
-    if(char(3).eq.' ON')then
-    LINEAR= .TRUE. 
-    else
-    LINEAR = .FALSE. 
-    end if
-    if(char(4).eq.' ON')then
-    PREVENTBRCHSWITCH = .TRUE. 
-    else
-    PREVENTBRCHSWITCH = .FALSE. 
+    SCHOOLING = .FALSE.
     end if
 
-    READ(DIAGFN,'(//f10.0,7x,a3,4(f10.0))')ASPRATIO,char(1), SKYNIGHT, SKYDAWN, SKYDAY, SKYDUSK  
+    READ(DIAGFN,'(//2(7x,a3),i10,2(7x,a3))') char(1),char(2),WBRUN,char(3),char(4)
     if(char(1).eq.' ON')then
-    SHOWSKY = .TRUE. 
+    DEBUG = .TRUE.
     else
-    SHOWSKY = .FALSE. 
+    DEBUG  = .FALSE.
+    end if
+    if(char(2).eq.' ON')then
+    WBSKIP= .TRUE.
+    else
+    WBSKIP = .FALSE.
+    end if
+    if(char(3).eq.' ON')then
+    LINEAR= .TRUE.
+    else
+    LINEAR = .FALSE.
+    end if
+    if(char(4).eq.' ON')then
+    PREVENTBRCHSWITCH = .TRUE.
+    else
+    PREVENTBRCHSWITCH = .FALSE.
+    end if
+
+    READ(DIAGFN,'(//f10.0,7x,a3,4(f10.0))')ASPRATIO,char(1), SKYNIGHT, SKYDAWN, SKYDAY, SKYDUSK
+    if(char(1).eq.' ON')then
+    SHOWSKY = .TRUE.
+    else
+    SHOWSKY = .FALSE.
     end if
 
     READ(DIAGFN,'(//2i10,7x,a3,i10)')UNBP, DNBP, collector, ncollector
@@ -4377,7 +4377,7 @@ INTEGER :: NG,I,J,NA
 ! ZMIN: minimum depth to turn on behavior maodification
 ! ZMAX: maximum depth to to attain 100% of WMAX (note exponential transition between ZMIN and ZMAX)
    ENDIF
-   
+
  end if
 
 !      NULLFIELDWQ      = .FALSE.     ! If NULLFIELDWQ = .TRUE., actual WQ conditions are replaced with desired (Null) conditions
@@ -4495,7 +4495,7 @@ Subroutine findbranch(seg)
 
      Use Fishy; USE GLOBAL
      IMPLICIT NONE
-     
+
     real seg
     integer iseg,j
 
@@ -4510,13 +4510,13 @@ End Subroutine findbranch
 
 Subroutine Part_transport
 ! Compute passive particle transport including sedimentation
-    
+
     Use Fishy
     Use TRANS
     USE GLOBAL
     Use GEOMC
     IMPLICIT NONE
-    
+
     REAL :: DXMIN, DZMIN1,DZMAX1, COSTHETA, SINTHETA, DX1, DX2, DXAVG, SK, RZ, RX, DZ1, DZ2, DZAVG, r1, r2
     REAL :: DISPX, DISPZ, VEL,WPART,XAREA
     Data DXMIN,DZMIN1,DZMAX1 /1.0,0.2,5.0/   ! SW 2/01/01   ****change this since dzmin and dzmax are set in main file
@@ -4652,14 +4652,14 @@ End Subroutine Part_transport
    Use FISHY
    USE GLOBAL
    Use GEOMC
-   
+
    IMPLICIT NONE
    REAL :: XAREA
-   
+
 ! Concept all QSS from each cell will be treated as a lateral withdrawal - each withdrawal will
 ! be assigned a RHS or LHS looking downstream location; lateral velocity origin is the
 ! segment/cell center. Velocities to the RHS are + and those to the LHS are -
-!  
+!
 
 
 ! Assume at first that all withdrawals and inputs are on RHS (hence inflow would generate - and outflow + velocities)

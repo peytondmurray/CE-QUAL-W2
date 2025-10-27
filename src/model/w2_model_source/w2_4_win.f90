@@ -1,8 +1,11 @@
 ! CE-QUAL-W2 computations
-INTEGER(4) FUNCTION CE_QUAL_W2 (DLG)
+! INTEGER(4) FUNCTION CE_QUAL_W2 (DLG)
+PROGRAM CE_QUAL_W2
 
 ! IVF/CVF specific code
-  USE DFLOGM; USE MSCLIB; USE DFWIN, RENAMED => DLT;
+  ! USE DFLOGM; USE MSCLIB; USE DFWIN, RENAMED => DLT;
+
+  USE MSCLIB;
 
  !DEC$ATTRIBUTES STDCALL   :: ce_qual_w2
  !DEC$ATTRIBUTES REFERENCE :: Dlg
@@ -10,8 +13,8 @@ INTEGER(4) FUNCTION CE_QUAL_W2 (DLG)
   USE MAIN
   USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC  
-  USE modSYSTDG, ONLY: INPUT_SYSTDG                              ! systdg  
+  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC
+  USE modSYSTDG, ONLY: INPUT_SYSTDG                              ! systdg
   Use CEMAVars
   USE CEMASedimentDiagenesis, only: C2SF,InitCond_SedFlux
   USE INITIALVELOCITY; USE ENVIRPMOD
@@ -21,9 +24,11 @@ INTEGER(4) FUNCTION CE_QUAL_W2 (DLG)
  ! include "omp_lib.h"      ! OPENMP directive to adjust the # of processors TOGGLE FOR DEBUG
 
   EXTERNAL RESTART_OUTPUT
-  TYPE (DIALOG) :: DLG
+
+  ! TYPE (DIALOG) :: DLG
+
   INTEGER       :: RESULT         !, RESULT1, IRESULT   ! SW 2/2019
-  CHARACTER(240):: MODDIR1  
+  CHARACTER(240):: MODDIR1
   REAL          :: DEPTH
   !INTEGER                                   :: N_WAITS, NWAIT                                                           !SR 11/26/19
   !INTEGER,        ALLOCATABLE, DIMENSION(:) :: WAIT_INDEX                                                               !SR 11/26/19
@@ -43,7 +48,7 @@ character*255 dirc
 
 IF(END_RUN.or.ERROR_OPEN)STOP    ! SW 6/26/15 3/18/16 Added code to prevent a thread from reinitializing output files as dialog box is closing...intermittant error Updated 8/23/2017
 
-CALL GET_COMMAND_ARGUMENT(1,DIRC,LENGTH,ISTATUS)  
+CALL GET_COMMAND_ARGUMENT(1,DIRC,LENGTH,ISTATUS)
 DIRC=TRIM(DIRC)
 
 ! IF(ISTATUS.NE.0)WRITE(*,*)'GET_COMMAND_ARGUMENT FAILED: STATUS=',ISTATUS
@@ -58,7 +63,7 @@ IF(LENGTH /= 0)THEN
         WRITE(W2ERR,*)'This is not a directory:', DIRC
         WRITE(W2ERR,*)'Run stopped'
       CASE(0)    ! NO ERROR
-    END SELECT  
+    END SELECT
 ENDIF
 
 MODDIR = FILE$CURDRIVE              !  GET CURRENT DIRECTORY
@@ -78,16 +83,16 @@ close(CON)
   FISHBIO= .FALSE.
   INQUIRE(FILE='W2_con_anc.npt',EXIST=FISHBIO)     ! SW 5/26/15
   IF(FISHBIO)THEN
-  
+
   OPEN(FISHBIOFN,FILE='W2_con_anc.npt',status='old')
    DO II = 1,16
     READ(FISHBIOFN,'(A8)') BIOC ! DUMMY VARIABLE AT THIS POINT FIX THIS
    END DO
   ENDIF
-  
+
   FISH_PARTICLE_EXIST=.FALSE.
   INQUIRE(FILE='w2_particle.csv',EXIST=FISH_PARTICLE_EXIST)    ! SW 4/30/15
-  
+
 ! Open control file
   IOPENFISH=0
   OPEN (CON,FILE=CONFN,STATUS='OLD',IOSTAT=I)
@@ -133,12 +138,12 @@ Call CEMA_W2_Input
     READ(CON,*)DYNPAD_PERCENTCHANGE
     OPEN(DYNPIPELOG,FILE='dynpipe_adjustment_log.csv',status='unknown')
     WRITE(DYNPIPELOG,'(A)')'JDAY,BP(DYNPAD_PIPE),Z(DYNPAD_SEG),SZ(DYNPAD_SEG),DLT,(Z(DYNPAD_SEG)-SZ(DYNPAD_SEG))/DLT'
-    CLOSE(CON)  
+    CLOSE(CON)
   ENDIF
-  
+
   ! END DYN PIPE ADJUSTMENT CODE SW 2/18/2020
-  
-  
+
+
 ! Read multiple seperate waterbody file  2/9/2019 SW
 WAIT_FOR_INFLOW_RESULTS=.FALSE.
 MWB_EXIST= .FALSE.   ! USING OLD FILE NAME
@@ -156,7 +161,7 @@ IF(DEG=='ON')THEN
 !  WAIT_TYPE  -- character array holding the type of input file we're awaiting ('BR' or 'TR')
 !  WAIT_INDEX -- integer array holding the branch or tributary index for a set of files we're awaiting
 !  FILEDIR    -- character array to hold the directory names of the awaited files
-    
+
     WAIT_FOR_INFLOW_RESULTS=.TRUE.
     READ (CON,*)                                                                                                        !SR 11/26/19
     READ (CON,*) N_WAITS                                                                                                !SR 11/26/19
@@ -235,7 +240,7 @@ END IF
     READ  (RSI) TKE                        ! sw 10/4/07
     READ  (RSI) BR_INACTIVE,WARNING_OPEN                ! SW 8/1/2018
     if(envirpc == '      ON')THEN
-    
+
       allocate(cc_e(NCT),c_int(NCT),c_top(NCT),cd_e(NDC),cd_int(NDC),cd_top(NDC),c_avg(NCT),cd_avg(NDC),cn_e(NCT),cdn_e(NDC))
       cc_e='   '
       c_int=0.0
@@ -250,7 +255,7 @@ END IF
       NAC_E=0
       NACD_E=0
       OPEN(CONE,file='w2_envirprf.npt',status='old')
-      
+
      CSVFORMAT=.FALSE.
      READ(CONE,'(//A)')CHAR30
      DO J=1,30
@@ -281,9 +286,9 @@ END IF
         READ(CONE,*)
         DO JD=1,NDC
         READ (CONE,*) CHAR8, CD_E(JD),CD_INT(JD), CD_TOP(JD)
-        CD_E(JD)=ADJUSTR(CD_E(JD))        
+        CD_E(JD)=ADJUSTR(CD_E(JD))
         ENDDO
-      ELSE    
+      ELSE
       READ (CONE,'(//I1,7X,I8,5x,a3,f8.0,f8.0,9(i8,i8))') I_SEGINT,numclass,selectivec,sjday1,sjday2,istart(1),iend(1),(istart(I),iend(I),I=2,I_SEGINT)
       IF(I_SEGINT==0)I_SEGINT=1
       Read (CONE,'(//8x,3(5x,a3,f8.3,f8.3))') VEL_VPR, VEL_INT, VEL_TOP,TEMP_VPR,TEMP_INT,TEMP_TOP, depth_vpr,d_int,d_top
@@ -310,9 +315,9 @@ END IF
     allocate(d_class(I_SEGINT,numclass))
     ALLOCATE (D_TOT(I_SEGINT),D_CNT(I_SEGINT),T_TOT(I_SEGINT),T_CNT(I_SEGINT))
     ALLOCATE(V_TOT(I_SEGINT),V_CNT(I_SEGINT),VOLGL(I_SEGINT),SUMVOLT(I_SEGINT))
-   
+
     READ(RSI)T_CLASS,V_CLASS,C_CLASS,CD_CLASS,T_TOT,T_CNT,SUMVOLT,V_CNT,V_TOT,C_TOT,C_CNT,CD_TOT,CD_CNT
-    
+
     ENDIF
     IF(NPI > 0)READ(RSI)YS,VS,VST,YST,DTP,QOLD
     READ(RSI)TPOUT,TPTRIB,TPDTRIB,TPWD,TPPR,TPIN,TP_SEDSOD_PO4,PFLUXIN,TNOUT,TNTRIB,TNDTRIB,TNWD,TNPR,TNIN,TN_SEDSOD_NH4,NFLUXIN,ATMDEP_P,ATMDEP_N,NH3GASLOSS     ! TP_SEDBURIAL,TN_SEDBURIAL,
@@ -321,13 +326,14 @@ END IF
     READ(RSI)C2SF,CellArea,BedPorosity
     IF(Bubbles_Calculation) THEN
     READ(RSI)TConc,SConc,CrackOpen,BubbleRelWB,MFTBubbReleased,GasReleaseCH4
-    END IF   
+    END IF
     ENDIF
-    
+
     CLOSE (RSI)
   END IF
-  CE_QUAL_W2 =  1
-  
+
+  ! CE_QUAL_W2 =  1
+
   ! Open warning file
 
   IF(.NOT.WARNING_OPEN)THEN
@@ -336,24 +342,24 @@ END IF
       OPEN (WRN,FILE='w2.wrn',POSITION='APPEND')
       WRITE(WRN,*)'***RESTART*** APPENDING ON JDAY',JDAY
   ENDIF
-  
+
 CALL INIT
 
 
 ! determining initial horizontal velocities and water levels
     once_through=.true.
-    IF(inituwl == '      ON')init_vel=.true.    
-    if(.not. restart_in)then       
+    IF(inituwl == '      ON')init_vel=.true.
+    if(.not. restart_in)then
       if(init_vel)then
         allocate (qssi(imx),loop_branch(nbr),elwss(imx),uavg(imx))
         elwss=elws
         call initial_water_level
         b=bsave
         call initgeom
-        call initial_u_velocity       
+        call initial_u_velocity
         open(NUNIT,file='init_wl_u_check.dat',status='unknown')
         write(NUNIT,'("       i elws_calc    qssi       u   depth elws_init")')
-        DO JW=1,NWB        
+        DO JW=1,NWB
           DO JB=BS(JW),BE(JW)
             IU = CUS(JB)
             ID = DS(JB)
@@ -365,40 +371,42 @@ CALL INIT
         end do
         close(NUNIT)
         deallocate (qssi,loop_branch,elwss)
-      end if    
+      end if
     end if
 
   IF (.NOT. RESTART_IN) THEN
     LINE    = CCTIME(1:2)//':'//CCTIME(3:4)//':'//CCTIME(5:6)
-    RESULT  = DLGSET (DLG,STARTING_TIME,TRIM(LINE))                                                   !Display starting time
-    RESULT  = DLGSET (DLG,STATUS,'Executing')                                                         !Display execution status
+
+    ! RESULT  = DLGSET (DLG,STARTING_TIME,TRIM(LINE))                                                   !Display starting time
+    ! RESULT  = DLGSET (DLG,STATUS,'Executing')                                                         !Display execution status
+
     CURRENT = 0.0
   ELSE
     CALL CPU_TIME (CURRENT)
   END IF
 
   CALL OUTPUTINIT
-    IF (RESTART_IN) THEN
-    DO JW=1,NWB
-      IF (SCREEN_OUTPUT(JW))CALL SCREEN_UPDATE(DLG)
-    ENDDO
-    ENDIF
+    ! IF (RESTART_IN) THEN
+    ! DO JW=1,NWB
+    !   IF (SCREEN_OUTPUT(JW))CALL SCREEN_UPDATE(DLG)
+    ! ENDDO
+    ! ENDIF
 
   IF (.NOT. RESTART_IN) CALL CPU_TIME (START)
 
-  if (macrophyte_on.and.constituents) call porosity  
+  if (macrophyte_on.and.constituents) call porosity
   IF(SELECTC == '      ON')CALL SELECTIVEINIT   ! new subroutine for selecting water temperature target
   IF(SELECTC == '    USGS')CALL SELECTIVEINITUSGS   ! new subroutine for selecting water temperature target
   IF (TDGTA) CALL InitTDGtarget                  ! tdgtarget - initial
   IF(AERATEC == '      ON' .and. oxygen_demand)CALL AERATE
     If(CEMARelatedCode .and. IncludeBedConsolidation)Call SetupCEMASedimentModel
     If(IncludeFFTLayer)Call CEMAFFTLayerCode
-    !If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)Call CEMASedimentDiagenesis  
- 
+    !If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)Call CEMASedimentDiagenesis
+
 !***********************************************************************************************************************************
 !**                                                   Task 2: Calculations                                                        **
 !***********************************************************************************************************************************
-  DO WHILE (.NOT. END_RUN.AND. .NOT. STOP_PUSHED)    
+  DO WHILE (.NOT. END_RUN.AND. .NOT. STOP_PUSHED)
     IF (JDAY >= NXTVD) CALL READ_INPUT_DATA (NXTVD)
     CALL INTERPOLATE_INPUTS
     DLTTVD = (NXTVD-JDAY)*DAY
@@ -414,10 +422,10 @@ CALL INIT
     ! update wind at 2m for evaopration and evaoprative heat flux computations  ! SW 5/21/15
    DO JW=1,NWB
     DO I=CUS(BS(JW)),DS(BE(JW))
-      WIND2(I) = WIND(JW)*WSC(I)*DLOG(2.0D0/Z0(JW))/DLOG(WINDH(JW)/Z0(JW))    
+      WIND2(I) = WIND(JW)*WSC(I)*DLOG(2.0D0/Z0(JW))/DLOG(WINDH(JW)/Z0(JW))
     END DO
    ENDDO
-    
+
 210 continue   ! timestep violation entry point
  IF(SELECTC == '      ON')CALL SELECTIVE   ! new subroutine for selecting water temperature target
  IF(SELECTC == '    USGS')CALL SELECTIVEUSGS   ! new subroutine for selecting water temperature target
@@ -476,7 +484,7 @@ CALL HYDROINOUT
                 C1S(K,IU-1,CN(1:NAC)) = C1S(K,UHS(JB),CN(1:NAC))
                 C1(K,IU-1,CN(1:NAC))  = C1S(K,UHS(JB),CN(1:NAC))
                 C2(K,IU-1,CN(1:NAC))  = C1S(K,UHS(JB),CN(1:NAC))
-              END DO                      
+              END DO
             ELSE
               CALL UPSTREAM_WATERBODY
               TIN(JB)           = T1(KT,IU-1)
@@ -591,20 +599,20 @@ CALL HYDROINOUT
             ZB        = 0.8D0*DLOG(FETCH(I)*0.5D0)-1.0718D0
             WIND10(I) = WIND10(I)*(5.0D0*ZB+4.6052D0)/(3.0D0*ZB+9.2103D0)
           END IF
-          
+
           IF(WIND10(I) >= 15.0)THEN                     ! SW 1/19/2008
           CZ(I) = 0.0026D0
           ELSEIF(WIND10(I) >= 4.0)THEN
-          CZ(I) = 0.0005D0*DSQRT(WIND10(I)) 
+          CZ(I) = 0.0005D0*DSQRT(WIND10(I))
           ELSEIF(WIND10(I) >= 0.5)THEN
           CZ(I)= 0.0044D0*WIND10(I)**(-1.15D0)
           ELSE
           CZ(I)= 0.01D0
           ENDIF
-          
+
   !        CZ(I) = 0.0
   !        IF (WIND10(I) >= 1.0)  CZ(I) = 0.0005*SQRT(WIND10(I))
-  !        IF (WIND10(I) >= 4.0) CZ(I) = 0.0005*SQRT(WIND10(I))          
+  !        IF (WIND10(I) >= 4.0) CZ(I) = 0.0005*SQRT(WIND10(I))
   !        IF (WIND10(I) >= 15.0) CZ(I) = 0.0026
         END DO
 
@@ -831,8 +839,8 @@ CALL HYDROINOUT
 !****** Gravity force due to channel slope
 
         DO I=IU-1,ID
-          GRAV(KT,I) = AVHR(KT,I)*(BKT(I)+BKT(I+1))*0.5D0*G*SINAC(JB)                                                
-          DO K=KT+1,KB(I)                                                                                              
+          GRAV(KT,I) = AVHR(KT,I)*(BKT(I)+BKT(I+1))*0.5D0*G*SINAC(JB)
+          DO K=KT+1,KB(I)
             GRAV(K,I) = BHR2(K,I)*G*SINAC(JB)
           END DO
         END DO
@@ -948,7 +956,7 @@ CALL HYDROINOUT
           C(I) = -RHO(KT,I+1)*G*COSA(JB)*DLT*DLT* BHRHO(I)  *0.5D0/DLXR(I)
           V(I) =  RHO(KT,I)  *G*COSA(JB)*DLT*DLT*(BHRHO(I)  *0.5D0/DLXR(I)+BHRHO(I-1)*0.5D0/DLXR(I-1))+DLX(I)*BI(KT,I)
           D(I) =  DLT*(D(I)+DLT*(F(I)-F(I-1)))+DLX(I)*BI(KT,I)*Z(I)
-        END DO                   
+        END DO
         IF (UP_HEAD(JB)) D(IU) = D(IU)-A(IU)*Z(IU-1)
         IF (DN_HEAD(JB)) D(ID) = D(ID)-C(ID)*Z(ID+1)
         BTA(IU) = V(IU)
@@ -989,7 +997,7 @@ CALL HYDROINOUT
               DO WHILE (EL(KT,I)-Z(I)*COSA(JB) < EL(KTI(I)+1,I) .AND. KTI(I) < KB(I))                   ! sw 7/18/11
                 Z(I)   = (EL(KT,I)-EL(KTI(I)+1,I)-(EL(KT,I)-EL(KTI(I)+1,I)-Z(I)*COSA(JB))*(B(KTI(I),I)/B(KTI(I)+1,I)))/COSA(JB)
                 KTI(I) =  KTI(I)+1
-                IF(MACROPHYTE_ON)KTICOL(I)=.TRUE.  
+                IF(MACROPHYTE_ON)KTICOL(I)=.TRUE.
                 IF (KTI(I) >= KB(I)) EXIT
               END DO
             END IF
@@ -1010,11 +1018,11 @@ CALL HYDROINOUT
             VOL(KT,I) = BH1(KT,I)*DLX(I)
           END DO
           DO I=IU-1,ID
-            AVHR(KT,I) = H1(KT,I)  +(H1(KT,I+1) -H1(KT,I))/(0.5D0*(DLX(I)+DLX(I+1)))*0.5D0*DLX(I)                          !SW 07/29/04  (H1(KT,I+1) +H1(KT,I))*0.5   
+            AVHR(KT,I) = H1(KT,I)  +(H1(KT,I+1) -H1(KT,I))/(0.5D0*(DLX(I)+DLX(I+1)))*0.5D0*DLX(I)                          !SW 07/29/04  (H1(KT,I+1) +H1(KT,I))*0.5
             IF(KBI(I) < KB(I))AVHR(KT,I)=(H1(KT,I)-(EL(KBI(I)+1,I)-EL(KB(I)+1,I)))  &
                +(H1(KT,I+1)-(EL(KBI(I)+1,I+1)-EL(KB(I)+1,I+1)) -H1(KT,I)+(EL(KBI(I)+1,I)&
                -EL(KB(I)+1,I)))/(0.5D0*(DLX(I)+DLX(I+1)))*0.5D0*DLX(I)        ! SW 1/23/06
-            BHR1(KT,I) =  BH1(KT,I)+(BH1(KT,I+1)-BH1(KT,I))/(0.5D0*(DLX(I)+DLX(I+1)))*0.5D0*DLX(I)                          !SW 07/29/04 (BH1(KT,I+1)+BH1(KT,I))*0.5 
+            BHR1(KT,I) =  BH1(KT,I)+(BH1(KT,I+1)-BH1(KT,I))/(0.5D0*(DLX(I)+DLX(I+1)))*0.5D0*DLX(I)                          !SW 07/29/04 (BH1(KT,I+1)+BH1(KT,I))*0.5
             IF(CONSTRICTION(KT,I))THEN    ! SW 6/26/2018
               IF(BHR1(KT,I) > BCONSTRICTION(I)*H1(KT,I))BHR1(KT,I)= BCONSTRICTION(I)*H1(KT,I)
             ENDIF
@@ -1074,7 +1082,7 @@ CALL HYDROINOUT
                 COLB=EL(KTI(I)+1,I)
                 COLDEP=ELWS(I)-COLB
                 !MACRM(JT,KT,I,M)=MACWBCI(JW,M)*COLDEP*CW(JT,I)*DLX(I)
-                MACRM(JT,KT,I,M)=macrc(jt,kt,I,m)*COLDEP*CW(JT,I)*DLX(I)         ! cb 3/17/16                 
+                MACRM(JT,KT,I,M)=macrc(jt,kt,I,m)*COLDEP*CW(JT,I)*DLX(I)         ! cb 3/17/16
                 MACT(JT,KT,I)=MACT(JT,KT,I)+MACWBCI(JW,M)
                 MACMBRT(JB,M) = MACMBRT(JB,M)+MACRM(JT,KT,I,M)
               END DO
@@ -1227,7 +1235,7 @@ CALL HYDROINOUT
         IF (IMPLICIT_VISC(JW)) THEN
         !  AT = 0.0D0; CT = 0.0D0; VT = 0.0D0; DT = 0.0D0
         DO I=IUT,IDT-1                ! SW CODE SPEEDUP
-            DO K=KT,KBMIN(I) 
+            DO K=KT,KBMIN(I)
             AT(K,I) = 0.0D0; CT(K,I) = 0.0D0; VT(K,I) = 0.0D0; DT(K,I) = 0.0D0
             ENDDO
         ENDDO
@@ -1361,7 +1369,7 @@ CALL HYDROINOUT
         DO I=CUS(JB),DS(JB)
            IF (VISCOSITY_LIMIT(JW))THEN
               IF(AX(JW) >= 0.0)TAU1   = 2.0*AX(JW)/(DLX(I)*DLX(I))
-           ENDIF   
+           ENDIF
           IF (CELERITY_LIMIT(JW))  CELRTY = SQRT((ABS(RHO(KB(I),I)-RHO(KT,I)))/1000.0*G*DEPTHB(KBI(I),I)*0.5)               ! SW 1/23/06
           DO K=KT,KB(I)
             IF (VISCOSITY_LIMIT(JW) .AND. .NOT. IMPLICIT_VISC(JW)) TAU2 = 2.0*AZ(K,I)/(H1(K,JW)*H1(K,JW))
@@ -1369,7 +1377,7 @@ CALL HYDROINOUT
                         +DLX(I)*ABS(BH2(K,I)-BH1(K,I))/DLT+ABS(QSS(K,I)))*0.5
               IF (VISCOSITY_LIMIT(JW).AND.AX(JW)<0.0)THEN
               TAU1   = 2.0*ABS(U(K,I))*ABS(AX(JW))*H(K,JW) /(DLX(I)*DLX(I))
-              ENDIF  
+              ENDIF
             DLTCAL    = 1.0/((QTOT(K,I)/BH1(K,I)+CELRTY)/DLX(I)+TAU1+TAU2+NONZERO)
             IF (DLTCAL < CURMAX) THEN
               KLOC   = K
@@ -1472,7 +1480,7 @@ CALL HYDROINOUT
           DEPTHM(KTWB(JW),I) = H1(KTWB(JW),I)*0.5
              if(kbi(i) < kb(i)  .and. (el(kbi(i)+1,i)-el(kb(i)+1,i)) <  h1(ktwb(jw),i))then   ! SW 7/22/10 if h1 < elev diff this means depth is below the bottom - if we ignore that the run will continue but if dpethb is negative it will bomb in computing DECAY
              depthb(ktwb(jw),i)=(h1(ktwb(jw),i)-(el(kbi(i)+1,i)-el(kb(i)+1,i)))    ! SW 1/23/06
-             depthm(ktwb(jw),i)=(h1(ktwb(jw),i)-(el(kbi(i)+1,i)-el(kb(i)+1,i)))*0.5   
+             depthm(ktwb(jw),i)=(h1(ktwb(jw),i)-(el(kbi(i)+1,i)-el(kb(i)+1,i)))*0.5
              endif
           DO K=KTWB(JW)+1,KMX
             DEPTHB(K,I) = DEPTHB(K-1,I)+ H1(K,I)
@@ -1496,7 +1504,7 @@ CALL HYDROINOUT
         ENDIF
       ENDIF
 ! END DYN PIPE ADJUSTMENT
-        
+
 CALL temperature
 
 IF (CONSTITUENTS) CALL wqconstituents
@@ -1538,7 +1546,7 @@ DO JW=1,NWB
           END IF
           KT         = KTWB(JW)
           NXTMSC(JW) = NXTMSC(JW)+SCRF(SCRDP(JW),JW)
-          CALL SCREEN_UPDATE (DLG)
+          ! CALL SCREEN_UPDATE (DLG)
           CALL DATE_AND_TIME (CDATE,CCTIME)
  !         DO JH=1,NHY
  !           IF (HYDRO_PLOT(JH))       CALL GRAPH_UPDATE (JH,HYD(:,:,JH),     HNAME(JH), HYMIN(JH),1.0,       LNAME(JH))
@@ -1572,15 +1580,15 @@ CALL ENDSIMULATION
   !  CLOSE (9911)                                                                                                        !SR 11/26/19
   !END IF
 ! FISH OUTPUT SW 4/30/15  *************
-        IF(FISH_PARTICLE_EXIST)call fishoutput  
+        IF(FISH_PARTICLE_EXIST)call fishoutput
 
 240 CONTINUE
 !  CALL DEALLOCATE_GRAPH
-  
-  IF(CLOSEC=='      ON' .AND. END_RUN)THEN
-  CALL EXITDIALOG(DLG,TEXT)
-  ELSE
-  CALL STOP_W2 (DLG,TEXT)
-  ENDIF
-  RETURN
+
+  ! IF(CLOSEC=='      ON' .AND. END_RUN)THEN
+  ! CALL EXITDIALOG(DLG,TEXT)
+  ! ELSE
+  ! CALL STOP_W2 (DLG,TEXT)
+  ! ENDIF
+  ! RETURN
 END FUNCTION CE_QUAL_W2

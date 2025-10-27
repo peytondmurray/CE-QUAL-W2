@@ -1459,7 +1459,7 @@ c        if((el(kt)-z2(214)).lt.gsmcdd)then
 c            pumpinc=.false.
 c        end if
 c        if(pumpinc)then
-c          if((el(kt)-z2(214)).gt.(gsmcdd+0.3*0.3048))then	
+c          if((el(kt)-z2(214)).gt.(gsmcdd+0.3*0.3048))then
 c           qwd(29)=qpstor*1.2
 c          end if
 c          if((el(kt)-z2(214)).gt.(gsmcdd+0.6*0.3048))then
@@ -4194,7 +4194,7 @@ c        end if
 
 c  flow data write-out - chris
         qmcdd=(qwd(1)+qwd(29))/(0.3048**3)
-         qmcdd4=qwd(40)/(0.3048**3)  
+         qmcdd4=qwd(40)/(0.3048**3)
         if((nit/20)*20.eq.nit)then
           qpris=-qtr(28)/(0.3048**3)
           if(qpris.eq.0.0)then
@@ -4267,7 +4267,7 @@ c  special tracer output files - chris
       open(177,file='trace3.opt',status='new')
 c write out data every 200 time steps
        if((nit/100)*100.eq.nit)then
-       
+
        jx=cn(1)
        do itt=1,22
          if(itt.eq.1)icl=34
@@ -4292,7 +4292,7 @@ c write out data every 200 time steps
          if(itt.eq.20)icl=190
          if(itt.eq.21)icl=159
          if(itt.eq.22)icl=122
-         
+
          nlay=0
          cctr(itt)=0.0
          do k=kt,kb(icl)
@@ -4303,24 +4303,24 @@ c write out data every 200 time steps
        end do
 
        write(175,9561)jday,(cctr(ii),ii=1,8)
-       write(176,9561)jday,(cctr(ii),ii=9,16) 
+       write(176,9561)jday,(cctr(ii),ii=9,16)
        write(177,9562)jday,(cctr(ii),ii=17,22)
 
 9561   format(f8.3,8(2x,e15.4))
  9562  format(f8.3,6(2x,e15.4))
         end if
 
-c  special write-out to track bod and do plume created by 
+c  special write-out to track bod and do plume created by
 c airport deicing
       open(185,file='boddo.opt',status='new')
 
 c write out data every 200 time steps
        if(jday.ge.45.0.and.jday.le.50.0)then
-       
+
        if(jday.ge.boddonx)then
        boddonx=boddonx+0.1
        do icl=1,imp
-         
+
          jx=cn(12)
          nlay=0
          ccdo(icl)=0.0
@@ -5364,7 +5364,7 @@ c open downstream head bc files if ready to
 c            DO JW=1,NWP
              jw=29
               QWD(JW)  = QWDNX(JW)
-              if(jw.eq.29)qpstor=qwd(29)               
+              if(jw.eq.29)qpstor=qwd(29)
               QWDO(JW) = QWDNX(JW)
 c            END DO
 c            READ (WDQ,1020) NXQWD1,(QWDNX(JW),JW=1,NWP)
@@ -6004,7 +6004,7 @@ c        END IF
 
         IF (DIST_TRIBS(JB).and.jb.eq.11) THEN
           IF (INTERP_DTRIBS) THEN
-            
+
 c            QRATIO = (NXQDT1(JB)-JDAY)/(NXQDT1(JB)-NXQDT2(JB))
             TRATIO = (NXTDT1(JB)-JDAY)/(NXTDT1(JB)-NXTDT2(JB))
             IF (CONSTITUENTS) THEN
@@ -6033,7 +6033,7 @@ c set other branch inputs
               do ii=1,nbp
               IF (DIST_TRIBS(ii))then
                CDTR(DTCN(JC),ii) = (1.0-CRATIO)*CDTRNX(DTCN(JC),jb)
-     .                 +CRATIO*CDTRO(DTCN(JC),JB) 
+     .                 +CRATIO*CDTRO(DTCN(JC),JB)
               end if
              end do
 c              CDTR(DTCN(JC),12) = (1.0-CRATIO)*CDTRNX(DTCN(JC),JB)
@@ -8643,7 +8643,7 @@ c  that is minimum value of that class
      .  velint,velclass(i)/sumvolt, colint,colclass(i)/sumvolt
 125     format(5(f6.2,3x,e12.4,3x),e12.4,3x,e12.4)
           phsum=phsum+phclass(i)/sumvolt
-          phsum2=phsum2+phclass2(numclass+1-i)/sumvolt  
+          phsum2=phsum2+phclass2(numclass+1-i)/sumvolt
           dosum=dosum+doclass(numclass+1-i)/sumvolt
           colsum=colsum+colclass(i)/sumvolt
           velsum=velsum+velclass(i)/sumvolt
@@ -8945,7 +8945,7 @@ c  that is minimum value of that class
      .  velint,velclass(i)/sumvolt, colint,colclass(i)/sumvolt
 125     format(5(f6.2,3x,e12.4,3x),e12.4,3x,e12.4)
           phsum=phsum+phclass(i)/sumvolt
-          phsum2=phsum2+phclass2(numclass+1-i)/sumvolt  
+          phsum2=phsum2+phclass2(numclass+1-i)/sumvolt
           dosum=dosum+doclass(numclass+1-i)/sumvolt
           colsum=colsum+colclass(i)/sumvolt
           velsum=velsum+velclass(i)/sumvolt
@@ -8970,7 +8970,7 @@ c  that is minimum value of that class
 
       end
 
-  
+
 c***************************************
         subroutine mass_load
         INCLUDE 'w2.inc'
@@ -9258,8 +9258,3 @@ c format statements
 307    format('"Ext Down Head',i3,'"',4(e12.3,2x))
        return
        end
-
-
-
-
-

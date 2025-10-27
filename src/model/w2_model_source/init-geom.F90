@@ -150,12 +150,12 @@ USE GLOBAL;USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINET
               exit
             end if
           END DO
-      
+
            Z(I)     = (EL(KTI(I),I)-ELWS(I))/COSA(JB)
 
-          
+
           ZMIN(JW) = DMAX1(ZMIN(JW),Z(I))
-          !KTI(I)   =  MAX(KTI(I)-1,2)   ! MOVED SW 5/27/17 
+          !KTI(I)   =  MAX(KTI(I)-1,2)   ! MOVED SW 5/27/17
           KTMAX    =  MAX(2,KTI(I))
           KTWB(JW) =  MAX(KTMAX,KTWB(JW))
           KTI(I)   =  MAX(KTI(I)-1,2)    ! original    IF(KTI(I) /= KMX)
@@ -301,7 +301,7 @@ USE GLOBAL;USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINET
     END DO
   END DO
 
-  
+
 ! Constrictions                       ! SW 6/26/2018
     CONSTRICTION=.FALSE.   ! INIITALIZE VARIABLES
     BCONSTRICTION=0.0
@@ -320,8 +320,8 @@ USE GLOBAL;USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINET
         ENDDO
         ENDIF
     ENDIF
-    
-  
+
+
 ! Boundary widths
 
   DO JW=1,NWB
@@ -477,7 +477,7 @@ USE GLOBAL;USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINET
 
       CUS(JB) = IUT
       IF(IUT>=DS(JB))BR_INACTIVE(JB)= .TRUE.    ! SW 6/12/2017
-          
+
 
 !**** Areas and bottom widths
 
@@ -544,7 +544,7 @@ USE GLOBAL;USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINET
               IF(BHR(K,I) > BCONSTRICTION(I)*H(K,JW)) BHR(K,I) = BCONSTRICTION(I)*H(K,JW)
               IF(BHR2(K,I) > BCONSTRICTION(I)*H(K,JW))BHR2(K,I)= BCONSTRICTION(I)*H(K,JW)
           ENDIF
-          
+
         END DO
       END DO
       DO K=1,KMX-1

@@ -6,12 +6,12 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC;USE TRIDIAG_V
   Use CEMAVars
   Use CEMASedimentDiagenesis, only: SedimentFlux; USE ALGAE_TOXINS
-  
+
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
   REAL :: TPALG,TNALG,TPZ,TNZ,TPBOD,TNBOD
 
-      IF(MACROPHYTE_ON.AND.UPDATE_KINETICS)CALL POROSITY 
+      IF(MACROPHYTE_ON.AND.UPDATE_KINETICS)CALL POROSITY
       DO JW=1,NWB
         KT = KTWB(JW)
         DO JB=BS(JW),BE(JW)
@@ -31,10 +31,10 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
 ! Standing biomass decay
         IF(STANDING_BIOMASS_DECAY)THEN  ! SW 5/26/15
           IF (SEDIMENT_CALC1(JW))then
-            CALL SEDIMENT1            
+            CALL SEDIMENT1
           end if
           IF (SEDIMENT_CALC2(JW))then
-            CALL SEDIMENT2            
+            CALL SEDIMENT2
           end if
         ENDIF
 
@@ -63,7 +63,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
               IF (JC == NFEOOH)                  CALL OXIDIZEDFE
               IF (JC == NMNII)                   CALL BIVALENTMN
               IF (JC == NMNO2)                   CALL OXIDIZEDMN
-              
+
               IF (JC == NNH4)                    CALL AMMONIUM
               IF (JC == NNO3)                    CALL NITRATE
               IF (JC == NDSI)                    CALL DISSOLVED_SILICA
@@ -80,8 +80,8 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
               IF (JC == NLPOM)                   CALL LABILE_POM
               IF (JC == NRPOM)                   CALL REFRACTORY_POM
               END IF
-              IF (JC == NDO)                     CALL DISSOLVED_OXYGEN              
-              IF (JC >= NGCS  .AND. JC <= NGCE)  CALL GENERIC_CONST(JC-NGCS+1)              
+              IF (JC == NDO)                     CALL DISSOLVED_OXYGEN
+              IF (JC >= NGCS  .AND. JC <= NGCE)  CALL GENERIC_CONST(JC-NGCS+1)
               IF (JC >= NSSS  .AND. JC <= NSSE)  CALL SUSPENDED_SOLIDS(JC-NSSS+1)
               IF (JC >= NAS   .AND. JC <= NAE)THEN
                 IF(ALG_CALC(JC-NAS+1))CALL ALGAE(JC-NAS+1)
@@ -93,9 +93,9 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                     IF(JC == NBODP(JCB) .AND. BOD_CALCP(JCB))CALL BIOCHEMICAL_O2_DEMAND_P(JCB)         ! CB 5/19/2011
                     IF(JC == NBODN(JCB) .AND. BOD_CALCN(JCB))CALL BIOCHEMICAL_O2_DEMAND_N(JCB)         ! CB 5/19/2011
                   END IF
-                END DO       
+                END DO
               ENDIF
-              IF (JC >= NZOOS  .AND. JC <= NZOOE .AND.ZOOPLANKTON_CALC)CALL ZOOPLANKTON  		
+              IF (JC >= NZOOS  .AND. JC <= NZOOE .AND.ZOOPLANKTON_CALC)CALL ZOOPLANKTON
               IF (JC == NLDOMP)                CALL LABILE_DOM_P
               IF (JC == NRDOMP)                CALL REFRACTORY_DOM_P
               IF (JC == NLPOMP)                CALL LABILE_POM_P
@@ -110,19 +110,19 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                   CALL INTRACELLULAR_TOXIN(JC-NATS+1)
                   CALL EXTRACELLULAR_TOXIN(JC-NATS+1)
               ENDIF
-              
+
             END DO
             IF (PH_CALC(JW)) CALL INORGANIC_CARBON
             IF (PH_CALC(JW)) THEN
-              if(ph_buffering)then  ! enhanced pH buffering                
+              if(ph_buffering)then  ! enhanced pH buffering
                 call pH_CO2_new
               else
                 CALL PH_CO2
               end if
             END IF
             If(CEMARelatedCode .and. IncludeCEMASedDiagenesis) Call SedimentFlux
-            
-          END IF          
+
+          END IF
           DO JE=1,NEP   ! sw 5/16/06
             IF (EPIPHYTON_CALC(JW,JE)) CALL EPIPHYTON(JE)
           END DO
@@ -133,7 +133,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
             IF(EVAPORATION(JW) .AND. WATER_AGE_ACTIVE)THEN    ! CORRECT WATER AGE FOR EVAPORATION SR 7/27/2017
                 DO I=IU,ID
                     !JC=NGCS+JG_AGE-1
-                    CSSB(KT,I,NWAGE)=CSSB(KT,I,NWAGE)-EV(I)*WAGE(KT,I)   ! SW 10/17/2019 CG(KT,I,JC)           
+                    CSSB(KT,I,NWAGE)=CSSB(KT,I,NWAGE)-EV(I)*WAGE(KT,I)   ! SW 10/17/2019 CG(KT,I,JC)
                 ENDDO
             ENDIF
 
@@ -236,7 +236,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
               END IF
             END IF
           END DO
-          
+
         IF (NPBALC=='      ON') THEN           !IF(MASS_BALANCE(JW).AND.CONTOUR(JW).AND.DERIVED_CALC)THEN     ! TO COMPUTE TP AND TN INFLOWS AND OUTFLOWS FOR MASSBAL.OPT FILE
             IF (TRIBUTARIES) THEN
               DO JT=1,JTT
@@ -401,7 +401,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                       TNOUT(JW) = TNOUT(JW) + (TNALG+TNBOD+TNZ+C1S(K,ID,NNH4)+C1S(K,ID,NNO3)+C1S(K,ID,NLDOMN)+C1S(K,ID,NRDOMN)+C1S(K,ID,NLPOMN)+C1S(K,ID,NRPOMN))*QOUT(K,JB)*DLT/1000.
                 ENDDO
             ENDIF
-            
+
             !IF (UP_HEAD(JB)) THEN
             !    DO K=KT,KB(IU)
             !    IUT = IU
@@ -442,28 +442,28 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
             !    END IF
             !  END IF
             !END IF
-         ENDIF  ! END OF TP AND TN MASS BALANCES   
-         
-          
+         ENDIF  ! END OF TP AND TN MASS BALANCES
+
+
         END DO    ! JB loop
-        
+
         ! Atmospheric Depsition original unit kg/km2/year
         IF(ATM_DEPOSITION(JW))THEN
             DO JB=BS(JW),BE(JW)
                 DO I=CUS(JB),DS(JB)
                     DO JAC=1,NACATD(JW)
                             CSSB(KT,I,ATMDCN(JAC,JW))=CSSB(KT,I,ATMDCN(JAC,JW))+ATM_DEP_LOADING(ATMDCN(JAC,JW),JW)*BI(KT,I)*DLX(I)*3.17098E-11   ! Conversion: kg/km2/year to g/m2/s 1000/(365*86400*1000*1000)=3.17098E-11
-                            IF(ATMDCN(JAC,JW)==NPO4.OR.ATMDCN(JAC,JW)==NLPOMP.OR.ATMDCN(JAC,JW)==NRPOMP)THEN 
+                            IF(ATMDCN(JAC,JW)==NPO4.OR.ATMDCN(JAC,JW)==NLPOMP.OR.ATMDCN(JAC,JW)==NRPOMP)THEN
                             ATMDEP_P(JW)=ATMDEP_P(JW)+ATM_DEP_LOADING(ATMDCN(JAC,JW),JW)*BI(KT,I)*DLX(I)*3.17098E-11*DLT/1000.    ! P MASS BALANCE IN KG - CUMULATIVE
-                            ELSEIF(ATMDCN(JAC,JW)==NNO3.OR.ATMDCN(JAC,JW)==NLPOMN.OR.ATMDCN(JAC,JW)==NRPOMN.OR.ATMDCN(JAC,JW)==NNH4)THEN 
+                            ELSEIF(ATMDCN(JAC,JW)==NNO3.OR.ATMDCN(JAC,JW)==NLPOMN.OR.ATMDCN(JAC,JW)==NRPOMN.OR.ATMDCN(JAC,JW)==NNH4)THEN
                             ATMDEP_N(JW)=ATMDEP_N(JW)+ATM_DEP_LOADING(ATMDCN(JAC,JW),JW)*BI(KT,I)*DLX(I)*3.17098E-11*DLT/1000.    ! N MASS BALANCE IN KG - CUMULATIVE
                             ENDIF
                     ENDDO
                 ENDDO
             ENDDO
-        ENDIF  
+        ENDIF
 
-        
+
       END DO      ! JW Loop
 
 !**** Kinetic fluxes
@@ -488,8 +488,8 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
 
 !**** Constituent transport
 
-!!$OMP PARALLEL DO PRIVATE(I,JC,KT,JB,JW,DT,K,IU,ID,BTA1,GMA1)    !I,JC,KT,JW,JB,CNEW,SSB,SSK,COLD,AT,VT,CT,DT) 
-    
+!!$OMP PARALLEL DO PRIVATE(I,JC,KT,JB,JW,DT,K,IU,ID,BTA1,GMA1)    !I,JC,KT,JW,JB,CNEW,SSB,SSK,COLD,AT,VT,CT,DT)
+
     DO JAC=1,NAC    !CONCURRENT(JAC=1:NAC)              !JAC=1,NAC
     JC   =  CN(JAC)
     COLD => C1S(:,:,JC)
@@ -502,18 +502,18 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       !    DO JAC=1,NAC
       !      JC   =  CN(JAC)
             !COLD => C1S(:,:,JC)
-            CALL HORIZONTAL_MULTIPLIERS       
-            CALL VERTICAL_MULTIPLIERS           
-            
+            CALL HORIZONTAL_MULTIPLIERS
+            CALL VERTICAL_MULTIPLIERS
+
      !       CNEW => C1(:,:,JC)
      !       SSB  => CSSB(:,:,JC)
      !       SSK  => CSSK(:,:,JC)
      !       CALL HORIZONTAL_TRANSPORT
             DO I=IU,ID
-              DO K=KT,KB(I)      
+              DO K=KT,KB(I)
               DT(K,I) = (C1S(K,I,JC)*BH2(K,I)/DLT+(ADX(K,I)*BHR1(K,I)-ADX(K,I-1)*BHR1(K,I-1))/DLX(I)+(1.0D0-THETA(JW))                     &
                     *(ADZ(K,I)*BB(K,I)-ADZ(K-1,I)*BB(K-1,I))+CSSB(K,I,JC)/DLX(I))*DLT/BH1(K,I)+CSSK(K,I,JC)*DLT
-              END DO                                                    
+              END DO
             END DO
             DO I=IU,ID
         !      CALL TRIDIAG(AT(:,I),VT(:,I),CT(:,I),DT(:,I),KT,KB(I),KMX,CNEW(:,I))

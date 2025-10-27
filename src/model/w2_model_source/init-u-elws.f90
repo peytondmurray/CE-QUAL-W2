@@ -7,19 +7,19 @@ subroutine initial_water_level
 USE MAIN
 USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC 
+  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC
   USE INITIALVELOCITY
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
   INTEGER :: JBU,JBD, JJW
   REAL :: QGATE,WSUP,BRLEN,WLSLOPE,DIST, WLDIFF
-  
+
   LOOP_BRANCH=.FALSE.
-    
+
 ! estimating initial flows in each segment
      QSSI=0.0
-            
-! first considering specified flows: upstream inflows, tributaries, distributed tribs, structural withdrawals and withdrawals    
+
+! first considering specified flows: upstream inflows, tributaries, distributed tribs, structural withdrawals and withdrawals
     DO JW=1,NWB
       KT = KTWB(JW)
       DO JB=BS(JW),BE(JW)
@@ -29,13 +29,13 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           IF(I == IU .AND. UP_FLOW(JB))THEN
              QSSI(I)=QIN(JB)+QSSI(I)
           END IF
-! if downstream of structure          
+! if downstream of structure
           !IF (i == iu .and. UHS(JB) < 0) then
           IF (I == IU .AND. DAM_INFLOW(JB)) THEN    ! CB 4/27/2011
             DO JJW=1,NWB
               DO JJB=BS(JJW),BE(JJW)
                 IF(DS(JJB) == ABS(UHS(JB)))THEN
-                  DO JS=1,NSTR(JJB)              
+                  DO JS=1,NSTR(JJB)
                     QSSI(I)=QSSI(I)+QSTR(JS,JJB)
                   END DO
                 END IF
@@ -49,22 +49,22 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
             END DO
           END IF
           IF (DIST_TRIBS(JB)) THEN
-            QSSI(I)=QSSI(I)+QDTR(JB)/REAL(ID-IU+1)    ! SINCE INITIAL WL UNKNOWN, DISTRIBUTING FLOW EVENLY BTW. SEGS.              
+            QSSI(I)=QSSI(I)+QDTR(JB)/REAL(ID-IU+1)    ! SINCE INITIAL WL UNKNOWN, DISTRIBUTING FLOW EVENLY BTW. SEGS.
           END IF
           IF (WITHDRAWALS) THEN
             DO JWD=1,NWD
-              IF(IWD(JWD) == I)QSSI(I)=QSSI(I)-QWD(JWD)            
+              IF(IWD(JWD) == I)QSSI(I)=QSSI(I)-QWD(JWD)
             END DO
           END IF
           IF(I == ID)THEN
-            DO JS=1,NSTR(JB)              
+            DO JS=1,NSTR(JB)
               QSSI(I)=QSSI(I)-QSTR(JS,JB)
             END DO
           END IF
         END DO
       END DO
     END DO
-    
+
 ! INCLUDING FLOWS WITHIN BRANCH UPSTEAM OF SEGMENT
     DO JW=1,NWB
       KT = KTWB(JW)
@@ -82,7 +82,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       DO JB=BS(JW),BE(JW)
         IU = CUS(JB)
         ID = DS(JB)
-        DO I=IU,ID          
+        DO I=IU,ID
 ! DETERMINING IF SEGMENT IS DOWNSTREAM INTERNAL HEAD BOUNDARY OF ANOTHER *UPSTREAM* BRANCH, AND ADDING FLOW TO SEGMENT AND SEGMENTS DOWNSTREAM
           DO JJW=1,NWB
             DO JJB=BS(JJW),BE(JJW)
@@ -92,7 +92,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                 END DO
               END IF
             END DO
-          END DO                    
+          END DO
 ! DETERMINING IF SEGMENT IS DOWNSTREAM OF SPILLWAY BELOW ANOTHER BRANCH
           DO JS=1,NSP
             IF(ESP(JS) < EL(2,I))THEN  ! DISREGARDING IF CREST ABOVE GRID
@@ -119,7 +119,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                 END IF
               END IF
             END IF
-          END DO                    
+          END DO
         END DO
       END DO
     END DO
@@ -148,23 +148,23 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
         END IF
       END DO
     END DO
-              
-              
+
+
 ! GIVEN ESTIMATED FLOWS FOR EACH SEGMENT, ESTIMATING WL WITH NORMAL DEPTH EQUATION
     DO JW=1,NWB
       KT = KTWB(JW)
       DO JB=BS(JW),BE(JW)
-! ONLY CONSIDERING BRANCHES WITH SLOPES > 0      
+! ONLY CONSIDERING BRANCHES WITH SLOPES > 0
         IF (SLOPE(JB) > 0.0 .AND. .NOT. LOOP_BRANCH(JB))THEN
           IU = CUS(JB)
-          ID = DS(JB)    
+          ID = DS(JB)
           DO I=IU,ID
             CALL NORMAL_DEPTH(QSSI(I))
           END DO
         END IF
       END DO
     END DO
-    
+
 ! SMOOTHING WATER SURFACE ELEVATIONS, FIRST WITHIN BRANCHES
     DO JW=1,NWB
       KT = KTWB(JW)
@@ -175,7 +175,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           DO I=ID-1,IU,-1
             IF(ELWS(I+1) > ELWS(I))THEN
               ELWS(I) = ELWS(I+1)
-            END IF          
+            END IF
           END DO
         END IF
       END DO
@@ -193,7 +193,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
             DO I=ID-1,IU,-1
               IF(ELWS(I+1) > ELWS(I))THEN
                 ELWS(I) = ELWS(I+1)
-              END IF   
+              END IF
             END DO
           END IF
         END IF
@@ -207,7 +207,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
         IF (SLOPE(JB) > 0.0 .AND. .NOT. LOOP_BRANCH(JB) .AND. NSTR(JB) == 0)THEN
           IU = CUS(JB)
           ID = DS(JB)
-! SPILLWAYS          
+! SPILLWAYS
           DO JS=1,NSP
             IF(ESP(JS) < EL(2,I))THEN  ! DISREGARDING IF CREST ABOVE GRID
               IF(ID == IUSP(JS))THEN
@@ -220,7 +220,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                    DO I=ID-1,IU,-1
                      IF(ELWS(I+1) > ELWS(I))THEN
                        ELWS(I) = ELWS(I+1)
-                     END IF   
+                     END IF
                    END DO
                  END IF
                END IF
@@ -242,7 +242,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                    DO I=ID-1,IU,-1
                      IF(ELWS(I+1) > ELWS(I))THEN
                        ELWS(I) = ELWS(I+1)
-                     END IF   
+                     END IF
                    END DO
                 END IF
               END IF
@@ -259,7 +259,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
         IU = CUS(JB)
         ID = DS(JB)
         IF (LOOP_BRANCH(JB))THEN
-          WLDIFF=ELWS(UHS(JB))-ELWS(UHS(JB))          
+          WLDIFF=ELWS(UHS(JB))-ELWS(UHS(JB))
           BRLEN=0.0
           DO I=IU,ID
             BRLEN=BRLEN+DLX(I)
@@ -283,38 +283,38 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
 !***********************************************************************************************************************************
 
       SUBROUTINE NORMAL_DEPTH(FLOW)
-      
+
       USE GLOBAL; USE GEOMC
-                  
-      INTEGER, PARAMETER ::JMAX=40    
+
+      INTEGER, PARAMETER ::JMAX=40
       REAL(R8)   :: FLOW
-      REAL :: X1, X2, FUNCVAL1, FUNCVAL2, XACC, FMID, FUNC1, RTBIS, DX, XMID     
-      INTEGER :: JJ,J  
-                  
+      REAL :: X1, X2, FUNCVAL1, FUNCVAL2, XACC, FMID, FUNC1, RTBIS, DX, XMID
+      INTEGER :: JJ,J
+
 ! FIRST, BRACKETING ROOT
       X1=0.001
       X2=1.0
       CALL MANNINGS_EQN(FLOW,X1,FUNCVAL1)
       CALL MANNINGS_EQN(FLOW,X2,FUNCVAL2)
-                  
+
       DO JJ=1,JMAX
         IF(FUNCVAL1*FUNCVAL2 > 0.0)THEN
           IF(ABS(FUNCVAL1)  < ABS(FUNCVAL2))THEN
             X1=X1/2.0
-            CALL MANNINGS_EQN(FLOW,X1,FUNCVAL1)            
+            CALL MANNINGS_EQN(FLOW,X1,FUNCVAL1)
           ELSE
             X2=X2+1.5*(X2-X1)
             CALL MANNINGS_EQN(FLOW,X2,FUNCVAL2)
-          END IF                                          
+          END IF
         ELSE
           EXIT
-        END IF      
-      END DO                 
-      
-! FINDING ROOT BY BISECTION      
+        END IF
+      END DO
+
+! FINDING ROOT BY BISECTION
       XACC=0.01
       CALL MANNINGS_EQN(FLOW,X2,FMID)
-      CALL MANNINGS_EQN(FLOW,X1,FUNC1)      
+      CALL MANNINGS_EQN(FLOW,X1,FUNC1)
   !    IF(FUNC1*FMID.GE.0.) PAUSE 'ROOT MUST BE BRACKETED IN RTBIS'
       IF(FUNC1.LT.0.)THEN
         RTBIS=X1
@@ -326,9 +326,9 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       DO J=1,JMAX
         DX=DX*.5
         XMID=RTBIS+DX
-        CALL MANNINGS_EQN(FLOW,XMID,FMID)        
+        CALL MANNINGS_EQN(FLOW,XMID,FMID)
         IF(FMID.LE.0.)RTBIS=XMID
-        IF(ABS(DX).LT.XACC .OR. FMID.EQ.0.)THEN          
+        IF(ABS(DX).LT.XACC .OR. FMID.EQ.0.)THEN
           ELWS(I)=RTBIS+EL(KB(I)+1,I)                                      ! SW 4/5/13
           RETURN
         END IF
@@ -336,15 +336,15 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
   !    PAUSE 'TOO MANY BISECTIONS IN RTBIS'
       END SUBROUTINE NORMAL_DEPTH
 
-      
+
 !***********************************************************************************************************************************
 !**        S U B R O U T I N E    M A N N I N G S    E Q U A T I O N                                                              **
 !***********************************************************************************************************************************
 
       SUBROUTINE MANNINGS_EQN(FLOW,DEPTH,FUNCVALUE)
-      
+
       USE GLOBAL; USE GEOMC; USE EDDY; USE LOGICC
-      
+
       REAL(R8) :: FLOW
       REAL     :: WSURF, DEPTH, XAREA, WPER, HRAD,FMANN, FUNCVALUE
 
@@ -359,18 +359,18 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
         FMANN=HRAD**0.166666667/FRIC(I)
       END IF
       FUNCVALUE=FLOW-XAREA*HRAD**0.6667*SLOPEC(JB)**0.5/FMANN            ! SW 4/5/2013
-      
+
       RETURN
       END SUBROUTINE MANNINGS_EQN
-      
+
 !***********************************************************************************************************************************
 !**        S U B R O U T I N E    C R O S S    S E C T I O N A L    A R E A                                                       **
 !***********************************************************************************************************************************
 
       SUBROUTINE XSECTIONAL_AREA(WSURF,XAREA)
-      
+
       USE GLOBAL; USE GEOMC; USE MAIN; USE INITIALVELOCITY
-      
+
       REAL :: XAREA, WSURF     ! 4/5/13 SW
       INTEGER :: KTTOP         ! 4/5/13 SW
 
@@ -384,37 +384,37 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       END DO
  !     DO WHILE (EL(KTTOP,I) > WSURF)
  !        KTTOP = KTTOP+1
- !     END DO            
+ !     END DO
       XAREA=(WSURF-EL(KTTOP+1,I)) * BSAVE(KTTOP,I)
       DO K=KTTOP+1,KBI(I)
          XAREA = XAREA+BSAVE(K,I)*H(K,JW)
-      END DO      
-      
+      END DO
+
       RETURN
       END  SUBROUTINE XSECTIONAL_AREA
-      
-      
+
+
 !***********************************************************************************************************************************
 !**        S U B R O U T I N E    I N I T I A L    H O R I Z O N T A L    V E L O C I T Y                                         **
 !***********************************************************************************************************************************
 
       SUBROUTINE INITIAL_U_VELOCITY
-      
+
       USE GLOBAL; USE GEOMC
       USE INITIALVELOCITY
-      
+
       REAL :: XAREA, WSURF
       INTEGER :: K
 
       DO JW=1,NWB
         KT = KTWB(JW)
-        
+
         DO JB=BS(JW),BE(JW)
           IF (SLOPE(JB) > 0.0 .AND. .NOT. LOOP_BRANCH(JB)) THEN
             IU = CUS(JB)
             ID = DS(JB)
             DO I=IU,ID
-              WSURF=ELWS(I)              
+              WSURF=ELWS(I)
               CALL XSECTIONAL_AREA(WSURF,XAREA)
               UAVG(I)=QSSI(I)/XAREA
               DO K=KT,KB(I)
@@ -424,6 +424,6 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           END IF
         END DO
       END DO
-                
+
       RETURN
       END SUBROUTINE INITIAL_U_VELOCITY

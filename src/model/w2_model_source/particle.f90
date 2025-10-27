@@ -9,7 +9,7 @@
 !***********************************************************************
 ! Andy Goodwin F77 Version 1/2001
 ! Scott Wells F90 Version + Enhancements for Random Water Movement + Bug Fixes/Link to W2V3.1  1/2001
-! Scott Wells Updates to latest version V3.7 5/1/2015 
+! Scott Wells Updates to latest version V3.7 5/1/2015
 ! Scott Wells Updates and particle tracking V4.1 8/1/2017 8/2018
 ! Module Definitions
 
@@ -26,8 +26,8 @@ Module Fishy
       DOUBLE PRECISION FX00COUNT,FZ00COUNT,nfsfreq,RUNDIFF
       REAL ::   wmax,zmin,zmax  ! SW 2/16/01
       REAL            FXLOC,FYLOC,FZLOC,XREFL,YREFL,ZBOTREFL,ZSURREFL
-      REAL            UFISH,VFISH,WFISH,FYVEL,ALPHAX,ALPHAZ   
-      REAL            OUTFREQ,JDAYDIFF,TSETP2MULT 
+      REAL            UFISH,VFISH,WFISH,FYVEL,ALPHAX,ALPHAZ
+      REAL            OUTFREQ,JDAYDIFF,TSETP2MULT
       REAL            FROMKTBOT,RRR,RMAT,RDX,RDY,RDZ,FYLOCTMP
       REAL            FSIZE,FAGE,LJDAY
       REAL            OUTFREQJAN,OUTFREQFEB,OUTFREQMAR,OUTFREQAPR
@@ -90,7 +90,7 @@ Module Fishy
       LOGICAL         DEBUG,LINEAR,WBSKIP,SHOWSKY
       LOGICAL         particle,line,HITSTICKBOTTOM,HITSTICKSIDE,HIST_V,HIST_T,HIST_D  ! SW 4/30/2018
       REAL         :: VEL_INT,VEL_TOP,TEMP_INT,TEMP_TOP,D_INT,D_TOP
-      INTEGER      :: NUMCLASS, NMONITOR  
+      INTEGER      :: NUMCLASS, NMONITOR
       character*3     PARTON,collector,partmod,DXTHEORY        ! SW 2/16/01 7/25/2017 4/30/2018
 
       real, allocatable, dimension (:,:,:) :: flowfield, wqfield,sndcatch,nodes,lastfield
@@ -104,11 +104,11 @@ Module Fishy
       integer, allocatable, dimension  (:) :: icoll,icollt,icollb,IMONITOR  ! SW 2/16/01
       REAL, ALLOCATABLE, DIMENSION (:) :: DELAYDATE,fxloci,fzloci,sedvel,XSHIFTMONITOR
       real, allocatable, dimension (:,:,:) :: BRCHFISH
-      
+
       REAL, ALLOCATABLE, DIMENSION (:)   :: v_tot,v_cnt, d_tot, d_cnt, t_tot, t_cnt, d_avg, t_avg, v_avg, d_sum, t_sum, v_sum, sumvolt  ! SW 4/30/2018
       REAL, ALLOCATABLE, DIMENSION (:,:) :: v_class, t_class, d_class, TMONITOR
       LOGICAL, ALLOCATABLE, DIMENSION(:) :: NEXT_BRANCH
-      
+
       INTEGER :: DIAGFN=8001, DATADEBUGFN=8002, BARCHRTXFN=8003,BARCHRTZFN=8004,FINALFN=8005,INITIALFN=8006, NMONITORS
 
 End Module Fishy
@@ -121,9 +121,9 @@ End Module Fishy
 
       SUBROUTINE FISH
 
-     USE SURFHE; Use Fishy; Use GDAYC;  Use SCREENC; Use GEOMC; USE GLOBAL;   Use MAIN, only: IWD, FISH_PARTICLE_EXIST, KBI 
+     USE SURFHE; Use Fishy; Use GDAYC;  Use SCREENC; Use GEOMC; USE GLOBAL;   Use MAIN, only: IWD, FISH_PARTICLE_EXIST, KBI
      IMPLICIT NONE
-     
+
      REAL :: DZ
      INTEGER :: JF,KK,N, IW, GROUPLAST
 
@@ -131,7 +131,7 @@ End Module Fishy
 
 !***** Open 'Numerical Fish Surrogate' files
       Call Read_Fish_Data
-      IF(.NOT.FISH_PARTICLE_EXIST)RETURN  !STOP ALL PROCESSING    
+      IF(.NOT.FISH_PARTICLE_EXIST)RETURN  !STOP ALL PROCESSING
       OPEN (DIAGFN,FILE='DIAGNOSTICS.OUT',STATUS='UNKNOWN')                         !FISH
       OPEN (DATADEBUGFN,FILE='DATADEBUG.OUT',STATUS='UNKNOWN')                           !FISH
       OPEN (FINALFN,file='finalparticle.csv',status='unknown')                             !FISH
@@ -193,24 +193,24 @@ End Module Fishy
            else
             fishes(fn,4)=fishes(fn-1,4)+dz
             N=N+1
-           endif 
+           endif
          ENDIF
           FISHES(FN,2)  = FXLOCI(FN)   !0.0   ! FXLOC   = Location of fish within segment IMP from upstream side
           FISHES(FN,5)  = B(INT(FISHES(FN,3)),INT(FISHES(FN,1)))*0.5
                                      ! FYLOC   = Lateral fish release location (from left bank in plan view)
-          !                     Looking down on a segment 
+          !                     Looking down on a segment
           !                                downstream
           !        y=0                        y=B/2                       y=B
           !         +---------------------------+--------------------------+
           !         |                                                      |
           !         |                                                      |
           !  L      |                           X                          |       R     ! location of particle in lateral
-          !         |                                                      |          
-          !         |                                                      |          
+          !         |                                                      |
+          !         |                                                      |
           !         |                                                      |
           !         +----------------------------+-------------------------+
           !                                 upstream
-          
+
           call findbranch(fishes(fn,1))
           FISHES(FN,6)  = real(FNBP)   !6     ! FNBP    = Branch where fish is released
           FISHES(FN,7)  = FSIZE   !0.178 ! FSIZE   = Size (i.e., length) of fish in meters (1 inch = 0.0254 meters)
@@ -283,7 +283,7 @@ End Module Fishy
 
 ! initial fish output
     write(INITIALFN,'(a291)')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart'
-    do jf=1,nfish     
+    do jf=1,nfish
     write(INITIALFN,'(i7,",",1x,10(f10.3,","),f8.4,",",f12.4)')jf,fishes(jf,1),fishes(jf,2),fishes(jf,3),fishes(jf,4),fishes(jf,5),fishes(jf,6),fishes(jf,12),fishes(jf,14),fishes(jf,15),fishes(jf,16),sedvel(jf),delaydate(jf)
     end do
 
@@ -296,7 +296,7 @@ End Module Fishy
 
 ! COMPUTE DYNAMIC NFSFREQ SW 1/15/01
 
-      nfsfreq=dlt/86400.    
+      nfsfreq=dlt/86400.
 
       IF (NIT.EQ.0) LRUNDAY = JDAY                            ! LRUNDAY is used in determining NFS run frequency
       RUNDIFF = JDAY - LRUNDAY                                ! RUNDIFF is used in determining NFS run frequency
@@ -307,7 +307,7 @@ End Module Fishy
       IF (NIT.EQ.0) LJDAY = JDAY                              ! LJDAY is used for TecPlot output frequency purposes
       JDAYDIFF = JDAY - LJDAY                                 ! JDAYDIFF is used for TecPlot output frequency purposes
       OUTFREQ=OUTFREQP
-      
+
       IF (JDAYDIFF.GE.OUTFREQ) THEN     ! Set FCOUNT = 1, so information will be outputted
         FCOUNT = 1                                            ! Information outputted iff FCOUNT = 1
         LJDAY = JDAY
@@ -334,10 +334,10 @@ End Module Fishy
 !Load Fish Information and Begin NFS Logic
 
       !IF (JDAY .LT. DELAYDATE) GOTO 28
-      
+
       CALL INTERCONST                                         ! Subroutine to interpolate Constituent values
       CALL INTERFLOWF                                         ! Subroutine to interpolate Flow Field values
- 
+
       DO 131 FN=1,NFISH              ! This is the only loop where statements are not indented
       IF (JDAY .LT. DELAYDATE(FN)) CYCLE
       FIMP =    INT(FISHES(FN,1))    ! Segment IMP where fish is located
@@ -377,8 +377,8 @@ End Module Fishy
             FISHES(FN,4)=FZLOC
             ENDIF
         ENDIF
-        
-            
+
+
 !  Find Flow and Water Quality Constituent Values at places of interest:
 
         DIR = 1                                               ! DIR = Direction Fish is swimming: 1=downstream, 2=upstream
@@ -430,7 +430,7 @@ CALL PART_TRANSPORT
                 fishes(fn,12)=1.0                ! FISH LEAVES SYSTEM
                 fishes(fn,16)=6.0                ! Particle leaves by hitting side wall and sticking-LHS
             ELSE
-           FYLOC = B(FKMP,FIMP)*YREFL 
+           FYLOC = B(FKMP,FIMP)*YREFL
            ENDIF
         ELSE IF (FYLOC.GT.B(FKMP,FIMP)) THEN
             IF(HITSTICKSIDE)THEN
@@ -440,11 +440,11 @@ CALL PART_TRANSPORT
                 fishes(fn,12)=1.0                ! FISH LEAVES SYSTEM
                 fishes(fn,16)=7.0                ! Particle leaves by hitting side wall and sticking-RHS
             ELSE
-           FYLOC = B(FKMP,FIMP)*(1-YREFL) 
+           FYLOC = B(FKMP,FIMP)*(1-YREFL)
            ENDIF
         END IF
   else
-        IF (FYLOC.LT.0.and.fyvel.lt.0.0.AND.LIMPBR(FIMP,1)==0) THEN  ! 
+        IF (FYLOC.LT.0.and.fyvel.lt.0.0.AND.LIMPBR(FIMP,1)==0) THEN  !
             ! check for a withdrawal
             DO IW=1,NWD
               IF(FIMP==IWD(IW))THEN    ! remove particle through withdrawal
@@ -455,8 +455,8 @@ CALL PART_TRANSPORT
                 fishes(fn,16)=1.0                ! Signifies the lateral removal by withdrawal
                 WRITE(DIAGFN,*) 'Withdrawal: Particle Leaves System on JDAY:',jday, 'Data:',fishes(fn,:)
                 GOTO 20
-              ENDIF     
-            ENDDO     
+              ENDIF
+            ENDDO
             IF(HITSTICKSIDE)THEN
                  ISWITCH = 1
                 fishes(fn,14)=JDAY               ! Time fish left system
@@ -467,12 +467,12 @@ CALL PART_TRANSPORT
             ELSE
             FYLOC = B(FKMP,FIMP)*YREFL     ! reflect
             ENDIF
-        ELSE IF(FYLOC.GT.B(FKMP,FIMP).and.fyvel.gt.0.0.AND.RIMPBR(FIMP,1)>0) THEN   
+        ELSE IF(FYLOC.GT.B(FKMP,FIMP).and.fyvel.gt.0.0.AND.RIMPBR(FIMP,1)>0) THEN
             WRITE(DIAGFN,*) 'LateralRIGHT: Particle move to new branch on JDAY:',jday,'FYVEL=',fyvel,'OLD I:',FIMP,'NEW I:', RIMPBR(FIMP,1),' OLD branch:',FNBP,' NEW branch:',RIMPBR(FIMP,2)
             FIMP=RIMPBR(FIMP,1)
             FYLOC= B(FKMP,FIMP)*0.5   ! PLACE IN MIDDLE LATERALLY
             FXLOC= DLX(FIMP)*0.9      ! PLACE IN NEAR END OF SEGMENT
-           
+
            !ISWITCH = 1
            !! SW 2/01/01 Track timing of fish movement from system
            !fishes(fn,14)=JDAY               ! Time fish left system
@@ -483,11 +483,11 @@ CALL PART_TRANSPORT
            ! End Section SW 2/01/01
            !GOTO 20
            ! Particle is removed       ***need to transfer to another branch - it is only removed****
-        ELSE IF(FYLOC.LT.0.0.and.fyvel.Lt.0.0.AND.LIMPBR(FIMP,1)>0) THEN  
+        ELSE IF(FYLOC.LT.0.0.and.fyvel.Lt.0.0.AND.LIMPBR(FIMP,1)>0) THEN
             WRITE(DIAGFN,*) 'LateralLEFT: Particle move to new branch on JDAY:',jday,'FYVEL=',fyvel,'OLD I:',FIMP,'NEW I:', LIMPBR(FIMP,1),' OLD branch:',FNBP,' NEW branch:',LIMPBR(FIMP,2)
             FIMP=LIMPBR(FIMP,1)
             FYLOC= B(FKMP,FIMP)*0.5   ! PLACE IN MIDDLE LATERALLY
-            FXLOC= DLX(FIMP)*0.9      ! PLACE NEAR END OF SEGMENT                 
+            FXLOC= DLX(FIMP)*0.9      ! PLACE NEAR END OF SEGMENT
            !ISWITCH = 1
            !! SW 2/01/01 Track timing of fish movement from system
            !fishes(fn,14)=JDAY               ! Time fish left system
@@ -497,8 +497,8 @@ CALL PART_TRANSPORT
            !WRITE(DIAGFN,*) 'LateralLEFT: Particle Leaves System on JDAY:',jday,'FYVEL=',fyvel, 'Data:',fishes(fn,:)
            ! End Section SW 2/01/01
            !GOTO 20
-  
-        ELSEIF (FYLOC.GT.B(FKMP,FIMP).and.RIMPBR(FIMP,1)==0.0) THEN   ! reflect 
+
+        ELSEIF (FYLOC.GT.B(FKMP,FIMP).and.RIMPBR(FIMP,1)==0.0) THEN   ! reflect
             IF(HITSTICKSIDE)THEN
                 ISWITCH = 1
                 fishes(fn,14)=JDAY               ! Time fish left system
@@ -507,11 +507,11 @@ CALL PART_TRANSPORT
                 fishes(fn,16)=7.0                ! Particle leaves by hitting side wall and sticking-RHS
                 WRITE(DIAGFN,*) 'Hit Stick RHSide: Particle sticks to side wall on JDAY:',jday, 'Data:',fishes(fn,:)
             ELSE
-                
-           FYLOC = B(FKMP,FIMP)*(1-YREFL) 
+
+           FYLOC = B(FKMP,FIMP)*(1-YREFL)
             ENDIF
-            
-        ELSEIF (FYLOC.LT.0.0 .and.LIMPBR(FIMP,1)==0) THEN  ! reflect 
+
+        ELSEIF (FYLOC.LT.0.0 .and.LIMPBR(FIMP,1)==0) THEN  ! reflect
             IF(HITSTICKSIDE)THEN
                 ISWITCH = 1
                 fishes(fn,14)=JDAY               ! Time fish left system
@@ -520,7 +520,7 @@ CALL PART_TRANSPORT
                 fishes(fn,16)=6.0                ! Particle leaves by hitting side wall and sticking-LHS
                 WRITE(DIAGFN,*) 'Hit Stick LHSide: Particle sticks to side wall on JDAY:',jday, 'Data:',fishes(fn,:)
             ELSE
-           FYLOC = B(FKMP,FIMP)*YREFL 
+           FYLOC = B(FKMP,FIMP)*YREFL
            ENDIF
         END IF
   end if
@@ -528,10 +528,10 @@ CALL PART_TRANSPORT
 !Check for Boundary Violations: Horizontal Direction
 
    10   IF (FXLOC.GT.DLX(FIMP)) THEN
- 
+
            IF(FIMP < DS(FNBP))THEN
-                FIMP = FIMP + 1                                   
-                FXLOC = FXLOC-DLX(FIMP) 
+                FIMP = FIMP + 1
+                FXLOC = FXLOC-DLX(FIMP)
            ELSEIF(FXVEL(5) > 0.0 .AND. DHS(FNBP)==0)THEN
               ! CHECK IF A BRANCH DOWNSTREAM TO PASS THE PARTICLE TO
                IF(NEXT_BRANCH(FNBP))THEN
@@ -563,7 +563,7 @@ CALL PART_TRANSPORT
                 WRITE(DIAGFN,*) 'DHS: Particle move to new branch on JDAY:',jday,'FXVEL=',fxvel(5),'OLD I:',FIMP,'NEW I:', DHS(FNBP),' OLD branch:',FNBP
                 FIMP=DHS(FNBP)
                 FYLOC= B(FKMP,FIMP)*0.5   ! PLACE IN MIDDLE LATERALLY
-                FXLOC= DLX(FIMP)*0.5      ! PLACE IN MIDDLE OF SEGMENT                  
+                FXLOC= DLX(FIMP)*0.5      ! PLACE IN MIDDLE OF SEGMENT
                ! MOVE PARTICLE TO NEW BRANCH
                 !ISWITCH = 1
                 !fishes(fn,14)=JDAY               ! Time fish left system
@@ -574,13 +574,13 @@ CALL PART_TRANSPORT
                ! REFLECT OFF DAM
                 FXLOC=DLX(FIMP)*(1.0-XREFL)
            ENDIF
-            
+
         ELSE IF (FXLOC.LT.0) THEN
 
           IF (FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)==0) THEN      ! The UpStream end of Branch JBP or UNBP
-              FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary 
-              
-              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)==-1 .AND. FXVEL(5) < 0.0) THEN 
+              FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary
+
+              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)==-1 .AND. FXVEL(5) < 0.0) THEN
                             ! LOSE PARTCLE to external head BC
                 ISWITCH = 1
                 fishes(fn,14)=JDAY               ! Time fish left system
@@ -589,17 +589,17 @@ CALL PART_TRANSPORT
                 fishes(fn,16)=3.0  ! Particle leaves at external head BC Upstream
                 WRITE(DIAGFN,*) 'At External Upstream Head Boundary: Particle Leaves System on JDAY:',jday, 'Data:',fishes(fn,:)
            GOTO 20
-              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)==-1 .AND. FXVEL(5) >= 0.0) THEN 
-             FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary 
-              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)>0 .AND. FXVEL(5) >= 0.0) THEN     
-                    FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary   
-              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)>0 .AND. FXVEL(5) < 0.0) THEN     
+              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)==-1 .AND. FXVEL(5) >= 0.0) THEN
+             FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary
+              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)>0 .AND. FXVEL(5) >= 0.0) THEN
+                    FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary
+              ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)>0 .AND. FXVEL(5) < 0.0) THEN
                 WRITE(DIAGFN,*) 'UHS: Particle move to new branch on JDAY:',jday,'FXVEL=',fxvel(5),'OLD I:',FIMP,'NEW I:', DHS(FNBP),' OLD branch:',FNBP
                 FIMP=UHS(FNBP)
                 FYLOC= B(FKMP,FIMP)*0.5   ! PLACE IN MIDDLE LATERALLY
-                FXLOC= DLX(FIMP)*0.5      ! PLACE IN MIDDLE OF SEGMENT                           
+                FXLOC= DLX(FIMP)*0.5      ! PLACE IN MIDDLE OF SEGMENT
               ELSEIF(FIMP.EQ.CUS(FNBP) .AND. UHS(FNBP)<-1 ) THEN       ! at a DAM
-                    FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary                                     
+                    FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary
               ELSEIF(FIMP>CUS(FNBP))THEN
             FIMP = FIMP - 1                                    ! There are still segments upstream for the fish to
             FXLOC = DLX(FIMP) + FXLOC                          !    move to
@@ -608,8 +608,8 @@ CALL PART_TRANSPORT
           END IF
 
         !ELSEIF(FXLOC.EQ.0.0.and.cus(fnbp).eq.fimp.and.fxvel(5).eq.0.)then
-        !     FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary 
-        !     
+        !     FXLOC = DLX(FIMP)*XREFL    ! REflect partilce off UPSTREAM boundary
+        !
         !ELSEIF(FXLOC == DLX(FIMP) .AND. DS(FNBP)==FIMP   .AND.  FXVEL(5) <= 0.0)THEN
         !     FXLOC = DLX(FIMP)*(1.0-XREFL)  ! REFLECT OFF DOWNSTREAM BOUNDARY
         !ELSE
@@ -623,7 +623,7 @@ CALL PART_TRANSPORT
 ! This first section below checks and corrects fish vertically above or below the bottom
    70   IF ((FKMP.Le.KTI(FIMP)).OR.&   ! SW 2/01/01 Change so that do a check if in "air" or not
             (FKMP.GT.KBI(FIMP))) THEN                            ! SW 8/2018 USE KBI (INITIAL KB) RATHER THAN ALTERED KB IN CASE OF LOWERING KB IN RIVER SLOT
-          IF (FKMP.GT.KBI(FIMP)) THEN                   !  FKMP is below KB 
+          IF (FKMP.GT.KBI(FIMP)) THEN                   !  FKMP is below KB
             FKMP = FKMP - 1
             FZLOC = H(FKMP,FJR)*(1-ZBOTREFL)           !    Logic for rebounding off of the bottom
             GOTO 70
@@ -639,7 +639,7 @@ CALL PART_TRANSPORT
                    fzloc=(h(kti(fimp),fjr)+z(fimp))+h(fkmp,fjr)*(1-zsurrefl)
                    end if
                end if
-          END IF                                        
+          END IF
         END IF
 
 !Check for Boundary Violations: Vertical Direction Check (2 of 2)
@@ -649,7 +649,7 @@ CALL PART_TRANSPORT
           IF (FKMP+1.GT.KBI(FIMP)) THEN                 ! Did fish move below bottom layer? -- YES   USE KBI RATHER THAN KB SW 8/2018
                 IF(HITSTICKBOTTOM)THEN
                   ! PARTICLE LOST FROM SYSTEM
-                                              ! LOSE PARTCLE 
+                                              ! LOSE PARTCLE
                 ISWITCH = 1
                 fishes(fn,14)=JDAY               ! Time fish left system
                 fishes(fn,15)=JDAY-DELAYDATE(FN)     ! Detention time of fish in system
@@ -659,11 +659,11 @@ CALL PART_TRANSPORT
                   ELSE
                     FZLOC = H(FKMP,FJR)*(1-ZBOTREFL)               !    Logic for rebounding off of the bottom
                   ENDIF
-                  
+
           ELSE                                         ! Did fish move below bottom layer? -- NO
             FZLOC = FZLOC - H(FKMP,FJR)
             FKMP = FKMP + 1
-            IF (FZLOC.GT.H(FKMP,FJR)) GOTO 30              ! Did fish move down more than one layer 
+            IF (FZLOC.GT.H(FKMP,FJR)) GOTO 30              ! Did fish move down more than one layer
           END IF
         ELSE IF (FZLOC.LT.0) THEN                      ! Did fish move up?  --  YES
           IF (DEBUG) WRITE(DATADEBUGFN,*) 'FZLOC LT 0'
@@ -687,7 +687,7 @@ CALL PART_TRANSPORT
             IF (DEBUG) WRITE(DATADEBUGFN,*) 'FKMP LE KTWBF-1'
             FROMKTBOT = 0.0
             DO 40 KK = KTWBF,(FKMP+1),-1
-              FROMKTBOT = FROMKTBOT + H(KK,FJR)    
+              FROMKTBOT = FROMKTBOT + H(KK,FJR)
    40       CONTINUE
             FROMKTBOT = FROMKTBOT + ABS(FZLOC)
             IF (FROMKTBOT.GT.(H(KTWBF,FJR)-Z(FIMP))) THEN
@@ -701,7 +701,7 @@ CALL PART_TRANSPORT
             FKMP = FKMP - 1
             FZLOC = H(FKMP,FJR) + FZLOC
             IF (FZLOC.LT.0) GOTO 30                    ! Did fish move up more than one layer - must improve this.
-            SURFCALC = 0 
+            SURFCALC = 0
           END IF
           IF (SURFCALC.EQ.1) THEN
             FKMPTEMP = KTWBF
@@ -726,9 +726,9 @@ CALL PART_TRANSPORT
 !Check for Boundary Violations: Lateral Direction Check (2 of 2)
 
         IF (FYLOC.LT.0) THEN
-          FYLOC = B(FKMP,FIMP)*YREFL 
+          FYLOC = B(FKMP,FIMP)*YREFL
         ELSE IF (FYLOC.GT.B(FKMP,FIMP)) THEN
-          FYLOC = B(FKMP,FIMP)*(1-YREFL) 
+          FYLOC = B(FKMP,FIMP)*(1-YREFL)
         ELSE
         END IF
 
@@ -750,7 +750,7 @@ CALL PART_TRANSPORT
       FISHES(FN,11) =      WFISH      ! Vertical velocity of fish relative to water
       FISHES(FN,12) = REAL(ISWITCH)   ! Is fish still in system?: Yes=0  No=1
       FISHES(FN,13) = REAL(FSNAG)     ! Gillnet # fish is snagged in; = 0 if fish not in a gillnet
-      
+
       ! CHECK MONITORING STATIONS
       DO N=1,NMONITORS
           IF(MONITORONOFF(FN,N)==0)THEN
@@ -762,10 +762,10 @@ CALL PART_TRANSPORT
               ENDIF
           ENDIF
       ENDDO
-      
+
 
       IF(ISWITCH==0)CALL HISTOGRAM
-      
+
   131 CONTINUE   !end of NFISH loop
 
    28 CONTINUE
@@ -783,7 +783,7 @@ CALL PART_TRANSPORT
 
       return
     END
-    
+
     SUBROUTINE NEXTBRANCH   ! SW 8/7/2016
     USE Fishy; Use GLOBAL; USE STRUCTURES
     INTEGER :: JS, JG, JP
@@ -813,12 +813,12 @@ CALL PART_TRANSPORT
           ENDDO
       ENDIF
     ENDDO
-    
-      
+
+
       RETURN
-    
-    
-    
+
+
+
     END SUBROUTINE NEXTBRANCH
 
 !***********************************************************************
@@ -836,7 +836,7 @@ CALL PART_TRANSPORT
                                                !   77 for Engineers and Scientists, 5th
       INTEGER   SEED                           !   Edition - Author: Delores M. Etter"
       REAL      RNDX                           !   The random # is between 0.0 and 1.0
-      
+
 
       SEED = 2045*SEED + 1
       SEED = SEED - (SEED/1048576)*1048576
@@ -858,7 +858,7 @@ CALL PART_TRANSPORT
       SUBROUTINE FIMPBR
 
       Use FISHY; Use GEOMC; USE GLOBAL;USE SURFHE
-      
+
       IMPLICIT NONE
       REAL    :: BRANGLE
 
@@ -885,7 +885,7 @@ CALL PART_TRANSPORT
               RIMPBR(I,2) = JB
             ELSE
               NL = NL + 1
-              LIMPBR(I,1) = DS(JB) 
+              LIMPBR(I,1) = DS(JB)
               LIMPBR(I,2) = JB
             END IF
           ELSE
@@ -915,9 +915,9 @@ CALL PART_TRANSPORT
 
 
       SUBROUTINE FINDNEWBR
-      
+
     Use Fishy; Use GEOMC; USE GLOBAL;Use SCREENC
-    
+
     IMPLICIT NONE
     integer trib
 
@@ -952,11 +952,11 @@ CALL PART_TRANSPORT
 !  This Subroutine Calls No Other Subroutines
 
       SUBROUTINE WHATJR
-      
+
       Use FISHY
       USE GLOBAL
       IMPLICIT NONE
-      
+
       INTEGER  WBDY
 
       WBDY = 0                                              ! WBDY = Water Body
@@ -1008,7 +1008,7 @@ CALL PART_TRANSPORT
       USE GLOBAL
       Use GEOMC
       Use SCREENC; USE MAIN, ONLY: KBI
-      
+
       IMPLICIT NONE
 
       INTEGER     WB,NN,NNLAST,WATER
@@ -1034,9 +1034,9 @@ CALL PART_TRANSPORT
       IF (FEGRID) CALL INTERFLOWF                     ! Subroutine to interpolate Flow Field values
       NN = 0                                          ! NN = Global Node # (UpperLeft Corner of cell(K,I))
       !DO 115 WB=1,NWB                                 ! WB = Water Body # / NWB = Total # of Water Bodies
-      DO WB=1,NWB 
+      DO WB=1,NWB
         !DO 116 JB=BS(WB),BE(WB)                     ! JB = Branch #
-          DO JB=BS(WB),BE(WB) 
+          DO JB=BS(WB),BE(WB)
           IF (FEGRID.EQV..FALSE.) GOTO 94             ! Skip to setting up FE grid if NIT = 0
 
           IF (NIT.EQ.0) THEN
@@ -1051,8 +1051,8 @@ CALL PART_TRANSPORT
             ELSE                                        ! CHECK
             WRITE(DATADEBUGFN,*) 'ERROR: Exceeded Maximum Number of TecPlot Data Sets ==> # Data Sets = # of Branches'
             STOP
-            END IF          
-              
+            END IF
+
             OPEN(20000+JB,FILE=FILENAME,STATUS='UNKNOWN')       ! Opening the Output Files Based on Branch #
             WRITE(20000+JB,9240) JB                           ! Creating Output File Header for TecPlot
  9240       FORMAT('TITLE = "GRID NODE INFO for Branch',I6,'"')
@@ -1137,7 +1137,7 @@ CALL PART_TRANSPORT
                   else
                       zdist=elws(i)-depthm(k,i)
                   endif
-                  
+
                 WRITE(20000+JB,9260) XDIST,zdist,WATER,&            ! Outputting node information  SW output elevation in m
                         FLOWFIELD(K,I,1),-VERTFLOW,&                !   to a file for TecPlot to display
                         WQFIELD(K,I,1),WQFIELD(K,I,2),K,I
@@ -1146,7 +1146,7 @@ CALL PART_TRANSPORT
 !     .                   F10.2,I5)
                                                  ! XDIST                 = X Distance to Node in Branch JB
                                                  ! ZDIST                 = Depth to Node in Branch JB
-                                                 ! NN                    = Global Node # 
+                                                 ! NN                    = Global Node #
                                                  ! BRCHNN                = Branch Node #
                                                  ! K                     = Layer #
                                                  ! I                     = Segment #
@@ -1167,8 +1167,8 @@ CALL PART_TRANSPORT
               XDIST = XDIST + DLX(I)
         ENDDO
     ENDDO
-    
- ! 118       CONTINUE        
+
+ ! 118       CONTINUE
   !117     CONTINUE
           IF (FEGRID) THEN                                 ! If FEGRID = .TRUE., then FE connectivity already set up
             IF (NIT.EQ.0) THEN                             ! Once FE connectivity is established (below), it still
@@ -1216,7 +1216,7 @@ CALL PART_TRANSPORT
   !115 CONTINUE
           ENDDO
       ENDDO
-      
+
 
       IF (FEGRID) THEN
       ELSE
@@ -1261,7 +1261,7 @@ CALL PART_TRANSPORT
       SUBROUTINE INTERCONST
 
       Use FISHY; USE GLOBAL; Use GEOMC; Use SCREENC; USE KINETIC; USE MAIN, ONLY: KBI
-      
+
       IMPLICIT NONE
 
       REAL        DV,DW,DX,DY
@@ -1285,12 +1285,12 @@ CALL PART_TRANSPORT
         !DO 128 JB=BS(WB),BE(WB)                                    ! JB = Branch #
         !  DO 129 K=2,KMX                                           ! K = Layer #
         !    DO 130 I=US(JB),(DS(JB)+1)                         ! I = Segment #  changed from us to cus sw 5/2015
-              IF ((K-1.LE.KBI(I)).OR.(K-1.LE.KBI(I-1))) THEN         ! All Nodes at or above Water Body Bottom,  KBI IS INITIAL KB  !((K-1.LE.KB(I)).OR.(K-1.LE.KB(I-1))) THEN 
+              IF ((K-1.LE.KBI(I)).OR.(K-1.LE.KBI(I-1))) THEN         ! All Nodes at or above Water Body Bottom,  KBI IS INITIAL KB  !((K-1.LE.KB(I)).OR.(K-1.LE.KB(I-1))) THEN
                 NN = NN + 1                                        ! PRE-CHECK CALCULATION
                 KK = NDINFO(NN,3)                                  ! PRE-CHECK CALCULATION
                 II = NDINFO(NN,4)                                  ! PRE-CHECK CALCULATION
                 IF ((I.NE.II).OR.(K.NE.KK)) THEN                   ! CHECK
-                  
+
                   WRITE(DATADEBUGFN,*) 'ERROR: Nodes not matching up for Constituent Interpolation'
                   write(DATADEBUGFN,*)'JDAY=',jday
                   write(DATADEBUGFN,*)'Waterbody=',wb,' Branch JB=', JB
@@ -1313,7 +1313,7 @@ CALL PART_TRANSPORT
                   XRANGE = .5*DLX(I-1)+.5*DLX(I)
                   WQFIELD(K,I,1) = (T2(K,I-1)*(XRANGE-.5*DLX(I-1))+ T2(K,I)*(XRANGE-.5*DLX(I)))/XRANGE
                   WQFIELD(K,I,2) = (O2(K,I-1)*(XRANGE-.5*DLX(I-1))+O2(K,I)*(XRANGE-.5*DLX(I)))/XRANGE
-                ELSE IF ((K.EQ.KBI(I)+1).AND.(I.EQ.US(JB))) THEN       !Analogous to Node 7 above                   K.EQ.KB(I)+1).AND.(I.EQ.US(JB))) 
+                ELSE IF ((K.EQ.KBI(I)+1).AND.(I.EQ.US(JB))) THEN       !Analogous to Node 7 above                   K.EQ.KB(I)+1).AND.(I.EQ.US(JB)))
                   WQFIELD(K,I,1) = T2(K-1,I)
                   WQFIELD(K,I,2) = O2(K-1,I)
                 ELSE IF ((K.EQ.KBI(I)+1).AND.(I.EQ.DS(JB)+1)) THEN     !Analogous to Node 9 above                    K.EQ.KB(I)+1).AND.(I.EQ.DS(JB)+1))
@@ -1377,7 +1377,7 @@ CALL PART_TRANSPORT
     ENDDO
     ENDDO
     ENDDO
-    
+
 
       RETURN
       END
@@ -1420,7 +1420,7 @@ CALL PART_TRANSPORT
 
       Use FISHY; USE GLOBAL; Use GEOMC; Use SCREENC; USE MAIN, ONLY: KBI
       IMPLICIT NONE
-      
+
       REAL        UVERT,HVERT,WHORZ,DLXHO
       REAL        XV,FDDU,FDDW,LASTJDAY
       REAL        XRANGE,YRANGE
@@ -1435,7 +1435,7 @@ CALL PART_TRANSPORT
       SAVE        LASTJDAY,TOPK
 
       DIMENSION   UVERT(N+1),HVERT(N+1),WHORZ(N+1),DLXHO(N+1),FDDU(N+1,N+1),FDDW(N+1,N+1)
-                  
+
       NN = 0                                                       ! NN = Global Node # (UpperLeft Corner of cell(K,I))
       !DO 123 WB=1,NWB                                              ! WB = Water Body # / NWB = Total # of Water Bodies
       DO WB=1,NWB
@@ -1445,7 +1445,7 @@ CALL PART_TRANSPORT
               DO K=2,KMX
             !DO 126 I=US(JB),(DS(JB)+1)                         ! I = Segment #  SW 5/2015
                DO I=US(JB),DS(JB)+1
-              IF ((K-1.LE.KBI(I)).OR.(K-1.LE.KBI(I-1))) THEN         ! All Nodes at or above Water Body Bottom     ((K-1.LE.KB(I)).OR.(K-1.LE.KB(I-1))) 
+              IF ((K-1.LE.KBI(I)).OR.(K-1.LE.KBI(I-1))) THEN         ! All Nodes at or above Water Body Bottom     ((K-1.LE.KB(I)).OR.(K-1.LE.KB(I-1)))
                 NN = NN + 1                                        ! PRE-CHECK CALCULATION
                 KK = NDINFO(NN,3)                                  ! PRE-CHECK CALCULATION
                 II = NDINFO(NN,4)                                  ! PRE-CHECK CALCULATION
@@ -1464,9 +1464,9 @@ CALL PART_TRANSPORT
                     IF(K < KTI(I))THEN   ! SW 12/12/2018
                     FLOWFIELD(K,I,1) = U(KTWB(WB),I-1)         ! SW 12/26/2018 was =0 before      !   Horiz. Vel.   IN AIR should still be in the upper layer - nothing goes up into the air - corrected soon by BC
                     FLOWFIELD(K,I,2) = 0.0                         !   Vert.  Vel.
-                    ELSE 
+                    ELSE
                     FLOWFIELD(K,I,1) = U(KTWB(WB),I-1)             !   Horiz. Vel.  NOT IN AIR  SW 12/12/2018
-                    FLOWFIELD(K,I,2) = 0.0                         !   Vert.  Vel.  
+                    FLOWFIELD(K,I,2) = 0.0                         !   Vert.  Vel.
                     ENDIF
                   ELSE IF (K.EQ.KTWB(WB)) THEN                      !At Water Surface
                     FLOWFIELD(K,I,1) = U(K,I-1)                    !   Horiz. Vel.
@@ -1479,7 +1479,7 @@ CALL PART_TRANSPORT
                         FLOWFIELD(K,I,1) = U(K-1,I-1)
                         FLOWFIELD(K,I,2) = 0.0
                     ENDIF
-                    
+
                   ELSE IF (I.EQ.US(JB)) THEN                     !Upstream-most Nodes
                     YRANGE = .5*H(K-1,WB)+.5*H(K,WB)
                     FLOWFIELD(K,I,1) = (U(K-1,I-1)*(YRANGE-&
@@ -1581,7 +1581,7 @@ CALL PART_TRANSPORT
                     DLXHO(1) = -DLX(I-1)-0.5*DLX(I-2)
                     DLXHO(2) = -0.5*DLX(I-1)
                   END IF
-                  IF (I.GT.DS(JB)) THEN           !Both Right Nodes are Downstream of Water Body 
+                  IF (I.GT.DS(JB)) THEN           !Both Right Nodes are Downstream of Water Body
                     WHORZ(3) = 0                    ! Helps satisfy no-slip condition at Downstream Boundary
                     WHORZ(4) = 0                    ! Helps satisfy no-slip condition at Downstream Boundary
                     DLXHO(3) = DLX(I-1)/10001       ! Arbitrary value
@@ -1657,7 +1657,7 @@ CALL PART_TRANSPORT
               ENDDO
           ENDDO
       ENDDO
-      
+
 
       RETURN
       END
@@ -1686,11 +1686,11 @@ CALL PART_TRANSPORT
 
       SUBROUTINE FISHPLOT                ! This Subroutine preps fish information for TecPlot
 
-      
+
       Use FISHY; Use GEOMC; USE GLOBAL; Use GDAYC; Use SCREENC
-      
+
       IMPLICIT NONE
-            
+
       REAL        XLOC,ZLOC,YLOC,FSZ,FAG,UF,VF,WF
       REAL        NETXPUT,NETZTOP,NETZBOT,SNDXUPS
       REAL        SNDXDWN,SNDZTOP,WBBOTTOM
@@ -1729,7 +1729,7 @@ CALL PART_TRANSPORT
   134     CONTINUE
 
           IF (NIT.EQ.0) THEN
-              
+
           IF (JB.LT.10) THEN                        ! Creating the output file names based on Branch #
             WRITE(FTYP1,9120) JB
             FILENAME=FILE_PREFIX//FTYP1//FILE_SUFFIX
@@ -1741,8 +1741,8 @@ CALL PART_TRANSPORT
           ELSE                                        ! CHECK
             WRITE(DATADEBUGFN,*) 'ERROR: Exceeded Maximum Number of TecPlot Data Sets ==># Data Sets = # of Branches'
             STOP
-          END IF                  
-              
+          END IF
+
             OPEN(30000+JB,FILE=FILENAME,STATUS='UNKNOWN')             ! Opening the Output Files Based on Branch #
             WRITE(30000+JB,9300) JB                                 ! Creating Output File Header for TecPlot
  9300       FORMAT('TITLE = "PARTICLE INFO for Branch',I6,'"')
@@ -1789,7 +1789,7 @@ CALL PART_TRANSPORT
           !  The Following is Used for Creating and Positioning Static Text in the TecPlot Animation
 
           IF (NIT.EQ.0) THEN
-            WRITE(30000+JB,9541) 
+            WRITE(30000+JB,9541)
  9541       FORMAT('TEXT X=25.0, Y=25.0, F=HELV-BOLD, HU=FRAME,&
       AN=MIDCENTER, C=BLACK, H=2.1, T="# of Particles"')
           END IF
@@ -1834,9 +1834,9 @@ CALL PART_TRANSPORT
       Use FISHY
       USE GLOBAL                             !    ALGORITHMS - Author: Helmuth Spath"
       Use GEOMC; USE MAIN, ONLY: KBI
-      
+
       IMPLICIT NONE
-     
+
       REAL      XH1,XH2,H3,H4,DV,DW,DX,DY
 
  !Check for Boundary Violations: Horizontal Plane
@@ -1943,12 +1943,12 @@ INTEGER :: CATCH,DINT,DINTLAST,CATCHDEPTH,DOTALLY,TEMPTALLY, FIJ, JF, TAGGED, FV
    ELSE
        write(FINALFN,'(A214,<NMONITORS>(A11,I2,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
    ENDIF
-   
-    do jf=1,nfish     
+
+    do jf=1,nfish
     write(FINALFN,'(i7,",",1x,10(f10.3,","),f8.4,",",f12.4,",",100(f10.3,","))')jf,fishes(jf,1),fishes(jf,2),fishes(jf,3),fishes(jf,4),fishes(jf,5),fishes(jf,6),fishes(jf,12),fishes(jf,14),fishes(jf,15),fishes(jf,16),sedvel(jf),delaydate(jf),(tmonitor(jf,ii),ii=1,nmonitors)
     end do
 
-    
+
     CALL HISTOGRAM_OUTPUT
     close(FINALFN)
 ! End fish output section
@@ -1961,7 +1961,7 @@ End Subroutine FishOutput
 
 Subroutine Read_Fish_Data
 
-Use Fishy; Use SCREENC, ONLY:JDAY; USE MAIN, ONLY: FISH_PARTICLE_EXIST 
+Use Fishy; Use SCREENC, ONLY:JDAY; USE MAIN, ONLY: FISH_PARTICLE_EXIST
 IMPLICIT NONE
 
 REAL, ALLOCATABLE, DIMENSION(:) :: FXLOCINIT,FZLOCINIT,SEDVELINIT,DELAYDATEINIT
@@ -1980,7 +1980,7 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
     PARTICLE=.true.
     else
     PARTICLE=.false.
-    FISH_PARTICLE_EXIST=.FALSE.  ! STOPS ALL FURTHER 
+    FISH_PARTICLE_EXIST=.FALSE.  ! STOPS ALL FURTHER
     RETURN
     end if
     If(ALINE.eq.'ON')then
@@ -1996,14 +1996,14 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
 ! NFISHSEG: # of segements to add particles to
 ! DATE:  Date particles are deposited
     if(nfishseg.eq.0)nfishseg=1
-    Allocate(ifish(nfishseg),ifisht(nfishseg),ifishb(nfishseg),delaydateinit(nfishseg),fxlocinit(nfishseg),fzlocinit(nfishseg),sedvelinit(nfishseg)) 
+    Allocate(ifish(nfishseg),ifisht(nfishseg),ifishb(nfishseg),delaydateinit(nfishseg),fxlocinit(nfishseg),fzlocinit(nfishseg),sedvelinit(nfishseg))
         READ(DIAGFN,*)
         DO I=1,NFISHSEG
         READ(DIAGFN,*)NA,IFISH(I),IFISHT(I),IFISHB(I),FXLOCINIT(I),FZLOCINIT(I),SEDVELINIT(I),DELAYDATEINIT(I)
-        
+
         IF(DELAYDATEINIT(I) < JDAY)DELAYDATEINIT(I)=JDAY
         ENDDO
-   
+
     !READ(DIAGFN,'(//(10X,9I10))')(IFISH(I),I=1,NFISHSEG)
     !READ (DIAGFN,'(//(10X,9I10))')(IFISHT(I),I=1,NFISHSEG)
     !READ (DIAGFN,'(//(10X,9I10))')(IFISHB(I),I=1,NFISHSEG)
@@ -2014,9 +2014,9 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
   do i=1,nfishseg
     NFISH=NFISH+(ifishb(i)-ifisht(i)+1)*nfishpcel
   end do
-  
+
   ALLOCATE (GROUP(NFISH),FXLOCI(NFISH),FZLOCI(NFISH),DELAYDATE(NFISH),SEDVEL(NFISH))
-  
+
     NFISHLAST=1
     do i=1,nfishseg
         DO J=NFISHLAST,(NFISHLAST-1)+(ifishb(i)-ifisht(i)+1)*nfishpcel
@@ -2028,7 +2028,7 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
         ENDDO
     NFISHLAST=J
     end do
-   
+
         READ(DIAGFN,*,END=200)  ! TEST CODE IN CASE SOMEONE DOES NOT HAVE THESE PARTS OF THE CONTROL FILE
         READ(DIAGFN,*)NUMCLASS
         IF(NUMCLASS == 0)GO TO 200
@@ -2039,14 +2039,14 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
         IF(VEL_INT /= 0.0)THEN
             HIST_V=.TRUE.
             allocate (v_class(NFISH,numclass))
-            ALLOCATE(V_TOT(NFISH),V_CNT(NFISH),V_SUM(NFISH),V_AVG(NFISH))   
+            ALLOCATE(V_TOT(NFISH),V_CNT(NFISH),V_SUM(NFISH),V_AVG(NFISH))
             v_cnt=0.0
             v_class=0.0
             v_tot=0.0
             V_SUM=0.0
             V_AVG=0.0
         ENDIF
-        
+
         IF(TEMP_INT /= 0.0)THEN
             HIST_T=.TRUE.
              ALLOCATE (T_TOT(NFISH),T_CNT(NFISH),T_SUM(NFISH),T_AVG(NFISH))
@@ -2057,9 +2057,9 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
             T_AVG=0.0
             T_SUM=0.0
         ENDIF
-        
+
         IF(D_INT /= 0.0)THEN
-            HIST_D=.TRUE.  
+            HIST_D=.TRUE.
              ALLOCATE (D_TOT(NFISH),D_CNT(NFISH),D_SUM(NFISH),D_AVG(NFISH))
             allocate(d_class(NFISH,numclass))
            d_cnt=0.0
@@ -2067,18 +2067,18 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
            d_tot=0.0
            D_AVG=0.0
            D_SUM=0.0
-        ENDIF   
-        
+        ENDIF
+
         READ(DIAGFN,*)              ! SW 11/1/2018
         READ(DIAGFN,*)NMONITORS
         READ(DIAGFN,*)              ! SW 11/1/2018
         ALLOCATE(IMONITOR(NMONITORS),TMONITOR(NFISH,NMONITORS),XSHIFTMONITOR(NMONITORS),MONITORONOFF(NFISH,NMONITORS))
         MONITORONOFF=0   ! IF SET TO ZERO IT IS ACTIVE - WHEN PARTICLE SHOWS UP IT GETS SWITCHED TO 1
         TMONITOR=0.0
-        READ(DIAGFN,*)(IMONITOR(I),I=1,NMONITORS)              ! SW 11/1/2018   
-        
-        READ(DIAGFN,*)  
-        READ(DIAGFN,*)(XSHIFTMONITOR(I),I=1,NMONITORS)              ! SW 11/1/2018 
+        READ(DIAGFN,*)(IMONITOR(I),I=1,NMONITORS)              ! SW 11/1/2018
+
+        READ(DIAGFN,*)
+        READ(DIAGFN,*)(XSHIFTMONITOR(I),I=1,NMONITORS)              ! SW 11/1/2018
 !        READ(DIAGFN,'(//3F10.0,I10)')FXLOC,FZLOC,OUTFREQP,IDEBUG
 
 !          ! FXLOC   = Location of fish within segment IMP from upstream side
@@ -2092,8 +2092,8 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
                                        !   when fish encounters bottom
         ZSURREFL = 0.5                 ! Reflect this percentage of surface layer height
                                        !   when fish encounters water surface
-        
-        
+
+
         DEBUG=.FALSE.
         LINEAR=.FALSE.
         HITSTICKBOTTOM=.FALSE.
@@ -2102,17 +2102,17 @@ INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
         IF(HTSTSIDE==1)HITSTICKSIDE=.TRUE.
         IF(ILINEAR==1)LINEAR=.TRUE.
         IF(IDEBUG==1)DEBUG=.TRUE.
-  
+
     close(DIAGFN)
     RETURN
-    
+
 End Subroutine Read_Fish_Data
 
 Subroutine findbranch(seg)
 
      Use Fishy; USE GLOBAL
      IMPLICIT NONE
-     
+
     real seg
     integer iseg,j
 
@@ -2127,13 +2127,13 @@ End Subroutine findbranch
 
 Subroutine Part_transport
 ! Compute passive particle transport including sedimentation
-    
+
     Use Fishy
     Use TRANS
     USE GLOBAL
     Use GEOMC
     IMPLICIT NONE
-    
+
     REAL :: DXMIN=0.0005, DZMIN1=0.0001,DZMAX1=0.5, COSTHETA, SINTHETA, DX1, DX2, DXAVG, SK, RZ, RX, DZ1, DZ2, DZAVG, r1, r2
     REAL :: DISPX, DISPZ, VEL,WPART,XAREA
     ! DXMIN,DZMIN1,DZMAX1 ! SW 2/01/01   in units of m2/s
@@ -2203,7 +2203,7 @@ Subroutine Part_transport
 
         RX=SQRT(6.0*Dispx*nfsfreq*86400.)*(r1*costheta-r2*sintheta)     ! DX is m2/s    nfsfreq is days
         RZ=SQRT(6.0*Dispz*nfsfreq*86400.)*(r1*sintheta+r2*costheta)
-        
+
         !write(9500,*)(r1*costheta-r2*sintheta),(r1*sintheta+r2*costheta)
 
 ! constrain random component to segment length and cell layer height
@@ -2266,33 +2266,33 @@ End Subroutine Part_transport
    USE GLOBAL
    Use GEOMC
    Use MAIN, only: EV, QPR, IWD
-   
+
    IMPLICIT NONE
    REAL :: XAREA
    LOGICAL :: WITH_AT_PARTICLE_LOCATION
    INTEGER :: IW
-   
+
 ! Concept all QSS from each cell will be treated as a lateral withdrawal - each withdrawal will
 ! be assigned a RHS or LHS looking downstream location; lateral velocity origin is the
 ! segment/cell center. Velocities to the RHS are + and those to the LHS are -
 !  IF RHS LOOKING DOWNSTREAM THEN VELOCITY IS POSITIVE, RIMPBR(I,1)>0
-!  IF LHS LOOKING DOWNSTREAM THEN VELOCITY IS NEGATIVE, LIMPBR(I,1)>0   
+!  IF LHS LOOKING DOWNSTREAM THEN VELOCITY IS NEGATIVE, LIMPBR(I,1)>0
    ! TRIBS AND INFLOWS IN QSS ARE ASSIGNED POSITIVE VALUES, WITHDRAWALS ARE NEGATIVE
-   ! 
+   !
     WITH_AT_PARTICLE_LOCATION=.FALSE.
 ! CHECK FOR WITHDRAWALS AT FIMP
       DO IW=1,NWD
           IF(FIMP==IWD(IW))THEN
               WITH_AT_PARTICLE_LOCATION=.TRUE.
               EXIT
-          ENDIF     
+          ENDIF
       ENDDO
 
       IF(RIMPBR(FIMP,1) == 0 .AND. LIMPBR(FIMP,1) == 0 .AND. .NOT.WITH_AT_PARTICLE_LOCATION)THEN
         FYVEL=0.0
       ELSE
-          
-        if(fkmp.le.KTWB(fjr))then   
+
+        if(fkmp.le.KTWB(fjr))then
             xarea=h1(KTWB(FJR),fimp)*dlx(fimp)
             fyvel=(qss(KTWB(fjr),fimp)+ev(fimp)-QPR(FIMP))/xarea        ! ADD EVAPORATION AND REMOVE PRECIP BACK TO QSS...be careful about evaporation which is also a -QSS flow
 
@@ -2300,52 +2300,52 @@ End Subroutine Part_transport
             IF(BR_INACTIVE(RIMPBR(FIMP,2)))THEN
                 FYVEL=0.0
             ELSE
-                fyvel=-fyvel  
-            ENDIF     
+                fyvel=-fyvel
+            ENDIF
         ELSEIF(LIMPBR(FIMP,1) > 0)THEN
             IF(BR_INACTIVE(LIMPBR(FIMP,2)))THEN
             FYVEL=0.0
             ELSE
-            fyvel=fyvel   
+            fyvel=fyvel
             ENDIF
         ENDIF
 
         else
         xarea=h1(fkmp,fIMP)*dlx(fimp)
         fyvel=qss(fkmp,fimp)/xarea
-        
+
         IF(RIMPBR(FIMP,1) > 0)THEN
             IF(.NOT.BR_INACTIVE(RIMPBR(FIMP,2)) .AND. FKMP <= KB(DS(RIMPBR(FIMP,2))))THEN
-            fyvel=-fyvel  
+            fyvel=-fyvel
             ELSE
             FYVEL=0.0
-            ENDIF        
+            ENDIF
         ELSEIF(LIMPBR(FIMP,1) > 0)THEN
             IF(.NOT.BR_INACTIVE(LIMPBR(FIMP,2)) .AND. FKMP <= KB(DS(LIMPBR(FIMP,2))))THEN
-            fyvel=fyvel   
+            fyvel=fyvel
             ELSE
             FYVEL=0.0
             ENDIF
         ENDIF
-        
+
         end if
     ENDIF
-    
+
     return
     end
-!************************************   
+!************************************
    SUBROUTINE HISTOGRAM
    USE Fishy; USE GLOBAL; USE GEOMC; USE MAIN, ONLY: KBI
    REAL :: DepthParticle
-    
-    N=FN   ! N IS THE FISH NUMBER - THIS ROUTINE IS CALLED FOR EACH FISH FN  
+
+    N=FN   ! N IS THE FISH NUMBER - THIS ROUTINE IS CALLED FOR EACH FISH FN
    ! Velocity
     K=FKMP
     I=FIMP
     DepthParticle=ELWS(I)-EL(K,I)+FZLOC
-    
+
     IF(HIST_V.OR.HIST_T.OR.HIST_D)sumvolt(N)=sumvolt(N)+dlt   ! ONLY COMPUTED ONCE
-     
+
         IF(HIST_V)THEN
             v_tot(N)=v_tot(N)+u(k,i)*dlt
             v_cnt(N)=v_cnt(N)+dlt
@@ -2363,7 +2363,7 @@ End Subroutine Part_transport
               end if
             end do
         ENDIF
-        
+
 210       continue
 
              if(HIST_T)then
@@ -2384,8 +2384,8 @@ End Subroutine Part_transport
               end if
             end do
           end if
-200       continue    
-       
+200       continue
+
 ! Depth
            IF(HIST_D)THEN
             d_tot(N)=d_tot(N)+DepthParticle*dlt           ! SW changed all KB(I to KBI(I    8/2018              d_tot(N)=d_tot(N)+depthb(kbi(i),i)*dlt
@@ -2407,8 +2407,8 @@ End Subroutine Part_transport
 300       continue
 
           RETURN
-          
-   
+
+
     END SUBROUTINE HISTOGRAM
     SUBROUTINE HISTOGRAM_OUTPUT
         USE Fishy
@@ -2464,8 +2464,8 @@ End Subroutine Part_transport
         write(CONE,'(" Average, ",<nfish>(e12.4,","))')(v_avg(N),N=1,NFISH)
         close(CONE)
         end if
-        
-        
+
+
         if(HIST_D)then
           DO N=1,NFISH
           if(d_cnt(N).gt.0.0)then
@@ -2491,11 +2491,10 @@ End Subroutine Part_transport
         write(CONE,'(" Average, ",<nfish>(e12.4,","))')(d_avg(N), N=1,NFISH)
         close(CONE)
         end if
-        
 
-       
+
+
 125       format((f8.2,',',<NFISH>(e12.4,',')))
 
     RETURN
     END SUBROUTINE HISTOGRAM_OUTPUT
-   

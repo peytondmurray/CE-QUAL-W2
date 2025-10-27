@@ -27,7 +27,7 @@ subroutine W2_DIALOG
   TYPE (DIALOG) :: DLG
   EXTERNAL RUN_W2
 
-  RESTARTED = .FALSE.                                                                               
+  RESTARTED = .FALSE.
   OPEN (1,FILE='rso.opt',STATUS='OLD',IOSTAT=RESULT); CLOSE (1)                                   !Does restart file exist?
   RSO_EXISTS = RESULT == 0                                                                        !Restart file exists
   RESULTLOG = DLGINIT   (OUTPUT_DIALOG,DLG)                                                          !Initialize dialog box
@@ -226,12 +226,12 @@ SUBROUTINE SCREEN_UPDATE (DLG)
   WRITE (TEXT1,'(*(F0.2,2X))')        QSP;                        RESULT = DLGSET (DLG,SPILLWAYFLOW,                     TEXT1)
   WRITE (TEXT1,'(*(F0.2,2X))')        QPI;                        RESULT = DLGSET (DLG,PIPEFLOW,                         TEXT1)
   WRITE (TEXT1,'(*(F0.2,2X))')        QGT;                        RESULT = DLGSET (DLG,GATEFLOW,                         TEXT1)
-  WRITE (TEXT1,'(A180)')           MODDIR;                        RESULT = DLGSET (DLG,MODELDIRECTORY,                 TEXT1) 
+  WRITE (TEXT1,'(A180)')           MODDIR;                        RESULT = DLGSET (DLG,MODELDIRECTORY,                 TEXT1)
 
   WRITE (TEXT1,'(F0.2)')             (CURRENT)/60.0;              RESULT = DLGSET (DLG,CPU_TIMES,                        TEXT1)
   IF (MINDLT >= 1.0) WRITE (TEXT1,'(I0)') INT(MINDLT);            IF (MINDLT < 1.0) WRITE (TEXT1,'(F0.3)') MINDLT
   RESULT = DLGSET (DLG,MIN_TIMESTEP,                     TEXT1)
-  
+
   IPROG=INT(((JDAY-TMSTRT)/(TMEND-TMSTRT))*100)   ! range is 0 to 100
   RESULT = DLGSET (DLG,PROGRESSBAR,IPROG,DLG_POSITION)
 RETURN
@@ -260,4 +260,3 @@ ENTRY BLANK_DIALOG (DLG)
   RESULT = DLGSET (DLG,PUMPFLOW,             ' ');                RESULT = DLGSET (DLG,MODELDIRECTORY,             ' ')
   RESULT = DLGSET (DLG,PROGRESSBAR,0,DLG_POSITION)
 END SUBROUTINE SCREEN_UPDATE
-

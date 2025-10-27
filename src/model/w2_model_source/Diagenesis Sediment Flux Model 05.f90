@@ -1,15 +1,15 @@
 !===========================================================================================================================
 ! Removed    1) water column processes/inputs and general BOD
-! Add/Modify 2) sediment-water fluxes for all water column layers 
+! Add/Modify 2) sediment-water fluxes for all water column layers
 !            3) matrix solutions of CH4
 !            4) initial conditions of NO3
 !            5) partitioning of PO4 for sediment layer 1
 !            6) particle mixing between two layers
 !            7) segment averaged outputs
 ! Updated 9/2020
-!===========================================================================================================================  
-Module CEMASedimentDiagenesis   
-	Use MAIN 
+!===========================================================================================================================
+Module CEMASedimentDiagenesis
+	Use MAIN
   Use GLOBAL
   Use GEOMC
   Use SCREENC
@@ -23,28 +23,28 @@ Module CEMASedimentDiagenesis
   Use CEMAVars
   Use TRANS
   Use RSTART
-    
+
   ! Type declarations
   IMPLICIT NONE
 	!Local Variables
 	Integer(2)	iTemp, RegnNum, iter, InitConRegn
-	Real(R8) SD_POC_L_Fr, SD_POC_R_Fr, SD_POC_I_Fr, SD_PON_L_Fr         
-  Real(R8) SD_PON_R_Fr, SD_PON_I_Fr, SD_PW_DiffCoeff, SD_Ox_Threshol      
+	Real(R8) SD_POC_L_Fr, SD_POC_R_Fr, SD_POC_I_Fr, SD_PON_L_Fr
+  Real(R8) SD_PON_R_Fr, SD_PON_I_Fr, SD_PW_DiffCoeff, SD_Ox_Threshol
   Real(R8) SD_POP_L_Fr, SD_POP_R_Fr, SD_POP_I_Fr
-  Real(R8) SD_Ae_NH3_NO3_L, SD_Ae_NH3_NO3_H, SD_Ae_NO3_N2_L, SD_Ae_NO3_N2_H      
-  Real(R8) SD_An_NO3_N2, SD_Ae_CH4_CO2, SD_Ae_HS_NH4_Nit, SD_Ae_HS_O2_Nit     
-  Real(R8) SD_Theta_PW, SD_Theta_NH3_NO3, SD_Theta_NO3_N2, SD_Theta_CH4_CO2, SD_Theta_PM, SD_PartMix    
+  Real(R8) SD_Ae_NH3_NO3_L, SD_Ae_NH3_NO3_H, SD_Ae_NO3_N2_L, SD_Ae_NO3_N2_H
+  Real(R8) SD_An_NO3_N2, SD_Ae_CH4_CO2, SD_Ae_HS_NH4_Nit, SD_Ae_HS_O2_Nit
+  Real(R8) SD_Theta_PW, SD_Theta_NH3_NO3, SD_Theta_NO3_N2, SD_Theta_CH4_CO2, SD_Theta_PM, SD_PartMix
   Real(R8) SD_Sulfate_CH4_H2S, SD_Ae_H2S_SO4, SD_Theta_H2S_SO4, SD_NormConst_H2S_SO4
-  Real(R8) SD_MinRate_PON_Lab, SD_MinRate_PON_Ref, SD_MinRate_PON_Ine, SD_MinRate_POC_Lab   
-  Real(R8) SD_MinRate_POC_Ref, SD_MinRate_POC_Ine, SD_Theta_PON_Lab, SD_Theta_PON_Ref    
+  Real(R8) SD_MinRate_PON_Lab, SD_MinRate_PON_Ref, SD_MinRate_PON_Ine, SD_MinRate_POC_Lab
+  Real(R8) SD_MinRate_POC_Ref, SD_MinRate_POC_Ine, SD_Theta_PON_Lab, SD_Theta_PON_Ref
   Real(R8) SD_Theta_PON_Ine, SD_Theta_POC_Lab, SD_Theta_POC_Ref, SD_Theta_POC_Ine
   Real(R8) SD_MinRate_POP_Lab, SD_MinRate_POP_Ref, SD_MinRate_POP_Ine
   Real(R8) SD_Theta_POP_Lab, SD_Theta_POP_Ref, SD_Theta_POP_Ine
   Real(R8) SD_tc, CellThickness
   Real(R8) SD_Jcin, SD_Jpin, SD_Jnin, SD_O20, SD_JFeOOHin, SD_JMnO2in
-  Real(R8) SD_Depth, SD_Tw, SD_NH30, SD_NO30, SD_TIC0, SD_ALK0    
+  Real(R8) SD_Depth, SD_Tw, SD_NH30, SD_NO30, SD_TIC0, SD_ALK0
   Real(R8) SD_PO40, SD_CH40, SD_SOD, SD_SO40, SD_H2S0
-  Real(R8) SD_Fe20, SD_FeOOH0, SD_Mn20, SD_MnO20 
+  Real(R8) SD_Fe20, SD_FeOOH0, SD_Mn20, SD_MnO20
   Real(R8) SD_JNH4, SD_JNO3, SD_JPO4, SD_JTIC, SD_JALK, SD_JFe2, SD_JFeOOH
   Real(R8) :: SD_JMn2, SD_JT, SD_Ksw, SD_rhowcp=4.186D6, SD_tsed          ! rhowcp:4.186*1.0e6   ! units J g-1 C-1 * g m-3= J C-1 m-3
   Real(R8) :: SD_Ae_NH3_NO3, SD_Ae_NO3_N2
@@ -99,85 +99,85 @@ Module CEMASedimentDiagenesis
   Real(R8) FOxna, con_nit, a12_TNH4, a21_TNH4, a22_TNH4, b2_TNH4
   Real(R8) a12_NO3, a21_NO3, a22_NO3, b2_NO3, CH42_prev
   Real(R8) a12_CH4, a21_CH4, a22_CH4, b2_CH4
-    
+
   Real(R8) :: BIBH22, DELTABI
   Real(R8), pointer :: SD_NH31, SD_NO31, SD_PO4T1, SD_SO41, SD_TIC1, SD_pH1, SD_HST1, SD_CH41, SD_T1
   Real(R8), pointer :: SD_NH32, SD_NO32, SD_PO4T2, SD_SO42, SD_TIC2, SD_pH2, SD_HST2, SD_CH42, SD_T2
   Real(R8), pointer, Dimension(:) :: SD_POC22, SD_PON22, SD_POP22
   Real(R8), pointer :: SD_ALK1, SD_Fe2T1, SD_FeOOH1, SD_Mn2T1, SD_MnO21
   Real(R8), pointer :: SD_ALK2, SD_Fe2T2, SD_FeOOH2, SD_Mn2T2, SD_MnO22
-        
+
   INTEGER N,ITER1
   CHARACTER(20) :: ADUMMY   ! SW 2/2019
   ! sediment pH end
   !
   real(R8), target, allocatable, dimension(:,:,:) :: C2SF     ! sediment diagenesis state variables
   real(R8),         allocatable, dimension(:,:,:) :: KFSF     ! sediment diagenesis kinetic flux
-  real(R8),         allocatable, dimension(:,:)   :: KFSFAV  
+  real(R8),         allocatable, dimension(:,:)   :: KFSFAV
   real(R8),         allocatable, dimension(:,:)   :: sdinc1,sdinn1,sdinp1
-  real(R8)                                        :: sum_ave(16) 
+  real(R8)                                        :: sum_ave(16)
   !
     contains
-    !  INPUTS 
-    !  SD_Jcin = flux to sediments from settling organic carbon 
-    !         from phytoplankton and detritus in oxygen equivalent units (gO2/m2/d) 
+    !  INPUTS
+    !  SD_Jcin = flux to sediments from settling organic carbon
+    !         from phytoplankton and detritus in oxygen equivalent units (gO2/m2/d)
     !         (NOTE: gO2/m2/d = gC/m2/d * 2.67 gO2/gC)                            [SDINC] in gC/m2/d from WATER QUALITY SEDIMENTC Subroutine
     !  SD_Jnin = nitrogen flux in settling phytoplankton and detritus (gN/m2/d)   [SDINN]
     !  SD_Jpin = phosphorus flux in settling phytoplankton and detritus (gP/m2/d) [SDINP]
-    !  SD_O20 = dissolved oxygen in water overlying the sediment (mgO2/L) 
+    !  SD_O20 = dissolved oxygen in water overlying the sediment (mgO2/L)
     !  SD_depth = total water depth overlying the sediment (m) (used to calculate methane saturation concentration at in situ pressure)
 
-    !  SD_Tw = temperature in water overlying the sediment (deg C) 
-    !  SD_NH30 = ammonia N in water overlying the sediment (mgN/L) 
-    !  SD_NO30 = nitrate N in water overlying the sediment (mgN/L) 
-    !  SD_PO40 = soluble reactive P in water overlying the sediment (mgP/L) 
-    !  SD_CH40 = fast reacting dissolved organic carbon and CBODu in the water overlying the sediment 
-    !         in oxygen equivalent units (mgO2/L) 
+    !  SD_Tw = temperature in water overlying the sediment (deg C)
+    !  SD_NH30 = ammonia N in water overlying the sediment (mgN/L)
+    !  SD_NO30 = nitrate N in water overlying the sediment (mgN/L)
+    !  SD_PO40 = soluble reactive P in water overlying the sediment (mgP/L)
+    !  SD_CH40 = fast reacting dissolved organic carbon and CBODu in the water overlying the sediment
+    !         in oxygen equivalent units (mgO2/L)
     !         (NOTE: mgO2/L = mC/L * 2.67 mgO2/mgC) ...error 5.33 g O2/g C (see DiToro p. 197)
-    !  SD_SALw = salinity in the water overlying the sediment (ppt) 
-    ! 
-    !  OUTPUTS 
-    !  SOD = sediment oxygen demand flux of dissolved oxygen between the water and sediment (gO2/m2/d) 
-    !        (positive is loss of O2 from water column) 
-    !  Jnh4 = flux of ammonia N between the water and sediment (gN/m2/d) 
-    !        (positive is source of NH4-N to water column) 
-    !  Jno3 = flux of nitrate N between the water and sediment (gN/m2/d) 
-    !        (positive is source of NO3-N to water column) 
+    !  SD_SALw = salinity in the water overlying the sediment (ppt)
+    !
+    !  OUTPUTS
+    !  SOD = sediment oxygen demand flux of dissolved oxygen between the water and sediment (gO2/m2/d)
+    !        (positive is loss of O2 from water column)
+    !  Jnh4 = flux of ammonia N between the water and sediment (gN/m2/d)
+    !        (positive is source of NH4-N to water column)
+    !  Jno3 = flux of nitrate N between the water and sediment (gN/m2/d)
+    !        (positive is source of NO3-N to water column)
     !  Jch4 = flux of dissolved methane, fast reacting C, and CBODu between water and sediment in O2 equivalent units (gO2/m2/d)
     !
-    !        (positive is source of CBOD to water column) 
-    !        (NOTE: gO2/m2/d = gC/m2/d * 2.67 gO2/gC) 
-    !        (methane is not produced in salt water) 
-    !  Jch4g = flux of methane gas bubbles between the water and sediment in O2 equivalent units (gO2/m2/d) 
-    !        (positive is source of CH4 bubbles to water column) 
-    !        (NOTE: gO2/m2/d = gC/m2/d * 2.67 gO2/gC) 
-    !        (methane is not produced in salt water) 
-    !  Jhs = flux of dissolved hydrogen sulfide (COD) between water and sediment in O2 equivalent units (gO2/m2/d) 
-    !        (positive is source of COD to water column) 
-    !        (hydrogen sulfide is not produced in freshwater) 
-    !  Jpo4 = flux of soluble reactive P between the water and sedmiment (gP/m2/d) 
-    !        (positive is source of PO4-P to water column) 
-    !  NH3(1) and NH3(2) = ammonia N in the sediment layers 1 and 2 (mgN/L) 
-    !  NO3(1) and NO3(2) = nitrate N in the sediment layers 1 and 2 (mgN/L) 
-    !  CH4(1) = dissolved methane in the aerobic sediment layer 1 (O2 equivalent units mgO2/L) 
-    !  HS(1) and HS(2) = dissolved sulfide in the sediment layers 1 and 2 (O2 equivalent units mgO2/L) 
-    !  PO4(1) and PO4(2) = soluble reactive P in the sediment layers 1 and 2 (mgP/L) 
+    !        (positive is source of CBOD to water column)
+    !        (NOTE: gO2/m2/d = gC/m2/d * 2.67 gO2/gC)
+    !        (methane is not produced in salt water)
+    !  Jch4g = flux of methane gas bubbles between the water and sediment in O2 equivalent units (gO2/m2/d)
+    !        (positive is source of CH4 bubbles to water column)
+    !        (NOTE: gO2/m2/d = gC/m2/d * 2.67 gO2/gC)
+    !        (methane is not produced in salt water)
+    !  Jhs = flux of dissolved hydrogen sulfide (COD) between water and sediment in O2 equivalent units (gO2/m2/d)
+    !        (positive is source of COD to water column)
+    !        (hydrogen sulfide is not produced in freshwater)
+    !  Jpo4 = flux of soluble reactive P between the water and sedmiment (gP/m2/d)
+    !        (positive is source of PO4-P to water column)
+    !  NH3(1) and NH3(2) = ammonia N in the sediment layers 1 and 2 (mgN/L)
+    !  NO3(1) and NO3(2) = nitrate N in the sediment layers 1 and 2 (mgN/L)
+    !  CH4(1) = dissolved methane in the aerobic sediment layer 1 (O2 equivalent units mgO2/L)
+    !  HS(1) and HS(2) = dissolved sulfide in the sediment layers 1 and 2 (O2 equivalent units mgO2/L)
+    !  PO4(1) and PO4(2) = soluble reactive P in the sediment layers 1 and 2 (mgP/L)
   !===========================================================================================================================
   !===========================================================================================================================
   Subroutine InitCond_SedFlux
     implicit none
     character(256) :: ParameterDesc
     allocate(C2SF(KMX,IMX,37),KFSF(KMX,IMX,17),KFSFAV(IMX,16),sdinc1(KMX,IMX),sdinn1(KMX,IMX),sdinp1(KMX,IMX))
-    
+
     KFSF=0.0;KFSFAV=0.0;C2SF=0.0;SDINC1=0.0;SDINN1=0.0;SDINP1=0.0
-        
+
     CEMAMFT_RandC_RegN = 1
 	  Do RegnNum = 1, NumRegnsSedimentDiagenesis
 	    Do SegNumI = SedBedDiaRCRegSegSt(RegnNum), SedBedDiaRCRegSegEn(RegnNum)
 	        CEMAMFT_RandC_RegN(SegNumI) = RegnNum
 	    End Do !SegNumI
     End Do !RegnNum
-        
+
     !Get initial condition Region Numbers for each cell
 	  CEMAMFT_InCond_RegN = 1
 	  Do RegnNum = 1, NumRegnsSedimentBedComposition
@@ -185,7 +185,7 @@ Module CEMASedimentDiagenesis
 	        CEMAMFT_InCond_RegN(SegNumI) = RegnNum
 	    End Do !SegNumI
     End Do !RegnNum
-        
+
     !Initialize variables
     Do JW=1, NWB
       KT = KTWB(JW)
@@ -193,15 +193,15 @@ Module CEMASedimentDiagenesis
         IU = US(JB)
         ID = DS(JB)
         Do SegNumI = IU, ID
-                    
+
 		      RegnNum = CEMAMFT_RandC_RegN(SegNumI)
 		      InitConRegn = CEMAMFT_InCond_RegN(SegNumI)
-    		        
+
 		      Call CEMAMFTRatesandConstants
-                    
+
           DO LayerNum = KT, KB(SegNumI)
-    		                
-            IF(.NOT.RESTART_IN)THEN                           
+
+            IF(.NOT.RESTART_IN)THEN
                 C2SF(LayerNum,SegNumI,1)    =  SDRegnNH3_T(InitConRegn)
                 C2SF(LayerNum,SegNumI,2)    =  SDRegnNH3_T(InitConRegn)
                 C2SF(LayerNum,SegNumI,3)    =  SDRegnNO3_T(InitConRegn)
@@ -228,13 +228,13 @@ Module CEMASedimentDiagenesis
                 END IF
                 !
                 C2SF(LayerNum,SegNumI,19)   =  SD_POC_L_Fr*SDRegnPOC_T(InitConRegn)
-                C2SF(LayerNum,SegNumI,20)   =  SD_POC_R_Fr*SDRegnPOC_T(InitConRegn) 
+                C2SF(LayerNum,SegNumI,20)   =  SD_POC_R_Fr*SDRegnPOC_T(InitConRegn)
                 C2SF(LayerNum,SegNumI,21)   =  SD_POC_I_Fr*SDRegnPOC_T(InitConRegn)
                 C2SF(LayerNum,SegNumI,22)   =  SD_PON_L_Fr*SDRegnPON_T(InitConRegn)
-                C2SF(LayerNum,SegNumI,23)   =  SD_PON_R_Fr*SDRegnPON_T(InitConRegn) 
+                C2SF(LayerNum,SegNumI,23)   =  SD_PON_R_Fr*SDRegnPON_T(InitConRegn)
                 C2SF(LayerNum,SegNumI,24)   =  SD_PON_I_Fr*SDRegnPON_T(InitConRegn)
                 C2SF(LayerNum,SegNumI,25)   =  SD_POP_L_Fr*SDRegnPOP_T(InitConRegn)
-                C2SF(LayerNum,SegNumI,26)   =  SD_POP_R_Fr*SDRegnPOP_T(InitConRegn) 
+                C2SF(LayerNum,SegNumI,26)   =  SD_POP_R_Fr*SDRegnPOP_T(InitConRegn)
                 C2SF(LayerNum,SegNumI,27)   =  SD_POP_I_Fr*SDRegnPOP_T(InitConRegn)
                 !
                 IF(IncludeAlkalinity) THEN
@@ -269,34 +269,34 @@ Module CEMASedimentDiagenesis
                   C2SF(LayerNum,SegNumI,37)   =  0.0
                 END IF
             ENDIF
-                        
+
           END DO !Layernum
         End Do !SegNumI
       End Do !JB
-    End Do !JW 
-    
+    End Do !JW
+
   End Subroutine
-    
+
   !===========================================================================================================================
   Subroutine SedimentFlux
-	  implicit none	
-	
+	  implicit none
+
 	  SD_tc = dlt*CUF/DAY     !Time step in days
-	
+
     DO SegNumI = IU, ID
-        RegnNum = CEMAMFT_RandC_RegN(SegNumI)                        
+        RegnNum = CEMAMFT_RandC_RegN(SegNumI)
         SD_H2 = BedElevation(SegNumI)
-                        
+
         Call CEMAMFTRatesandConstants
-                        
+
         sum_ave = 0.0
         DO LayerNum = KT, KB(SegNumI)
           IF(LayerNum==KB(SegNumI)) THEN
             BIBH22  =  BI(LayerNum,SegNumI) / BH2(LayerNum,SegNumI)
-            DELTABI =  BI(LayerNum,SegNumI) / BI(KT,SegNumI) 
+            DELTABI =  BI(LayerNum,SegNumI) / BI(KT,SegNumI)
           ELSE
             BIBH22  = (BI(LayerNum,SegNumI) - BI(LayerNum+1,SegNumI)) / BH2(LayerNum,SegNumI)
-            DELTABI = (BI(LayerNum,SegNumI) - BI(LayerNum+1,SegNumI)) / BI(KT,SegNumI) 
+            DELTABI = (BI(LayerNum,SegNumI) - BI(LayerNum+1,SegNumI)) / BI(KT,SegNumI)
           END IF
           !
           SD_Depth      = DEPTHB(LayerNum,SegNumI)
@@ -313,9 +313,9 @@ Module CEMASedimentDiagenesis
           !
           !Obtain properties from the water column
           SD_Tw       =   MAX(T1(LayerNum,SegNumI),     0.0)
-		      SD_O20      =   MAX(C2(LayerNum,SegNumI,NDO),0.01)     
-		      SD_NH30     =   MAX(C2(LayerNum,SegNumI,NNH4),0.0)       
-		      SD_NO30     =   MAX(C2(LayerNum,SegNumI,NNO3),0.0)        
+		      SD_O20      =   MAX(C2(LayerNum,SegNumI,NDO),0.01)
+		      SD_NH30     =   MAX(C2(LayerNum,SegNumI,NNH4),0.0)
+		      SD_NO30     =   MAX(C2(LayerNum,SegNumI,NNO3),0.0)
 		      SD_PO40     =   MAX(C2(LayerNum,SegNumI,NPO4),0.0)
           SD_CH40     =   MAX(C2(LayerNum,SegNumI,NCH4),0.0)*5.33   ! SW 5/26/2022  Convert from C to O2 units
           SD_H2S0     =   MAX(C2(LayerNum,SegNumI,NH2S),0.0)*1.88   ! SW 5/26/2022 Convert from S to O2 units
@@ -334,7 +334,7 @@ Module CEMASedimentDiagenesis
             SD_MnO20  =   MAX(C2(LayerNum,SegNumI,NMNO2),0.0)
           END IF
           !
-          SD_NH31  => C2SF(LayerNum,SegNumI,1);  SD_NH32  => C2SF(LayerNum,SegNumI,2) 
+          SD_NH31  => C2SF(LayerNum,SegNumI,1);  SD_NH32  => C2SF(LayerNum,SegNumI,2)
           SD_NO31  => C2SF(LayerNum,SegNumI,3);  SD_NO32  => C2SF(LayerNum,SegNumI,4)
           SD_PO4T1 => C2SF(LayerNum,SegNumI,5);  SD_PO4T2 => C2SF(LayerNum,SegNumI,6)
           SD_CH41  => C2SF(LayerNum,SegNumI,7);  SD_CH42  => C2SF(LayerNum,SegNumI,8)
@@ -366,7 +366,7 @@ Module CEMASedimentDiagenesis
             SD_MnO22 => C2SF(LayerNum,SegNumI,37)
           END IF
           !
-          ! Sediment POM  
+          ! Sediment POM
           call SedimentPOM
           !
           ! Compute SOD
@@ -387,7 +387,7 @@ Module CEMASedimentDiagenesis
           IF(IncludeManganese) MNIISS(LayerNum,SegNumI)     =     MNIISS(LayerNum,SegNumI)   + Dissolved_Mn2_Src     !Mn(II)
           TICSS(LayerNum,SegNumI)      =     TICSS(LayerNum,SegNumI)    + Dissolved_CO2_Src     !CO2
           IF(IncludeAlkalinity) ALKSS(LayerNum,SegNumI)     =     ALKSS(LayerNum,SegNumI)   + Dissolved_ALK_Src      !ALkalinity
-          PO4SS(LayerNum,SegNumI)      =     PO4SS(LayerNum,SegNumI)    + Dissolved_PO4_Src     !PO4     
+          PO4SS(LayerNum,SegNumI)      =     PO4SS(LayerNum,SegNumI)    + Dissolved_PO4_Src     !PO4
           SDPFLUX(JW)                  =     Dissolved_PO4_Src*sd_tc*VOL(LayerNum,SEGNUMI)/1000.  + SDPFLUX(JW)      ! SW 8/31/2017 kg
           SDNH4FLUX(JW)                =     Dissolved_NH3_Src*sd_tc*VOL(LayerNum,SEGNUMI)/1000.  + SDNH4FLUX(JW)
           SDNO3FLUX(JW)                =     Dissolved_NO3_Src*sd_tc*VOL(LayerNum,SEGNUMI)/1000.  + SDNO3FLUX(JW)
@@ -396,14 +396,14 @@ Module CEMASedimentDiagenesis
             IF(ORGC_CALC) THEN
               LPOMCSS(LayerNum,SegNumI) =  LPOMCSS(LayerNum,SegNumI)  + LPOM_Resuspension*ORGC(JW)
               RPOMCSS(LayerNum,SegNumI) =  RPOMCSS(LayerNum,SegNumI)  + RPOM_Resuspension*ORGC(JW)
-            ELSE    
+            ELSE
               LPOMSS(LayerNum,SegNumI)  =  LPOMSS(LayerNum,SegNumI)  + LPOM_Resuspension
               RPOMSS(LayerNum,SegNumI)  =  RPOMSS(LayerNum,SegNumI)  + RPOM_Resuspension
             END IF
             LPOMPSS(LayerNum,SegNumI)   =  LPOMPSS(LayerNum,SegNumI) + LPOMP_Resuspension
             RPOMPSS(LayerNum,SegNumI)   =  RPOMPSS(LayerNum,SegNumI) + RPOMP_Resuspension
             LPOMNSS(LayerNum,SegNumI)   =  LPOMNSS(LayerNum,SegNumI) + LPOMN_Resuspension   !8/2020 Corrected
-            RPOMNSS(LayerNum,SegNumI)   =  RPOMNSS(LayerNum,SegNumI) + RPOMN_Resuspension 
+            RPOMNSS(LayerNum,SegNumI)   =  RPOMNSS(LayerNum,SegNumI) + RPOMN_Resuspension
           END IF
          ! TSS(LayerNum,SegNumI) = TSS(LayerNum,SegNumI)   + SedimentHeat_Src     !Heat   ! Old code error
           !
@@ -443,14 +443,14 @@ Module CEMASedimentDiagenesis
           sum_ave(15) = sum_ave(15) + SD_NSOD     * DELTABI
           sum_ave(16) = sum_ave(16) + SD_JP       * DELTABI
         END DO !LayerNum
-        
+
         KFSFAV(SegNumI,:) = sum_ave(:)
     End Do !SegNumI
-    
-    If(FirstTimeInBubbles) FirstTimeInBubbles = .FALSE. 
-    
+
+    If(FirstTimeInBubbles) FirstTimeInBubbles = .FALSE.
+
   End Subroutine
-    
+
   Subroutine SedimentPOM
     implicit none
     !
@@ -460,12 +460,12 @@ Module CEMASedimentDiagenesis
     SDINC1(LayerNum,SegNumi) = 0.0
     SDINN1(LayerNum,SegNumi) = 0.0
     SDINP1(LayerNum,SegNumi) = 0.0
-    
+
     IF(DYNAMIC_SD)THEN    ! SW 1/3/2022
         CLABILE=0.0
         NLABILE=0.0
         PLABILE=0.0
-        
+
          DO JJJ=1,NAL
       IF(ALG_CALC(JJJ))THEN
         CCC=MAX(AS(JJJ)*DAY,0.0)*AC(JJJ)*ALG(LayerNum,SegNumi,JJJ)
@@ -474,11 +474,11 @@ Module CEMASedimentDiagenesis
         CLABILE=CLABILE+CCC      ! ASSUMING 100% LABILE
         NLABILE=NLABILE+NNN
         PLABILE=PLABILE+PPP
-        
+
         SDINC1(LayerNum,SegNumi) = SDINC1(LayerNum,SegNumi) + CCC
         SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + NNN
-        SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + PPP      
-        
+        SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + PPP
+
       END IF
     END DO
     !
@@ -497,8 +497,8 @@ Module CEMASedimentDiagenesis
         PLABILE=PLABILE+PPP
 
         SDINC1(LayerNum,SegNumi) = SDINC1(LayerNum,SegNumi) + CCC
-        SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + NNN 
-        SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + PPP 
+        SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + NNN
+        SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + PPP
       END IF
     END DO
     !
@@ -510,26 +510,26 @@ Module CEMASedimentDiagenesis
               PLABILE=PLABILE+PPP
           ENDIF
           SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + PPP
-      ELSE 
+      ELSE
           PPP=MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*BODP(JJJ)*CBOD(LayerNum,SegNumi,JJJ)
           IF(KBOD(JJJ) > 5.8E-7)THEN                 ! IF LESS THAN 0.05 DAY-1, THEN REFRACTORY
               PLABILE=PLABILE+PPP
           ENDIF
           SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + PPP
-      END IF    
+      END IF
       IF(BOD_CALCN(JJJ)) THEN
           NNN=MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*CBODN(LayerNum,SegNumi,JJJ)
           IF(KBOD(JJJ) > 5.8E-7)THEN                 ! IF LESS THAN 0.05 DAY-1, THEN REFRACTORY
               NLABILE=NLABILE+NNN
           ENDIF
           SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + NNN
-      ELSE    
+      ELSE
           NNN=MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*BODN(JJJ)*CBOD(LayerNum,SegNumi,JJJ)
           IF(KBOD(JJJ) > 5.8E-7)THEN                 ! IF LESS THAN 0.05 DAY-1, THEN REFRACTORY
               NLABILE=NLABILE+NNN
           ENDIF
           SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + NNN
-      END IF    
+      END IF
       IF(BOD_CALC(JJJ)) THEN
           CCC=MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*BODC(JJJ)*CBOD(LayerNum,SegNumi,JJJ)
           IF(KBOD(JJJ) > 5.8E-7)THEN                 ! IF LESS THAN 0.05 DAY-1, THEN REFRACTORY
@@ -550,17 +550,17 @@ Module CEMASedimentDiagenesis
     IF(IncludeIron)      SD_JFeOOHin = SdinFeOOH(LayerNum,Segnumi)
     IF(IncludeManganese) SD_JMnO2in  = SdinMnO2(LayerNum,Segnumi)
     !
-    SD_Jcin = SDINC1(LayerNum,SegNumi)    
-    SD_Jnin = SDINN1(LayerNum,SegNumi) 
+    SD_Jcin = SDINC1(LayerNum,SegNumi)
+    SD_Jnin = SDINN1(LayerNum,SegNumi)
     SD_Jpin = SDINP1(LayerNum,SegNumi)
 		!
     IF(IncludeIron)       SD_JinFeOOH	=  SD_JinFeOOH*DAY
     IF(IncludeManganese)  SD_JMnO2in  =  SD_JMnO2in*DAY
     !
-    !gp assign constants for G class 1 and 2 PON, POC, and POP and calculate G class 3 as 1-fpox1-fpox2 
+    !gp assign constants for G class 1 and 2 PON, POC, and POP and calculate G class 3 as 1-fpox1-fpox2
 		SD_FPON(1) = NLABILE/SDINN1(LAYERNUM,SEGNUMI)         !SD_PON_L_Fr
 		SD_FPON(2) = 1.0-SD_FPON(1)                           !SD_PON_R_Fr
-		SD_FPON(3) = 0.0                                      !SD_PON_I_Fr 
+		SD_FPON(3) = 0.0                                      !SD_PON_I_Fr
 		SD_FPOC(1) = CLABILE/SDINC1(LAYERNUM,SEGNUMI)         !SD_POC_L_Fr
 		SD_FPOC(2) = 1.0-SD_FPOC(1)                           !SD_POC_R_Fr
 		SD_FPOC(3) = 0.0                                      !SD_POC_I_Fr
@@ -568,7 +568,7 @@ Module CEMASedimentDiagenesis
 		SD_FPOP(2) = 1.0-SD_FPOP(1)                           !SD_POP_R_Fr
 		SD_FPOP(3) = 0.0                                      !SD_POP_I_Fr
 		!
-		!gp assign constants for G class 1, 2, and 3 mineralization of PON, POC, POP 
+		!gp assign constants for G class 1, 2, and 3 mineralization of PON, POC, POP
 		SD_kdiaPON(1)   = SD_MinRate_PON_Lab
 		SD_ThtaPON(1)   = SD_Theta_PON_Lab
 		SD_kdiaPON(2)   = SD_MinRate_PON_Ref
@@ -588,15 +588,15 @@ Module CEMASedimentDiagenesis
 		SD_kdiaPOP(3)   = SD_MinRate_POP_Ine
 		SD_ThtaPOP(3)   = SD_Theta_POP_Ine
 		!
-		!Compute input fluxes 
-		Do iTemp = 1, 3 
-			SD_JPOC(iTemp) = SD_Jcin * SD_FPOC(iTemp) 
-			SD_JPON(iTemp) = SD_Jnin * SD_FPON(iTemp) 
-			SD_JPOP(iTemp) = SD_Jpin * SD_FPOP(iTemp) 
-        End Do 
-        
+		!Compute input fluxes
+		Do iTemp = 1, 3
+			SD_JPOC(iTemp) = SD_Jcin * SD_FPOC(iTemp)
+			SD_JPON(iTemp) = SD_Jnin * SD_FPON(iTemp)
+			SD_JPOP(iTemp) = SD_Jpin * SD_FPOP(iTemp)
+        End Do
+
     ELSE
-        
+
     !
     DO JJJ=1,NAL
       IF(ALG_CALC(JJJ))THEN
@@ -614,8 +614,8 @@ Module CEMASedimentDiagenesis
           EPBurial = max(EB(JJJ)*DAY, 0.0) / H1(LayerNum,SegNumi) * EPD(LayerNum,SegNumi,JJJ) * (BI(LayerNum,SegNumi)-BI(LayerNum+1,SegNumi)+2.0*H1(LayerNum,SegNumi)) / (BI(LayerNum,SegNumi)-BI(LayerNum+1,SegNumi))
         END IF
         SDINC1(LayerNum,SegNumi) = SDINC1(LayerNum,SegNumi) + EBR(LayerNum,SegNumi,JJJ)*EPC(LayerNum,SegNumi,JJJ)*EC(JJJ)
-        SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + EBR(LayerNum,SegNumi,JJJ)*EPC(LayerNum,SegNumi,JJJ)*EN(JJJ) 
-        SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + EBR(LayerNum,SegNumi,JJJ)*EPC(LayerNum,SegNumi,JJJ)*EP(JJJ) 
+        SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + EBR(LayerNum,SegNumi,JJJ)*EPC(LayerNum,SegNumi,JJJ)*EN(JJJ)
+        SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + EBR(LayerNum,SegNumi,JJJ)*EPC(LayerNum,SegNumi,JJJ)*EP(JJJ)
       END IF
     END DO
     !
@@ -623,14 +623,14 @@ Module CEMASedimentDiagenesis
      IF(CBODS(JJJ) > 0.0)THEN
       IF(BOD_CALCP(JJJ)) THEN
           SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*CBODP(LayerNum,SegNumi,JJJ)
-      ELSE 
+      ELSE
           SDINP1(LayerNum,SegNumi) = SDINP1(LayerNum,SegNumi) + MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*BODP(JJJ)*CBOD(LayerNum,SegNumi,JJJ)
-      END IF    
+      END IF
       IF(BOD_CALCN(JJJ)) THEN
           SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*CBODN(LayerNum,SegNumi,JJJ)
-      ELSE    
+      ELSE
           SDINN1(LayerNum,SegNumi) = SDINN1(LayerNum,SegNumi) + MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*BODN(JJJ)*CBOD(LayerNum,SegNumi,JJJ)
-      END IF    
+      END IF
       IF(BOD_CALC(JJJ)) THEN
           SDINC1(LayerNum,SegNumi) = SDINC1(LayerNum,SegNumi) + MAX(CBODS(JJJ)*DAY,0.0)*RBOD(JJJ)*BODC(JJJ)*CBOD(LayerNum,SegNumi,JJJ)
       END IF
@@ -644,17 +644,17 @@ Module CEMASedimentDiagenesis
     IF(IncludeIron)      SD_JFeOOHin = SdinFeOOH(LayerNum,Segnumi)
     IF(IncludeManganese) SD_JMnO2in  = SdinMnO2(LayerNum,Segnumi)
     !
-    SD_Jcin = SDINC1(LayerNum,SegNumi)    
-    SD_Jnin = SDINN1(LayerNum,SegNumi) 
+    SD_Jcin = SDINC1(LayerNum,SegNumi)
+    SD_Jnin = SDINN1(LayerNum,SegNumi)
     SD_Jpin = SDINP1(LayerNum,SegNumi)
 		!
     IF(IncludeIron)       SD_JinFeOOH	=  SD_JinFeOOH*DAY
     IF(IncludeManganese)  SD_JMnO2in  =  SD_JMnO2in*DAY
     !
-    !gp assign constants for G class 1 and 2 PON, POC, and POP and calculate G class 3 as 1-fpox1-fpox2 
+    !gp assign constants for G class 1 and 2 PON, POC, and POP and calculate G class 3 as 1-fpox1-fpox2
 		SD_FPON(1) = SD_PON_L_Fr
 		SD_FPON(2) = SD_PON_R_Fr
-		SD_FPON(3) = SD_PON_I_Fr 
+		SD_FPON(3) = SD_PON_I_Fr
 		SD_FPOC(1) = SD_POC_L_Fr
 		SD_FPOC(2) = SD_POC_R_Fr
 		SD_FPOC(3) = SD_POC_I_Fr
@@ -662,7 +662,7 @@ Module CEMASedimentDiagenesis
 		SD_FPOP(2) = SD_POP_R_Fr
 		SD_FPOP(3) = SD_POP_I_Fr
 		!
-		!gp assign constants for G class 1, 2, and 3 mineralization of PON, POC, POP 
+		!gp assign constants for G class 1, 2, and 3 mineralization of PON, POC, POP
 		SD_kdiaPON(1)   = SD_MinRate_PON_Lab
 		SD_ThtaPON(1)   = SD_Theta_PON_Lab
 		SD_kdiaPON(2)   = SD_MinRate_PON_Ref
@@ -682,12 +682,12 @@ Module CEMASedimentDiagenesis
 		SD_kdiaPOP(3)   = SD_MinRate_POP_Ine
 		SD_ThtaPOP(3)   = SD_Theta_POP_Ine
 		!
-		!Compute input fluxes 
-		Do iTemp = 1, 3 
-			SD_JPOC(iTemp) = SD_Jcin * SD_FPOC(iTemp) 
-			SD_JPON(iTemp) = SD_Jnin * SD_FPON(iTemp) 
-			SD_JPOP(iTemp) = SD_Jpin * SD_FPOP(iTemp) 
-        End Do 
+		!Compute input fluxes
+		Do iTemp = 1, 3
+			SD_JPOC(iTemp) = SD_Jcin * SD_FPOC(iTemp)
+			SD_JPON(iTemp) = SD_Jnin * SD_FPON(iTemp)
+			SD_JPOP(iTemp) = SD_Jpin * SD_FPOP(iTemp)
+        End Do
         ENDIF
 		!
     ! computing resuspended POM
@@ -704,13 +704,13 @@ Module CEMASedimentDiagenesis
       SD_EPON = 0.0
       SD_EPOP = 0.0
       Do iTemp = 1, 3
-        if( SD_POM > NONZERO .and. SD_POCT2 > Nonzero) SD_EPOC(itemp)= SD_POCT2/SD_POM * SD_POC22(itemp)/SD_POCT2 * SD_E            
+        if( SD_POM > NONZERO .and. SD_POCT2 > Nonzero) SD_EPOC(itemp)= SD_POCT2/SD_POM * SD_POC22(itemp)/SD_POCT2 * SD_E
         if( SD_POM > NONZERO .and. SD_PONT2 > Nonzero) SD_EPON(itemp)= SD_PONT2/SD_POM * SD_PON22(itemp)/SD_PONT2 * SD_E
-        if( SD_POM > NONZERO .and. SD_POPT2 > Nonzero) SD_EPOP(itemp)= SD_POPT2/SD_POM * SD_POP22(itemp)/SD_POPT2 * SD_E            
-      end do                        
+        if( SD_POM > NONZERO .and. SD_POPT2 > Nonzero) SD_EPOP(itemp)= SD_POPT2/SD_POM * SD_POP22(itemp)/SD_POPT2 * SD_E
+      end do
     end if
     !
-		!Compute particulate organic forms 
+		!Compute particulate organic forms
 		SD_POCT2 = 0.0
 		SD_PONT2 = 0.0
 		SD_POPT2 = 0.0
@@ -725,28 +725,28 @@ Module CEMASedimentDiagenesis
       if (isnan(SD_POC22(iTemp))) SD_POC22(iTemp) = 0.0
       if (isnan(SD_PON22(iTemp))) SD_PON22(iTemp) = 0.0
       if (isnan(SD_POP22(iTemp))) SD_POP22(iTemp) = 0.0
-      SD_POC22(iTemp) = max(SD_POC22(iTemp), 0.0) 
-      SD_PON22(iTemp) = max(SD_PON22(iTemp), 0.0) 
-      SD_POP22(iTemp) = max(SD_POP22(iTemp), 0.0) 
+      SD_POC22(iTemp) = max(SD_POC22(iTemp), 0.0)
+      SD_PON22(iTemp) = max(SD_PON22(iTemp), 0.0)
+      SD_POP22(iTemp) = max(SD_POP22(iTemp), 0.0)
 			SD_POCT2 = SD_POCT2 + SD_POC22(iTemp)
 			SD_PONT2 = SD_PONT2 + SD_PON22(iTemp)
 			SD_POPT2 = SD_POPT2 + SD_POP22(iTemp)
     End Do
     !
-		!Compute diagenesis fluxes 
+		!Compute diagenesis fluxes
 		!Equation 13.31 diagenesis term only. See also Equation 12.2, 12.5 and 12.6
 		SD_Jc = 0
 		SD_Jn = 0
-		SD_Jp = 0 
-		Do iTemp = 1,3 
-			SD_Jc = SD_Jc + SD_kdiaPOC(iTemp) * SD_ThtaPOC(iTemp)**(SD_T2 - 20.)*SD_POC22(iTemp)*SD_H2 
-			SD_Jn = SD_Jn + SD_kdiaPON(iTemp) * SD_ThtaPON(iTemp)**(SD_T2 - 20.)*SD_PON22(iTemp)*SD_H2 
-			SD_Jp = SD_Jp + SD_kdiaPOP(iTemp) * SD_ThtaPOP(iTemp)**(SD_T2 - 20.)*SD_POP22(iTemp)*SD_H2 
-    End Do 
-    
+		SD_Jp = 0
+		Do iTemp = 1,3
+			SD_Jc = SD_Jc + SD_kdiaPOC(iTemp) * SD_ThtaPOC(iTemp)**(SD_T2 - 20.)*SD_POC22(iTemp)*SD_H2
+			SD_Jn = SD_Jn + SD_kdiaPON(iTemp) * SD_ThtaPON(iTemp)**(SD_T2 - 20.)*SD_PON22(iTemp)*SD_H2
+			SD_Jp = SD_Jp + SD_kdiaPOP(iTemp) * SD_ThtaPOP(iTemp)**(SD_T2 - 20.)*SD_POP22(iTemp)*SD_H2
+    End Do
+
   End Subroutine
-    
-  Subroutine CEMAMFTRatesandConstants    
+
+  Subroutine CEMAMFTRatesandConstants
     SD_POC_L_Fr             =     SDRegnPOC_L_Fr(RegnNum)
     SD_POC_R_Fr             =     SDRegnPOC_R_Fr(RegnNum)
     SD_POC_I_Fr             =     1 - SD_POC_L_Fr - SD_POC_R_Fr
@@ -769,8 +769,8 @@ Module CEMASedimentDiagenesis
     SD_Ae_HS_O2_Nit         =     SDRegnAe_HS_O2_Nit(RegnNum)
     SD_Theta_PW             =     SDRegn_Theta_PW(RegnNum)
     SD_Theta_PM             =     SDRegn_Theta_PM(RegnNum)
-    SD_Theta_NH3_NO3        =     SDRegn_Theta_NH3_NO3(RegnNum)   
-    SD_Theta_NO3_N2         =     SDRegn_Theta_NO3_N2(RegnNum)  
+    SD_Theta_NH3_NO3        =     SDRegn_Theta_NH3_NO3(RegnNum)
+    SD_Theta_NO3_N2         =     SDRegn_Theta_NO3_N2(RegnNum)
     SD_Theta_CH4_CO2        =     SDRegn_Theta_CH4_CO2(RegnNum)
     SD_Sulfate_CH4_H2S      =     SDRegn_Sulfate_CH4_H2S(RegnNum)
     SD_Ae_H2S_SO4           =     SDRegnAe_H2S_SO4(RegnNum)
@@ -808,16 +808,16 @@ Module CEMASedimentDiagenesis
     SD_POCr                 =     POCr(RegnNum)
     !
     IF(IncludeIron) THEN
-        SD_KdFe1            =     KdFe1(RegnNum)   
+        SD_KdFe1            =     KdFe1(RegnNum)
         SD_KdFe2            =     KdFe2(RegnNum)
     END IF
     IF(IncludeManganese) THEN
-        SD_KdMn1            =     KdMn1(RegnNum)   
+        SD_KdMn1            =     KdMn1(RegnNum)
         SD_KdMn2            =     KdMn2(RegnNum)
-    END IF 
-    
+    END IF
+
   End Subroutine
-     
+
   !===========================================================================================================================
   ! Compute benthic sediment oxygen demand
   Subroutine ComputeSOD
@@ -840,14 +840,14 @@ Module CEMASedimentDiagenesis
 		SD_KL12 = SD_PW_DiffCoeff * (SD_Theta_PW ** (SD_T2-20.)) / (SD_H2/2.)
     if (isnan(SD_KL12)) SD_KL12 = 0.0
     !
-    SD_W12  = SD_PartMix * (SD_Theta_PM ** (SD_T2-20.)) / (SD_H2/2.) * SD_POC22(1) / (SD_POCr*SD_Rho*(1.0-SD_Porosity))  
+    SD_W12  = SD_PartMix * (SD_Theta_PM ** (SD_T2-20.)) / (SD_H2/2.) * SD_POC22(1) / (SD_POCr*SD_Rho*(1.0-SD_Porosity))
 		if (isnan(SD_W12)) SD_W12 = 0.0
     !
     SD_S   = SD_SOD / SD_O20
     if (isnan(SD_S) .or. SD_S == 0.0) SD_S = 1.0E-8
     !
     SD_H1 = SD_KL12 * SD_H2 / SD_s
-		If(SD_H1 > SD_H2)Then   
+		If(SD_H1 > SD_H2)Then
         SD_H1 = SD_H2
 		End If
 		SD_AerLayerThick(SegNumI) = SD_H1
@@ -855,11 +855,11 @@ Module CEMASedimentDiagenesis
     !
     !CH4
     !SD_CH4SAT = 100.0D+00*(1.0D+00 + SD_depth/10.0D+00)*(1.024**(20.0D+00 - SD_T2))        ![gmO*/m3]
-    SD_CH4SAT = 100.0D+00*(1.0D+00 + SD_depth/10.0D+00)*(1.024**(20.0D+00 - SD_Tw))     !Saturation conc. of methane in oxygen equivalent units (Equation 10.51) [gmO*/m3]  
+    SD_CH4SAT = 100.0D+00*(1.0D+00 + SD_depth/10.0D+00)*(1.024**(20.0D+00 - SD_Tw))     !Saturation conc. of methane in oxygen equivalent units (Equation 10.51) [gmO*/m3]
     If(SD_CH4CompMethod == 1) CH42_prev = SD_CH42
     !------------------------------------------------------------------------------------------------------------------
     ! compute SOD
-		maxit = 500   !1000 
+		maxit = 500   !1000
 		SD_es = 0.01  !0.001
     !
     DO it = 1, maxit
@@ -870,14 +870,14 @@ Module CEMASedimentDiagenesis
 			CO2ProducedSrc2L2 = 0.d0
       !
       !-----------------------------------------------------------------------------------------------------------------------
-      ! TNH41 and TNH42   !Calculate dissolved and particulate (sorbed) fractions 
+      ! TNH41 and TNH42   !Calculate dissolved and particulate (sorbed) fractions
       SD_fdn1 = 1.0/(1.0 + SD_KdNH31*SD_Rho*(1.0-SD_Porosity))
-      SD_fpn1 = 1.0 - SD_fdn1             != ((m1*KdNH3)/(1 + m1*KdNH3)) 
+      SD_fpn1 = 1.0 - SD_fdn1             != ((m1*KdNH3)/(1 + m1*KdNH3))
       SD_fdn2 = 1.0/(1.0 + SD_KdNH32*SD_Rho*(1.0-SD_Porosity))
-      SD_fpn2 = 1.0 - SD_fdn2             != ((m2*KdNH3)/(1 + m2*KdNH3)) 
+      SD_fpn2 = 1.0 - SD_fdn2             != ((m2*KdNH3)/(1 + m2*KdNH3))
       SD_NH3T(1) = SD_NH31/sd_fdn1
       SD_NH3T(2) = SD_NH32/sd_fdn2
-      FOxna    = SD_O20 / (SD_Ae_HS_O2_Nit * 2.0 + SD_O20) 
+      FOxna    = SD_O20 / (SD_Ae_HS_O2_Nit * 2.0 + SD_O20)
       if (isnan(FOxna)) FOxna = 0.0
       con_nit  = ((SD_Ae_NH3_NO3*(SD_Theta_NH3_NO3**(SD_T1-20.)))**2.0)* FOxna * sd_fdn1
       !
@@ -886,56 +886,56 @@ Module CEMASedimentDiagenesis
       a22_TNH4 = -SD_fdn2 * SD_KL12 - SD_fpn2 * SD_w12 - SD_w2 - SD_H2 / SD_tc
       b2_TNH4  = -SD_Jn - SD_H2 / SD_tc * SD_NH3T(2)
       !Equation 4.51
-      ! 
+      !
       IF(SD_Ae_HS_NH4_Nit > 0.0) THEN
           FNH4 = SD_Ae_HS_NH4_Nit/(SD_Ae_HS_NH4_Nit + SD_NH3T(1)*SD_fdn1)
-      ELSE 
+      ELSE
           FNH4 = 1.0
       END IF
       !
-      SD_a11 = -SD_fdn1*SD_KL12 - SD_fpn1*SD_w12 - SD_w2- con_nit * FNH4 / SD_s - SD_fdn1*SD_s  
+      SD_a11 = -SD_fdn1*SD_KL12 - SD_fpn1*SD_w12 - SD_w2- con_nit * FNH4 / SD_s - SD_fdn1*SD_s
 			SD_b1  = -SD_s*SD_NH30             ![m/d]*[mg/m3]
-                   
-      Call Lin_Sys(SD_a11, a12_TNH4,a21_TNH4, a22_TNH4, SD_b1,b2_TNH4, SD_NH3T(1), SD_NH3T(2)) 
+
+      Call Lin_Sys(SD_a11, a12_TNH4,a21_TNH4, a22_TNH4, SD_b1,b2_TNH4, SD_NH3T(1), SD_NH3T(2))
 			SD_NH3T(1) = max(SD_NH3T(1),0.0)
       SD_NH3T(2) = max(SD_NH3T(2),0.0)
       !
       ! NO31 and NO32
-      a12_NO3 = SD_KL12 
-      a21_NO3 = SD_KL12    
+      a12_NO3 = SD_KL12
+      a21_NO3 = SD_KL12
       a22_NO3 = -SD_KL12 - SD_An_NO3_N2*(SD_Theta_NO3_N2**(SD_T2-20.)) - SD_H2 / SD_tc
       b2_NO3  = -SD_H2 / SD_tc * SD_NO32
-      SD_a11  = -SD_KL12 - ((SD_Ae_NO3_N2*(SD_Theta_NO3_N2**(SD_T1-20.)))**2.0)/SD_s - SD_s 
+      SD_a11  = -SD_KL12 - ((SD_Ae_NO3_N2*(SD_Theta_NO3_N2**(SD_T1-20.)))**2.0)/SD_s - SD_s
 			SD_b1   = -SD_s*SD_NO30 - con_nit * FNH4/SD_s*SD_NH3T(1)
       Call Lin_Sys(SD_a11, a12_NO3, a21_NO3, a22_NO3, SD_b1, b2_NO3, SD_NO31, SD_NO32)
       SD_NO31 = max(SD_NO31,0.0)
       SD_NO32 = max(SD_NO32,0.0)
       !
-      !Denitrification in layers 1 and 2 (Equation 4.55) 
-			SD_Denit(1) = ((SD_Ae_NO3_N2*SD_Theta_NO3_N2**(SD_T1-20.))**2.0)/SD_s 
-			SD_Denit(2) = SD_An_NO3_N2*SD_Theta_NO3_N2**(SD_T2-20.) 
-      !Denitrification Flux [mgN/m2d] 
-			SD_JDenit(1) = SD_Denit(1) * SD_NO31 
-			SD_JDenit(2) = SD_Denit(2) * SD_NO32 
-			SD_JDenitT   = SD_JDenit(1) + SD_JDenit(2) 
-			!    
-			!Methane consumption due to denitrification (Equation 9.16) 
-			SD_JO2NO3(1) = (32.0D+00 / 12.0D+00) * (10.0D+00 / 8.0D+00) * (12.0D+00 / 14.0D+00) * SD_JDenit(1) 
-			SD_JO2NO3(2) = (32.0D+00 / 12.0D+00) * (10.0D+00 / 8.0D+00) * (12.0D+00 / 14.0D+00) * SD_JDenit(2) 
+      !Denitrification in layers 1 and 2 (Equation 4.55)
+			SD_Denit(1) = ((SD_Ae_NO3_N2*SD_Theta_NO3_N2**(SD_T1-20.))**2.0)/SD_s
+			SD_Denit(2) = SD_An_NO3_N2*SD_Theta_NO3_N2**(SD_T2-20.)
+      !Denitrification Flux [mgN/m2d]
+			SD_JDenit(1) = SD_Denit(1) * SD_NO31
+			SD_JDenit(2) = SD_Denit(2) * SD_NO32
+			SD_JDenitT   = SD_JDenit(1) + SD_JDenit(2)
 			!
-			!Sum 
-			SD_JO2NO3T = SD_JO2NO3(1) + SD_JO2NO3(2) 
+			!Methane consumption due to denitrification (Equation 9.16)
+			SD_JO2NO3(1) = (32.0D+00 / 12.0D+00) * (10.0D+00 / 8.0D+00) * (12.0D+00 / 14.0D+00) * SD_JDenit(1)
+			SD_JO2NO3(2) = (32.0D+00 / 12.0D+00) * (10.0D+00 / 8.0D+00) * (12.0D+00 / 14.0D+00) * SD_JDenit(2)
 			!
-			!Calculate methane flux in oxygen equivalent units, adjusted for 
-			!the methane consumed in denitrification                            
-			!gp also used if sulfide is produced 
-			SD_JC_O2equiv = SD_Jc * 32.0 / 12.0 - SD_JO2NO3T 
+			!Sum
+			SD_JO2NO3T = SD_JO2NO3(1) + SD_JO2NO3(2)
+			!
+			!Calculate methane flux in oxygen equivalent units, adjusted for
+			!the methane consumed in denitrification
+			!gp also used if sulfide is produced
+			SD_JC_O2equiv = SD_Jc * 32.0 / 12.0 - SD_JO2NO3T
 			SD_JC_O2equiv = max(SD_JC_O2equiv,1.0E-10)
       !
       ! CH41 and CH42
-      If (SD_SO42 <= SD_Sulfate_CH4_H2S) Then   
-				!gp freshwater methane production, no changes to original code 
-				!CSODMAX Equations 10.28 and 10.30 
+      If (SD_SO42 <= SD_Sulfate_CH4_H2S) Then
+				!gp freshwater methane production, no changes to original code
+				!CSODMAX Equations 10.28 and 10.30
 				!SD_CSODmax = DMin1((2.0D+00 * SD_KL12 * SD_CH4SAT * SD_JC_O2equiv)**2.0D+00, SD_JC_O2equiv)    ![gmO*/m2-d] = sqr([m/d] * [gmO*/m3] * [gmO*/m2-d])   ! SW 10/10/2017 MAJOR ERROR
         SD_CSODmax = DMin1((2.0D+00 * SD_KL12 * SD_CH4SAT * SD_JC_O2equiv)**0.5D+00, SD_JC_O2equiv)    ![gmO*/m2-d] = sqr([m/d] * [gmO*/m3] * [gmO*/m2-d])   ! SW 10/10/2017
 				If(SD_CH4CompMethod == 0) Then
@@ -950,14 +950,14 @@ Module CEMASedimentDiagenesis
 						SD_CSOD = SD_CSODmax
 					End If
 					!***********************************************************************
-        Else If(SD_CH4CompMethod == 1) Then	
+        Else If(SD_CH4CompMethod == 1) Then
 					!
 					!NumericalSolution for CH4
-					!SD_CH4toCO2 = (SD_Ae_CH4_CO2 ** 2.0D+00 * SD_Theta_CH4_CO2**((SD_T(1) - 20.0D+00) / 2.0D+00)) / SD_s 
-					!SD_CH4(1) = (SD_CSODmax + SD_s * SD_CH40) / (SD_CH4toCO2 + SD_s) 
-					!SD_CSOD = SD_CH4toCO2 * SD_CH4(1) 
-          !  
-          ! CH41 and CH42 
+					!SD_CH4toCO2 = (SD_Ae_CH4_CO2 ** 2.0D+00 * SD_Theta_CH4_CO2**((SD_T(1) - 20.0D+00) / 2.0D+00)) / SD_s
+					!SD_CH4(1) = (SD_CSODmax + SD_s * SD_CH40) / (SD_CH4toCO2 + SD_s)
+					!SD_CSOD = SD_CH4toCO2 * SD_CH4(1)
+          !
+          ! CH41 and CH42
           !CH42_prev = SD_CH42
           FOxch = SD_O20 / (SD_O20 + SD_KsOxch * 2.0)
           if (isnan(Foxch)) FOxch = 0.0
@@ -968,12 +968,12 @@ Module CEMASedimentDiagenesis
           SD_a11 = -SD_KL12 - con_cox / SD_S - SD_S
           SD_b1  = -SD_S * SD_CH40
           SD_b2  = -SD_JC_O2equiv - CH42_prev * SD_H2 / SD_tc
-                    
+
           !write(199,*) jday,SD_Ae_CH4_CO2,SD_Theta_CH4_CO2
           !if(segnumi==23 .and. layernum==kb(segnumi)) then
           !    write(199,'(11F10.4)') jday, sd_a11, a12_CH4, a21_CH4, a22_CH4,sd_b1, SD_b2,SD_JC_O2equiv,CH42_prev,SD_H2,SD_tc
           !end if
-                    
+
           Call Lin_Sys(SD_a11, a12_CH4, a21_CH4, a22_CH4, SD_b1, SD_b2, SD_CH41, SD_CH42)
           SD_CH41 = max(SD_CH41,0.0)
           SD_CH42 = max(SD_CH42,0.0)
@@ -988,65 +988,65 @@ Module CEMASedimentDiagenesis
           SD_CH42  = max(SD_CH42, 0.0)
           SD_CSOD    = con_cox / SD_S * SD_CH41
 				End IF
-				
+
 				!0.5CH4 + O2 --> 0.5 CO2 + H2O
 				!CO2 Produced = 0.5*(12+32)/32 = 0.6875
 				CO2ProducedSrc1L1 = SD_CSOD*0.6875    !g CO2/m�/d
 				CO2ProducedCon1L1 = CO2ProducedSrc1L1*SD_tc/SD_H1   !g CO2/m�/d*d/m = g CO2/m�
-				
-			Else 
+
+			Else
 				!
-				!gp saltwater sulfide production by C diagenesis based on DiToro (2001) Appendix B 
-				!***** Calculate dissolved and particulate (sorbed) fractions for sulfide 
+				!gp saltwater sulfide production by C diagenesis based on DiToro (2001) Appendix B
+				!***** Calculate dissolved and particulate (sorbed) fractions for sulfide
         SD_fd1=1.0/(1.0+SD_KdH2S1*SD_Rho*(1.0-SD_Porosity))
         !SD_fp1=(SD_KdH2S1*SD_Rho*(1.0-SD_Porosity))/(SD_Porosity+SD_KdH2S1*SD_Rho*(1.0-SD_Porosity))
         SD_fp1=1.0-SD_fd1                    != ((m1*KdH2S1)/(1 + m1*KdH2S1))
         SD_fd2=1.0/(1.0+SD_KdH2S2*SD_Rho*(1.0-SD_Porosity))
-        !SD_fp2=(SD_KdH2S2*SD_Rho*(1.0-SD_Porosity))/(SD_Porosity+SD_KdH2S2*SD_Rho*(1.0-SD_Porosity)) 
-        SD_fp2=1.0-SD_fd2                    != ((m2*KdH2S2)/(1 + m2*KdH2S2)) 
+        !SD_fp2=(SD_KdH2S2*SD_Rho*(1.0-SD_Porosity))/(SD_Porosity+SD_KdH2S2*SD_Rho*(1.0-SD_Porosity))
+        SD_fp2=1.0-SD_fd2                    != ((m2*KdH2S2)/(1 + m2*KdH2S2))
 				!
-				!***** Temperature adjusted reaction velocities 
-				SD_xappd1 = SD_Ae_H2S_SO4 * SD_Theta_H2S_SO4 **((SD_T1-20.) / 2.0D+00) 
-				SD_xappp1 = SD_KappaH2Sp1 * SD_Theta_H2S_SO4 **((SD_T1-20.) / 2.0D+00) 
+				!***** Temperature adjusted reaction velocities
+				SD_xappd1 = SD_Ae_H2S_SO4 * SD_Theta_H2S_SO4 **((SD_T1-20.) / 2.0D+00)
+				SD_xappp1 = SD_KappaH2Sp1 * SD_Theta_H2S_SO4 **((SD_T1-20.) / 2.0D+00)
 				!
-				!***** Transport and Decay terms 
+				!***** Transport and Decay terms
 				!Equation B.19
-				SD_k1h1d = SD_xappd1**2.0D+00/SD_s*(SD_O20/SD_NormConst_H2S_SO4) + SD_s 
-				SD_k1h1p = SD_xappp1**2.0D+00/SD_s*(SD_O20/SD_NormConst_H2S_SO4) 
-				SD_k2h2d = 0.0d+00 
+				SD_k1h1d = SD_xappd1**2.0D+00/SD_s*(SD_O20/SD_NormConst_H2S_SO4) + SD_s
+				SD_k1h1p = SD_xappp1**2.0D+00/SD_s*(SD_O20/SD_NormConst_H2S_SO4)
+				SD_k2h2d = 0.0d+00
 				SD_k2h2p = 0.0d+00
-				SD_F12 = SD_w12 * SD_fp1 + SD_KL12 * SD_fd1 
-				SD_F21 = SD_w12 * SD_fp2 + SD_KL12 * SD_fd2 
-				SD_xk1 = SD_k1h1d * SD_fd1 + SD_k1h1p * SD_fp1 
-				SD_xk2 = SD_k2h2d * SD_fd2 + SD_k2h2p * SD_fp2 
+				SD_F12 = SD_w12 * SD_fp1 + SD_KL12 * SD_fd1
+				SD_F21 = SD_w12 * SD_fp2 + SD_KL12 * SD_fd2
+				SD_xk1 = SD_k1h1d * SD_fd1 + SD_k1h1p * SD_fp1
+				SD_xk2 = SD_k2h2d * SD_fd2 + SD_k2h2p * SD_fp2
 				!
-				!***** Matrix and forcing function 
-				SD_a11 = -SD_F12 - SD_xk1 - SD_w2                             !note: -fd1 * s is included in DiToro's -xk1 term 
-        !SD_a11 = -SD_H1 / SD_tc - SD_F12 - SD_xk1 - SD_w2            !note: -fd1 * s is included in DiToro's -xk1 term 
-				SD_a21 = SD_F12 + SD_w2 
-				SD_a12 = SD_F21 
-				SD_b1 = 0.0D+00 
+				!***** Matrix and forcing function
+				SD_a11 = -SD_F12 - SD_xk1 - SD_w2                             !note: -fd1 * s is included in DiToro's -xk1 term
+        !SD_a11 = -SD_H1 / SD_tc - SD_F12 - SD_xk1 - SD_w2            !note: -fd1 * s is included in DiToro's -xk1 term
+				SD_a21 = SD_F12 + SD_w2
+				SD_a12 = SD_F21
+				SD_b1 = 0.0D+00
 				SD_a22 = -SD_F21 - SD_xk2 - SD_w2 - SD_H2 / SD_tc
 				SD_b2  = -SD_JC_O2equiv - SD_H2 / SD_tc * SD_HST2
-				
-				Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_HST1, SD_HST2)   !, NFLog, NFCle) 
+
+				Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_HST1, SD_HST2)   !, NFLog, NFCle)
 				SD_HST1 = max(SD_HST1,0.0)
         SD_HST2 = max(SD_HST2,0.0)
         !
-				!***** dissolved concentrations 
-				SD_HS(1) = SD_fd1*SD_HST1 
-				SD_HS(2) = SD_fd2*SD_HST2 
-				SD_CSOD = (SD_xappd1**2.0/SD_s*SD_fd1 + SD_xappp1**2.0/SD_s*SD_fp1)*(SD_O20/SD_NormConst_H2S_SO4)*SD_HST1 
-				
+				!***** dissolved concentrations
+				SD_HS(1) = SD_fd1*SD_HST1
+				SD_HS(2) = SD_fd2*SD_HST2
+				SD_CSOD = (SD_xappd1**2.0/SD_s*SD_fd1 + SD_xappp1**2.0/SD_s*SD_fp1)*(SD_O20/SD_NormConst_H2S_SO4)*SD_HST1
+
 				!H2S + 2 O2 --> 2 H+ + SO42-
 				!SO42- Produced = (32+16*4)/(2*32) = 1.5
 				SO4ProducedSrc1L1 = SD_CSOD*1.5    !g SO42-/m�/d
-				
+
 				!CH2O + 2 H+ + SO42- --> 2 CO2 + H2S + 2 H2O    !CH2O is represented in O2 equivalent in SD_JC_O2equiv
 				!SO42- Consumed = (32+16*4)/(2*16) = 3.0
 				!SO4ConsumedSnk1L2 = SD_JC_O2equiv*3.0    !g SO42-/m�/d
         SO4ConsumedSnk1L2 = -SD_JC_O2equiv*3.0    !g SO42-/m�/d   ! cb 7/26/18
-				
+
 				!CH2O + 2 H+ + SO42- --> 2 CO2 + H2S + 2 H2O    !CH2O is represented in O2 equivalent in SD_JC_O2equiv
 				!CO2 Produced = 2*(12+16*2)/(2*16) = 2.75
 				CO2ProducedSrc2L2 = SD_JC_O2equiv*2.75    !g CO2/m�/d
@@ -1057,7 +1057,7 @@ Module CEMASedimentDiagenesis
       if(includeIron)then
         SD_fd1 = 1.0/(1.0 + SD_KdFe1*SD_Rho*(1.0-SD_Porosity))
         SD_fp1 = 1.0 - SD_fd1
-        SD_fd2 = 1.0/(1.0+SD_KdFe2*SD_Rho*(1.0-SD_Porosity))          
+        SD_fd2 = 1.0/(1.0+SD_KdFe2*SD_Rho*(1.0-SD_Porosity))
         SD_fp2 = 1.0 - SD_fd2
         SD_Fe2toFeOOH = kfe_oxid(JW)*SD_O20*10**(2.0*(sd_ph1-7.0))*SD_fd1*SD_Fe2T1
         SD_CSOD = SD_CSOD + (0.25*2.0*16.0/55.845)*SD_Fe2toFeOOH  ! lumping in DO consumed by Fe(II)>FeOOH into CSOD
@@ -1070,31 +1070,31 @@ Module CEMASedimentDiagenesis
 			  !
 			  !Layer 1
 			  SD_a11 = -SD_fd1*SD_KL12 - SD_fp1*SD_w12 - SD_fd1*SD_s - SD_w2 - SD_Fe2toFeOOH*SD_H1
-			  SD_a12 = SD_fd2*SD_KL12 + SD_fp2*SD_w12 
+			  SD_a12 = SD_fd2*SD_KL12 + SD_fp2*SD_w12
 			  SD_b1 = -SD_s*SD_Fe20
 			  !
 			  !Layer 2
-			  SD_a21 = SD_fd1*SD_KL12 + SD_fp1*SD_w12 + SD_w2   
+			  SD_a21 = SD_fd1*SD_KL12 + SD_fp1*SD_w12 + SD_w2
 			  SD_a22 = -SD_fd2 * SD_KL12 - SD_fp2 * SD_w12 - SD_w2 - SD_H2 / SD_tc
 			  SD_b2  = - SD_H2 / SD_tc * SD_Fe2T2 - SD_H2 * SD_FeOOHtoFe2
-			!			
-			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_Fe2T1, SD_Fe2T2) !, NFLog, NFCle) 
+			!
+			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_Fe2T1, SD_Fe2T2) !, NFLog, NFCle)
         SD_Fe2T1 = max(SD_Fe2T1,0.0)
         SD_Fe2T2 = max(SD_Fe2T2,0.0)
         !Write linear system of equations around total ferrous iron SD_FeOOH
 			  !Equation 5.1
 			  !
 			  !Layer 1
-			  SD_a11 = -SD_w12 -  SD_w2 
-			  SD_a12 = SD_w12 
+			  SD_a11 = -SD_w12 -  SD_w2
+			  SD_a12 = SD_w12
 			  SD_b1 = -SD_JFeOOHin- SD_Fe2toFeOOH*SD_H1
 			  !
 			  !Layer 2
-			  SD_a21 = SD_w12 + SD_w2    
+			  SD_a21 = SD_w12 + SD_w2
 			  SD_a22 = - SD_w12 - SD_w2 - SD_H2*SD_FeOOHtoFe2  - SD_H2 / SD_tc
 			  SD_b2  = - SD_H2 / SD_tc * SD_FeOOH2
-			!			
-			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_FeOOH2, SD_FeOOH2)  !, NFLog, NFCle)                         		
+			!
+			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_FeOOH2, SD_FeOOH2)  !, NFLog, NFCle)
         SD_FeOOH1 = max(SD_FeOOH1,0.0)
         SD_FeOOH2 = max(SD_FeOOH2,0.0)
       end if
@@ -1116,32 +1116,32 @@ Module CEMASedimentDiagenesis
 			  !
 			  !Layer 1
 			  SD_a11 = -SD_fd1*SD_KL12 - SD_fp1*SD_w12 - SD_fd1*SD_s - SD_w2 - SD_Mn2toMnO2*SD_H1
-			  SD_a12 = SD_fd2*SD_KL12 + SD_fp2*SD_w12 
+			  SD_a12 = SD_fd2*SD_KL12 + SD_fp2*SD_w12
 			  SD_b1 = -SD_s*SD_Mn20
 			  !
 			  !Layer 2
-			  SD_a21 = SD_fd1*SD_KL12 + SD_fp1*SD_w12 + SD_w2 
+			  SD_a21 = SD_fd1*SD_KL12 + SD_fp1*SD_w12 + SD_w2
 			  SD_a22 = -SD_fd2 * SD_KL12 - SD_fp2 * SD_w12 - SD_w2 - SD_H2 / SD_tc
 			  SD_b2  = - SD_H2 / SD_tc * SD_Mn2T2 - SD_H2 * SD_MnO2toMn2
-			!			
-			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_Mn2T1, SD_Mn2T2)   !, NFLog, NFCle) 
+			!
+			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_Mn2T1, SD_Mn2T2)   !, NFLog, NFCle)
         SD_Mn2T1 = max(SD_Mn2T1,0.0)
-        SD_Mn2T2 = max(SD_Mn2T2,0.0)        
+        SD_Mn2T2 = max(SD_Mn2T2,0.0)
         !
         !Write linear system of equations around manganese dioxide SD_MnO2
 			  !Equation 5.1
 			  !
 			  !Layer 1
-			  SD_a11 = -SD_w12 -  SD_w2 
-			  SD_a12 = SD_w12 
+			  SD_a11 = -SD_w12 -  SD_w2
+			  SD_a12 = SD_w12
 			  SD_b1  = -SD_JMnO2in- SD_Mn2toMnO2*SD_H1
 			  !
 			  !Layer 2
 			  SD_a21 = SD_w12 + SD_w2
 			  SD_a22 = - SD_w12 - SD_w2 - SD_H2*SD_MnO2toMn2  - SD_H2 / SD_tc
 			  SD_b2  = - SD_H2 / SD_tc * SD_MnO22
-			!			
-			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_MnO21, SD_MnO22)   !, NFLog, NFCle)                         		
+			!
+			  Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_MnO21, SD_MnO22)   !, NFLog, NFCle)
         SD_MnO21 = max(SD_MnO21,0.0)
         SD_MnO22 = max(SD_MnO22,0.0)
       end if
@@ -1149,9 +1149,9 @@ Module CEMASedimentDiagenesis
       ! new SOD
       SD_NSOD = 2.0*32.0/14.0 * con_nit * FNH4 / SD_S * SD_NH3T(1)
       SD_SODold = SD_SOD
-			SD_SOD = (SD_SOD + SD_CSOD + SD_NSOD)/2.0  
-			SD_ea = Abs((SD_SOD - SD_SODold)/SD_SOD)*100.0D+00 
-			If (SD_ea <= SD_es) Exit 
+			SD_SOD = (SD_SOD + SD_CSOD + SD_NSOD)/2.0
+			SD_ea = Abs((SD_SOD - SD_SODold)/SD_SOD)*100.0D+00
+			If (SD_ea <= SD_es) Exit
       SD_s = SD_SOD/SD_O20
       if (isnan(SD_S) .or. SD_S == 0.0) SD_S = 1.0E-8
 
@@ -1168,22 +1168,22 @@ Module CEMASedimentDiagenesis
     ! check if SOD solution is converged
 	!	If (it >= maxit) Write(WRN,*) 'Sediment Diangenesis: SOD iterations exceeded on JDAY:',JDAY
   End Subroutine
-    
+
   Subroutine SedimentReaction
     !
     SD_JSOD = SD_SOD
     SD_s = SD_SOD/SD_O20
     !
     SD_H1 = SD_KL12 * SD_H2 / SD_s
-    If(SD_H1 > SD_H2)Then   
+    If(SD_H1 > SD_H2)Then
         SD_H1 = SD_H2
     End If
     SD_AerLayerThick(SegNumI) = SD_H1
-    ! 
+    !
     ! pathways of TNH41/2, NO31/2, CH41/2, SO41/2, TH2S1/2, DIC1/2, TIP1/2, Si1/2
     ! TNH41 and TNH42
-    !Dissolved Concentrations 
-		SD_NH31 = SD_fdn1*SD_NH3T(1) 
+    !Dissolved Concentrations
+		SD_NH31 = SD_fdn1*SD_NH3T(1)
 		SD_NH32 = SD_fdn2*SD_NH3T(2)
     SD_JNH4 = SD_s * (SD_NH31 - SD_NH30)
     !
@@ -1211,7 +1211,7 @@ Module CEMASedimentDiagenesis
     !
     !If (SD_SO4 <= SD_Sulfate_CH4_H2S) Then
     If (SD_SO42 <= SD_Sulfate_CH4_H2S) Then         ! 7/26/18
-            
+
     Else
       !Calculate H2S and HS- concentrations
 			!
@@ -1223,7 +1223,7 @@ Module CEMASedimentDiagenesis
 			SD2_Sulfide =  SD_HS(2) - SD2_SulfiMinus
     End If
 		!
-		!gp   methane or sulfide fluxes produced from C diagenesis 
+		!gp   methane or sulfide fluxes produced from C diagenesis
 		!If (SD_SO4 < SD_Sulfate_CH4_H2S) Then
     If (SD_SO42 <= SD_Sulfate_CH4_H2S) Then                 ! cb 7/26/18
 			!gp freshwater sediment fluxes - methane
@@ -1254,27 +1254,27 @@ Module CEMASedimentDiagenesis
     ! SO4
     !Write linear system of equations around sulfate   cb 7/26/18
     !Layer 1
-		SD_a11 = -SD_KL12 -SD_s            
+		SD_a11 = -SD_KL12 -SD_s
 		SD_a12 = SD_KL12
     ! SO4ProducedSrc1L1 converted from  g SO4/m?d to g S/m?d ; 32/(4*16+32)=0.33333
-    !H2S + 2 O2 --> 2 H+ + SO42-            
+    !H2S + 2 O2 --> 2 H+ + SO42-
 		SD_b1 = -SD_s*SD_SO40 - SO4ProducedSrc1L1 * 0.3333333
 		!
 		!Layer 2
 		SD_a21 = SD_KL12
 		SD_a22 = -SD_KL12 -  SD_H2 / SD_tc
 		SD_b2  = - SD_H2 / SD_tc * SD_so42 - SO4ConsumedSnk1L2 * 0.33333333
-		!					
+		!
 		Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_so41, SD_so42)  !, NFLog, NFCle)
     SD_SO41 = max(SD_so41,0.0)
-    SD_SO42 = max(SD_so42,0.0)           
+    SD_SO42 = max(SD_so42,0.0)
     ! calculating diffusive flux between layer 1 and water column
     SD_JSO4= SD_s * (SD_so41-SD_so40)
     !
     !TIC
     !Write linear system of equations around Total inorganic carbon
     !Layer 1
-		SD_a11 = -SD_KL12 -SD_s            
+		SD_a11 = -SD_KL12 -SD_s
 		SD_a12 = SD_KL12
     ! COCO2ProducedSrc1L1 converted from  g CO2/m?d to g C/m?d ; 12/(2*16+12)=0.272
 		SD_b1 = -SD_s*SD_TIC0 - CO2ProducedSrc1L1 * 0.272
@@ -1283,7 +1283,7 @@ Module CEMASedimentDiagenesis
 		SD_a21 = SD_KL12
 		SD_a22 = -SD_KL12 -  SD_H2 / SD_tc
 		SD_b2  = - SD_H2 / SD_tc * SD_tic2 - CO2ProducedSrc2L2 * 0.272
-		!					
+		!
 		Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_tic1, SD_tic2)  !, NFLog, NFCle)
     SD_tic1 = max(SD_tic1,0.0)
     SD_tic2 = max(SD_tic2,0.0)
@@ -1299,13 +1299,13 @@ Module CEMASedimentDiagenesis
 		SD_a11 = -SD_KL12 -SD_s
     !SD_a11 = -SD_H1/SD_tc -SD_KL12 -SD_s
 		SD_a12 = SD_KL12
-		SD_b1 = -SD_s*SD_ALK0 +2.0*SD_NH3toNO3*SD_NH31 - SD_NO31*SD_Denit(1)                   ![m/d]*[mg/m3] 
+		SD_b1 = -SD_s*SD_ALK0 +2.0*SD_NH3toNO3*SD_NH31 - SD_NO31*SD_Denit(1)                   ![m/d]*[mg/m3]
 		!
 		!Layer 2
-		SD_a21 = SD_KL12   
+		SD_a21 = SD_KL12
 		SD_a22 = -SD_KL12 -  SD_H2 / SD_tc
 		SD_b2  = - SD_H2 / SD_tc * SD_alk2 - SD_NO32*SD_Denit(2)
-		!					
+		!
 		Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_alk1, SD_alk2)  !, NFLog, NFCle)
     SD_alk1 = max(SD_alk1,0.0)
     SD_alk2 = max(SD_alk2,0.0)
@@ -1318,30 +1318,30 @@ Module CEMASedimentDiagenesis
         SD_Kdp1 = SD_Kdp2 * SD_delta_kpo41
     else
         SD_Kdp1 = SD_Kdp2 * SD_delta_kpo41 ** (SD_O20 / SD_DOcr)
-    end if  
+    end if
     !calculating dissolved and particulate forms of phosphorus (Chapra, eqn. 25.89)
     SD_fd1 = 1.0/(1.0 + SD_Kdp1*SD_Rho*(1.0-SD_Porosity))
     SD_fp1 = 1.0 - SD_fd1
     SD_fd2 = 1.0/(1.0 + SD_Kdp2*SD_Rho*(1.0-SD_Porosity))
     SD_fp2 = 1.0 - SD_fd2
-    !    
+    !
     !Write linear system of equations around total phosphate SD_PO4T
     !Layer 1
-		SD_a11 = -SD_fd1*SD_KL12 - SD_fp1*SD_w12 - SD_fd1*SD_s - SD_w2  
-    SD_a12 = SD_fd2*SD_KL12 + SD_fp2*SD_w12 
-    SD_b1 = -SD_s*fdp*SD_PO40                   ![m/d]*[mg/m3] 
+		SD_a11 = -SD_fd1*SD_KL12 - SD_fp1*SD_w12 - SD_fd1*SD_s - SD_w2
+    SD_a12 = SD_fd2*SD_KL12 + SD_fp2*SD_w12
+    SD_b1 = -SD_s*fdp*SD_PO40                   ![m/d]*[mg/m3]
     !
     !Layer 2
     SD_a21 = SD_fd1*SD_KL12 + SD_fp1*SD_w12 + SD_w2
     SD_a22 = -SD_fd2 * SD_KL12 - SD_fp2 * SD_w12 - SD_w2 - SD_H2 / SD_tc
     SD_b2  = -SD_Jp - SD_H2 / SD_tc * SD_PO4T2 - vsss*SD_PO40
-!					
-    Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_PO4T1, SD_PO4T2)   !, NFLog, NFCle) 
+!
+    Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_PO4T1, SD_PO4T2)   !, NFLog, NFCle)
     SD_PO4T1 = max(SD_PO4T1,0.0)
     SD_PO4T2 = max(SD_PO4T2,0.0)
     ! dissolved PO4
     SD_PO4(1) = SD_fd1*SD_PO4T1
-    SD_PO4(2) = SD_fd2*SD_PO4T2		
+    SD_PO4(2) = SD_fd2*SD_PO4T2
     SD_JPO4   = SD_s * (SD_PO4(1)-fdp*SD_PO40)
     !
     ! Temperature
@@ -1352,8 +1352,8 @@ Module CEMASedimentDiagenesis
     !Layer 1
     !SD_a11 = -SD_KL12 -SD_s
     SD_a11 = -SD_KL12 -SD_s  -SD_H1/SD_tc   ! SW 8/29/2021
-    SD_a12 = SD_KL12          
-    !SD_b1 = -SD_s*SD_Tw 
+    SD_a12 = SD_KL12
+    !SD_b1 = -SD_s*SD_Tw
     SD_b1 = -SD_s*SD_Tw -SD_H1/SD_tc * SD_T1  ! SW 8/29/2021
 
     !
@@ -1364,7 +1364,7 @@ Module CEMASedimentDiagenesis
 
     !SD_b2  = - SD_H2 * SD_rhowcp / SD_tc * SD_T2 - SD_Ksw * SD_Tsed
     SD_b2  = - SD_H2 * SD_rhowcp / SD_tc * SD_T2 - SD_Ksw * SD_Tsed*DAY
-		!					
+		!
 		Call Lin_Sys(SD_a11, SD_a12, SD_a21, SD_a22, SD_b1, SD_b2, SD_T1, SD_T2)   !, NFLog, NFCle)
     SD_T1 = max(SD_T1,0.0)
     SD_T2 = max(SD_T2,0.0)
@@ -1373,7 +1373,7 @@ Module CEMASedimentDiagenesis
     !
     if(IncludeDynamicpH)then
     ! Sediment pH for layers 1 and 2
-      SD_TDS=0.0  !sediments not simulating tds at the moment        
+      SD_TDS=0.0  !sediments not simulating tds at the moment
       SD_POCT1=0.0 ! POC not predicted for aerobic layer.
       call PH_SEDIMENTS(SD_T1,sd_tic1,sd_alk1,sd_nh31,sd_po4(1),SD_POCT1,SD_TDS(1),SD_PH1)  !layer 1
       call PH_SEDIMENTS(SD_T2,sd_tic2,sd_alk2,sd_nh32,sd_po4(2),SD_POCT2,SD_TDS(2),SD_PH2)  !layer 2
@@ -1401,13 +1401,13 @@ Module CEMASedimentDiagenesis
 		  SConc(1,LayerNum,SegNumI) = (SulfideG_SD2*BubbAccFraction)/sd_tc    !gm/m�/s
 		  !Old TConcP(1,SegNumI) = SD2_Sulfide
 		  TConcP(1,LayerNum,SegNumI) = TConc(1,LayerNum,SegNumI)
-		
+
 		  !CH4
 		  TConc(2,LayerNum,SegNumI) = SD_CH41*BubbAccFraction + TConcP(2,LayerNum,SegNumI)
 		  SConc(2,LayerNum,SegNumI) = (SD_CH41*BubbAccFraction)/sd_tc    !gm/m�/s
 		  !Old TConcP(1,SegNumI) = SD2_Sulfide
 		  TConcP(2,LayerNum,SegNumI) = TConc(2,LayerNum,SegNumI)
-		
+
 		  !NH3
 		  !Old TConc(3,SegNumI) = SD2_Ammonia
 		  !Old SConc(3,SegNumI) = (TConc(3,SegNumI) - TConcP(3,SegNumI))/dlt    !gm/m�/s
@@ -1415,7 +1415,7 @@ Module CEMASedimentDiagenesis
 		  SConc(3,LayerNum,SegNumI) = (SD_NH32-TConcP(3,LayerNum,SegNumI))/sd_tc    !gm/m�/s
 		  !Old TConcP(3,SegNumI) = SD2_Ammonia
 		  TConcP(3,LayerNum,SegNumI) = TConc(3,LayerNum,SegNumI)
-		
+
 		  !CO2
 		  !Old TConc(4,SegNumI) = CO2ProducedCon2L2
 		  !Old SConc(4,SegNumI) = (TConc(4,SegNumI) - TConcP(4,SegNumI))/dlt    !gm/m�/s
@@ -1423,7 +1423,7 @@ Module CEMASedimentDiagenesis
 		  SConc(4,LayerNum,SegNumI) = (CO2ProducedCon2L2*BubbAccFraction)/sd_tc    !gm/m�/s
 		  !Old TConcP(4,SegNumI) = CO2ProducedCon2L2
 		  TConcP(4,LayerNum,SegNumI) = TConc(4,LayerNum,SegNumI)
-		
+
 		  !H2S
 		  DissolvedGasSediments(1, LayerNum, SegNumI) = SulfideD_SD2
       !CH4
@@ -1439,7 +1439,7 @@ Module CEMASedimentDiagenesis
     !
     !2
 		!Porewater release
-		!Flux of CH4d, NH3d + NH4d, H2Sd + HSd, SO42-d, NO3d, CO2d 
+		!Flux of CH4d, NH3d + NH4d, H2Sd + HSd, SO42-d, NO3d, CO2d
 		!Volume of porewater
 		VolWater = CellArea(LayerNum,SegNumI)*SD_H2
     !Aerobic Layer
@@ -1460,7 +1460,7 @@ Module CEMASedimentDiagenesis
     Dissolved_NO3_Src = (SD_NO31*PW_RelRate1 + SD_NO32*PW_RelRate2)/(CellThickness*CellArea(LayerNum,SegNumI))                      !gm/m�/d
 		!Dissolved_SO4_Src = SD_SO4 * PorewaterRelRate(SegNumI)/(CellThickness*CellArea(SegNumI))                      !gm/m�/s
     !Dissolved_SO4_Src = SD_SO4 * (PW_RelRate1+PW_RelRate2)/(CellThickness*CellArea(SegNumI))                      !gm/m�/s
-    Dissolved_SO4_Src = (SD_SO41*PW_RelRate1 + SD_SO42*PW_RelRate2)/(CellThickness*CellArea(LayerNum,SegNumI))     ! cb 7/26/18		
+    Dissolved_SO4_Src = (SD_SO41*PW_RelRate1 + SD_SO42*PW_RelRate2)/(CellThickness*CellArea(LayerNum,SegNumI))     ! cb 7/26/18
 		!Dissolved_CO2_Src = (CO2ProducedCon1L1*SD_H1 + CO2ProducedCon2L2*SD_H2)/(SD_H1 + SD_H2) * PorewaterRelRate(SegNumI)/(CellThickness*CellArea(SegNumI))                      !gm/m�/s
     Dissolved_CO2_Src = (CO2ProducedCon1L1*PW_RelRate1 + CO2ProducedCon2L2*PW_RelRate2)/(CellThickness*CellArea(LayerNum,SegNumI))                      !gm/m�/d
     !Dissolved_ALK_Src = (SD_ALK(1)*SD_H1 + SD_ALK(2)*SD_H2)/(SD_H1 + SD_H2) * PorewaterRelRate(SegNumI)/(CellThickness*CellArea(SegNumI))                      !gm/m�/s
@@ -1488,9 +1488,9 @@ Module CEMASedimentDiagenesis
     !3
     !Diffusive flux of NH3, NO3, CH4, SO4, H2S, CO2
     Dissolved_NH3_Src = Dissolved_NH3_Src + SD_JNH4*BIBH22   !g/m�/d SD_JNH4/CellThickness = g/m�/d/m = g/m�/d
-    Dissolved_NO3_Src = Dissolved_NO3_Src + SD_JNO3*BIBH22   !g/m�/d SD_JNO3/CellThickness = g/m�/d/m = g/m�/d 
+    Dissolved_NO3_Src = Dissolved_NO3_Src + SD_JNO3*BIBH22   !g/m�/d SD_JNO3/CellThickness = g/m�/d/m = g/m�/d
     Dissolved_CH4_Src = Dissolved_CH4_Src + SD_JCH4*BIBH22   !g/m�/d SD_JCH4/CellThickness = g/m�/d/m = g/m�/d commented out because double counting... ! SW 10/10/2017 added back because eliminated the problem above
-    Dissolved_SO4_Src = Dissolved_SO4_Src + SD_JSO4*BIBH22   !g/m�/d SD_JSO4/CellThickness = g/m�/d/m = g/m�/d	
+    Dissolved_SO4_Src = Dissolved_SO4_Src + SD_JSO4*BIBH22   !g/m�/d SD_JSO4/CellThickness = g/m�/d/m = g/m�/d
     Dissolved_H2S_Src = Dissolved_H2S_Src + SD_JHS*BIBH22
     Dissolved_CO2_Src = Dissolved_CO2_Src + SD_JTIC*BIBH22
     IF(IncludeAlkalinity) Dissolved_Alk_Src = Dissolved_ALK_Src + SD_JALK*BIBH22
@@ -1505,7 +1505,7 @@ Module CEMASedimentDiagenesis
     Sediment_Heat_Src = Sediment_Heat_Src + SD_JT*BIBH22  ! Heat J/m3/d  SD_JT/CellThickness = J/m3/d/m= J/m3/d
 		!Flux to CSOD and NSOD
 		Dissolved_O2_Snk = SD_JSOD*BIBH22   !g/m�/d SD_JSOD/CellThickness = g/m�/d/m = g/m�/d
-    !	
+    !
 		!Convert all source/sink to g/m�/s from g/m�/d
 		!NH3, NO3, CH4, SO4, DO, CO2, H2S
 		Dissolved_NH3_Src   = Dissolved_NH3_Src/DAY      !g/m�/d --> g/m�/s
@@ -1524,7 +1524,7 @@ Module CEMASedimentDiagenesis
     Sediment_Heat_Src   = Sediment_Heat_Src/DAY      !J/m�/d --> J/m�/s
     ! resuspension of POM, POP, and PON
     IF(CEMA_POM_Resuspension) THEN
-      DO iTemp = 1, 2  ! only labile and refractory, not including inert for now 
+      DO iTemp = 1, 2  ! only labile and refractory, not including inert for now
         LPOM_Resuspension  = LPOM_Resuspension  + SD_EPOC(itemp)*BIBH22/ORGC(JW)
         RPOM_Resuspension  = RPOM_Resuspension  + SD_EPOC(itemp)*BIBH22/ORGC(JW)
         LPOMN_Resuspension = LPOMN_Resuspension + SD_EPON(itemp)*BIBH22
@@ -1532,15 +1532,15 @@ Module CEMASedimentDiagenesis
         LPOMP_Resuspension = LPOMP_Resuspension + SD_EPOP(itemp)*BIBH22
         RPOMP_Resuspension = RPOMP_Resuspension + SD_EPOP(itemp)*BIBH22
       END DO
-    END IF        
+    END IF
   End Subroutine
-    
+
   Subroutine PH_SEDIMENTS(t1sed,ticsed,alksed,nh4sed,po4sed,pocsed,tdssed,phsed) ! Enhancements added for buffering by ammonia, phosphate, and OM ! SR 01/01/12
     ! pH and carbonate species
     !
     implicit none
     real(R8):: t1sed,ticsed,alksed,nh4sed,po4sed,pocsed,tdssed,phsed
-    
+
      T1K = t1sed + 273.15
      CART = ticsed/12011. ! SR 01/01/12
      ALKT = alksed/50044. ! SR 01/01/12
@@ -1550,7 +1550,7 @@ Module CEMASedimentDiagenesis
      omct=0.0  ! DOM is not simulated in the sediments yet...
      !IF (POM_BUFFERING) OMCT = OMCT + (LPOM(K,I)+RPOM(K,I))*ORGC(JW)/12011. ! SR 01/01/12
      IF (POM_BUFFERING) OMCT = OMCT + pocsed/12011. ! SR 01/01/12
-     omct=0.0    ! 
+     omct=0.0    !
  !**** Ionic strength
      IF (FRESH_WATER(JW)) S2 = 2.5E-05*TDSsed
      IF (SALT_WATER(JW))  S2 = 1.47E-3+1.9885E-2*TDSsed+3.8E-5*TDSsed*TDSsed
@@ -1630,8 +1630,8 @@ Module CEMASedimentDiagenesis
     HS    = 0.283 *U2/G*0.283*TANH(COEF1)*TANH(COEF2/TANH(COEF1))
     !TS    = 2.0*PI*U2/G*1.2*  TANH(COEF3)*TANH(COEF4/TANH(COEF3))
     TS    = 2.0*PI*sqrt(U2)/G*1.2*  TANH(COEF3)*TANH(COEF4/TANH(COEF3))   ! cb 5/9/14
-    LW0    = G*TS*TS/(2.0*PI)  
- 
+    LW0    = G*TS*TS/(2.0*PI)
+
     LW1 = LW0
     LW  = LW0*TANH(2.0*PI*DEPTHB(LayerNum,SegNumI)/LW1)
     DO WHILE (ABS(LW-LW1) > 0.001)
@@ -1641,10 +1641,10 @@ Module CEMASedimentDiagenesis
     COEF = MIN(710.0,2.0*PI*DEPTHB(LayerNum,SegNumI)/LW)
     UORB = PI*HS/TS*100.0/SINH(COEF)
     TAU  = 0.003*UORB*UORB
-    IF (TAU-TAUCRPOM > 0.0) EPSILON = MAX(0.0,0.008/49.0*(TAU-TAUCRPOM)**3*10000.0/sd_tc)						        
+    IF (TAU-TAUCRPOM > 0.0) EPSILON = MAX(0.0,0.008/49.0*(TAU-TAUCRPOM)**3*10000.0/sd_tc)
     SD_E = EPSILON*DLX(SegNumI)*BI(LayerNum,SegNumI)/VOL(LayerNum,SegNumI)  ! SD_E: g/m^2/s
   End Subroutine
-        
+
   Subroutine CEMABottomScourResuspension
     if(cao_method)then
       reyn_resusp = dia_POM * sqrt(spgrav_POM * g * dia_POM)
@@ -1655,13 +1655,13 @@ Module CEMASedimentDiagenesis
       else if(reyn_resusp > 282.8)then
         crshields = 0.045
       end if
-    end if  
+    end if
     molvisc_h2o = 1.79e-6 * exp(-0.0266 * SD_T1)     ! LB 3/2019 SW 3/2019
     shields = SD_taubot / (g*(spgrav_POM-1.0) * dia_POM)
-  
+
     Vscour = 0.00033*(shields/crshields - 1.0)*(spgrav_POM-1.0)**0.6 * g**0.6 * dia_POM**0.8/molvisc_h2o
     c_bottom = (c2(LayerNum,SegNumI,NLPOM) + c2(LayerNum,SegNumI,NRPOM)) * dexp( poms(jw) * h(LayerNum,jw) / DZ(LayerNum -1, SegNumI))
-    
+
     if(spgrav_POM < 1.2)then
       c_bottom2=1.0
     else if(spgrav_POM >= 1.2 .and. spgrav_POM < 1.8)then
@@ -1670,8 +1670,8 @@ Module CEMASedimentDiagenesis
         c_bottom2= 3.0 * (2.2 - spgrav_POM)/0.4 + 5.0 * (spgrav_POM - 1.8)/0.4
     else if(spgrav_POM > 2.2)then
       c_bottom2=5.0
-    end if 
-  
+    end if
+
     c_bottom=dmin1(c_bottom,c_bottom2)
 
     if(Vscour > 0.0)then
@@ -1679,40 +1679,39 @@ Module CEMASedimentDiagenesis
     else
       SD_E = 0.0
     end if
-  End Subroutine   
+  End Subroutine
 
-  Subroutine Lin_Sys(a11, a12, a21, a22, b1, b2, x1, x2)   !,NFLog,NFCle) 
-	USE SCREENC, ONLY:JDAY  
+  Subroutine Lin_Sys(a11, a12, a21, a22, b1, b2, x1, x2)   !,NFLog,NFCle)
+	USE SCREENC, ONLY:JDAY
   Real(8) a11, a12, a21, a22, b1, b2, x1, x2
 	  !Byte NFLog, NFCle
-	  !from 03-Nov-2003 version of Q2KMaster 
-	  !This subroutine solves a linear system of 2 equations and 2 unknowns 
-	  If (a11 * a22 - a12 * a21 == 0) Then 
-		  !MsgBox "The sediment flux solution matrix is singular: " & a11 & ", " & a12 & ", " & a21 & ", " & a22 
+	  !from 03-Nov-2003 version of Q2KMaster
+	  !This subroutine solves a linear system of 2 equations and 2 unknowns
+	  If (a11 * a22 - a12 * a21 == 0) Then
+		  !MsgBox "The sediment flux solution matrix is singular: " & a11 & ", " & a12 & ", " & a21 & ", " & a22
 		  !Write(NFLog,'(a)') 'The sediment flux solution matrix is singular: '
-		  !Write(NFLog,*) 'a11  == ', a11, 'a12 = ', a12, 'a21 = ', a21, 'a22 = ',a22 
+		  !Write(NFLog,*) 'a11  == ', a11, 'a12 = ', a12, 'a21 = ', a21, 'a22 = ',a22
 		  Write(w2err,'(a,F10.3)') 'The sediment flux solution matrix is singular on JDAY:', JDAY
-		  Write(w2err,*) 'a11  = ', a11, 'a12 = ', a12, 'a21 = ', a21, 'a22 = ',a22 
+		  Write(w2err,*) 'a11  = ', a11, 'a12 = ', a12, 'a21 = ', a21, 'a22 = ',a22
           WRITE(W2ERR,'(A,E15.8,A,E15.8)') 'b1 = ', b1, 'b2  = ', b2
 		  Write(w2err,*) 'Error in the solution of linear system of equations used in sediment diagenesis model'
 		  !Write(NFLog,*) 'Error in the solution of linear system of equations used in sediment diagenesis model'
       write(w2err,'(A)')'Error in Sediment Diagenesis, review output files and review the sediment diagensis parameters'
-		  Stop 'Please review the sediment diagensis parameters' 
-	  End If 
-	  x1 = (a22 * b1 - a12 * b2) / (a11 * a22 - a12 * a21) 
-	  x2 = (a11 * b2 - a21 * b1) / (a11 * a22 - a12 * a21) 
-  End Subroutine 
+		  Stop 'Please review the sediment diagensis parameters'
+	  End If
+	  x1 = (a22 * b1 - a12 * b2) / (a11 * a22 - a12 * a21)
+	  x2 = (a11 * b2 - a21 * b1) / (a11 * a22 - a12 * a21)
+  End Subroutine
 
 
   Subroutine CEMADisGasPhaseDistribution(CTotal, MolWt, GasTemp, HenryConst, Vwtr, CGasPh, CLiqPh)
     Use CEMAVars
-    
+
     Real(R8) CTotal, MolWt, GasTemp, HenryConst
     Real(R8) Vwtr, CGasPh, CLiqPh
-    
+
     CGasPh  =   CTotal/(1 + GasConst_R*GasTemp/HenryConst)
     CLiqPh  =   CTotal*(GasConst_R*GasTemp/HenryConst)/(1 + GasConst_R*GasTemp/HenryConst)
   End Subroutine
 
 End Module CEMASedimentDiagenesis
-
