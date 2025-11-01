@@ -55,7 +55,7 @@ sources = [
   # 'Resource.fd',
 ]
 
-add_project_arguments(['-w'], language: 'fortran')
+add_project_arguments(['-w', '-ffree-form', '-ffree-line-length-none'], language: 'fortran')
 
 
 executable(
