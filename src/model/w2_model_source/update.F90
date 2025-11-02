@@ -77,19 +77,19 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
             DO I=US(JB)-1,DS(JB)+1
               DO K=KT,KB(I)
                 DO JE=1,NEP
-                  IF (EPIPHYTON_CALC(JW,JE)) EPD(K,I,JE) = DMAX1(EPD(K,I,JE),0.0D0)
+                  IF (EPIPHYTON_CALC(JW,JE)) EPD(K,I,JE) = MAX(EPD(K,I,JE),0.0)
                 END DO
 
                 IF (SEDIMENT_CALC(JW))THEN
                   SED(K,I) = MAX(SED(K,I),0.0)
-                  SEDP(K,I) = DMAX1(SEDP(K,I),0.0D0)
-                  SEDN(K,I) = DMAX1(SEDN(K,I),0.0D0)
-                  SEDC(K,I) = DMAX1(SEDC(K,I),0.0D0)
+                  SEDP(K,I) = MAX(SEDP(K,I),0.0)
+                  SEDN(K,I) = MAX(SEDN(K,I),0.0)
+                  SEDC(K,I) = MAX(SEDC(K,I),0.0)
                 END IF
 
                 CSSB(K,I,CN(JC)) = 0.0D0
                 C1S(K,I,CN(JC))  = C1(K,I,CN(JC))
-                C2(K,I,CN(JC))   = DMAX1(C1(K,I,CN(JC)),0.0D0)
+                C2(K,I,CN(JC))   = MAX(C1(K,I,CN(JC)),0.0)
               END DO
             END DO
           END DO
@@ -148,7 +148,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
     JDAY    =  ELTM/DAY
     ELTMJD  =  JDAY-TMSTRT
     END_RUN =  JDAY >= TMEND
-    DLT     =  DMAX1(DLTMIN,DLTFF*CURMAX)    ! SW 7/13/2010
+    DLT     =  MAX(DLTMIN,DLTFF*CURMAX)    ! SW 7/13/2010
     DLT     =  DMIN1(DLT,1.1*DLTS)
     DLTAV   = (ELTM-TMSTRT*DAY)/NIT
     IF (DLT <  MINDLT) THEN

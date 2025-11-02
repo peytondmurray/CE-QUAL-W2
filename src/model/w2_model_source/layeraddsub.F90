@@ -140,11 +140,7 @@ REAL(R8):: W1,W2,W3, DUMMY
         SUB_LAYER    = .FALSE.
       END IF
 
-      IF(ADD_LAYER == .TRUE. .OR. SUB_LAYER == .TRUE.)THEN
-      LAYERCHANGE(JW)=.TRUE.
-      ELSE
-      LAYERCHANGE(JW)=.FALSE.
-      ENDIF
+      LAYERCHANGE(JW) = (ADD_LAYER .OR. SUB_LAYER)
 
 !**** Add layers
 

@@ -524,11 +524,11 @@ CALL HYDROINOUT
               CALL UPSTREAM_WATERBODY
             END IF
             DO K=KT,KB(IUT)
-              RHO(K,IUT) = DENSITY(T2(K,IUT),DMAX1(TDS(K,IUT),0.0D0),DMAX1(TISS(K,IUT),0.0D0))
+              RHO(K,IUT) = DENSITY(T2(K,IUT),MAX(TDS(K,IUT),0.0),MAX(TISS(K,IUT),0.0))
             END DO
           ELSE IF (UH_EXTERNAL(JB)) THEN
             DO K=KT,KB(IUT)
-              RHO(K,IUT)           = DENSITY(TUH(K,JB),DMAX1(TDS(K,IUT),0.0D0),DMAX1(TISS(K,IUT),0.0D0))
+              RHO(K,IUT)           = DENSITY(TUH(K,JB),MAX(TDS(K,IUT),0.0),MAX(TISS(K,IUT),0.0))
               T1(K,IUT)            = TUH(K,JB)
               T2(K,IUT)            = TUH(K,JB)
               C1S(K,IUT,CN(1:NAC)) = CUH(K,CN(1:NAC),JB)
@@ -553,11 +553,11 @@ CALL HYDROINOUT
               CALL DOWNSTREAM_WATERBODY
             END IF
             DO K=KT,KB(ID)
-              RHO(K,IDT) = DENSITY(T2(K,IDT),DMAX1(TDS(K,IDT),0.0D0),DMAX1(TISS(K,IDT),0.0D0))
+              RHO(K,IDT) = DENSITY(T2(K,IDT),MAX(TDS(K,IDT),0.0),MAX(TISS(K,IDT),0.0))
             END DO
           ELSE IF (DH_EXTERNAL(JB)) THEN
             DO K=KT,KB(IDT)
-              RHO(K,IDT)           = DENSITY(TDH(K,JB),DMAX1(TDS(K,IDT),0.0D0),DMAX1(TISS(K,IDT),0.0D0))
+              RHO(K,IDT)           = DENSITY(TDH(K,JB),MAX(TDS(K,IDT),0.0),MAX(TISS(K,IDT),0.0))
               T1(K,IDT)            = TDH(K,JB)
               T2(K,IDT)            = TDH(K,JB)
               C1S(K,IDT,CN(1:NAC)) = CDH(K,CN(1:NAC),JB)
@@ -627,7 +627,7 @@ CALL HYDROINOUT
           IF (WIND10(I) /= 0.0) WWT = 6.95D-2*(FETCH(I)**0.233D0)*WIND10(I)**0.534D0
           DFC = -8.0D0*PI*PI/(G*WWT*WWT+NONZERO)
           DO K=KT,KBMIN(I)
-            DECAY(K,I) = DEXP(DMAX1(DFC*DEPTHB(K,I),-30.0D0))
+            DECAY(K,I) = DEXP(MAX(DFC*DEPTHB(K,I),-30.0D0))
           END DO
 
 !******** Branch inflow lateral shear and friction
@@ -1142,7 +1142,7 @@ CALL HYDROINOUT
               DO JC=NSSS,NSSE
                 SSTOT = SSTOT+CIN(JC,JB)
               END DO
-              RHOIN = DENSITY(TIN(JB),DMAX1(CIN(1,JB),0.0D0),DMAX1(SSTOT,0.0D0))
+              RHOIN = DENSITY(TIN(JB),MAX(CIN(1,JB),0.0),MAX(SSTOT,0.0))
               DO WHILE (RHOIN > RHO(K,IU) .AND. K < KB(IU))
                 K = K+1
               END DO

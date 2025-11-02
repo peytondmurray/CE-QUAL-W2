@@ -1,19 +1,39 @@
 SUBROUTINE OUTPUTINIT
-
+  use iso_fortran_env, only: int32
   USE MAIN
-  USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC;  USE BIOENERGETICS; USE CEMAVars, ONLY: SEDIMENT_DIAGENESIS
+  USE GLOBAL
+  USE NAMESC
+  USE GEOMC
+  USE LOGICC
+  USE PREC
+  USE SURFHE
+  USE KINETIC
+  USE SHADEC
+  USE EDDY
+  USE STRUCTURES
+  USE TRANS
+  USE TVDC
+  USE SELWC
+  USE GDAYC
+  USE SCREENC
+  USE TDGAS
+  USE RSTART
+  USE MACROPHYTEC
+  USE POROSITYC
+  USE ZOOPLANKTONC
+  USE BIOENERGETICS
+  USE CEMAVars, ONLY: SEDIMENT_DIAGENESIS
   USE ALGAE_TOXINS
+
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
 
   REAL    DIST
   REAL(4) :: ELC, DLX_OLD
-  INTEGER*4,ALLOCATABLE,DIMENSION(:,:) :: ICOMP
+  INTEGER(int32), ALLOCATABLE, DIMENSION(:,:) :: ICOMP
 
-  INTEGER JN,IW, JO, IC, JJ
-  INTEGER*4 IFLAG
+  INTEGER JN, IW, JO, IC, JJ
+  INTEGER(int32) :: IFLAG
   CHARACTER(60) :: TITLEWITH2
   CHARACTER(100) :: TITLEWITH
   CHARACTER(3) :: ICHAR3
@@ -183,7 +203,7 @@ SUBROUTINE OUTPUTINIT
     END DO
 
     IF (VECTOR(1)) THEN
-    OPEN (VPL(1),FILE=VPLFN(1),STATUS='UNKNOWN',ACCESS='SEQUENTIAL',FORM='BINARY',POSITION='APPEND')
+    OPEN (VPL(1),FILE=VPLFN(1),STATUS='UNKNOWN',ACCESS='SEQUENTIAL',FORM='UNFORMATTED',POSITION='APPEND')
     ENDIF
 
     IF (DOWNSTREAM_OUTFLOW) THEN
@@ -906,27 +926,23 @@ ENDIF
           WRITE (CPL(JW), *)'TITLE="CE-QUAL-W2"'
           IF(HABTATC  == '      ON')THEN
               IF(NAC==0)THEN
-                  WRITE (CPL(JW),19231)
+                  WRITE (CPL(JW),19232)
                   ELSEIF(NACD(JW)==0)THEN
                   WRITE (CPL(JW),19232)(CNAME2(CN(JN)),JN=1,NAC)       !WRITE (CPL(JW),19233)(CNAME2(CN(JN)),JN=1,NAC)    SW 1/17/17
                   ELSEIF(NACD(JW)/=0)THEN
-                  WRITE (CPL(JW),19233)(CNAME2(CN(JN)),JN=1,NAC),(CDNAME2(CDN(JD,JW)),JD=1,NACD(JW))
+                  WRITE (CPL(JW),19232)(CNAME2(CN(JN)),JN=1,NAC),(CDNAME2(CDN(JD,JW)),JD=1,NACD(JW))
               ENDIF
           ELSE
                IF(NAC==0)THEN
-                  WRITE (CPL(JW),19230)
+                  WRITE (CPL(JW),19234)
                   ELSEIF(NACD(JW)==0)THEN
                   WRITE (CPL(JW),19234)(CNAME2(CN(JN)),JN=1,NAC)    !    1/17/17          !WRITE (CPL(JW),19233)(CNAME2(CN(JN)),JN=1,NAC)    SW 1/17/17
                   ELSEIF(NACD(JW)/=0)THEN
-                  WRITE (CPL(JW),19235)(CNAME2(CN(JN)),JN=1,NAC),(CDNAME2(CDN(JD,JW)),JD=1,NACD(JW))    !    1/17/17      !WRITE (CPL(JW),19234)(CNAME2(CN(JN)),JN=1,NAC)  SW 9/28/13
+                  WRITE (CPL(JW),19234)(CNAME2(CN(JN)),JN=1,NAC),(CDNAME2(CDN(JD,JW)),JD=1,NACD(JW))    !    1/17/17      !WRITE (CPL(JW),19234)(CNAME2(CN(JN)),JN=1,NAC)  SW 9/28/13
               ENDIF
           ENDIF
-        19230 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO" ')
-        19231 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO", "HABITAT" ')
-        19232 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO", "HABITAT" ',<NAC>(',"',A8,'"'))
-        19233 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO", "HABITAT" ',<NAC>(',"',A8,'"'),<NACD(JW)>(',"',A8,'"'))
-        19234 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO" ',<NAC>(',"',A8,'"'))  ! SW 9/28/13
-        19235 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO" ',<NAC>(',"',A8,'"'),<NACD(JW)>(',"',A8,'"'))  ! SW 9/28/13
+        19232 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO", "HABITAT" ', *(',"',A8,'"'))
+        19234 FORMAT('VARIABLES="Distance, m","Elevation, m","U(m/s)","W(m/s)","T(C)","RHO" ', *(',"',A8,'"'))
         ENDIF
       END IF
 
@@ -988,7 +1004,7 @@ ENDIF
     IF(ALGAE_TOXIN)THEN
       IF(ATOX_DEBUG=='ON')THEN
           OPEN(ATOXIN_DEBUG_FN,FILE='algae_toxin_debug.csv',STATUS='UNKNOWN')
-          WRITE(ATOXIN_DEBUG_FN,'(A,<NUMATOXINS>("EX_TOXIN_",I1,","),<NUMATOXINS>("IN_TOXIN_",I1,","),<NUMATOXINS>("CTESS_TOXIN_",I1,","),<NAL>("ALG_",I1,","))')'JDAY,K,I,',(J,J=1,numatoxins),(J,J=1,numatoxins),(J,J=1,numatoxins),(J,J=1,NAL)
+          WRITE(ATOXIN_DEBUG_FN,'(A,*("EX_TOXIN_",I1,","),*("IN_TOXIN_",I1,","),*("CTESS_TOXIN_",I1,","),*("ALG_",I1,","))')'JDAY,K,I,',(J,J=1,numatoxins),(J,J=1,numatoxins),(J,J=1,numatoxins),(J,J=1,NAL)
       ENDIF
     ENDIF
     ! BIOENERGETICS mlm
@@ -1298,14 +1314,14 @@ ENDIF
     !**** DSI W2 Linkage File (W2L) (Supercedes Old Velocity vectors)
     IF (VECTOR(1)) THEN
       ! *** Apply the same linkage settings for all waterbodies
-      OPEN (VPL(1),FILE=VPLFN(1),STATUS='UNKNOWN',ACCESS='SEQUENTIAL',FORM='BINARY')
+      OPEN (VPL(1),FILE=VPLFN(1),STATUS='UNKNOWN',ACCESS='STREAM',FORM='UNFORMATTED')
 
       ! *** W2 Version
       WRITE(VPL(1)) W2VER
 
       WRITE(VPL(1)) TITLE
 
-      WRITE(VPL(1)) INT4(NWB), INT4(NBR), INT4(IMX), INT4(KMX), INT4(NCT), INT4(NAC)
+      WRITE(VPL(1)) INT(NWB, kind=int32), INT(NBR, kind=int32), INT(IMX, kind=int32), INT(KMX, kind=int32), INT(NCT, kind=int32), INT(NAC, kind=int32)
 
       ! *** Flag the output file if using Outlet time series
       IF (TIME_SERIES) THEN
@@ -1317,15 +1333,15 @@ ENDIF
 
       ! *** MODEL CONFIGURATION
       DO JW=1,NWB
-        WRITE(VPL(1)) INT4(BS(JW)),INT4(BE(JW))
+        WRITE(VPL(1)) INT(BS(JW), kind=int32), INT(BE(JW), kind=int32)
       END DO
 
       WRITE(VPL(1)) (REAL(DLX(I),4) ,I=1,IMX)
       WRITE(VPL(1)) (REAL(PHI0(I),4),I=1,IMX)
-      WRITE(VPL(1)) (INT4(US(K)) ,K=1,NBR)
-      WRITE(VPL(1)) (INT4(DS(K)) ,K=1,NBR)
-      WRITE(VPL(1)) (INT4(UHS(K)),K=1,NBR)
-      WRITE(VPL(1)) (INT4(DHS(K)),K=1,NBR)
+      WRITE(VPL(1)) (INT(US(K), kind=int32) ,K=1,NBR)
+      WRITE(VPL(1)) (INT(DS(K), kind=int32) ,K=1,NBR)
+      WRITE(VPL(1)) (INT(UHS(K), kind=int32) ,K=1,NBR)
+      WRITE(VPL(1)) (INT(DHS(K), kind=int32) ,K=1,NBR)
       WRITE(VPL(1)) ((REAL(H(K,JW),4) ,K=1,KMX),JW=1,NWB)
 
       ! *** INITIALIZE ALL CELLS AS INACTIVE (SET FLAG = 0)
@@ -1432,7 +1448,7 @@ ENDIF
       WRITE(VPL(1)) ((ICOMP(K,I),K=1,KMX),I=1,IMX)
 
       ! *** CONSTITUENT NUMBER LIST
-      WRITE (VPL(1)) (INT4(CN(JC)),JC=1,NAC)
+      WRITE (VPL(1)) (INT(CN(JC), kind=int32), JC=1, NAC)
 
       ! *** CONSTITUENT NAME
       WRITE (VPL(1)) (CNAME1(CN(JC)),JC=1,NAC)

@@ -31,13 +31,13 @@ END MODULE AZ_LOCAL
     DO K=KT,KBMIN(I)-1
       CALL CALCULATE_AZ0
       BUOY    = (RHO(K+1,I)-RHO(K,I)+RHO(K+1,I+1)-RHO(K,I+1))/(AVH2(K,I)+AVH2(K,I+1))            ! 2.0*AVH2(K,I)
-      RIAZ0   =  DLOG(AZ0/AZMAX(JW))*0.666666667D0                                                  ! /1.5
+      RIAZ0   =  LOG(AZ0/AZMAX(JW))*0.666666667
       RI      =  G*BUOY/(RHOW*VSH(K,I)+NONZERO)
-      RIAZ1   =  DMAX1(RI,RIAZ0)
-      RIAZ1   =  DMIN1(RIAZ1,10.0D0)
-      EXPAZ   =  DEXP(-1.5D0*RIAZ1)
-      AZ(K,I) = DMAX1(AZMIN,AZ0*EXPAZ+AZMIN*(1.0D0-EXPAZ))              ! AZ computed at lower edge of cell
-      DZT(K,I) = DMAX1(DZMIN,FRAZDZ*(AZ0*EXPAZ+DZMIN*(1.0-EXPAZ)))     ! DZ computed at lower edge of cell - later averaged to cell center lower edge
+      RIAZ1   =  MAX(RI,RIAZ0)
+      RIAZ1   =  MIN(RIAZ1,10.0)
+      EXPAZ   =  EXP(-1.5*RIAZ1)
+      AZ(K,I) = MAX(AZMIN,AZ0*EXPAZ+AZMIN*(1.0-EXPAZ))              ! AZ computed at lower edge of cell
+      DZT(K,I) = MAX(DZMIN,FRAZDZ*(AZ0*EXPAZ+DZMIN*(1.0-EXPAZ)))     ! DZ computed at lower edge of cell - later averaged to cell center lower edge
     END DO
   END IF
 RETURN
@@ -71,8 +71,8 @@ SUBROUTINE CALCULATE_AZ0
     SLM = (DEPTH*(0.14-0.08*(1.0-ZD)**2-0.06*(1.0-ZD)**4))**2
     AZ0 =  MAX(AZMIN,SLM*SQRT(VSH(K,I)))
   ELSE IF (AZC(JW) == '     RNG') THEN
-    VISCK = DEXP((T2(K,I)+495.691)/(-37.3877))
-    IF (T2(K,I) > 30.0)  VISCK = DEXP((T2(K,I)+782.190)/(-57.7600))
+    VISCK = EXP((T2(K,I)+495.691)/(-37.3877))
+    IF (T2(K,I) > 30.0)  VISCK = EXP((T2(K,I)+782.190)/(-57.7600))
     VISCF = MAX(0.0,0.08477*((ZDLR*0.5*USTAR/VISCK)**3)*((1.0-ZDLR*0.5/DEPTH)**3)-100.0)
     VISCF = (1.0+VISCF)**0.33333333333333
     AZ0   = MAX(AZMIN,VISCK*VISCF)
@@ -235,7 +235,7 @@ SUBROUTINE CALCULATE_TKE1
            IF (FRIC(I) /= 0.0) GC2 = G/(FRIC(I)*FRIC(I))
 	END IF
 
-	BOUK = DMAX1(AZ(K,I)*G*(RHO(K+1,I)-RHO(K,I))/(H(K,JW)*RHOW),0.0D0)
+	BOUK = MAX(AZ(K,I)*G*(RHO(K+1,I)-RHO(K,I))/(H(K,JW)*RHOW),0.0)
 	PRDK = AZ(K,I)*(0.5D0*(U(K,I)+U(K,I-1)-U(K+1,I)-U(K+1,I-1))/(H(K,JW)*0.5D0 + H(K+1,JW)*0.5D0))**2.0                 !/2.0  /2.0
 	IF(.NOT.TKELATPRD(JW))THEN
 	  PRHE = 0.0
@@ -247,16 +247,16 @@ SUBROUTINE CALCULATE_TKE1
 	UNST	   = PRDK-TKE(K,I,2)
 	UNSE	   = 1.44D0*TKE(K,I,2)/TKE(K,I,1)*PRDK-1.92D0*(TKE(K,I,2)/TKE(K,I,1)*TKE(K,I,2))
 
-	UDR		= (1.0D0+DSIGN(1.0D0,U(K,I)))*0.5D0
-	UDL		= (1.0D0+DSIGN(1.0D0,U(K,I-1)))*0.5D0
+	UDR		= (1.0+SIGN(1.0,U(K,I)))*0.5
+	UDL		= (1.0+SIGN(1.0,U(K,I-1)))*0.5
 	CONVKX 	= DLT/(DLX(I)*BH1(K,I))*((U(K,I)*(UDR*TKE(K,I,1)+(1.0-UDR)*TKE(K,I+1,1))*BR(K,I)*H2(K,I)-U(K,I-1)*(UDL*TKE(K,I-1,1)+(1.0-UDL)*TKE(K,I,1))*BR(K,I-1)*H2(K,I-1)))
 	CONVEX 	= DLT/(DLX(I)*BH1(K,I))*((U(K,I)*(UDR*TKE(K,I,2)+(1.0-UDR)*TKE(K,I+1,2))*BR(K,I)*H2(K,I)-U(K,I-1)*(UDL*TKE(K,I-1,2)+(1.0-UDL)*TKE(K,I,2))*BR(K,I-1)*H2(K,I-1)))
 	IF(IMPTKE(JW) == '     IMP')THEN
 	  TKE(K,I,1) = TKE(K,I,1) - CONVKX + DLT*(UNST+PRHK-BOUK)
 	  TKE(K,I,2) = TKE(K,I,2) - CONVEX + DLT*(UNSE+PRHE)
 	ELSE
-	  ATA		  = (1.D00+DSIGN(1.0D0,W(K-1,I)))*0.5D0
-	  AB		  = (1.0D0+DSIGN(1.0D0,W(K,I)))*0.5D0
+	  ATA		  = (1.0+SIGN(1.0,W(K-1,I)))*0.5
+	  AB		  = (1.0+SIGN(1.0,W(K,I)))*0.5
 
 	  CONVKZ	  = DLT/(H2(K,I)*BH1(K,I))*((AB*TKE(K,I,1)+(1.0-AB)*TKE(K+1,I,1))*W(K,I)*BB(K,I)*AVH2(K,I)-(ATA*(TKE(K-1,I,1)+(1.0-ATA)*TKE(K,I,1))*W(K-1,I)*BB(K-1,I)*AVH2(K-1,I)))
       CONVEZ	  = DLT/(H2(K,I)*BH1(K,I))*((AB*TKE(K,I,2)+(1.0-AB)*TKE(K+1,I,2))*W(K,I)*BB(K,I)*AVH2(K,I)-(ATA*(TKE(K-1,I,2)+(1.0-ATA)*TKE(K,I,2))*W(K-1,I)*BB(K-1,I)*AVH2(K-1,I)))
@@ -455,8 +455,8 @@ EXTERNAL SEMILOG, RTBIS
 REAL(R8) :: KS, UBOUND,LBOUND,VISCK,SEMILOG,RTBIS,UST,PERIMETER,AREA,BS1                                  !,USTARB
 REAL(R8) :: V
 INTEGER :: K,MULTIPLIER
-    VISCK = DEXP(-(T2(KB(I),I)+495.691)*0.026746764)                                                     !/(-37.3877)
-    IF (T2(KB(I),I) > 30.0)  VISCK = DEXP(-(T2(KB(I),I)+782.190)*0.01731301939)                          !/(-57.7600)
+    VISCK = EXP(-(T2(KB(I),I)+495.691)*0.026746764)                                                     !/(-37.3877)
+    IF (T2(KB(I),I) > 30.0)  VISCK = EXP(-(T2(KB(I),I)+782.190)*0.01731301939)                          !/(-57.7600)
   	UBOUND = ABS((U(KB(I),I)+U(KB(I),I-1))*.5)
     IF(SEMILOG(UBOUND,ABS((U(KB(I),I)+U(KB(I),I-1))*.5),(H(KB(I),JW))/2.0,VISCK)>0) THEN               !FRIC(I),
 	  MULTIPLIER = 2
@@ -505,8 +505,8 @@ INTEGER :: K,MULTIPLIER
 	    KS = ((STRICK(JW)*1.0D0/FRIC(I)*(AREA/PERIMETER)**(0.16666666667D0))**6)        !1.0/6.0
 	  ENDIF
       IF(UST*KS/V>1.0)THEN
-        BS1 = (5.5D0+2.5D0*DLOG(UST*KS/V))*DEXP(-0.217D0*DLOG(UST*KS/V)**2)+8.5D0*(1-DEXP(-0.217D0*DLOG(UST*KS/V)**2))
-        E(I) = DEXP((.41*BS1)/(UST*KS/V))
+        BS1 = (5.5+2.5*LOG(UST*KS/V))*EXP(-0.217*LOG(UST*KS/V)**2)+8.5*(1-EXP(-0.217*LOG(UST*KS/V)**2))
+        E(I) = EXP((.41*BS1)/(UST*KS/V))
       ELSE
         E(I) = 9.535D0
       ENDIF
@@ -518,7 +518,7 @@ USE EDDY;USE GLOBAL
 IMPLICIT NONE
 REAL(R8), INTENT(IN) :: UST,URES,Y,V
 REAL(R8) :: SEMILOG
-  SEMILOG = 0.41*URES/DLOG(E(I)*Y*UST/V) - UST
+  SEMILOG = 0.41*URES/LOG(E(I)*Y*UST/V) - UST
 END FUNCTION SEMILOG
 
 FUNCTION RTBIS(X1,X2,XACC,U,Y,V)

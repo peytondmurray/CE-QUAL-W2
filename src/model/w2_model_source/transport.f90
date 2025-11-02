@@ -299,7 +299,7 @@ ENTRY HORIZONTAL_MULTIPLIERS
               FLUX = 0.5D0*(C2X+CMAX1)
               IF (FTEMP <= CMAX1 .AND. FTEMP >= C2X) FLUX = FTEMP
             ELSE
-              CMIN1 = DMAX1(CREF,CART)
+              CMIN1 = MAX(CREF,CART)
               IF (CREF > C2X) CMIN1 = CART
               IF (FTEMP >= CMIN1 .AND. FTEMP <= C2X) THEN
                 FLUX = FTEMP
@@ -469,7 +469,7 @@ ENTRY VERTICAL_MULTIPLIERS
               FLUX = 0.5*(C2Z+CMAX1)
               IF (FTEMP <= CMAX1 .AND. FTEMP >= C2Z) FLUX = FTEMP
             ELSE
-              CMIN1 = DMAX1(CREF,CART)
+              CMIN1 = MAX(CREF,CART)
               IF (CREF > C2Z) CMIN1 = CART
               IF (FTEMP >= CMIN1 .AND. FTEMP <= C2Z) THEN
                 FLUX = FTEMP
