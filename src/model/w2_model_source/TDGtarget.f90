@@ -3,9 +3,26 @@
 !***********************************************************************************************************************************
 ! Input and output files changed into the csv format, 7/2021
 Subroutine InitTDGtarget
-  Use Selective1TDGtarget; USE MAIN; USE modSYSTDG, ONLY: POWNO, FLNO, NBAY, BEGNO, ENDNO, POWGTNO, FLGTNO, NRO, TDGLOC, GTNAME
-  USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
+  Use Selective1TDGtarget
+  USE MAIN
+  USE modSYSTDG, ONLY: POWNO, FLNO, NBAY, BEGNO, ENDNO, POWGTNO, FLGTNO, NRO, TDGLOC, GTNAME
+  USE GLOBAL
+  USE NAMESC
+  USE GEOMC
+  USE LOGICC
+  USE PREC
+  USE SURFHE
+  USE KINETIC
+  USE SHADEC
+  USE EDDY
+  USE STRUCTURES
+  USE TRANS
+  USE TVDC
+  USE SELWC
+  USE GDAYC
+  USE SCREENC
+  USE TDGAS
+  USE RSTART
   !
   IMPLICIT NONE
   INTEGER       :: it, n, ig
