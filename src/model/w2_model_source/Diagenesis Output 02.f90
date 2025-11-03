@@ -129,7 +129,7 @@ Module CEMAOutputRoutines
         !    Write(CEMAOutFilN6,'(<IMX>f10.3)')(DissolvedGasSediments(nGas,SegNumI), SegNumI = 1, IMX)
         !End Do !nGas
         DO SegNumI=1,IMX
-            Write(CEMAOutFilN6,'(f12.4,",",i5,","*(f12.4,","))')JDAY,SegNumI,(DissolvedGasSediments(nGas,KB(SegNumI),SegNumI), nGas = 1, 4)
+            Write(CEMAOutFilN6,'(f12.4,",",i5,",",*(f12.4,","))')JDAY,SegNumI,(DissolvedGasSediments(nGas,KB(SegNumI),SegNumI), nGas = 1, 4)
         ENDDO
 
         !Write(CEMAOutFilN3,'("Gas Release to Atmosphere at JDAY = ",f8.2)')JDAY
@@ -142,7 +142,7 @@ Module CEMAOutputRoutines
         !    Write(CEMAOutFilN3,'(<IMX>f10.3)')(BRRateAGasNet(SegNumI, nGas), SegNumI = 1, IMX)
         !End Do !nGas
         DO SegNumI=1,IMX
-            Write(CEMAOutFilN3,'(f12.4,",",i5,","*(f12.4,","))')JDAY,SegNumI,(BRRateAGasNet(SegNumI, nGas), nGas = 1, 4)
+            Write(CEMAOutFilN3,'(f12.4,",",i5,",",*(f12.4,","))')JDAY,SegNumI,(BRRateAGasNet(SegNumI, nGas), nGas = 1, 4)
         ENDDO
 
         DO JW=1,NWB

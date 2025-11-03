@@ -250,7 +250,7 @@ MODULE SEDMODEL_LOCAL
 
                     If(EndBedConsolidation(SegNumI))Cycle
 
-                    If(dabs(BedElevationLayer(SegNumI)) > LayerAddThkFrac*H(KB(SegNumI),JW))Then  !Add water layer
+                    If(abs(BedElevationLayer(SegNumI)) > LayerAddThkFrac*H(KB(SegNumI),JW))Then  !Add water layer
 
                         BedElevationLayer(SegNumI) = BedElevationLayer(SegNumI) + H(KB(SegNumI),JW) !BedElevationLayer is negative due to bed consolidation
                         KB(SegNumI) = KB(SegNumI) + 1    !Add layer
@@ -582,12 +582,12 @@ MODULE SEDMODEL_LOCAL
 			Else
 				If(TFlow_B > TCrit_S)then       !If(TFlow_B > TCrit_E)then      ! Code fix LB SW 3/2019
 					!Surface Erosion
-					TempVariable = 0.23*dexp(0.198/(CEMASedimentDensity/1000.0 - 1.0023))
+					TempVariable = 0.23*exp(0.198/(CEMASedimentDensity/1000.0 - 1.0023))
 					TempVariable = (1/360.0)*(10**TempVariable)	!1/360 to convert from mg/hr-cm2 to gm/s-m2
 					SScour = (TFlow_B - TCrit_S)/TCrit_S          !(TFlow_B - TCrit_E)/TCrit_E
 					SScour = (SScour)**CritShldPar
 					SScour = TempVariable*SScour
-					SScour = dmax1(SScour,0.0)
+					SScour = MAX(SScour,0.0)
 				Else
 					!No Erosion
 					SScour = 0.d0
@@ -596,7 +596,7 @@ MODULE SEDMODEL_LOCAL
         End If
 
         If(CEMASedimentType == 2)Then   !Non-Cohesive Sediments
-            	NuTemp = 1.79e-6*dexp(-0.0266*0.5*(T1(KB(SegNumI),SegNumI)))
+            	NuTemp = 1.79e-6*exp(-0.0266*0.5*(T1(KB(SegNumI),SegNumI)))
 		        YalinP = ((CEMASedimentDensity - 1000.0)*G*CEMAParticleSize**3.0/(1000.0*NuTemp**2.0))**0.5
                 IF(YALINP<=100.)THEN
                     Value1 = 0.041*(Log10(YalinP))**2.0 - 0.356*Log10(YalinP) - 0.977
@@ -608,7 +608,7 @@ MODULE SEDMODEL_LOCAL
                     CEMAShieldsNumber = 0.045
                 ENDIF
 			Uks = Sqrt(CEMAShieldsNumber*(Sgr - 1.0)*G*Dks)	!Critical shear velocity (Shield's diagram)
-			NuTemp = 1.79e-6*dexp(-0.0266*0.5*(T1(KB(SegNumI),SegNumI)))
+			NuTemp = 1.79e-6*exp(-0.0266*0.5*(T1(KB(SegNumI),SegNumI)))
 
 			Sum1 = 0.d00
 			kt = ktwb(jw)
@@ -616,7 +616,7 @@ MODULE SEDMODEL_LOCAL
 			Depth = 0.d00
 			Do k = kt, KB(SegNumI)
 				VelTemp = 0.5*(u(K,SegNumI) + u(K,SegNumI-1))
-			    VelTemp = dsqrt(VelTemp**2)
+			    VelTemp = sqrt(VelTemp**2)
 
 				Sum1 = Sum1 + VelTemp*d1
 				Depth = Depth + d1
