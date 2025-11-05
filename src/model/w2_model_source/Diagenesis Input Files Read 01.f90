@@ -41,12 +41,12 @@ Subroutine ReadBedConsolidationFiles(TempFilNum)
 	SkipLoop = .FALSE.
     fmt = '(F8.0'//Repeat(',F8.0', NumConsolidRegns)//')'
 
-	Do While(.NOT. SkipLoop .or. EOF(TempFilNum))
-        Read(TempFilNum, fmt, ios=ios) TimeJD1, (ConsolidRateTemp1(i), i=1, NumConsolidRegns)
+	Do While(.NOT. SkipLoop)
+        Read(TempFilNum, fmt=fmt, iostat=ios) TimeJD1, (ConsolidRateTemp1(i), i=1, NumConsolidRegns)
         if (is_iostat_end(ios)) exit
         if (ios /= 0) stop "Error reading TimeJD1 from TempFilNum"
 
-        Read(TempFilNum, fmt, ios=ios) TimeJD2, (ConsolidRateTemp2(i), i=1, NumConsolidRegns)
+        Read(TempFilNum, fmt=fmt, iostat=ios) TimeJD2, (ConsolidRateTemp2(i), i=1, NumConsolidRegns)
         if (is_iostat_end(ios)) exit
         if (ios /= 0) stop "Error reading TimeJD2 from TempFilNum"
 

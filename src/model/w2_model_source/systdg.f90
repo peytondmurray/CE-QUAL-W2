@@ -45,7 +45,7 @@ MODULE modSYSTDG
    INTEGER      :: I, IG, N_POW, N_FLD, N_SPB
       NXTSPLIT3=TMSTRT
       open  (88888, FILE='TDG_output.csv', status='unknown')
-      WRITE (88888, '(A, <NGT>("QGT-",I2,","))')'JDAY,TDG_TDG,SUM_QGT2,',(IG, IG = 1, NGT)
+      WRITE (88888, '(A, *("QGT-",I2,","))') 'JDAY,TDG_TDG,SUM_QGT2,', (IG, IG = 1, NGT)
       NRO=0
       POWNO = 0
       FLNO  = 0
@@ -217,6 +217,7 @@ IF(SYSTDGC == '     OFF')GO TO 100          ! DO NOT ALLOCATE ARRAYS IF WE ARE N
     END SUBROUTINE UPDATE_TDGC
 
     SUBROUTINE SYSTDG_TDG
+    USE iso_fortran_env, only: int64
     USE SCREENC, ONLY:JDAY;
       IMPLICIT NONE
       REAL(R8)         :: P1, P2, P3, P4, E1, E2
@@ -224,7 +225,7 @@ IF(SYSTDGC == '     OFF')GO TO 100          ! DO NOT ALLOCATE ARRAYS IF WE ARE N
       REAL(R8)         :: Q_ROSP, QRO, QSP, QPH, QTOT, TDG_QROSP, TDG_QPH, TDG_QTOT, TDG_QENT
       REAL(R8)         :: SUM_TDG_ROS, SUM_TDG_SPS, SUM_TDG_PHS
       REAL(R8)         :: TDG_RO, TDG_SP, TDG_PH
-      INTEGER*8        :: SUM_K, IK
+      INTEGER(int64)        :: SUM_K, IK
       REAL             :: SUM_QGT2
       Q_SUM = 0.0
       ! ADD QRO AND QSP

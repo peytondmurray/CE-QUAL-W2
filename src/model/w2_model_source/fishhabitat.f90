@@ -139,8 +139,8 @@ else
         write(FISHHABFN,"(a,',',t25,f8.2,',',f8.2,',',f8.2)")trim(fishname(i)),fishtempl(i),fishtemph(i),fishdo(i)
         enddo
         write(FISHHABFN,*)
-        write(FISHHABFN,100)(trim(fishname(i)),trim(fishname(i)),i=1,ifish)
-        100 format('JDAY,',<ifish>('%VOL-',A,',','HAB-VOL(m3)-',A,','))
+        write(FISHHABFN,100) (trim(fishname(i)),trim(fishname(i)),i=1,ifish)
+        100 format('JDAY,', *('%VOL-',A,',','HAB-VOL(m3)-',A,','))
 
         jbfile=jbfile1;jwfile=jwfile1
         do jw=1,nwb
@@ -180,8 +180,8 @@ else
     open(FISHHABFN+1,file=conavg,status='unknown')
     write(FISHHABFN+1,'(a,80(1x,i4))')'Volume weighted WQ parameters at segments:',(isegvol(i),i=1,nseg)
     write(FISHHABFN+1,101)(trim(cname2(NPO4)),isegvol(i),trim(cname2(NNH4)),isegvol(i),trim(cname2(NNO3)),isegvol(i),trim(cname2(NDO)),isegvol(i),trim(cdname2(12)),isegvol(i),trim(cdname2(14)),isegvol(i),i=1,nseg)   ! Chlor a and TP
-    101 format('JDAY,',<nseg>(6((A,'-',i3,','))))
-    102 format('JDAY,',<nseg>(7((A,'-',i3,','))))
+    101 format('JDAY,', *(6((A,'-',i3,','))))
+    102 format('JDAY,', *(7((A,'-',i3,','))))
 
     open(FISHHABFN+2,file=consurf,status='unknown')
     write(FISHHABFN+2,'(a,i4,a,80(1x,i4))')'Surface (upper',kseg,' model layers) Volume weighted WQ parameters at segments:',(isegvol(i),i=1,nseg)
@@ -249,7 +249,7 @@ enddo
 ! write out results
 
 write(FISHHABFN,210)jday,(100.*phabvol(i),habvol(i),i=1,ifish)
-210 format(f10.3,',',<ifish>(f8.2,',',e12.4,','))
+210 format(f10.3,',',*(f8.2,',',e12.4,','))
 jbfile=jbfile1;jwfile=jwfile1
 do jw=1,nwb
     jwfile=jwfile+1
@@ -287,7 +287,7 @@ if(oxygen_demand)then
         cpo4(n)=cpo4(n)+po4(k,i)*vol(k,i)
         if(k <= ktwb(jjw)+kkmax)cgamma(n)=cgamma(n)+gamma(k,i)*vol(k,i)
         ! NOTE*********** No credit for superstauration - if DO > saturation, then set DO=100% saturation
-        DOSAT=SATO(t2(k,i),0.d0,palt(i),SALT_WATER(jjw))
+        DOSAT=SATO(t2(k,i),0.0,palt(i),SALT_WATER(jjw))
             if(o2(k,i) > DOSAT )then
             o2corr=DOSAT
             else
@@ -322,7 +322,7 @@ if(oxygen_demand)then
 
     write(FISHHABFN+2,211)jday,(cpo4s(n),cnh4s(n),cno3s(n),cdos(n),ctotps(n),cchlas(n),cgamma(n),n=1,nseg)
     write(FISHHABFN+1,211)jday,(cpo4(n),cnh4(n),cno3(n),cdo(n),ctotp(n),cchla(n),n=1,nseg)
-    211 format(f10.3,',',<nseg>(7(f10.4,',')))
+    211 format(f10.3,',',*(7(f10.4,',')))
 
 
 

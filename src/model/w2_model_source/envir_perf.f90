@@ -26,7 +26,7 @@ save
       cd_top=0.0
       c_avg=0.0
       cd_avg=0.0
-      cn_e=0.0
+      cn_e=0
       cdn_e=0.0
       NAC_E=0
       NACD_E=0
@@ -357,7 +357,7 @@ end do
 if(nac_e > 0)then
        open(CONE,file='envrprf_c'//I_INT//'.csv',status='unknown')
        write(CONE,4000)(cname2(cn_e(jc)),jc=1,nac_e)
-4000 format(<nac_e>(a8,'_interval, Fraction_of_volume, '))
+4000 format(*(a8,'_interval, Fraction_of_volume, '))
        do jc=1,nac_e
         if(c_cnt(N,jc).gt.0.0)then
         c_avg(jc)=c_tot(N,jc)/c_cnt(N,jc)
@@ -377,15 +377,15 @@ if(nac_e > 0)then
         write(CONE,126)(conc_c(jc,i),c_class(N,jc,i)/sumvolt(N),jc=1,nac_e)
         end do
         write(CONE,'(1x)')
-        write(CONE,'(<nac_e>("Sum_of_fractions,",f9.4,","))')(c_sum(jc),jc=1,nac_e)
+        write(CONE,'(*("Sum_of_fractions,",f9.4,","))')(c_sum(jc),jc=1,nac_e)
         write(CONE,'(1x)')
-        write(CONE,'(<nac_e>("Average,",e12.4,","))')(c_avg(jc),jc=1,nac_e)
+        write(CONE,'(*("Average,",e12.4,","))')(c_avg(jc),jc=1,nac_e)
         close(CONE)
 
   if(nacd_e > 0)then
        open(CONE,file='envrprf_cd'//I_INT//'.csv',status='unknown')
      write(CONE,4001)(cdname2(cdn_e(jc)),jc=1,nacd_e)
-4001 format(<nacd_e>(a8,'_interval, Fraction_of_volume,'))
+4001 format(*(a8,'_interval, Fraction_of_volume,'))
        do jc=1,nacd_e
         if(cd_cnt(N,jc).gt.0.0)then
         cd_avg(jc)=cd_tot(N,jc)/cd_cnt(N,jc)
@@ -406,9 +406,9 @@ if(nac_e > 0)then
         write(CONE,124)(conc_cd(jc,i),cd_class(N,jc,i)/sumvolt(N),jc=1,nacd_e)
         end do
         write(CONE,'(1x)')
-        write(CONE,'(<nacd_e>("Sum_of_fractions,",f9.4,","))')(cd_sum(jc),jc=1,nacd_e)
+        write(CONE,'(*("Sum_of_fractions,",f9.4,","))')(cd_sum(jc),jc=1,nacd_e)
         write(CONE,'(1x)')
-        write(CONE,'(<nacd_e>("Average,",e12.4,","))')(cd_avg(jc),jc=1,nacd_e)
+        write(CONE,'(*("Average,",e12.4,","))')(cd_avg(jc),jc=1,nacd_e)
         close(CONE)
     endif
 endif
@@ -418,12 +418,9 @@ ENDDO
        DEallocate(cc_e,c_int,c_top,cd_e,cd_int,cd_top,c_avg,cd_avg,cn_e,cdn_e)
        DEALLOCATE(T_TOT,T_CNT,V_TOT,V_CNT,D_TOT,D_CNT,D_CLASS,VOLGL,SUMVOLT)
 
-124       format(<nacd_e>(f10.4,',',e12.4,','))
+124       format(*(f10.4,',',e12.4,','))
 125       format((f6.2,',',e12.4,','))
-126       format(<nac_e>(f10.4,',',e12.4,','))
-127       format(<nacd_e>(f10.4,',',e12.4,','))
-128       format(<nacd_e>(" 0, ",e12.4,','))
-129       format(<nac_e>(" 0, ",e12.4,','))
+126       format(*(f10.4,',',e12.4,','))
 
     end if
 

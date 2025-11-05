@@ -250,7 +250,7 @@ END IF
       cd_top=0.0
       c_avg=0.0
       cd_avg=0.0
-      cn_e=0.0
+      cn_e=0
       cdn_e=0.0
       NAC_E=0
       NACD_E=0
