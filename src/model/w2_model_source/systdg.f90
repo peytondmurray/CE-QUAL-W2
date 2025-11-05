@@ -426,7 +426,7 @@ IF(SYSTDGC == '     OFF')GO TO 100          ! DO NOT ALLOCATE ARRAYS IF WE ARE N
              DO ig = 1, NGT
                 SUM_QGT2=SUM_QGT2+QGT(ig)
              END DO
-             WRITE (88888, '(A, F10.3, 2A, F10.3, A, F9.3, A, <NGT>(F9.3,","))')' ',JDAY,',  ', ', ',TDG_TDG,',  ',SUM_QGT2,',  ',(QGT(ig), ig = 1, NGT)
+             WRITE (88888, '(A, F10.3, 2A, F10.3, A, F9.3, A, *(F9.3,","))') ' ', JDAY, ',  ', ', ', TDG_TDG, ',  ', SUM_QGT2, ',  ', (QGT(ig), ig = 1, NGT)
              NXTSPLIT3 = NXTSPLIT3 + 1.0
           END IF
        END IF                                                                                                   ! END IF Q_SUM/=0.0

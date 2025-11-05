@@ -9,7 +9,6 @@ PROGRAM CE_QUAL_W2
 
  !DEC$ATTRIBUTES STDCALL   :: ce_qual_w2
  !DEC$ATTRIBUTES REFERENCE :: Dlg
-  USE IFPORT                 ! to get current working directory
   USE MAIN
   USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
@@ -251,7 +250,7 @@ END IF
       c_avg=0.0
       cd_avg=0.0
       cn_e=0
-      cdn_e=0.0
+      cdn_e=0
       NAC_E=0
       NACD_E=0
       OPEN(CONE,file='w2_envirprf.npt',status='old')

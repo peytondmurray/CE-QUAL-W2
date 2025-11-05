@@ -5,6 +5,8 @@ project(
   default_options: ['fortran_std=f2008'],
 )
 
+compiler = meson.get_compiler('fortran')
+
 sources = [
   'Diagenesis Bubbles Code 01.f90',
   'Diagenesis FFT Layer 01.f90',
@@ -55,7 +57,32 @@ sources = [
   # 'Resource.fd',
 ]
 
-add_project_arguments(['-w', '-ffree-form', '-ffree-line-length-none', '-fallow-argument-mismatch', '-fdefault-real-8'], language: 'fortran')
+add_project_arguments(
+  [
+    '-w',
+    '-ffree-form',
+    '-ffree-line-length-none',
+    '-fallow-argument-mismatch',
+    '-fdefault-real-8',
+  ], language: 'fortran')
+
+conf_data = configuration_data()
+conf_data.set('MESON_VERSION', meson.version())
+conf_data.set('GFORTRAN_VERSION', compiler.version())
+conf_data.set('GIT_TAG', '@GIT_TAG@')
+
+configured_file = configure_file(
+  input: 'build_info.f90.in',
+  output: 'build_info.f90.in2',
+  configuration: conf_data,
+)
+
+vcs_tag(
+  input: configured_file,
+  replace_string: '@GIT_TAG@',
+  output: 'build_info.f90',
+  command: ['git', 'describe', '--tags', '--dirty', '--always'],
+)
 
 
 executable(

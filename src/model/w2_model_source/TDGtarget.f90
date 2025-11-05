@@ -129,7 +129,7 @@ Subroutine InitTDGtarget
   !!  Initial output file
   open (targetfnno, FILE='TDGTarget_output.csv', status='unknown')
   !if (NGT>0) write (targetfnno,'(3A,<NGT>(A,i2))')'     JDAY','         TDG' ,'      SUM Q   ',('      Q',n, n=1,NGT)
-  if (NGT>0) write (targetfnno,'("     JDAY,", " C,", "       TDG,", "    SUM Q,", <NGT>(A,i2,","))') ('      Q',n, n=1,NGT)
+  if (NGT>0) write (targetfnno,'("     JDAY,", " C,", "       TDG,", "    SUM Q,", *(A,i2,","))') ('      Q',n, n=1,NGT)
   open (targetfnno+2, FILE='TDGTarget_warning.opt', action="READWRITE", status='unknown')
   return
 End subroutine InitTDGtarget
@@ -375,7 +375,7 @@ Subroutine TDGtarget
         SUM_QGT2 = SUM_QGT2+QGT(ig)
       END DO
       !WRITE (targetfnno, '(A, F10.3, 2A, F10.3, A, F9.3, A, <NGT>(F9.3))')' ',JDAY,'  ', CO,TDG_TDG,'  ',SUM_QGT2,'  ',(QGT(ig), ig = 1, NGT)
-      WRITE (targetfnno, '(F10.3, ",", A, ",", F10.3, ",", F9.3, ",", <NGT>(F9.3,","))') JDAY, CO, TDG_TDG, SUM_QGT2, (QGT(ig), ig = 1, NGT)
+      WRITE (targetfnno, '(F10.3, ",", A, ",", F10.3, ",", F9.3, ",", *(F9.3,","))') JDAY, CO, TDG_TDG, SUM_QGT2, (QGT(ig), ig = 1, NGT)
       NXTSPLIT = NXTSPLIT + tsfreq
     END IF
     IF (JDAY>=NXTSPLIT2) NXTSPLIT2 = NXTSPLIT2 + tsfreq
