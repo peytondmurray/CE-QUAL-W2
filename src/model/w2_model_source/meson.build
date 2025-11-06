@@ -45,7 +45,7 @@ sources = [
   'systdg.f90',
   'tdg.f90',
   'temperature.F90',
-  'time-varying-data.f90',
+  'time-varying-data.F90',
   'transport.f90',
   'update.F90',
   'w2_4_win.f90',
