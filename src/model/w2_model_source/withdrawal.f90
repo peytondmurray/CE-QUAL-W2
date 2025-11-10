@@ -4,12 +4,17 @@
 !***********************************************************************************************************************************
 
 SUBROUTINE WITHDRAWAL
-  USE GLOBAL; USE GEOMC; USE TVDC; USE SELWC; USE LOGICC
+  USE GLOBAL;
+  USE GEOMC;
+  USE TVDC;
+  USE SELWC;
+  USE LOGICC
   USE MAIN, ONLY: DERIVED_CALC,CDN,TDGON,JSG,NNSG,NDO,JWD,EA,SYSTDG,NN2,NDGP,O2DG_DER,TDG_DER
   USE modSYSTDG, ONLY: GTNAME, UPDATE_TDGC, SYSTDG_TDG;    ! systdg
   USE SCREENC, ONLY: JDAY
   USE KINETIC, ONLY: CAC
   IMPLICIT NONE
+
   REAL :: HSWT,HSWB,ELR,WSEL,ELSTR,COEF,RATIO,HT,RHOFT,DLRHOT,HB,RHOFB,DLRHOB,VSUM,DLRHOMAX,HWDT,HWDB,ELWD,TEMPEST,ESTRTEST,QSUMJS
   REAL :: FRACV,QSUMWD
   REAL(R8)  :: dosat, n2sat   ! cb 11/7/17
@@ -738,7 +743,17 @@ USE SELECTIVE1;   USE MAIN
         ELSE
                 OPEN  (IFILE,FILE='str_br'//segnum(1:l)//'.csv',status='unknown')
                 WRITE(IFILE,*)'Branch:,',jb,', # of structures:,',nstr(jb),', outlet temperatures'
-                WRITE(IFILE,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
+
+                ! Is this even valid fortran? There's only a format string here, no actual data
+                ! WRITE(IFILE,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
+
+                ! Try to interpret what the original intent was...
+                ! Note this one is comma separated,  but the others in this file are not!
+                WRITE(IFILE, '(A)') '      JDAY,' // &
+                    REPEAT('      T(C),', nstr(jb)) // &
+                    REPEAT('   Q(m3/s),', nstr(jb)) // &
+                    REPEAT('    ELEVCL,', nstr(jb))
+
         ENDIF
         ENDIF
       END DO
@@ -758,7 +773,15 @@ USE SELECTIVE1;   USE MAIN
        ELSE
         OPEN  (IFILE,FILE='wd_out.opt',STATUS='unknown')
         WRITE(IFILE,*)'Withdrawals: # of withdrawals:',nwd,' outlet temperatures'
-        WRITE(IFILE,'("      JDAY",<nwd>(6x,"T(C)"),<nwd>(3x,"Q(m3/s)"),<nwd>(4x,"ELEVCL"))')
+
+        ! Is this even valid fortran? There's only a format string here, no actual data
+        ! WRITE(IFILE,'("      JDAY",<nwd>(6x,"T(C)"),<nwd>(3x,"Q(m3/s)"),<nwd>(4x,"ELEVCL"))')
+
+        ! Try to interpret what the original intent was...
+        WRITE(IFILE, '(A)') '      JDAY' // &
+            REPEAT('      T(C)', nwd) // &
+            REPEAT('   Q(m3/s)', nwd) // &
+            REPEAT('    ELEVCL', nwd)
        ENDIF
       end if
 
@@ -925,12 +948,9 @@ USE SELECTIVE1;   USE MAIN
                 15    JDAY1=0.0
        ELSE
         OPEN  (IFILE,FILE='VOLUME_WB'//SEGNUM(1:L)//'.OPT',STATUS='UNKNOWN')
-        WRITE(IFILE,4315)
+        WRITE(IFILE, '(A)') "JDAY    VOLUME    " // REPEAT("VOLCRIT      ", TEMPN)
        ENDIF
       ENDDO
-
-4315  FORMAT("JDAY    VOLUME    ",<TEMPN>("VOLCRIT      "))
-
 
 ! INITIALIZING STRUCTURE ELEVATION IF STRUCTURE
 IF(TEMPC=='      ON')THEN
@@ -1277,12 +1297,12 @@ END IF
         DO JB=1,NBR
             IF(NSTR(JB) > 0)THEN
             IFILE=IFILE+1
-            WRITE (IFILE,'(F10.4,",",<NSTR(JB)>(F10.2,","),<NSTR(JB)>(F10.2,","),<NSTR(JB)>(F10.2,","))') JDAY,(TAVG(I,JB),I=1,NSTR(JB)),(QSTR(I,JB),I=1,NSTR(JB)),(ESTR(I,JB),I=1,NSTR(JB))
+            WRITE (IFILE,'(F10.4,",",*(F10.2,","))') JDAY,(TAVG(I,JB),I=1,NSTR(JB)),(QSTR(I,JB),I=1,NSTR(JB)),(ESTR(I,JB),I=1,NSTR(JB))
             END IF
          ENDDO
           IF(NWD > 0)THEN
             IFILE=IFILE+1
-            WRITE (IFILE,'(F10.4,<NWD>F10.2,<NWD>F10.2,<NWD>F10.2)') JDAY,(TAVGW(I),I=1,NWD),(QWD(I),I=1,NWD),(EWD(I),I=1,NWD)
+            WRITE (IFILE,'(F10.4,*(F10.2))') JDAY,(TAVGW(I),I=1,NWD),(QWD(I),I=1,NWD),(EWD(I),I=1,NWD)
           END IF
          ! TEMPERATURE CONTROL LOGIC
 
@@ -1590,7 +1610,13 @@ Subroutine SelectiveInitUSGS
       ELSE
         open  (ifile,file='str_br'//segnum(1:l)//'.csv',status='unknown')
         write (ifile,*)'Branch:,',jb,', # of structures:,',nstr(jb),', outlet temperatures'
-        write (ifile,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
+        ! write (ifile,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
+
+        ! Note this one is comma separated, but the one below is not...
+        write(ifile, '(A)') '      JDAY,' // &
+            repeat('      T(C),', nstr(jb)) // &
+            repeat('   Q(m3/s),', nstr(jb)) // &
+            repeat('    ELEVCL,', nstr(jb))
       ENDIF
     endif
   end do
@@ -1610,7 +1636,12 @@ Subroutine SelectiveInitUSGS
     ELSE
       open  (ifile,file='wd_out.opt',status='unknown')
       write (ifile,*)'Withdrawals: # of withdrawals:',nwd,' outlet temperatures'
-      write (ifile,'("      JDAY",<nwd>(6x,"T(C)"),<nwd>(3x,"Q(m3/s)"),<nwd>(4x,"ELEVCL"))')
+
+      ! Not comma separated...
+      write(ifile, '(A)') '      JDAY' // &
+            repeat('      T(C)', nstr(jb)) // &
+            repeat('   Q(m3/s)', nstr(jb)) // &
+            repeat('    ELEVCL', nstr(jb))
     ENDIF
   end if
 
@@ -1742,11 +1773,9 @@ Subroutine SelectiveInitUSGS
 15    JDAY1=0.0
     ELSE
       open (ifile,file='Volume_wb'//segnum(1:l)//'.opt',status='unknown')
-      write(ifile,4315)
+      write(ifile,'(A)') "jday    Volume    " // repeat("Volcrit      ", tempn)
     END IF
   end do
-
-4315  format("jday    Volume    ",<tempn>("Volcrit      "))
 
   if (tempc == '      ON') then
     do j=1,numtempc
@@ -3186,12 +3215,12 @@ Subroutine SelectiveUSGS
     do jb=1,nbr
       if (nstr(jb) > 0) then
         ifile=ifile+1
-        write (ifile,'(f10.4,",",<nstr(jb)>(f10.2,","),<nstr(jb)>(f10.2,","),<nstr(jb)>(f10.2,","))') jday,(tavg(i,jb),i=1,nstr(jb)),(qstr(i,jb),i=1,nstr(jb)),(estr(i,jb),i=1,nstr(jb))                   ! SW 8/28/2019
+        write (ifile,'(f10.4,",",*(f10.2,","))') jday, (tavg(i,jb),i=1,nstr(jb)), (qstr(i,jb),i=1,nstr(jb)), (estr(i,jb),i=1,nstr(jb))                   ! SW 8/28/2019
       end if
     end do
     if (nwd > 0) then
       ifile=ifile+1
-      write (ifile,'(f10.4,<nwd>f10.2,<nwd>f10.2,<nwd>f10.2)') jday,(tavgw(i),i=1,nwd),(qwd(i),i=1,nwd),(ewd(i),i=1,nwd)
+      write (ifile,'(f10.4,*(f10.2))') jday, (tavgw(i),i=1,nwd), (qwd(i),i=1,nwd), (ewd(i),i=1,nwd)
     end if
 
   ! computing reservoir volume and volume below 'tempcrit'
