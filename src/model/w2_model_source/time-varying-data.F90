@@ -1835,12 +1835,12 @@ ENTRY READ_INPUT_DATA (NXTVD)
             TINO(JB)   = TINNX(JB)
             NXTIN2(JB) = NXTIN1(JB)
             IF (INTF(JB)) THEN
-             READ (INFT(JB),*,END=8820) NXTIN1(JB),TINNX(JB)                                                           !SR 11/28/19
+             READ (INFT(JB),*,END=8820, iostat=ios) NXTIN1(JB),TINNX(JB)                                                           !SR 11/28/19
             ELSE
-              READ (INFT(JB),'(2F8.0)',END=8820) NXTIN1(JB),TINNX(JB)                                                   !SR 11/28/19
+              READ (INFT(JB),'(2F8.0)',END=8820, iostat=ios) NXTIN1(JB),TINNX(JB)                                                   !SR 11/28/19
             ENDIF
             GO TO 8822                                                             ! Isolate error instructions         !SR 11/28/19
-8820        IF (EOF(INFT(JB))) THEN                                                ! End of file, but more data needed  !SR 11/28/19
+8820        IF (IS_IOSTAT_END(ios)) THEN                                                ! End of file, but more data needed  !SR 11/28/19
               IF (WAIT_FOR_BRANCH_INPUT(JB)) THEN                                  ! Additional data might be available !SR 11/28/19
                 CLOSE (INFT(JB))                                                   ! Must close file to get new copy    !SR 11/28/19
                 FULL_FILE_NAME = TRIM(ADJUSTL(BR_FILEDIR(JB)))//'\'//TRIM(ADJUSTL(TINFN(JB)))                           !SR 11/28/19
@@ -1872,19 +1872,19 @@ ENTRY READ_INPUT_DATA (NXTVD)
                   IF (INFORMAT=='$') INTF(JB)=.TRUE.                                                                    !SR 11/28/19
                   IF (INTF(JB)) THEN                                                                                    !SR 11/28/19
                     READ (INFT(JB),'(/)')                                                                               !SR 11/28/19
-                    READ (INFT(JB),*)   NXTIN1(JB)                                 ! Just read the date                 !SR 11/28/19
-                    DO WHILE (LAST_JDAY > NXTIN1(JB) .AND. .NOT.EOF(INFT(JB)))     ! Get file ptr to previous position  !SR 11/28/19
-                      READ (INFT(JB),*) NXTIN1(JB)                                 ! Just read the date                 !SR 11/28/19
+                    READ (INFT(JB),*, iostat=ios)   NXTIN1(JB)                                 ! Just read the date                 !SR 11/28/19
+                    DO WHILE (LAST_JDAY > NXTIN1(JB) .AND. .NOT. IS_IOSTAT_END(ios))     ! Get file ptr to previous position  !SR 11/28/19
+                      READ (INFT(JB),*, iostat=ios) NXTIN1(JB)                                 ! Just read the date                 !SR 11/28/19
                     END DO                                                                                              !SR 11/28/19
-                    IF (EOF(INFT(JB))) BACKSPACE(INFT(JB))                         ! A bit of insurance                 !SR 11/28/19
-                    READ (INFT(JB),*) NXTIN1(JB),TINNX(JB)                         ! Read new data point                !SR 11/28/19
+                    IF (IS_IOSTAT_END(ios)) BACKSPACE(INFT(JB))                         ! A bit of insurance                 !SR 11/28/19
+                    READ (INFT(JB),*, iostat=ios) NXTIN1(JB),TINNX(JB)                         ! Read new data point                !SR 11/28/19
                   ELSE                                                                                                  !SR 11/28/19
-                    READ (INFT(JB),'(//F8.0)') NXTIN1(JB)                          ! Just read the date                 !SR 11/28/19
-                    DO WHILE (LAST_JDAY > NXTIN1(JB) .AND. .NOT.EOF(INFT(JB)))     ! Get file ptr to previous position  !SR 11/28/19
-                      READ (INFT(JB),'(F8.0)') NXTIN1(JB)                          ! Just read the date                 !SR 11/28/19
+                    READ (INFT(JB),'(//F8.0)', iostat=ios) NXTIN1(JB)                          ! Just read the date                 !SR 11/28/19
+                    DO WHILE (LAST_JDAY > NXTIN1(JB) .AND. .NOT. IS_IOSTAT_END(ios))     ! Get file ptr to previous position  !SR 11/28/19
+                      READ (INFT(JB),'(F8.0)', iostat=ios) NXTIN1(JB)                          ! Just read the date                 !SR 11/28/19
                     END DO                                                                                              !SR 11/28/19
-                    IF (EOF(INFT(JB))) BACKSPACE(INFT(JB))                         ! A bit of insurance                 !SR 11/28/19
-                    READ (INFT(JB),'(2F8.0)') NXTIN1(JB),TINNX(JB)                 ! Read new data point                !SR 11/28/19
+                    IF (IS_IOSTAT_END(ios)) BACKSPACE(INFT(JB))                         ! A bit of insurance                 !SR 11/28/19
+                    READ (INFT(JB),'(2F8.0)', iostat=ios) NXTIN1(JB),TINNX(JB)                 ! Read new data point                !SR 11/28/19
                   END IF                                                                                                !SR 11/28/19
                 END IF                                                                                                  !SR 11/28/19
               ELSE                              ! Not waiting for input from this file. Stop run. File has no more data.!SR 11/28/19
@@ -1933,12 +1933,12 @@ ENTRY READ_INPUT_DATA (NXTVD)
 
               NXCIN2(JB)                    = NXCIN1(JB)
               IF (INCF(JB)) THEN
-                READ (INC(JB),*,END=8830) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))                           !SR 11/28/19
+                READ (INC(JB),*,END=8830, iostat=ios) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))                           !SR 11/28/19
               ELSE
-                READ (INC(JB),'(1000F8.0)',END=8830) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))                !SR 11/28/19
+                READ (INC(JB),'(1000F8.0)',END=8830, iostat=ios) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))                !SR 11/28/19
               END IF
               GO TO 8832                                                           ! Isolate error instructions         !SR 11/28/19
-8830          IF (EOF(INC(JB))) THEN                                               ! End of file, but more data needed  !SR 11/28/19
+8830          IF (IS_IOSTAT_END(ios)) THEN                                               ! End of file, but more data needed  !SR 11/28/19
                 IF (WAIT_FOR_BRANCH_INPUT(JB)) THEN                                ! Additional data might be available !SR 11/28/19
                   CLOSE (INC(JB))                                                  ! Must close file to get new copy    !SR 11/28/19
                   FULL_FILE_NAME = TRIM(ADJUSTL(BR_FILEDIR(JB)))//'\'//TRIM(ADJUSTL(CINFN(JB)))                         !SR 11/28/19
@@ -1970,19 +1970,19 @@ ENTRY READ_INPUT_DATA (NXTVD)
                     IF (INFORMAT=='$') INCF(JB)=.TRUE.                                                                  !SR 11/28/19
                     IF (INCF(JB)) THEN                                                                                  !SR 11/28/19
                       READ (INC(JB),'(/)')                                                                              !SR 11/28/19
-                      READ (INC(JB),*)   NXCIN1(JB)                                ! Just read the date                 !SR 11/28/19
-                      DO WHILE (LAST_JDAY > NXCIN1(JB) .AND. .NOT.EOF(INC(JB)))    ! Get file ptr to previous position  !SR 11/28/19
-                        READ (INC(JB),*) NXCIN1(JB)                                ! Just read the date                 !SR 11/28/19
+                      READ (INC(JB),*, iostat=ios)   NXCIN1(JB)                                ! Just read the date                 !SR 11/28/19
+                      DO WHILE (LAST_JDAY > NXCIN1(JB) .AND. .NOT. IS_IOSTAT_END(ios))    ! Get file ptr to previous position  !SR 11/28/19
+                        READ (INC(JB),*, iostat=ios) NXCIN1(JB)                                ! Just read the date                 !SR 11/28/19
                       END DO                                                                                            !SR 11/28/19
-                      IF (EOF(INC(JB))) BACKSPACE(INC(JB))                         ! A bit of insurance                 !SR 11/28/19
-                      READ (INC(JB),*) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))   ! Read new data point      !SR 11/28/19
+                      IF (IS_IOSTAT_END(ios)) BACKSPACE(INC(JB))                         ! A bit of insurance                 !SR 11/28/19
+                      READ (INC(JB),*, iostat=ios) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))   ! Read new data point      !SR 11/28/19
                     ELSE                                                                                                !SR 11/28/19
-                      READ (INC(JB),'(//F8.0)') NXCIN1(JB)                         ! Just read the date                 !SR 11/28/19
-                      DO WHILE (LAST_JDAY > NXCIN1(JB) .AND. .NOT.EOF(INC(JB)))    ! Get file ptr to previous position  !SR 11/28/19
-                        READ (INC(JB),'(F8.0)') NXCIN1(JB)                         ! Just read the date                 !SR 11/28/19
+                      READ (INC(JB),'(//F8.0)', iostat=ios) NXCIN1(JB)                         ! Just read the date                 !SR 11/28/19
+                      DO WHILE (LAST_JDAY > NXCIN1(JB) .AND. .NOT. IS_IOSTAT_END(ios))    ! Get file ptr to previous position  !SR 11/28/19
+                        READ (INC(JB),'(F8.0)', iostat=ios) NXCIN1(JB)                         ! Just read the date                 !SR 11/28/19
                       END DO                                                                                            !SR 11/28/19
-                      IF (EOF(INC(JB))) BACKSPACE(INC(JB))                         ! A bit of insurance                 !SR 11/28/19
-                      READ (INC(JB),'(1000F8.0)') NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))  ! Read new data  !SR 11/28/19
+                      IF (IS_IOSTAT_END(ios)) BACKSPACE(INC(JB))                         ! A bit of insurance                 !SR 11/28/19
+                      READ (INC(JB),'(1000F8.0)', iostat=ios) NXCIN1(JB),(CINNX(INCN(JAC,JB),JB),JAC=1,NACIN(JB))  ! Read new data  !SR 11/28/19
                     END IF                                                                                              !SR 11/28/19
                   END IF                                                                                                !SR 11/28/19
                 ELSE                                   ! Not waiting on this file. Stop run. File has no more data.     !SR 11/28/19

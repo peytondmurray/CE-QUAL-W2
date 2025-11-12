@@ -56,6 +56,7 @@ sources = [
   'wqconstituents.F90',
   # 'Resource.fd',
   'path.F90',
+  'gate-spill-pipe.f90',
 ]
 
 add_project_arguments(
