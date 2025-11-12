@@ -98,7 +98,6 @@ MODULE RSTART
 END MODULE RSTART
 MODULE GLOBAL
   USE PREC
-  real(real32)                                       :: W2VER=4.5
   REAL(R8),   PARAMETER                              :: DAY=86400.0D0,  NONZERO=1.0D-20, REFL=0.94D0, FRAZDZ=0.14D0, DZMIN=1.4D-7
   REAL(R8),   PARAMETER                              :: AZMIN=1.4D-6, DZMAX=1.0D3,     RHOW=1000.0D0
   REAL(R8)                                           :: DLT,    DLTMIN, DLTTVD

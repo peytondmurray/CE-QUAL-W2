@@ -77,12 +77,13 @@ configured_file = configure_file(
   configuration: conf_data,
 )
 
-vcs_tag(
+build_info = vcs_tag(
   input: configured_file,
   replace_string: '@GIT_TAG@',
   output: 'build_info.f90',
   command: ['git', 'describe', '--tags', '--dirty', '--always'],
 )
+sources += [build_info]
 
 
 executable(

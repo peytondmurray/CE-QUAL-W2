@@ -3,6 +3,7 @@ SUBROUTINE OUTPUTA
 
   USE MAIN
   USE GLOBAL
+  USE BUILDVERSION
   USE NAMESC
   USE GEOMC
   USE LOGICC
@@ -321,7 +322,7 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
           NXTMSN(JW) = SNPD(SNPDP(JW),JW)
         END IF
         NXTMSN(JW) = NXTMSN(JW)+SNPF(SNPDP(JW),JW)
-        WRITE (SNP(JW),10490) W2VER,(TITLE(J),J=1,10)
+        WRITE (SNP(JW), '(A)/(1X,A72)') GIT_TAG, (TITLE(J),J=1,10)
         WRITE (SNP(JW),10500) 'Time Parameters',MONTH,GDAY,YEAR,INT(JDAY),(JDAY-INT(JDAY))*24.0,INT(ELTMJD),                     &
         (ELTMJD-INT(ELTMJD))*24.0,INT(DLTS1),KLOC,ILOC,INT(MINDLT),INT(JDMIN),(JDMIN-INT(JDMIN))*24.0,     &
         KMIN,IMIN
@@ -1296,8 +1297,6 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
 
   ! Snapshot formats
 
-10490 FORMAT ('CE-QUAL-W2 VERSION',F4.2/                                                                                          &
-              (1X,A72))
 10500 FORMAT (/1X,A/                                                                                                               &
               3X,'Gregorian date      [GDAY] =',A19,1X,I0,', ',I0/                                                                 &
               3X,'Julian date         [JDAY] =',I10,' days',F6.2,' hours'/                                                         &
