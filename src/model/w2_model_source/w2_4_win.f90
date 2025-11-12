@@ -37,6 +37,7 @@ PROGRAM CE_QUAL_W2
   USE INITIALVELOCITY
   USE ENVIRPMOD
   USE BIOENERGETICS
+  use path
   IMPLICIT NONE
  ! include "omp_lib.h"      ! OPENMP directive to adjust the # of processors TOGGLE FOR DEBUG
 
@@ -60,7 +61,7 @@ PROGRAM CE_QUAL_W2
 !***********************************************************************************************************************************
 
 INTEGER(4) length,istatus
-character*255 dirc
+CHARACTER(255) dirc
 !  call omp_set_num_threads(4)   ! set # of processors to NPROC  Moved to INPUT subroutine
 
 IF(END_RUN.or.ERROR_OPEN)STOP    ! SW 6/26/15 3/18/16 Added code to prevent a thread from reinitializing output files as dialog box is closing...intermittant error Updated 8/23/2017
@@ -71,7 +72,7 @@ DIRC=TRIM(DIRC)
 ! IF(ISTATUS.NE.0)WRITE(*,*)'GET_COMMAND_ARGUMENT FAILED: STATUS=',ISTATUS
 
 IF(LENGTH /= 0)THEN
-    ISTATUS=CHDIR(DIRC)
+    istatus = f_chdir(dirc)
     SELECT CASE(ISTATUS)
       CASE(2)  ! ENOENT
         WRITE(W2ERR,*)'The directory does not exist:',DIRC
@@ -434,7 +435,7 @@ CALL INIT
     ! update wind at 2m for evaopration and evaoprative heat flux computations  ! SW 5/21/15
    DO JW=1,NWB
     DO I=CUS(BS(JW)),DS(BE(JW))
-      WIND2(I) = WIND(JW)*WSC(I)*DLOG(2.0D0/Z0(JW))/DLOG(WINDH(JW)/Z0(JW))
+      WIND2(I) = WIND(JW)*WSC(I)*LOG(2.0/Z0(JW))/LOG(WINDH(JW)/Z0(JW))
     END DO
    ENDDO
 
@@ -603,7 +604,7 @@ CALL HYDROINOUT
 !****** Adjusted wind speed and surface wind shear drag coefficient
 
         DO I=IU-1,ID+1
-          WIND10(I) = WIND(JW)*WSC(I)*DLOG(10.0D0/Z0(JW))/DLOG(WINDH(JW)/Z0(JW))     ! older  version z0=0.01                      ! SW 11/28/07
+          WIND10(I) = WIND(JW)*WSC(I)*LOG(10.0/Z0(JW))/LOG(WINDH(JW)/Z0(JW))     ! older  version z0=0.01                      ! SW 11/28/07
           FETCH(I)  = FETCHD(I,JB)
           IF (COS(PHI(JW)-PHI0(I)) < 0.0) FETCH(I) = FETCHU(I,JB)
           IF (FETCH(I) <= 0.0) FETCH(I) = DLX(I)
@@ -615,7 +616,7 @@ CALL HYDROINOUT
           IF(WIND10(I) >= 15.0)THEN                     ! SW 1/19/2008
           CZ(I) = 0.0026D0
           ELSEIF(WIND10(I) >= 4.0)THEN
-          CZ(I) = 0.0005D0*DSQRT(WIND10(I))
+          CZ(I) = 0.0005D0*SQRT(WIND10(I))
           ELSEIF(WIND10(I) >= 0.5)THEN
           CZ(I)= 0.0044D0*WIND10(I)**(-1.15D0)
           ELSE
@@ -633,13 +634,13 @@ CALL HYDROINOUT
         DO I=IUT,IDT-1
           !WSHX(I) = CZ(I)*WIND10(I)**2*RHOA/RHOW*    DCOS(PHI(JW)-PHI0(I))* ICESW(I)
           !WSHY(I) = CZ(I)*WIND10(I)**2*RHOA/RHOW*DABS(DSIN(PHI(JW)-PHI0(I)))*ICESW(I)
-          WSHX(I) = CZ(I)*WIND10(I)*WIND10(I)*RHOA/RHOW*    DCOS(PHI(JW)-PHI0(I))* ICESW(I)    ! SW 4/20/16 SPEED
-          WSHY(I) = CZ(I)*WIND10(I)*WIND10(I)*RHOA/RHOW*DABS(DSIN(PHI(JW)-PHI0(I)))*ICESW(I)
+          WSHX(I) = CZ(I)*WIND10(I)*WIND10(I)*RHOA/RHOW*    COS(PHI(JW)-PHI0(I))* ICESW(I)    ! SW 4/20/16 SPEED
+          WSHY(I) = CZ(I)*WIND10(I)*WIND10(I)*RHOA/RHOW*ABS(SIN(PHI(JW)-PHI0(I)))*ICESW(I)
           WWT     = 0.0
           IF (WIND10(I) /= 0.0) WWT = 6.95D-2*(FETCH(I)**0.233D0)*WIND10(I)**0.534D0
           DFC = -8.0D0*PI*PI/(G*WWT*WWT+NONZERO)
           DO K=KT,KBMIN(I)
-            DECAY(K,I) = DEXP(MAX(DFC*DEPTHB(K,I),-30.0D0))
+            DECAY(K,I) = EXP(MAX(DFC*DEPTHB(K,I),-30.0))
           END DO
 
 !******** Branch inflow lateral shear and friction
@@ -651,8 +652,8 @@ CALL HYDROINOUT
               IF (JJB >= BS(JW) .AND. JJB <= BE(JW)) THEN
                 DO K=KT,KBMIN(I)
                   IF (U(K,US(JJB)) < 0.0) THEN
-                    UXBR(K,I) = UXBR(K,I)+ABS(U(K,US(JJB)))*DCOS(BETABR)     *VOLUH2(K,JJB)/(DLT*DLX(I))
-                    UYBR(K,I) = UYBR(K,I)              +ABS(DSIN(BETABR))*ABS(VOLUH2(K,JJB))/DLT
+                    UXBR(K,I) = UXBR(K,I)+ABS(U(K,US(JJB)))*COS(BETABR)     *VOLUH2(K,JJB)/(DLT*DLX(I))
+                    UYBR(K,I) = UYBR(K,I)              +ABS(SIN(BETABR))*ABS(VOLUH2(K,JJB))/DLT
                   END IF
                 END DO
               ELSE
@@ -665,8 +666,8 @@ CALL HYDROINOUT
                 IF (JJB >= BS(JW) .AND. JJB <= BE(JW)) THEN
                   DO K=KT,KBMIN(I)
                     IF (U(K,DS(JJB)) >= 0.0) THEN
-                      UXBR(K,I) = UXBR(K,I)+U(K,DS(JJB))*   DCOS(BETABR) *VOLDH2(K,JJB)/(DLT*DLX(I))
-                      UYBR(K,I) = UYBR(K,I)            +ABS(DSIN(BETABR))*VOLDH2(K,JJB)/DLT
+                      UXBR(K,I) = UXBR(K,I)+U(K,DS(JJB))*   COS(BETABR) *VOLDH2(K,JJB)/(DLT*DLX(I))
+                      UYBR(K,I) = UYBR(K,I)            +ABS(SIN(BETABR))*VOLDH2(K,JJB)/DLT
                     END IF
                   END DO
                 ELSE
@@ -676,8 +677,8 @@ CALL HYDROINOUT
                 IF (JJB >= BS(JW) .AND. JJB <= BE(JW)) THEN
                   DO K=KT,KBMIN(I)
                     IF (U(K,DS(JJB)) >= 0.0) THEN
-                      UXBR(K,I) = UXBR(K,I)+U(K,DS(JJB))*   DCOS(BETABR) *VOLDH2(K,JJB)/(DLT*DLX(I))
-                      UYBR(K,I) = UYBR(K,I)            +ABS(DSIN(BETABR))*VOLDH2(K,JJB)/DLT
+                      UXBR(K,I) = UXBR(K,I)+U(K,DS(JJB))*   COS(BETABR) *VOLDH2(K,JJB)/(DLT*DLX(I))
+                      UYBR(K,I) = UYBR(K,I)            +ABS(SIN(BETABR))*VOLDH2(K,JJB)/DLT
                     END IF
                   END DO
                 ELSE
@@ -755,7 +756,7 @@ CALL HYDROINOUT
 
         DO I=IUT,IDT
           DO K=KT,KB(I)-1
-            DZQ(K,I) = MIN(1.0D-2,DZ(K,I))                                    !MIN(1.0E-4,DZ(K,I)) No reason to limit DZ in rivers/estuaries-used in ULTIMATE scheme
+            DZQ(K,I) = MIN(1.0E-2,DZ(K,I))                                    !MIN(1.0E-4,DZ(K,I)) No reason to limit DZ in rivers/estuaries-used in ULTIMATE scheme
             IF (RHO(K,I) > RHO(K+1,I)) DZ(K,I) = DZMAX
           END DO
         END DO
@@ -781,9 +782,9 @@ CALL HYDROINOUT
             GC2=G*FRIC(I)*FRIC(I)/HRAD**0.33333333D0
           END IF
           IF (ONE_LAYER(I)) THEN
-            SB(KT,I) = ST(KT+1,I)+GC2*(BR(KTI(I),I)+2.0D0*AVHR(KT,I))*U(KT,I)*DABS(U(KT,I))
+            SB(KT,I) = ST(KT+1,I)+GC2*(BR(KTI(I),I)+2.0D0*AVHR(KT,I))*U(KT,I)*ABS(U(KT,I))
           ELSE
-            SB(KT,I) = GC2*(BR(KTI(I),I)-BR(KT+1,I)+2.0D0*AVHR(KT,I))*U(KT,I)*DABS(U(KT,I))
+            SB(KT,I) = GC2*(BR(KTI(I),I)-BR(KT+1,I)+2.0D0*AVHR(KT,I))*U(KT,I)*ABS(U(KT,I))
             DO K=KT+1,KBMIN(I)-1
               HRAD=(BHR2(K,I)/(BR(K,I)-BR(K+1,I)+2.0D0*H(K,JW)))
               IF(MACROPHYTE_ON.AND.MANNINGS_N(JW))THEN
@@ -792,7 +793,7 @@ CALL HYDROINOUT
               ELSE IF(.NOT.MACROPHYTE_ON.AND.MANNINGS_N(JW))THEN
                 GC2=G*FRIC(I)*FRIC(I)/HRAD**0.33333333D0
               END IF
-              SB(K,I) = GC2*(BR(K,I)-BR(K+1,I)+2.0D0*H(K,JW))*U(K,I)*DABS(U(K,I))
+              SB(K,I) = GC2*(BR(K,I)-BR(K+1,I)+2.0D0*H(K,JW))*U(K,I)*ABS(U(K,I))
             END DO
             IF (KT /= KBMIN(I)) THEN
               HRAD=(BHR2(KBMIN(I),I)/(BR(KBMIN(I),I)+2.0D0*H(KBMIN(I),JW)))
@@ -804,9 +805,9 @@ CALL HYDROINOUT
               END IF
 
               IF (KBMIN(I) /= KB(I)) THEN
-                SB(KBMIN(I),I) = GC2*(BR(KBMIN(I),I)-BR(KBMIN(I)+1,I)+2.0D0*H2(K,I))*U(KBMIN(I),I)*DABS(U(KBMIN(I),I))
+                SB(KBMIN(I),I) = GC2*(BR(KBMIN(I),I)-BR(KBMIN(I)+1,I)+2.0D0*H2(K,I))*U(KBMIN(I),I)*ABS(U(KBMIN(I),I))
               ELSE
-                SB(KBMIN(I),I) = GC2*(BR(KBMIN(I),I)+2.0D0*H2(K,I))*U(KBMIN(I),I)*DABS(U(KBMIN(I),I))
+                SB(KBMIN(I),I) = GC2*(BR(KBMIN(I),I)+2.0D0*H2(K,I))*U(KBMIN(I),I)*ABS(U(KBMIN(I),I))
               END IF
             END IF
           END IF

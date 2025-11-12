@@ -55,6 +55,7 @@ sources = [
   'withdrawal.f90',
   'wqconstituents.F90',
   # 'Resource.fd',
+  'path.F90',
 ]
 
 add_project_arguments(

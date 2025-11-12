@@ -17,6 +17,7 @@ SUBROUTINE TIME_VARYING_DATA
   USE MAIN, ONLY: PUMPS, SEGNUM, WBSEG, N2BND, DOBND, DGPBND,NDO, NDGP, ITR, EA, SYSTDG, NN2, TMEND, ATM_DEPOSITION, ATMDEPFN, ATM_DEP_LOADING, ATMDCN, NACATD, ATM_DEPOSITION_INTERPOLATION, GASGTC, GASSPC ! systdg ADD WBSEG, N2BND, DOBND, NDO, NGN2, ITR, EA, SYSTDG
   USE modSYSTDG, ONLY: TWETSC, TWEFN, TWE_TS;
   USE TDGAS                                     ! systdg
+  use path
   IMPLICIT NONE
 
 ! Type declaration
@@ -67,9 +68,10 @@ SUBROUTINE TIME_VARYING_DATA
   !TR_FILEDIR            -- character array (tributary index) to hold the directory names of any awaited tributary input files
   !BR_FILEDIR            -- character array (branch index) to hold the directory names of any awaited branch input files
 
+  integer                                :: ios
   INTEGER                                :: RESULT1, ITER, N                                                               !SR 11/28/19
   REAL                                   :: LAST_JDAY, GET_LAST_JDAY                                                    !SR 11/28/19
-  CHARACTER(240)                         :: FULL_FILE_NAME                                                              !SR 11/28/19
+  CHARACTER(:), allocatable              :: FULL_FILE_NAME                                                              !SR 11/28/19
   LOGICAL                                :: INPUT_FILE_EXISTS                                                           !SR 11/28/19
   EXTERNAL GET_LAST_JDAY                                                                                                !SR 11/28/19
   EXTERNAL PRINT_ERROR_AND_STOP                                                                                         !SR 11/28/19
@@ -142,7 +144,7 @@ SUBROUTINE TIME_VARYING_DATA
   INQF = .FALSE.
   INTF = .FALSE.
   EXTF = .FALSE.
-  DYNPUMPF=.FALSE. ; GATEF = .FALSE.   ! SW 9/26/2017
+  DYNPUMPF = 0 ; GATEF = .FALSE.   ! SW 9/26/2017
   EUHF = 0;   TUHF=0;   CUHF=0;   EDHF=0;  TDHF=0;  CDHF=0               ! SW 2/28/17
 
   WAIT_TIME = 1 ! seconds to wait when searching for input files
@@ -369,7 +371,7 @@ SUBROUTINE TIME_VARYING_DATA
         END DO                                                                                                          !SR 11/28/19
         RESULT1 = copy_file(TRIM(FULL_FILE_NAME), ".")
         WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                               !SR 11/28/19
-        IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QTR',JT)              ! Problem with copy; write msg and stop     !SR 11/28/19
+        IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QTR',JT)              ! Problem with copy; write msg and stop     !SR 11/28/19
 
         LAST_JDAY = GET_LAST_JDAY(QTRFN(JT))                                  ! Find last JDAY in input file            !SR 11/28/19
         DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file           !SR 11/28/19
@@ -377,7 +379,7 @@ SUBROUTINE TIME_VARYING_DATA
           CALL SLEEP(WAIT_TIME)                                                                                  !SR 11/28/19
           RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory        !SR 11/28/19
           WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                             !SR 11/28/19
-          IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QTR',JT)              ! Problem with copy; write msg and stop   !SR 11/28/19
+          IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QTR',JT)              ! Problem with copy; write msg and stop   !SR 11/28/19
           LAST_JDAY = GET_LAST_JDAY(QTRFN(JT))                                                                          !SR 11/28/19
         END DO                                                                                                          !SR 11/28/19
       END IF                                                                                                            !SR 11/28/19
@@ -402,7 +404,7 @@ SUBROUTINE TIME_VARYING_DATA
         END DO                                                                                                          !SR 11/28/19
         RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                     ! Copy file into current directory        !SR 11/28/19
         WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                               !SR 11/28/19
-        IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TTR',JT)                ! Problem with copy; write msg and stop   !SR 11/28/19
+        IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TTR',JT)                ! Problem with copy; write msg and stop   !SR 11/28/19
 
         LAST_JDAY = GET_LAST_JDAY(TTRFN(JT))                                  ! Find last JDAY in input file            !SR 11/28/19
         DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file           !SR 11/28/19
@@ -410,7 +412,7 @@ SUBROUTINE TIME_VARYING_DATA
           CALL SLEEP(WAIT_TIME)
           RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory        !SR 11/28/19
           WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                             !SR 11/28/19
-          IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TTR',JT)              ! Problem with copy; write msg and stop   !SR 11/28/19
+          IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TTR',JT)              ! Problem with copy; write msg and stop   !SR 11/28/19
           LAST_JDAY = GET_LAST_JDAY(TTRFN(JT))                                                                          !SR 11/28/19
         END DO                                                                                                          !SR 11/28/19
       END IF                                                                                                            !SR 11/28/19
@@ -438,7 +440,7 @@ SUBROUTINE TIME_VARYING_DATA
           END DO                                                                                                        !SR 11/28/19
           RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                    ! Copy file into current directory       !SR 11/28/19
           WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                             !SR 11/28/19
-          IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CTR',JT)               ! Problem with copy; write msg and stop  !SR 11/28/19
+          IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CTR',JT)               ! Problem with copy; write msg and stop  !SR 11/28/19
 
           LAST_JDAY = GET_LAST_JDAY(CTRFN(JT))                                 ! Find last JDAY in input file           !SR 11/28/19
           DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER) ! Not enough data in input file          !SR 11/28/19
@@ -446,7 +448,7 @@ SUBROUTINE TIME_VARYING_DATA
             CALL SLEEP(WAIT_TIME)
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                  ! Copy file into current directory       !SR 11/28/19
             WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                           !SR 11/28/19
-            IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CTR',JT)             ! Problem with copy; write msg and stop  !SR 11/28/19
+            IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CTR',JT)             ! Problem with copy; write msg and stop  !SR 11/28/19
             LAST_JDAY = GET_LAST_JDAY(CTRFN(JT))                                                                        !SR 11/28/19
           END DO                                                                                                        !SR 11/28/19
         END IF                                                                                                          !SR 11/28/19
@@ -553,7 +555,7 @@ SUBROUTINE TIME_VARYING_DATA
             END DO                                                                                                      !SR 11/28/19
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                     ! Copy file into current directory    !SR 11/28/19
             WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                           !SR 11/28/19
-            IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QIN',JB)                ! Problem with copy; write msg, stop  !SR 11/28/19
+            IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QIN',JB)                ! Problem with copy; write msg, stop  !SR 11/28/19
 
             LAST_JDAY = GET_LAST_JDAY(QINFN(JB))                                  ! Find last JDAY in input file        !SR 11/28/19
             DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file       !SR 11/28/19
@@ -561,7 +563,7 @@ SUBROUTINE TIME_VARYING_DATA
               CALL SLEEP(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory    !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
-              IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QIN',JB)              ! Problem with copy; write msg, stop  !SR 11/28/19
+              IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QIN',JB)              ! Problem with copy; write msg, stop  !SR 11/28/19
               LAST_JDAY = GET_LAST_JDAY(QINFN(JB))                                                                      !SR 11/28/19
             END DO                                                                                                      !SR 11/28/19
           END IF                                                                                                        !SR 11/28/19
@@ -586,7 +588,7 @@ SUBROUTINE TIME_VARYING_DATA
             END DO                                                                                                      !SR 11/28/19
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                     ! Copy file into current directory    !SR 11/28/19
             WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                           !SR 11/28/19
-            IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TIN',JB)                ! Problem with copy; write msg, stop  !SR 11/28/19
+            IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TIN',JB)                ! Problem with copy; write msg, stop  !SR 11/28/19
 
             LAST_JDAY = GET_LAST_JDAY(TINFN(JB))                                  ! Find last JDAY in input file        !SR 11/28/19
             DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file       !SR 11/28/19
@@ -594,7 +596,7 @@ SUBROUTINE TIME_VARYING_DATA
               CALL SLEEP(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory    !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
-              IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TIN',JB)              ! Problem with copy; write msg, stop  !SR 11/28/19
+              IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TIN',JB)              ! Problem with copy; write msg, stop  !SR 11/28/19
               LAST_JDAY = GET_LAST_JDAY(TINFN(JB))                                                                      !SR 11/28/19
             END DO                                                                                                      !SR 11/28/19
           END IF                                                                                                        !SR 11/28/19
@@ -622,7 +624,7 @@ SUBROUTINE TIME_VARYING_DATA
               END DO                                                                                                    !SR 11/28/19
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                    ! Copy file into current directory   !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
-              IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CIN',JB)               ! Problem with copy; write msg, stop !SR 11/28/19
+              IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CIN',JB)               ! Problem with copy; write msg, stop !SR 11/28/19
 
               LAST_JDAY = GET_LAST_JDAY(CINFN(JB))                                 ! Find last JDAY in input file       !SR 11/28/19
               DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER) ! Not enough data in input file      !SR 11/28/19
@@ -630,7 +632,7 @@ SUBROUTINE TIME_VARYING_DATA
                 CALL SLEEP(WAIT_TIME)
                 RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                  ! Copy file into current directory   !SR 11/28/19
                 WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                       !SR 11/28/19
-                IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CIN',JB)             ! Problem with copy; write msg, stop !SR 11/28/19
+                IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CIN',JB)             ! Problem with copy; write msg, stop !SR 11/28/19
                 LAST_JDAY = GET_LAST_JDAY(CINFN(JB))                                                                    !SR 11/28/19
               END DO                                                                                                    !SR 11/28/19
             END IF                                                                                                      !SR 11/28/19
@@ -1281,8 +1283,8 @@ SUBROUTINE TIME_VARYING_DATA
      PUMPD(J) = NPT; NPT = NPT+1
      OPEN (PUMPD(J),FILE='dynpump'//SEGNUM(1:L)//'.npt',STATUS='OLD')
      READ( PUMPD(J),'(A1)')INFORMAT
-     IF(INFORMAT=='$')DYNPUMPF(J)=.TRUE.
-     If(DYNPUMPF(J))then
+     IF(INFORMAT=='$')DYNPUMPF(J)=1
+     If(DYNPUMPF(J) /= 0)then
         READ (PUMPD(J),'(/)')
         READ (PUMPD(J),*) NXPUMP(J),EPU2(J),EONPU2(J),EOFFPU2(J),QPU2(J)
         EPU(J)=EPU2(J)
@@ -1464,18 +1466,18 @@ ENTRY READ_INPUT_DATA (NXTVD)
         NXQTR2(JT) = NXQTR1(JT)
 
         IF (TRQF(JT)) THEN
-          READ (TRQ(JT),*,END=8710) NXQTR1(JT),QTRNX(JT)                                                                !SR 11/28/19
+          READ (TRQ(JT),*,END=8710, iostat=ios) NXQTR1(JT),QTRNX(JT)                                                                !SR 11/28/19
         ELSE
-          READ (TRQ(JT),'(2F8.0)',END=8710) NXQTR1(JT),QTRNX(JT)                                                        !SR 11/28/19
+          READ (TRQ(JT),'(2F8.0)',END=8710, iostat=ios) NXQTR1(JT),QTRNX(JT)                                                        !SR 11/28/19
         ENDIF
         GO TO 8712                                                              ! Isolate error instructions            !SR 11/28/19
-8710    IF (EOF(TRQ(JT))) THEN                                                  ! End of file, but more data needed     !SR 11/28/19
+8710    IF (IS_IOSTAT_END(ios)) THEN                                                  ! End of file, but more data needed     !SR 11/28/19
           IF (WAIT_FOR_TRIB_INPUT(JT)) THEN                                     ! Additional data might be available    !SR 11/28/19
             CLOSE (TRQ(JT))                                                     ! Must close the file to get new copy   !SR 11/28/19
             FULL_FILE_NAME = TRIM(ADJUSTL(TR_FILEDIR(JT)))//'\'//TRIM(ADJUSTL(QTRFN(JT)))                               !SR 11/28/19
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory      !SR 11/28/19
             WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                           !SR 11/28/19
-            IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QTR',JT)              ! Problem with copy; write msg, stop    !SR 11/28/19
+            IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QTR',JT)              ! Problem with copy; write msg, stop    !SR 11/28/19
 
             LAST_JDAY = GET_LAST_JDAY(QTRFN(JT))                                ! Find last JDAY in input file          !SR 11/28/19
             ITER = 0                                                                                                    !SR 11/28/19
@@ -1486,7 +1488,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
               CALL SLEEP(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                 ! Copy file into current directory      !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
-              IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QTR',JT)            ! Problem with copy; write msg, stop    !SR 11/28/19
+              IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QTR',JT)            ! Problem with copy; write msg, stop    !SR 11/28/19
               LAST_JDAY = GET_LAST_JDAY(QTRFN(JT))                                                                      !SR 11/28/19
             END DO                                                                                                      !SR 11/28/19
             IF (LAST_JDAY > TMEND-0.5 .AND. ITER >= 3 .AND. LAST_JDAY <= NXQTR2(JT)) THEN   ! near TMEND, no new data   !SR 11/28/19
@@ -1501,19 +1503,19 @@ ENTRY READ_INPUT_DATA (NXTVD)
               IF (INFORMAT=='$') TRQF(JT)=.TRUE.                                                                        !SR 11/28/19
               IF (TRQF(JT)) THEN                                                                                        !SR 11/28/19
                 READ (TRQ(JT),'(/)')                                                                                    !SR 11/28/19
-                READ (TRQ(JT),*)   NXQTR1(JT)                                   ! Just read the date                    !SR 11/28/19
-                DO WHILE (LAST_JDAY > NXQTR1(JT) .AND. .NOT.EOF(TRQ(JT)))       ! Get file ptr to previous position     !SR 11/28/19
-                  READ (TRQ(JT),*) NXQTR1(JT)                                   ! Just read the date                    !SR 11/28/19
+                READ (TRQ(JT),*, iostat=ios)   NXQTR1(JT)                                   ! Just read the date                    !SR 11/28/19
+                DO WHILE (LAST_JDAY > NXQTR1(JT) .AND. .NOT. IS_IOSTAT_END(ios))       ! Get file ptr to previous position     !SR 11/28/19
+                  READ (TRQ(JT),*, iostat=ios) NXQTR1(JT)                                   ! Just read the date                    !SR 11/28/19
                 END DO                                                                                                  !SR 11/28/19
-                IF (EOF(TRQ(JT))) BACKSPACE(TRQ(JT))                            ! A bit of insurance                    !SR 11/28/19
-                READ (TRQ(JT),*) NXQTR1(JT),QTRNX(JT)                           ! Read new data point                   !SR 11/28/19
+                IF (IS_IOSTAT_END(ios)) BACKSPACE(TRQ(JT))                            ! A bit of insurance                    !SR 11/28/19
+                READ (TRQ(JT),*, iostat=ios) NXQTR1(JT),QTRNX(JT)                           ! Read new data point                   !SR 11/28/19
               ELSE                                                                                                      !SR 11/28/19
-                READ (TRQ(JT),'(//F8.0)') NXQTR1(JT)                            ! Just read the date                    !SR 11/28/19
-                DO WHILE (LAST_JDAY > NXQTR1(JT) .AND. .NOT.EOF(TRQ(JT)))       ! Get file ptr to previous position     !SR 11/28/19
-                  READ (TRQ(JT),'(F8.0)') NXQTR1(JT)                            ! Just read the date                    !SR 11/28/19
+                READ (TRQ(JT),'(//F8.0)', iostat=ios) NXQTR1(JT)                            ! Just read the date                    !SR 11/28/19
+                DO WHILE (LAST_JDAY > NXQTR1(JT) .AND. .NOT. IS_IOSTAT_END(ios))       ! Get file ptr to previous position     !SR 11/28/19
+                  READ (TRQ(JT),'(F8.0)', iostat=ios) NXQTR1(JT)                            ! Just read the date                    !SR 11/28/19
                 END DO                                                                                                  !SR 11/28/19
-                IF (EOF(TRQ(JT))) BACKSPACE(TRQ(JT))                            ! A bit of insurance                    !SR 11/28/19
-                READ (TRQ(JT),'(2F8.0)') NXQTR1(JT),QTRNX(JT)                   ! Read new data point                   !SR 11/28/19
+                IF (IS_IOSTAT_END(ios)) BACKSPACE(TRQ(JT))                            ! A bit of insurance                    !SR 11/28/19
+                READ (TRQ(JT),'(2F8.0)', iostat=ios) NXQTR1(JT),QTRNX(JT)                   ! Read new data point                   !SR 11/28/19
               END IF                                                                                                    !SR 11/28/19
             END IF                                                                                                      !SR 11/28/19
           ELSE                                 ! Not waiting for input from this file. Stop run. File has no more data. !SR 11/28/19
@@ -1545,18 +1547,18 @@ ENTRY READ_INPUT_DATA (NXTVD)
         TTRO(JT)   = TTRNX(JT)
         NXTTR2(JT) = NXTTR1(JT)
        IF (TRTF(JT)) THEN
-          READ (TRT(JT),*,END=8720) NXTTR1(JT),TTRNX(JT)                                                                !SR 11/28/19
+          READ (TRT(JT),*,END=8720, iostat=ios) NXTTR1(JT),TTRNX(JT)                                                                !SR 11/28/19
         ELSE
-          READ (TRT(JT),'(2F8.0)',END=8720) NXTTR1(JT),TTRNX(JT)                                                        !SR 11/28/19
+          READ (TRT(JT),'(2F8.0)',END=8720, iostat=ios) NXTTR1(JT),TTRNX(JT)                                                        !SR 11/28/19
         ENDIF
         GO TO 8722                                                              ! Isolate error instructions            !SR 11/28/19
-8720    IF (EOF(TRT(JT))) THEN                                                  ! End of file, but more data needed     !SR 11/28/19
+8720    IF (IS_IOSTAT_END(ios)) THEN                                                  ! End of file, but more data needed     !SR 11/28/19
           IF (WAIT_FOR_TRIB_INPUT(JT)) THEN                                     ! Additional data might be available    !SR 11/28/19
             CLOSE (TRT(JT))                                                     ! Must close the file to get new copy   !SR 11/28/19
             FULL_FILE_NAME = TRIM(ADJUSTL(TR_FILEDIR(JT)))//'\'//TRIM(ADJUSTL(TTRFN(JT)))                               !SR 11/28/19
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory      !SR 11/28/19
             WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                           !SR 11/28/19
-            IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TTR',JT)              ! Problem with copy; write msg, stop    !SR 11/28/19
+            IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TTR',JT)              ! Problem with copy; write msg, stop    !SR 11/28/19
 
             LAST_JDAY = GET_LAST_JDAY(TTRFN(JT))                                ! Find last JDAY in input file          !SR 11/28/19
           ! ITER = 0                                                            ! Carry over iterations from QTR        !SR 11/28/19
@@ -1567,7 +1569,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
               CALL SLEEP(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                 ! Copy file into current directory      !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
-              IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TTR',JT)            ! Problem with copy; write msg, stop    !SR 11/28/19
+              IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TTR',JT)            ! Problem with copy; write msg, stop    !SR 11/28/19
               LAST_JDAY = GET_LAST_JDAY(TTRFN(JT))                                                                      !SR 11/28/19
             END DO                                                                                                      !SR 11/28/19
             IF (LAST_JDAY > TMEND-0.5 .AND. ITER >= 3 .AND. LAST_JDAY <= NXTTR2(JT)) THEN   ! near TMEND, no new data   !SR 11/28/19
@@ -1582,19 +1584,19 @@ ENTRY READ_INPUT_DATA (NXTVD)
               IF (INFORMAT=='$') TRTF(JT)=.TRUE.                                                                        !SR 11/28/19
               IF (TRTF(JT)) THEN                                                                                        !SR 11/28/19
                 READ (TRT(JT),'(/)')                                                                                    !SR 11/28/19
-                READ (TRT(JT),*)   NXTTR1(JT)                                   ! Just read the date                    !SR 11/28/19
-                DO WHILE (LAST_JDAY > NXTTR1(JT) .AND. .NOT.EOF(TRT(JT)))       ! Get file ptr to previous position     !SR 11/28/19
-                  READ (TRT(JT),*) NXTTR1(JT)                                   ! Just read the date                    !SR 11/28/19
+                READ (TRT(JT),*, iostat=ios)   NXTTR1(JT)                                   ! Just read the date                    !SR 11/28/19
+                DO WHILE (LAST_JDAY > NXTTR1(JT) .AND. .NOT. IS_IOSTAT_END(ios))       ! Get file ptr to previous position     !SR 11/28/19
+                  READ (TRT(JT),*, iostat=ios) NXTTR1(JT)                                   ! Just read the date                    !SR 11/28/19
                 END DO                                                                                                  !SR 11/28/19
-                IF (EOF(TRT(JT))) BACKSPACE(TRT(JT))                            ! A bit of insurance                    !SR 11/28/19
-                READ (TRT(JT),*) NXTTR1(JT),TTRNX(JT)                           ! Read new data point                   !SR 11/28/19
+                IF (IS_IOSTAT_END(ios)) BACKSPACE(TRT(JT))                            ! A bit of insurance                    !SR 11/28/19
+                READ (TRT(JT),*, iostat=ios) NXTTR1(JT),TTRNX(JT)                           ! Read new data point                   !SR 11/28/19
               ELSE                                                                                                      !SR 11/28/19
-                READ (TRT(JT),'(//F8.0)') NXTTR1(JT)                            ! Just read the date                    !SR 11/28/19
-                DO WHILE (LAST_JDAY > NXTTR1(JT) .AND. .NOT.EOF(TRT(JT)))       ! Get file ptr to previous position     !SR 11/28/19
-                  READ (TRT(JT),'(F8.0)') NXTTR1(JT)                            ! Just read the date                    !SR 11/28/19
+                READ (TRT(JT),'(//F8.0)', iostat=ios) NXTTR1(JT)                            ! Just read the date                    !SR 11/28/19
+                DO WHILE (LAST_JDAY > NXTTR1(JT) .AND. .NOT. IS_IOSTAT_END(ios))       ! Get file ptr to previous position     !SR 11/28/19
+                  READ (TRT(JT),'(F8.0)', iostat=ios) NXTTR1(JT)                            ! Just read the date                    !SR 11/28/19
                 END DO                                                                                                  !SR 11/28/19
-                IF (EOF(TRT(JT))) BACKSPACE(TRT(JT))                            ! A bit of insurance                    !SR 11/28/19
-                READ (TRT(JT),'(2F8.0)') NXTTR1(JT),TTRNX(JT)                   ! Read new data point                   !SR 11/28/19
+                IF (IS_IOSTAT_END(ios)) BACKSPACE(TRT(JT))                            ! A bit of insurance                    !SR 11/28/19
+                READ (TRT(JT),'(2F8.0)', iostat=ios) NXTTR1(JT),TTRNX(JT)                   ! Read new data point                   !SR 11/28/19
               END IF                                                                                                    !SR 11/28/19
             END IF                                                                                                      !SR 11/28/19
           ELSE                                 ! Not waiting for input from this file. Stop run. File has no more data. !SR 11/28/19
@@ -1652,18 +1654,18 @@ ENTRY READ_INPUT_DATA (NXTVD)
           !
           NXCTR2(JT)                    = NXCTR1(JT)
           IF(TRCF(JT))THEN
-           READ (TRC(JT),*,END=8730) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))                               !SR 11/28/19
+           READ (TRC(JT),*,END=8730, iostat=ios) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))                               !SR 11/28/19
           ELSE
-            READ (TRC(JT),'(1000F8.0)',END=8730) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))                    !SR 11/28/19
+            READ (TRC(JT),'(1000F8.0)',END=8730, iostat=ios) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))                    !SR 11/28/19
           END IF
           GO TO 8732                                                              ! Isolate error instructions          !SR 11/28/19
-8730      IF (EOF(TRC(JT))) THEN                                                  ! End of file, but more data needed   !SR 11/28/19
+8730      IF (IS_IOSTAT_END(ios)) THEN                                                  ! End of file, but more data needed   !SR 11/28/19
             IF (WAIT_FOR_TRIB_INPUT(JT)) THEN                                     ! Additional data might be available  !SR 11/28/19
               CLOSE (TRC(JT))                                                     ! Must close the file to get new copy !SR 11/28/19
               FULL_FILE_NAME = TRIM(ADJUSTL(TR_FILEDIR(JT)))//'\'//TRIM(ADJUSTL(CTRFN(JT)))                             !SR 11/28/19
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory    !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
-              IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CTR',JT)              ! Problem with copy; write msg, stop  !SR 11/28/19
+              IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CTR',JT)              ! Problem with copy; write msg, stop  !SR 11/28/19
 
               LAST_JDAY = GET_LAST_JDAY(CTRFN(JT))                                ! Find last JDAY in input file        !SR 11/28/19
             ! ITER = 0                                                            ! Carry over iterations from QTR,TTR  !SR 11/28/19
@@ -1674,7 +1676,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                 CALL SLEEP(WAIT_TIME)
                 RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                 ! Copy file into current directory    !SR 11/28/19
                 WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                       !SR 11/28/19
-                IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CTR',JT)            ! Problem with copy; write msg, stop  !SR 11/28/19
+                IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CTR',JT)            ! Problem with copy; write msg, stop  !SR 11/28/19
                 LAST_JDAY = GET_LAST_JDAY(CTRFN(JT))                                                                    !SR 11/28/19
               END DO                                                                                                    !SR 11/28/19
               IF (LAST_JDAY > TMEND-0.5 .AND. ITER >= 3 .AND. LAST_JDAY <= NXCTR2(JT)) THEN   ! near TMEND, no new data !SR 11/28/19
@@ -1689,19 +1691,19 @@ ENTRY READ_INPUT_DATA (NXTVD)
                 IF (INFORMAT=='$') TRCF(JT)=.TRUE.                                                                      !SR 11/28/19
                 IF (TRCF(JT)) THEN                                                                                      !SR 11/28/19
                   READ (TRC(JT),'(/)')                                                                                  !SR 11/28/19
-                  READ (TRC(JT),*)   NXCTR1(JT)                                   ! Just read the date                  !SR 11/28/19
-                  DO WHILE (LAST_JDAY > NXCTR1(JT) .AND. .NOT.EOF(TRC(JT)))       ! Get file ptr to previous position   !SR 11/28/19
-                    READ (TRC(JT),*) NXCTR1(JT)                                   ! Just read the date                  !SR 11/28/19
+                  READ (TRC(JT),*, iostat=ios)   NXCTR1(JT)                                   ! Just read the date                  !SR 11/28/19
+                  DO WHILE (LAST_JDAY > NXCTR1(JT) .AND. .NOT. IS_IOSTAT_END(ios))       ! Get file ptr to previous position   !SR 11/28/19
+                    READ (TRC(JT),*, iostat=ios) NXCTR1(JT)                                   ! Just read the date                  !SR 11/28/19
                   END DO                                                                                                !SR 11/28/19
-                  IF (EOF(TRC(JT))) BACKSPACE(TRC(JT))                            ! A bit of insurance                  !SR 11/28/19
-                  READ (TRC(JT),*) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))       ! Read new data point      !SR 11/28/19
+                  IF (IS_IOSTAT_END(ios)) BACKSPACE(TRC(JT))                            ! A bit of insurance                  !SR 11/28/19
+                  READ (TRC(JT),*, iostat=ios) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))       ! Read new data point      !SR 11/28/19
                 ELSE                                                                                                    !SR 11/28/19
-                  READ (TRC(JT),'(//F8.0)') NXCTR1(JT)                            ! Just read the date                  !SR 11/28/19
-                  DO WHILE (LAST_JDAY > NXCTR1(JT) .AND. .NOT.EOF(TRC(JT)))       ! Get file ptr to previous position   !SR 11/28/19
-                    READ (TRC(JT),'(F8.0)') NXCTR1(JT)                            ! Just read the date                  !SR 11/28/19
+                  READ (TRC(JT),'(//F8.0)', iostat=ios) NXCTR1(JT)                            ! Just read the date                  !SR 11/28/19
+                  DO WHILE (LAST_JDAY > NXCTR1(JT) .AND. .NOT. IS_IOSTAT_END(ios))       ! Get file ptr to previous position   !SR 11/28/19
+                    READ (TRC(JT),'(F8.0)', iostat=ios) NXCTR1(JT)                            ! Just read the date                  !SR 11/28/19
                   END DO                                                                                                !SR 11/28/19
-                  IF (EOF(TRC(JT))) BACKSPACE(TRC(JT))                            ! A bit of insurance                  !SR 11/28/19
-                  READ (TRC(JT),'(1000F8.0)') NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))  ! Read new data      !SR 11/28/19
+                  IF (IS_IOSTAT_END(ios)) BACKSPACE(TRC(JT))                            ! A bit of insurance                  !SR 11/28/19
+                  READ (TRC(JT),'(1000F8.0)', iostat=ios) NXCTR1(JT),(CTRNX(TRCN(JAC,JT),JT),JAC=1,NACTR(JT))  ! Read new data      !SR 11/28/19
                 END IF                                                                                                  !SR 11/28/19
               END IF                                                                                                    !SR 11/28/19
             ELSE                               ! Not waiting for input from this file. Stop run. File has no more data. !SR 11/28/19
@@ -1756,18 +1758,18 @@ ENTRY READ_INPUT_DATA (NXTVD)
             QINO(JB)   = QINNX(JB)
             NXQIN2(JB) = NXQIN1(JB)
             IF (INQF(JB)) THEN
-              READ (INQ(JB),*,END=8810) NXQIN1(JB),QINNX(JB)                                                            !SR 11/28/19
+              READ (INQ(JB),*,END=8810, iostat=ios) NXQIN1(JB),QINNX(JB)                                                            !SR 11/28/19
             ELSE
-              READ (INQ(JB),'(2F8.0)',END=8810) NXQIN1(JB),QINNX(JB)                                                    !SR 11/28/19
+              READ (INQ(JB),'(2F8.0)',END=8810, iostat=ios) NXQIN1(JB),QINNX(JB)                                                    !SR 11/28/19
             ENDIF
             GO TO 8812                                                             ! Isolate error instructions         !SR 11/28/19
-8810        IF (EOF(INQ(JB))) THEN                                                 ! End of file, but more data needed  !SR 11/28/19
+8810        IF (IS_IOSTAT_END(ios)) THEN                                                 ! End of file, but more data needed  !SR 11/28/19
               IF (WAIT_FOR_BRANCH_INPUT(JB)) THEN                                  ! Additional data might be available !SR 11/28/19
                 CLOSE (INQ(JB))                                                    ! Must close file to get new copy    !SR 11/28/19
                 FULL_FILE_NAME = TRIM(ADJUSTL(BR_FILEDIR(JB)))//'\'//TRIM(ADJUSTL(QINFN(JB)))                           !SR 11/28/19
                 RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                  ! Copy file into current directory   !SR 11/28/19
                 WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                       !SR 11/28/19
-                IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QIN',JB)             ! Problem with copy; write msg, stop !SR 11/28/19
+                IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QIN',JB)             ! Problem with copy; write msg, stop !SR 11/28/19
 
                 LAST_JDAY = GET_LAST_JDAY(QINFN(JB))                               ! Find last JDAY in input file       !SR 11/28/19
                 ITER = 0                                                                                                !SR 11/28/19
@@ -1778,7 +1780,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                   CALL SLEEP(WAIT_TIME)
                   RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                ! Copy file into current directory   !SR 11/28/19
                   WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                     !SR 11/28/19
-                  IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('QIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
+                  IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
                   LAST_JDAY = GET_LAST_JDAY(QINFN(JB))                                                                  !SR 11/28/19
                 END DO                                                                                                  !SR 11/28/19
                 IF (LAST_JDAY > TMEND-0.5 .AND. ITER >= 3 .AND. LAST_JDAY <= NXQIN2(JB)) THEN ! near TMEND, no new data !SR 11/28/19
@@ -1793,19 +1795,19 @@ ENTRY READ_INPUT_DATA (NXTVD)
                   IF (INFORMAT=='$') INQF(JB)=.TRUE.                                                                    !SR 11/28/19
                   IF (INQF(JB)) THEN                                                                                    !SR 11/28/19
                     READ (INQ(JB),'(/)')                                                                                !SR 11/28/19
-                    READ (INQ(JB),*)   NXQIN1(JB)                                  ! Just read the date                 !SR 11/28/19
-                    DO WHILE (LAST_JDAY > NXQIN1(JB) .AND. .NOT.EOF(INQ(JB)))      ! Get file ptr to previous position  !SR 11/28/19
-                      READ (INQ(JB),*) NXQIN1(JB)                                  ! Just read the date                 !SR 11/28/19
+                    READ (INQ(JB),*, iostat=ios)   NXQIN1(JB)                                  ! Just read the date                 !SR 11/28/19
+                    DO WHILE (LAST_JDAY > NXQIN1(JB) .AND. .NOT. IS_IOSTAT_END(ios))      ! Get file ptr to previous position  !SR 11/28/19
+                      READ (INQ(JB),*, iostat=ios) NXQIN1(JB)                                  ! Just read the date                 !SR 11/28/19
                     END DO                                                                                              !SR 11/28/19
-                    IF (EOF(INQ(JB))) BACKSPACE(INQ(JB))                           ! A bit of insurance                 !SR 11/28/19
-                    READ (INQ(JB),*) NXQIN1(JB),QINNX(JB)                          ! Read new data point                !SR 11/28/19
+                    IF (IS_IOSTAT_END(ios)) BACKSPACE(INQ(JB))                           ! A bit of insurance                 !SR 11/28/19
+                    READ (INQ(JB),*, iostat=ios) NXQIN1(JB),QINNX(JB)                          ! Read new data point                !SR 11/28/19
                   ELSE                                                                                                  !SR 11/28/19
-                    READ (INQ(JB),'(//F8.0)') NXQIN1(JB)                           ! Just read the date                 !SR 11/28/19
-                    DO WHILE (LAST_JDAY > NXQIN1(JB) .AND. .NOT.EOF(INQ(JB)))      ! Get file ptr to previous position  !SR 11/28/19
-                      READ (INQ(JB),'(F8.0)') NXQIN1(JB)                           ! Just read the date                 !SR 11/28/19
+                    READ (INQ(JB),'(//F8.0)', iostat=ios) NXQIN1(JB)                           ! Just read the date                 !SR 11/28/19
+                    DO WHILE (LAST_JDAY > NXQIN1(JB) .AND. .NOT. IS_IOSTAT_END(ios))      ! Get file ptr to previous position  !SR 11/28/19
+                      READ (INQ(JB),'(F8.0)', iostat=ios) NXQIN1(JB)                           ! Just read the date                 !SR 11/28/19
                     END DO                                                                                              !SR 11/28/19
-                    IF (EOF(INQ(JB))) BACKSPACE(INQ(JB))                           ! A bit of insurance                 !SR 11/28/19
-                    READ (INQ(JB),'(2F8.0)') NXQIN1(JB),QINNX(JB)                  ! Read new data point                !SR 11/28/19
+                    IF (IS_IOSTAT_END(ios)) BACKSPACE(INQ(JB))                           ! A bit of insurance                 !SR 11/28/19
+                    READ (INQ(JB),'(2F8.0)', iostat=ios) NXQIN1(JB),QINNX(JB)                  ! Read new data point                !SR 11/28/19
                   END IF                                                                                                !SR 11/28/19
                 END IF                                                                                                  !SR 11/28/19
               ELSE                              ! Not waiting for input from this file. Stop run. File has no more data.!SR 11/28/19
@@ -1844,7 +1846,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                 FULL_FILE_NAME = TRIM(ADJUSTL(BR_FILEDIR(JB)))//'\'//TRIM(ADJUSTL(TINFN(JB)))                           !SR 11/28/19
                 RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                  ! Copy file into current directory   !SR 11/28/19
                 WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                       !SR 11/28/19
-                IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TIN',JB)             ! Problem with copy; write msg, stop !SR 11/28/19
+                IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TIN',JB)             ! Problem with copy; write msg, stop !SR 11/28/19
 
                 LAST_JDAY = GET_LAST_JDAY(TINFN(JB))                               ! Find last JDAY in input file       !SR 11/28/19
               ! ITER = 0                                                           ! Carry over iterations from QIN     !SR 11/28/19
@@ -1855,7 +1857,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                   CALL SLEEP(WAIT_TIME)
                   RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                ! Copy file into current directory   !SR 11/28/19
                   WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                     !SR 11/28/19
-                  IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('TIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
+                  IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
                   LAST_JDAY = GET_LAST_JDAY(TINFN(JB))                                                                  !SR 11/28/19
                 END DO                                                                                                  !SR 11/28/19
                 IF (LAST_JDAY > TMEND-0.5 .AND. ITER >= 3 .AND. LAST_JDAY <= NXTIN2(JB)) THEN ! near TMEND, no new data !SR 11/28/19
@@ -1942,7 +1944,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                   FULL_FILE_NAME = TRIM(ADJUSTL(BR_FILEDIR(JB)))//'\'//TRIM(ADJUSTL(CINFN(JB)))                         !SR 11/28/19
                   RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                ! Copy file into current directory   !SR 11/28/19
                   WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                     !SR 11/28/19
-                  IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
+                  IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
 
                   LAST_JDAY = GET_LAST_JDAY(CINFN(JB))                             ! Find last JDAY in input file       !SR 11/28/19
                 ! ITER = 0                                                         ! Carry over iterations from QIN,TIN !SR 11/28/19
@@ -1953,7 +1955,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                     CALL SLEEP(WAIT_TIME)
                     RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')              ! Copy file into current directory   !SR 11/28/19
                     WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                   !SR 11/28/19
-                    IF (.NOT. RESULT1) CALL PRINT_ERROR_AND_STOP('CIN',JB)         ! Problem with copy; write msg, stop !SR 11/28/19
+                    IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CIN',JB)         ! Problem with copy; write msg, stop !SR 11/28/19
                     LAST_JDAY = GET_LAST_JDAY(CINFN(JB))                                                                !SR 11/28/19
                   END DO                                                                                                !SR 11/28/19
                   IF (LAST_JDAY > TMEND-0.5 .AND. ITER >= 3 .AND. LAST_JDAY <= NXCIN2(JB)) THEN !near TMEND, no new data!SR 11/28/19
@@ -2383,7 +2385,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
         EONPU(J)=EONPU2(J)
         EOFFPU(J)=EOFFPU2(J)
         QPU(J)=QPU2(J)
-         IF(DYNPUMPF(J))then
+         IF(DYNPUMPF(J) /= 0)then
         READ (PUMPD(J),*) NXPUMP(J),EPU2(J),EONPU2(J),EOFFPU2(J),QPU2(J)
         ELSE
         READ (PUMPD(J),'(1000F8.0)') NXPUMP(J),EPU2(J),EONPU2(J),EOFFPU2(J),QPU2(J)
@@ -2705,14 +2707,14 @@ REAL FUNCTION GET_LAST_JDAY(FNAME)
 
     OPEN (CON,FILE=FNAME,STATUS='OLD')      ! File was previously tested for existence
     READ (CON,'(A1)') INFORMAT              ! Assumption that 3-line header is in place, with at least one line of data
-    READ (CON,'(/)')
+    READ (CON,'(/)', iostat=ios)
     IF (INFORMAT=='$') THEN
-      DO WHILE (.NOT. EOF(CON))
-        READ (CON,*) LAST_JDAY              ! Free format, probably comma-delimited
+      DO WHILE (.NOT. IS_IOSTAT_END(ios))
+        READ (CON,*, iostat=ios) LAST_JDAY              ! Free format, probably comma-delimited
       END DO
     ELSE
-      DO WHILE (.NOT. EOF(CON))
-        READ (CON,'(F8.0)') LAST_JDAY       ! Fixed format, needed if fixed-format file did not have space after JDAY
+      DO WHILE (.NOT. IS_IOSTAT_END(ios))
+        READ (CON,'(F8.0)', iostat=ios) LAST_JDAY       ! Fixed format, needed if fixed-format file did not have space after JDAY
       END DO
     END IF
     CLOSE (CON)
@@ -2738,48 +2740,3 @@ SUBROUTINE PRINT_ERROR_AND_STOP(TYPE_TEXT, TYPE_INDEX)
   CLOSE (9911)
   STOP
 END SUBROUTINE PRINT_ERROR_AND_STOP
-
-integer function copy_file(src, dst) result(stat)
-  implicit none
-  character(*), intent(in) :: src, dst
-  character(len=512) :: msg
-  character(:), allocatable :: cmd
-
-#ifdef _WIN32
-  cmd = 'copy '
-#else
-  cmd = 'cp '
-#endif
-
-  call execute_command_line(cmd//trim(adjustl(src))//'" "'//trim(adjustl(dst))//'"', exitstat=stat, cmdmsg=msg)
-
-  if (stat /= 0) then
-    write(*,*) 'Error writing file: ', trim(msg)
-    write(9911,*) 'Error writing file: ', trim(msg)
-  endif
-end function copy_file
-
-function join_path(root, path) result(joined)
-    implicit none
-    character(*), intent(in)  :: root, path
-    character(:), allocatable :: joined, sep
-    character(:), allocatable :: cleaned_root, cleaned_path
-    integer :: len_root
-
-    cleaned_root = trim(adjustl(root))
-    cleaned_path = trim(adjustl(path))
-
-    len_root = len(cleaned_root)
-
-#ifdef _WIN32
-    sep = '\'
-#else
-    sep = '/'
-#endif
-
-    if (cleaned_root(len_root:len_root) == sep) then
-        cleaned_root = cleaned_root(1:len_root-1)
-    endif
-
-    joined = cleaned_root//sep//cleaned_path
-end function join_path
