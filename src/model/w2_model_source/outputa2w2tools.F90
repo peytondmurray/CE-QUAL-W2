@@ -36,8 +36,8 @@ SUBROUTINE OUTPUTA
   CHARACTER(4)  :: FMT                                                                                                !SR 11/30/2022
 
   ! *** DSI W2_TOOL LINKAGE
-  REAL*4,SAVE,ALLOCATABLE,DIMENSION(:)::WSEL
-  REAL*4,SAVE,ALLOCATABLE,DIMENSION(:,:)::WDSI
+  REAL(4),SAVE,ALLOCATABLE,DIMENSION(:)::WSEL
+  REAL(4),SAVE,ALLOCATABLE,DIMENSION(:,:)::WDSI
 
 IF (VECTOR(1).or. WLC=='      ON') THEN          ! SR 12/2024
   IF(.NOT.ALLOCATED(WSEL))THEN
