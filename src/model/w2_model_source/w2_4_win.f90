@@ -1,5 +1,5 @@
 ! CE-QUAL-W2 computations
-INTEGER FUNCTION CE_QUAL_W2 (DLG)
+PROGRAM CE_QUAL_W2
 
 ! IVF/CVF specific code
   use IFLOGM
@@ -43,7 +43,6 @@ INTEGER FUNCTION CE_QUAL_W2 (DLG)
  ! include "omp_lib.h"      ! OPENMP directive to adjust the # of processors TOGGLE FOR DEBUG
 
   EXTERNAL RESTART_OUTPUT
-  TYPE (DIALOG) :: DLG
   INTEGER       :: RESULT         !, RESULT1, IRESULT   ! SW 2/2019
   CHARACTER(240):: MODDIR1
   REAL          :: DEPTH
@@ -86,15 +85,10 @@ IF(LENGTH /= 0)THEN
     END SELECT
 ENDIF
 
-MODDIR = FILE$CURDRIVE              !  GET CURRENT DIRECTORY
-LENGTH = GETDRIVEDIRQQ(MODDIR)
-
 OPEN(CON,FILE='W2CodeCompilerVersion.opt',status='unknown')
-write(CON,'(A,F5.2)')' CE-QUAL-W2 Version #:',W2VER
-write(CON,*)'Compiler Version and Code Compile Date'
-write(CON,*)'INTEL_COMPILER_VERSION:',INTEL_COMPILER_VERSION
-write(CON,*)'INTEL_COMPILER_BUILD_DATE:',INTEL_COMPILER_BUILD_DATE
-write(CON,*)'CE-QUAL-W2 Version compile date:',BUILDTIME
+write(CON,'(A)')' CE-QUAL-W2 ' // GIT_TAG
+write(CON,*)'meson version: ' // MESON_VERSION
+write(CON,*)'gfortran version' // GFORTRAN_VERSION
 close(CON)
 
 
@@ -353,7 +347,7 @@ END IF
     CLOSE (RSI)
   END IF
 
-  CE_QUAL_W2 =  1
+  ! CE_QUAL_W2 =  1
 
   ! Open warning file
 
@@ -403,19 +397,21 @@ CALL INIT
 
   IF (.NOT. RESTART_IN) THEN
     LINE    = CCTIME(1:2)//':'//CCTIME(3:4)//':'//CCTIME(5:6)
-    RESULT  = DLGSET (DLG,STARTING_TIME,TRIM(LINE))                                                   !Display starting time
-    RESULT  = DLGSET (DLG,STATUS,'Executing')                                                         !Display execution status
+
+
+
+
     CURRENT = 0.0
   ELSE
     CALL CPU_TIME (CURRENT)
   END IF
 
   CALL OUTPUTINIT
-    IF (RESTART_IN) THEN
-    DO JW=1,NWB
-      IF (SCREEN_OUTPUT(JW))CALL SCREEN_UPDATE(DLG)
-    ENDDO
-    ENDIF
+
+
+
+
+
 
   IF (.NOT. RESTART_IN) CALL CPU_TIME (START)
 
@@ -1716,7 +1712,7 @@ DO JW=1,NWB
           END IF
           KT         = KTWB(JW)
           NXTMSC(JW) = NXTMSC(JW)+SCRF(SCRDP(JW),JW)
-          CALL SCREEN_UPDATE (DLG)
+
           CALL DATE_AND_TIME (CDATE,CCTIME)
  !         DO JH=1,NHY
  !           IF (HYDRO_PLOT(JH))       CALL GRAPH_UPDATE (JH,HYD(:,:,JH),     HNAME(JH), HYMIN(JH),1.0,       LNAME(JH))
@@ -1758,13 +1754,4 @@ CALL ENDSIMULATION
 
 240 CONTINUE
 !  CALL DEALLOCATE_GRAPH
-
-  IF(CLOSEC=='      ON' .AND. END_RUN)THEN
-  CALL EXITDIALOG(DLG,TEXT)
-  ELSE
-  if(error_open)TEXT  = 'W2 error - see w2.err. Execution stopped at '//CCTIME(1:2)//':'//CCTIME(3:4)//':'//CCTIME(5:6)//' on '//CDATE(5:6)//'/'//CDATE(7:8)//'/'        &
-                                   //CDATE(3:4)            ! SW 6/30/2025
-  CALL STOP_W2 (DLG,TEXT)
-  ENDIF
-  RETURN
-END FUNCTION CE_QUAL_W2
+END PROGRAM CE_QUAL_W2
