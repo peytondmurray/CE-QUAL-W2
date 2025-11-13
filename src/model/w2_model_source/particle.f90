@@ -200,7 +200,7 @@ End Module Fishy
             FISHES(FN,4)  = 0.           ! FZLOC   = assumed to be zero for LINE
             fimp=fishes(fn,1)
             call whatjr
-            dz=h(fishes(fn,3),fjr)/nfishpcel
+            dz=h(int(fishes(fn,3)),fjr)/nfishpcel
             GROUPLAST=GROUP(FN)
             N=1
            else
@@ -1977,9 +1977,9 @@ INTEGER :: CATCH,DINT,DINTLAST,CATCHDEPTH,DOTALLY,TEMPTALLY, FIJ, JF, TAGGED, FV
 
 ! final fish output
    IF(NMONITORS<10)THEN
-       write(FINALFN,'(A214,<NMONITORS>(A11,I1,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
+       write(FINALFN,'(A214,*(A11,I1,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
    ELSE
-       write(FINALFN,'(A214,<NMONITORS>(A11,I2,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
+       write(FINALFN,'(A214,*(A11,I2,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
    ENDIF
 
     do jf=1,nfish
@@ -2000,7 +2000,8 @@ End Subroutine FishOutput
 Subroutine Read_Fish_Data
 
 use Fishy
- Use SCREENC, ONLY:JDAY; USE MAIN, ONLY: FISH_PARTICLE_EXIST
+Use SCREENC, ONLY:JDAY;
+USE MAIN, ONLY: FISH_PARTICLE_EXIST
 IMPLICIT NONE
 
 character*3 ALINE
@@ -2280,12 +2281,19 @@ End Subroutine Part_transport
 IMPLICIT NONE
 INTEGER :: IDUM3,ISET,N,K,I
 REAL :: V1,V2,R,FAC,GSET,GASDEV
+real :: random_value
+    integer, allocatable, dimension(:) :: iseed
+
+    iseed = IDUM3
+    call random_seed(put=iseed)
 
 ! From S. Li, PSU, PArticle Transport Algorithm
       data iset /0/
       if (iset.eq.0)then
- 1       v1=2.*ran(idum3)-1
-	 v2=2.*ran(idum3)-1
+        call random_number(random_value)
+ 1       v1=2.*random_value-1
+     call random_number(random_value)
+	 v2=2.*random_value-1
 	 r=v1**2+v2**2
 	 if(r.ge.1)goto 1
 	 fac=sqrt(-2.*log(r)/r)
@@ -2459,7 +2467,7 @@ REAL :: V1,V2,R,FAC,GSET,GASDEV
     END SUBROUTINE HISTOGRAM
     SUBROUTINE HISTOGRAM_OUTPUT
         use Fishy
- USE ENVIRPMOD, only: CONE
+        USE ENVIRPMOD, only: CONE
         integer :: N,I
         real :: TEMP_C,VEL_C,D_C
 
@@ -2474,7 +2482,7 @@ REAL :: V1,V2,R,FAC,GSET,GASDEV
 
         open(CONE,file='envrprf_t_particle.csv',status='unknown')
         write(CONE,*)'Temperature interval,Fraction of time,Number of Particles:',nfish,','
-        write(CONE,'("Interval,",<NFISH>("Particle",i4,","))')(I,I=1,NFISH)   !"Interval,",<NFISH>("Particle",i4,",")
+        write(CONE,'("Interval,",*("Particle",i4,","))')(I,I=1,NFISH)   !"Interval,",<NFISH>("Particle",i4,",")
         temp_c=temp_top
           do i=1,numclass
           write(CONE,125)temp_c,(t_class(N,i)/sumvolt(N),N=1,NFISH)
@@ -2484,9 +2492,9 @@ REAL :: V1,V2,R,FAC,GSET,GASDEV
           ENDDO
           end do
         write(CONE,'(1x)')
-        write(CONE,'(" Sum of fractions, ",<nfish>(e12.4,","))')(t_sum(N),N=1,NFISH)
+        write(CONE,'(" Sum of fractions, ",*(e12.4,","))')(t_sum(N),N=1,NFISH)
         write(CONE,'(1x)')
-        write(CONE,'(" Average, ",<nfish>(e12.4,","))')(t_avg(N), N=1,NFISH)
+        write(CONE,'(" Average, ",*(e12.4,","))')(t_avg(N), N=1,NFISH)
         close(CONE)
         end if
 
@@ -2500,7 +2508,7 @@ REAL :: V1,V2,R,FAC,GSET,GASDEV
           ENDDO
         open(CONE,file='envrprf_v_particle.csv',status='unknown')
         write(CONE,*)'Velocity interval,Fraction of volume,Number of Particles:',nfish,','
-        write(CONE,'("Interval,",<NFISH>("Particle",i4,","))')(I,I=1,NFISH)
+        write(CONE,'("Interval,",*("Particle",i4,","))')(I,I=1,NFISH)
         vel_c=vel_top
           do i=1,numclass
           write(CONE,125)vel_c,(v_class(N,i)/sumvolt(N),N=1,NFISH)
@@ -2510,9 +2518,9 @@ REAL :: V1,V2,R,FAC,GSET,GASDEV
           ENDDO
           end do
         write(CONE,'(1x)')
-        write(CONE,'(" Sum of fractions, ",<nfish>(e12.4,","))')(v_sum(N),N=1,NFISH)
+        write(CONE,'(" Sum of fractions, ",*(e12.4,","))')(v_sum(N),N=1,NFISH)
         write(CONE,'(1x)')
-        write(CONE,'(" Average, ",<nfish>(e12.4,","))')(v_avg(N),N=1,NFISH)
+        write(CONE,'(" Average, ",*(e12.4,","))')(v_avg(N),N=1,NFISH)
         close(CONE)
         end if
 
@@ -2527,7 +2535,7 @@ REAL :: V1,V2,R,FAC,GSET,GASDEV
           END DO
         open(CONE,file='envrprf_depth_particle.csv',status='unknown')
         write(CONE,*)'Depth interval,Fraction of time,Number of Particles:',nfish,','
-        write(CONE,'("Interval,",<NFISH>("Particle",i4,","))')(I,I=1,NFISH)
+        write(CONE,'("Interval,",*("Particle",i4,","))')(I,I=1,NFISH)
         d_c=d_top
           do i=1,numclass
           write(CONE,125)d_c,(d_class(N,i)/d_cnt(N),n=1,nfish)
@@ -2537,13 +2545,13 @@ REAL :: V1,V2,R,FAC,GSET,GASDEV
           ENDDO
           end do
         write(CONE,'(1x)')
-        write(CONE,'(" Sum of fractions, ",<nfish>(e12.4,","))')(d_sum(N), N=1,NFISH)
+        write(CONE,'(" Sum of fractions, ",*(e12.4,","))')(d_sum(N), N=1,NFISH)
         write(CONE,'(1x)')
-        write(CONE,'(" Average, ",<nfish>(e12.4,","))')(d_avg(N), N=1,NFISH)
+        write(CONE,'(" Average, ",*(e12.4,","))')(d_avg(N), N=1,NFISH)
         close(CONE)
         end if
 
-125       format((f8.2,',',<NFISH>(e12.4,',')))
+125       format((f8.2,',',*(e12.4,',')))
 
     RETURN
     END SUBROUTINE HISTOGRAM_OUTPUT
