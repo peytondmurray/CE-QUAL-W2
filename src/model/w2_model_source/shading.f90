@@ -4,7 +4,13 @@
 !***********************************************************************************************************************************
 
 SUBROUTINE SHADING
-  USE SHADEC; USE GLOBAL; USE GDAYC; USE SURFHE; USE GEOMC; USE SCREENC; USE LOGICC
+  use SHADEC
+ use GLOBAL
+ use GDAYC
+ use SURFHE
+ use GEOMC
+ use SCREENC
+ USE LOGICC
   IMPLICIT NONE
   CHARACTER(1) :: BANK
   REAL         :: LOCAL,STANDARD,HOUR,TAUD,SINAL,A02,AZ00,A0,AX,ANG1,ANG2,TOPOANG,SFACT,HT,CLINE,SRED,STLEN,EDGE,EDAZ,SN,AZT

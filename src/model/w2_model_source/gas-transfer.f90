@@ -4,7 +4,9 @@
 !***********************************************************************************************************************************
 
 SUBROUTINE GAS_TRANSFER
-  USE GLOBAL; USE GEOMC; USE KINETIC
+  use GLOBAL
+ use GEOMC
+ USE KINETIC
   IMPLICIT NONE
   REAL, PARAMETER :: THETA_REAERATION = 1.024, M_TO_FT = 3.2808
   REAL :: AREA,ADEPTH,UAVG,HDEPTH,S,USTAR,A,BCOEF,DMO2
@@ -141,7 +143,7 @@ SUBROUTINE GAS_TRANSFER
     DO K=KT,KBMIN(I)
       AREA = AREA+BHR1(K,I)
     END DO
-
+ 
     ADEPTH = AREA/BR(KTI(I),I)
     UAVG   = ABS(QC(I))/AREA
 

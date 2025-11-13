@@ -4,24 +4,24 @@
 
 ! Layer elevations
 SUBROUTINE INITGEOM
-  USE MAIN
-  USE GLOBAL
-  USE NAMESC
-  USE GEOMC
-  USE LOGICC
-  USE PREC
-  USE SURFHE
-  USE KINETIC
-  USE SHADEC
-  USE EDDY
-  USE STRUCTURES
-  USE TRANS
-  USE TVDC
-  USE SELWC
-  USE GDAYC
-  USE SCREENC
-  USE POROSITYC
-  USE MACROPHYTEC
+USE MAIN
+use GLOBAL
+use NAMESC
+ use GEOMC
+  use LOGICC
+ use PREC
+  use SURFHE
+  use KINETIC
+ use SHADEC
+ USE EDDY
+  use STRUCTURES
+ use TRANS
+  use TVDC
+   use SELWC
+  use GDAYC
+ use SCREENC
+ use POROSITYC
+ USE MACROPHYTEC
   USE RSTART
   IMPLICIT NONE
 
@@ -144,8 +144,8 @@ SUBROUTINE INITGEOM
 
   DO JW=1,NWB
     DO K=KMX-1,1,-1
-      HMIN = MIN(H(K,JW),HMIN)
-      HMAX = MAX(H(K,JW),HMAX)
+      HMIN = DMIN1(H(K,JW),HMIN)
+      HMAX = DMAX1(H(K,JW),HMAX)
     END DO
   END DO
   HMAX2 = HMAX**2
@@ -165,16 +165,16 @@ SUBROUTINE INITGEOM
               exit
             end if
           END DO
-
+      
            Z(I)     = (EL(KTI(I),I)-ELWS(I))/COSA(JB)
 
-
-          ZMIN(JW) = MAX(ZMIN(JW),Z(I))
-          !KTI(I)   =  MAX(KTI(I)-1,2)   ! MOVED SW 5/27/17
+          
+         ! ZMIN(JW) = DMAX1(ZMIN(JW),Z(I))
           KTMAX    =  MAX(2,KTI(I))
           KTWB(JW) =  MAX(KTMAX,KTWB(JW))
-          KTI(I)   =  MAX(KTI(I)-1,2)    ! original    IF(KTI(I) /= KMX)
-          IF (Z(I) > ZMIN(JW)) IZMIN(JW) = I
+          IF (EL(KTI(I),I) /= ELWS(I)) KTI(I) = KTI(I)-1      !SR 1/2024 in case ELWS==EL(KTI,I)
+          KTI(I)   =  MAX(KTI(I),2)    
+          !IF (Z(I) > ZMIN(JW)) IZMIN(JW) = I
         END IF
         K = 2
         DO WHILE (B(K,I) > 0.0)
@@ -201,6 +201,10 @@ SUBROUTINE INITGEOM
             H2(KT,I) = H(KT,JW)-Z(I)
             K        = K+1
           END DO
+          IF (Z(I) > ZMIN(JW)) THEN
+            IZMIN(JW) = I
+            ZMIN(JW)  = Z(I)
+          END IF
         END DO
       END DO
     END IF
@@ -310,13 +314,13 @@ SUBROUTINE INITGEOM
 !**** Minimum/maximum segment lengths
 
       DO I=IU,ID
-        DLXMIN = MIN(DLXMIN,DLX(I))
-        DLXMAX = MAX(DLXMAX,DLX(I))
+        DLXMIN = DMIN1(DLXMIN,DLX(I))
+        DLXMAX = DMAX1(DLXMAX,DLX(I))
       END DO
     END DO
   END DO
 
-
+  
 ! Constrictions                       ! SW 6/26/2018
     CONSTRICTION=.FALSE.   ! INIITALIZE VARIABLES
     BCONSTRICTION=0.0
@@ -334,9 +338,10 @@ SUBROUTINE INITGEOM
             CONSTRICTION(:,ISEG)=.TRUE.
         ENDDO
         ENDIF
+        CLOSE(CON)   ! SR 7/2024
     ENDIF
-
-
+    
+  
 ! Boundary widths
 
   DO JW=1,NWB
@@ -388,7 +393,7 @@ SUBROUTINE INITGEOM
                     IF (K1 > KMX) EXIT
                     B11 = 0.0
                     EL1 = ELR
-                    EL2 = EL(K1,UHS(JB))-SINA(JBUH(JB))*DLX(IU)*0.5
+                    EL2 = ELL2    !EL(K1,UHS(JB))-SINA(JBUH(JB))*DLX(IU)*0.5   SR 1/2024
                     DO WHILE (ELR2 <= EL2)
                       B11 = B11+(EL1-EL2)*B(K1-1,UHS(JB))
                       EL1 = EL2
@@ -492,7 +497,7 @@ SUBROUTINE INITGEOM
 
       CUS(JB) = IUT
       IF(IUT>=DS(JB))BR_INACTIVE(JB)= .TRUE.    ! SW 6/12/2017
-
+          
 
 !**** Areas and bottom widths
 
@@ -547,7 +552,7 @@ SUBROUTINE INITGEOM
       DO I=IU-1,ID
         DO K=1,KMX-1
           AVH2(K,I) = (H2(K,I) +H2(K+1,I)) *0.5
-          AVHR(K,I) =  H2(K,I)+(H2(K,I+1)-H2(K,I))/(0.5*(DLX(I)+DLX(I+1)))*0.5*DLX(I)                                  !SW 07/29/04
+          AVHR(K,I) =  H2(K,I)+(H2(K,I+1)-H2(K,I))*DLX(I)/(DLX(I)+DLX(I+1))                                  !SW 07/29/04   7/9/2024
         END DO
         AVH2(KMX,I) = H2(KMX,I)
         DO K=1,KMX
@@ -557,9 +562,9 @@ SUBROUTINE INITGEOM
           IF(CONSTRICTION(K,I))THEN    ! SW 6/26/2018
               IF(BR(K,I) > BCONSTRICTION(I))          BR(K,I)  = BCONSTRICTION(I)
               IF(BHR(K,I) > BCONSTRICTION(I)*H(K,JW)) BHR(K,I) = BCONSTRICTION(I)*H(K,JW)
-              IF(BHR2(K,I) > BCONSTRICTION(I)*H(K,JW))BHR2(K,I)= BCONSTRICTION(I)*H(K,JW)
+              IF(BHR2(K,I) > BCONSTRICTION(I)*H2(K,I))BHR2(K,I)= BCONSTRICTION(I)*H2(K,I)                              ! SR 1/2024
           ENDIF
-
+          
         END DO
       END DO
       DO K=1,KMX-1
@@ -587,7 +592,7 @@ SUBROUTINE INITGEOM
     END DO
   END DO
   H1   = H2
-  BH1  = BH2
+  BH1  = BH2; BHRATIO=1.0
   BHR1 = BHR2
   AVH1 = AVH2
 
@@ -595,10 +600,11 @@ SUBROUTINE INITGEOM
 
   DO JB=1,NBR
    IF (DHS(JB).GT.0) THEN
-     DO JJB=1,NBR
-       IF (DHS(JB) >= US(JJB) .AND. DHS(JB) <= DS(JJB)) EXIT
-     END DO
-     IF (CUS(JJB) > DHS(JB)) CDHS(JB) = CUS(JJB)
+     !DO JJB=1,NBR
+     !  IF (DHS(JB) >= US(JJB) .AND. DHS(JB) <= DS(JJB)) EXIT
+     !END DO
+     !IF (CUS(JJB) > DHS(JB)) CDHS(JB) = CUS(JJB)
+     CDHS(JB) = MAX(DHS(JB),CUS(JBDH(JB)))    ! SR 1/2024
    END IF
   END DO
 

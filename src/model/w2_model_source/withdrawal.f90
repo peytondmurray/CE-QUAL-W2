@@ -4,21 +4,20 @@
 !***********************************************************************************************************************************
 
 SUBROUTINE WITHDRAWAL
-  USE GLOBAL;
-  USE GEOMC;
-  USE TVDC;
-  USE SELWC;
-  USE LOGICC
+  use GLOBAL
+ use GEOMC
+ use TVDC
+ use SELWC
+ USE LOGICC
   USE MAIN, ONLY: DERIVED_CALC,CDN,TDGON,JSG,NNSG,NDO,JWD,EA,SYSTDG,NN2,NDGP,O2DG_DER,TDG_DER
   USE modSYSTDG, ONLY: GTNAME, UPDATE_TDGC, SYSTDG_TDG;    ! systdg
   USE SCREENC, ONLY: JDAY
   USE KINETIC, ONLY: CAC
   IMPLICIT NONE
-
   REAL :: HSWT,HSWB,ELR,WSEL,ELSTR,COEF,RATIO,HT,RHOFT,DLRHOT,HB,RHOFB,DLRHOB,VSUM,DLRHOMAX,HWDT,HWDB,ELWD,TEMPEST,ESTRTEST,QSUMJS
-  REAL :: FRACV,QSUMWD
+  REAL(R8) :: FRACV,QSUMWD
   REAL(R8)  :: dosat, n2sat   ! cb 11/7/17
-  INTEGER :: K,JS,KSTR,KTOP,KBOT,KWD,JJWD
+  INTEGER :: K,JS,KSTR,KTOP,KBOT,KWD,JJWD     
 RETURN
 
 !***********************************************************************************************************************************
@@ -58,8 +57,8 @@ ENTRY DOWNSTREAM_WITHDRAWAL (JS)
   END IF
   IF (ESTR(JS,JB) > EL(KT,ID)-ELR) ELSTR = WSEL
   IF (KBSW(JS,JB) < KSTR) THEN
-    KSTR  = KT
-    ELSTR = WSEL
+    KSTR  = KTOP          ! KT
+    ELSTR = EL(KTOP,ID)   !WSEL
   END IF
 
 ! Boundary interference
@@ -157,11 +156,20 @@ ENTRY DOWNSTREAM_WITHDRAWAL (JS)
   TAVG(JS,JB)=0.0                                                    ! CB 5/12/10
   IF(CONSTITUENTS)CAVG(JS,JB,CN(1:NAC))=0.0
   IF(DERIVED_CALC)CDAVG(JS,JB,CDN(1:NACD(JW),JW))=0.0
+  IF(VSUM==0.0)THEN
+      WRITE(WRN,'(A,F12.3,A,I5,A,I5,A,I5,A,E12.4,A)')'DOWNSTREAM WITHDRAWAL: VSUM=0.0 on JDAY:',JDAY,' KTOP:',KTOP,' KBOT:',KBOT,' KSTR:',KSTR,' DLRHOMAX:',DLRHOMAX,' SET TO EQUAL WITHDRAWALS WITH DEPTH'
+      VSUM=1.0
+      DO K=KTOP,KBOT
+      VNORM(K)=1.0/(KTOP-KBOT+1)
+      ENDDO
+  ENDIF
+  
   DO K=KTOP,KBOT
     QNEW(K)    = (VNORM(K)/VSUM)*QSTR(JS,JB)
     QOUT(K,JB) =  QOUT(K,JB)+QNEW(K)
+    QDSW(K,ID) =  QDSW(K,ID)+QNEW(K)                     ! For layer-specific output; ID redefined for SP/PI/PU/GT    !SR 12/19/2022
     TAVG(JS,JB)=TAVG(JS,JB)+QNEW(K)*T2(K,ID)                  ! SW 7/30/09
-    IF(CONSTITUENTS)CAVG(JS,JB,CN(1:NAC))=CAVG(JS,JB,CN(1:NAC))+QNEW(K)*C2(K,ID,CN(1:NAC))
+    IF(CONSTITUENTS)CAVG(JS,JB,CN(1:NAC))=CAVG(JS,JB,CN(1:NAC))+QNEW(K)*C2(K,ID,CN(1:NAC))  
     IF(DERIVED_CALC)CDAVG(JS,JB,CDN(1:NACD(JW),JW))=CDAVG(JS,JB,CDN(1:NACD(JW),JW))+QNEW(K)*CD(K,ID,CDN(1:NACD(JW),JW))
     QSUMJS=QSUMJS+QNEW(K)
   END DO
@@ -173,24 +181,24 @@ IF(QSUMJS.GT.0.0)THEN
      IF (nnsg==1) THEN                                ! nnsg==1 is gate flow
            !
            ! systedg
-           IF (SYSTDG) THEN
-               IF(GTNAME(jsg)) THEN
-                  CALL  UPDATE_TDGC (0,palt(id),jsg,tavg(js,jb),cavg(js,jb,NDO))
-                  CALL  UPDATE_TDGC (1,palt(id),jsg,tavg(js,jb),cavg(js,jb,NN2))
+           IF (SYSTDG) THEN                          
+               IF(GTNAME(jsg)) THEN                   
+                  CALL  UPDATE_TDGC (0,palt(id),jsg,tavg(js,jb),cavg(js,jb,NDO))    
+                  CALL  UPDATE_TDGC (1,palt(id),jsg,tavg(js,jb),cavg(js,jb,NN2))  
                   CALL  UPDATE_TDGC (2,palt(id),jsg,tavg(js,jb),cavg(js,jb,NDGP))
                ELSE
-                  call total_dissolved_gas (0,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDO))
+                  call total_dissolved_gas (0,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDO))    
                   call total_dissolved_gas (1,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NN2))     ! n2 GAS
-                  call total_dissolved_gas (2,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDGP))
+                  call total_dissolved_gas (2,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDGP)) 
                END IF
            ELSE
-               call total_dissolved_gas (0,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDO))
+               call total_dissolved_gas (0,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDO))    
                call total_dissolved_gas (1,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NN2))     ! n2 GAS
                call total_dissolved_gas (2,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDGP))
            END IF
            !
       ELSE
-      call total_dissolved_gas (0,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDO))
+      call total_dissolved_gas (0,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDO))    
       call total_dissolved_gas (1,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NN2))     ! n2 GAS
       call total_dissolved_gas (2,palt(id),nnsg,jsg,tavg(js,jb),cavg(js,jb,NDGP))
       END IF
@@ -199,13 +207,13 @@ IF(QSUMJS.GT.0.0)THEN
   IF(DERIVED_CALC)then                    ! cb 1/16/13
     CDAVG(JS,JB,CDN(1:NACD(JW),JW))=CDAVG(JS,JB,CDN(1:NACD(JW),JW))/QSUMJS
     !if(tdgon)then                  ! cb 11/6/17
-      !cdavg(js,jb,16)  = (cavg(js,jb,ndo)/exp(7.7117-1.31403*(log(tavg(js,jb)+45.93)))*palt(id))*100.0
+      !cdavg(js,jb,16)  = (cavg(js,jb,ndo)/exp(7.7117-1.31403*(log(tavg(js,jb)+45.93)))*palt(id))*100.0 
       dosat=exp(7.7117-1.31403*(log(tavg(js,jb)+45.93)))*palt(id)
-      cdavg(js,jb,O2DG_DER)=(cavg(js,jb,ndo)/dosat)*100.0
+      cdavg(js,jb,O2DG_DER)=(cavg(js,jb,ndo)/dosat)*100.0 
       !IF(ngctdg /= 0)THEN
       If(CAC(NN2)== '      ON') THEN
-          EA = DEXP(2.3026D0*(7.5D0*TDEW(JW)/(TDEW(JW)+237.3D0)+0.6609D0))*0.001316   ! in mm Hg   0.0098692atm=7.5006151mmHg
-          !cdavg(js,jb,NDC)  = (cavg(js,jb,NGN2)/(1.5568D06*0.79*(PALT(ID)-EA)*(1.8816D-5 - 4.116D-7 * Tavg(js,jb) + 4.6D-9 * Tavg(js,jb)**2)))*100.0    ! SW 10/27/15
+          EA = DEXP(2.3026D0*(7.5D0*TDEW(JW)/(TDEW(JW)+237.3D0)+0.6609D0))*0.001316   ! in mm Hg   0.0098692atm=7.5006151mmHg  
+          !cdavg(js,jb,NDC)  = (cavg(js,jb,NGN2)/(1.5568D06*0.79*(PALT(ID)-EA)*(1.8816D-5 - 4.116D-7 * Tavg(js,jb) + 4.6D-9 * Tavg(js,jb)**2)))*100.0    ! SW 10/27/15      
           n2sat=1.5568D06*0.79*(PALT(ID)-EA)*(1.8816D-5 - 4.116D-7 * Tavg(js,jb) + 4.6D-9 * Tavg(js,jb)**2)
           cdavg(js,jb,TDG_DER)  = 100.*(0.79*(cavg(js,jb,NN2)/n2sat) + 0.21*(cavg(js,jb,ndo)/dosat))
       ELSE IF(CAC(NDGP)== '      ON') THEN
@@ -239,7 +247,7 @@ ENTRY DOWNSTREAM_WITHDRAWAL_ESTIMATE(JS,TEMPEST,ESTRTEST)
 ! Water surface elevation
 
   ELR  = SINA(JB)*DLX(ID)*0.5
-  WSEL = EL(KT,ID)-Z(ID)*COSA(JB)-ELR
+  WSEL = ELWS(ID)-ELR                   !EL(KT,ID)-Z(ID)*COSA(JB)                                                     !SR 12/19/2022
 
 ! Structure layer
 
@@ -263,8 +271,8 @@ ENTRY DOWNSTREAM_WITHDRAWAL_ESTIMATE(JS,TEMPEST,ESTRTEST)
   END IF
   IF (ESTRTEST > EL(KT,ID)-ELR) ELSTR = WSEL
   IF (KBSW(JS,JB) < KSTR) THEN
-    KSTR  = KT
-    ELSTR = WSEL                                                                                                       !SW 10/05/00
+    KSTR  = KTOP         !KT
+    ELSTR = EL(KTOP,ID)  !WSEL                                                                                                       !SW 10/05/00
   END IF
 
 ! Boundary interference
@@ -357,6 +365,14 @@ ENTRY DOWNSTREAM_WITHDRAWAL_ESTIMATE(JS,TEMPEST,ESTRTEST)
   END DO
 
 ! Outflows
+    IF(VSUM==0.0)THEN
+      WRITE(WRN,'(A,F12.3,A,I5,A,I5,A,I5,A,E12.4,A)')'DOWNSTREAM WITHDRAWAL ESTIMATE: VSUM=0.0 on JDAY:',JDAY,' KTOP:',KTOP,' KBOT:',KBOT,' KSTR:',KSTR,' DLRHOMAX:',DLRHOMAX,' SET TO EQUAL WITHDRAWALS WITH DEPTH'
+      VSUM=1.0
+      DO K=KTOP,KBOT
+      VNORM(K)=1.0/(KTOP-KBOT+1)
+      ENDDO
+  ENDIF
+
 
   tempest=0.0
   DO K=KTOP,KBOT
@@ -399,8 +415,8 @@ ENTRY LATERAL_WITHDRAWAL
   END IF
   IF (EWD(JWD) > EL(KT,I)) ELWD = EL(KT,I)
   IF (KBWD(JWD) < KWD) THEN
-    KWD  = KT
-    ELWD = EL(KT,I)
+    KWD  = KTOP        ! KT  !SW 8/13/2024
+    ELWD = EL(KTOP,I)  ! EL(KT,I)
   END IF
 
 ! Boundary interference
@@ -471,6 +487,7 @@ ENTRY LATERAL_WITHDRAWAL
 
   VSUM     = 0.0
 !  DLRHOMAX = MAX(DLRHOT,DLRHOB,1.0E-10)                                                                             ! SW 1/24/05
+      
   DO K=KTOP,KBOT
 !    VNORM(K) = ABS(1.0-((RHO(K,I)-RHO(KWD,I))/DLRHOMAX)**2)*BHR2(K,I)
  	   IF(K.GT.KWD)THEN
@@ -484,18 +501,26 @@ ENTRY LATERAL_WITHDRAWAL
 	 VNORM(K)=VNORM(K)*BHR2(K,I)
      VSUM     = VSUM+VNORM(K)
   END DO
-
+  
 ! Outflows
   QSUMWD=0.0                                                  ! SW 7/30/09
   TAVGW(JWD)=0.0
   IF(CONSTITUENTS)CAVGW(JWD,CN(1:NAC))=0.0
   IF(DERIVED_CALC)CDAVGW(JWD,CDN(1:NACD(JW),JW))=0.0
+  
+    IF(VSUM==0.0)THEN
+      WRITE(WRN,'(A,F12.3,A,I5,A,I5,A,I5,A,E12.4,A)')'LATERAL WITHDRAWAL: VSUM=0.0 on JDAY:',JDAY,' KTOP:',KTOP,' KBOT:',KBOT,' KWD:',KWD,' DLRHOMAX:',DLRHOMAX,' SET TO EQUAL WITHDRAWALS WITH DEPTH'
+      VSUM=1.0
+      DO K=KTOP,KBOT
+      VNORM(K)=1.0/(KTOP-KBOT+1)
+      ENDDO
+  ENDIF
 
   DO K=KTOP,KBOT
     FRACV=(VNORM(K)/VSUM)
     QSW(K,JWD) = QSW(K,JWD)+FRACV*QWD(JWD)
     TAVGW(JWD)=TAVGW(JWD)+FRACV*QWD(JWD)*T2(K,I)                  ! SW 7/30/09
-    IF(CONSTITUENTS)CAVGW(JWD,CN(1:NAC))=CAVGW(JWD,CN(1:NAC))+FRACV*QWD(JWD)*C2(K,I,CN(1:NAC))
+    IF(CONSTITUENTS)CAVGW(JWD,CN(1:NAC))=CAVGW(JWD,CN(1:NAC))+FRACV*QWD(JWD)*C2(K,I,CN(1:NAC))  
     IF(DERIVED_CALC)CDAVGW(JWD,CDN(1:NACD(JW),JW))=CDAVGW(JWD,CDN(1:NACD(JW),JW))+FRACV*QWD(JWD)*CD(K,I,CDN(1:NACD(JW),JW))
     QSUMWD=QSUMWD+FRACV*QWD(JWD)
   END DO
@@ -507,49 +532,49 @@ ENTRY LATERAL_WITHDRAWAL
   IF(QSUMWD.GT.0.0)THEN
     TAVGW(JWD)=TAVGW(JWD)/QSUMWD               ! SW 7/30/09
     IF(CONSTITUENTS)then                       ! cb 1/16/13
-      CAVGW(JWD,CN(1:NAC))=CAVGW(JWD,CN(1:NAC))/QSUMWD
+      CAVGW(JWD,CN(1:NAC))=CAVGW(JWD,CN(1:NAC))/QSUMWD  
       if(tdgon)then
         IF (nnsg==1) THEN                                      ! systdg        nnsg==1 is gate flow
-            IF (SYSTDG) THEN                                   ! systdg
-                IF (GTNAME(jsg)) THEN                          ! systdg
-                   CALL  UPDATE_TDGC (0,palt(i),jsg,tavgw(jwd),cavgw(jwd,NDO))         ! systdg
-                   CALL  UPDATE_TDGC(1,palt(i),jsg,tavgw(jwd),cavgw(jwd,NN2))          ! systdg
+            IF (SYSTDG) THEN                                   ! systdg 
+                IF (GTNAME(jsg)) THEN                          ! systdg 
+                   CALL  UPDATE_TDGC (0,palt(i),jsg,tavgw(jwd),cavgw(jwd,NDO))         ! systdg 
+                   CALL  UPDATE_TDGC(1,palt(i),jsg,tavgw(jwd),cavgw(jwd,NN2))          ! systdg 
                    CALL  UPDATE_TDGC(2,palt(i),jsg,tavgw(jwd),cavgw(jwd,NDGP))
                 ELSE
-                   call total_dissolved_gas (0,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDO))
+                   call total_dissolved_gas (0,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDO))  
                    call total_dissolved_gas (1,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NN2))     ! n2 GAS
-                   call total_dissolved_gas (2,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDGP))
+                   call total_dissolved_gas (2,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDGP)) 
                 END IF
             ELSE
-        call total_dissolved_gas (0,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDO))
+        call total_dissolved_gas (0,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDO))  
         call total_dissolved_gas (1,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NN2))     ! n2 GAS
-        call total_dissolved_gas (2,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDGP))
-            END IF
+        call total_dissolved_gas (2,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDGP))    
+            END IF   
         ELSE
-            call total_dissolved_gas (0,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDO))
+            call total_dissolved_gas (0,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDO))  
             call total_dissolved_gas (1,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NN2))     ! n2 GAS
-            call total_dissolved_gas (2,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDGP))
+            call total_dissolved_gas (2,palt(i),nnsg,jsg,tavgw(jwd),cavgw(jwd,NDGP)) 
         END IF
       end if
     end if
     IF(DERIVED_CALC)then
       CDAVGW(JWD,CDN(1:NACD(JW),JW))=CDAVGW(JWD,CDN(1:NACD(JW),JW))/QSUMWD
       !if(tdgon)then                ! cb 11/6/17
-        !cdavgw(jwd,O2DG_DER)  = (cavgw(jwd,ndo)/exp(7.7117-1.31403*(log(tavgw(jwd)+45.93)))*palt(i))*100.0
+        !cdavgw(jwd,O2DG_DER)  = (cavgw(jwd,ndo)/exp(7.7117-1.31403*(log(tavgw(jwd)+45.93)))*palt(i))*100.0       
         dosat=exp(7.7117-1.31403*(log(tavgw(jwd)+45.93)))*palt(i)
-        cdavgw(jwd,O2DG_DER)=(cavgw(jwd,ndo)/dosat)*100.0
+        cdavgw(jwd,O2DG_DER)=(cavgw(jwd,ndo)/dosat)*100.0 
         If(CAC(NN2)== '      ON') THEN
-          EA = DEXP(2.3026D0*(7.5D0*TDEW(JW)/(TDEW(JW)+237.3D0)+0.6609D0))*0.001316   ! in mm Hg   0.0098692atm=7.5006151mmHg
-          !cdavgw(jwd,NDC)  = (cavgw(jwd,NGN2)/(1.5568D06*0.79*(PALT(I)-EA)*(1.8816D-5 - 4.116D-7 * Tavgw(jwd) + 4.6D-9 * Tavgw(jwd)**2)))*100.0    ! SW 10/27/15
+          EA = DEXP(2.3026D0*(7.5D0*TDEW(JW)/(TDEW(JW)+237.3D0)+0.6609D0))*0.001316   ! in mm Hg   0.0098692atm=7.5006151mmHg  
+          !cdavgw(jwd,NDC)  = (cavgw(jwd,NGN2)/(1.5568D06*0.79*(PALT(I)-EA)*(1.8816D-5 - 4.116D-7 * Tavgw(jwd) + 4.6D-9 * Tavgw(jwd)**2)))*100.0    ! SW 10/27/15      
           n2sat=1.5568D06*0.79*(PALT(I)-EA)*(1.8816D-5 - 4.116D-7 * Tavgw(jwd) + 4.6D-9 * Tavgw(jwd)**2)
           cdavgw(jwd,TDG_DER)  = 100.*(0.79*(cavgw(jwd,NN2)/n2sat) + 0.21*(cavgw(jwd,ndo)/dosat))
         ELSE IF(CAC(NDGP)== '      ON') THEN
           cdavgw(jwd,TDG_DER)  =  cavgw(jwd,NDGP)/ palt(i) * 100.0
-        END IF
+        END IF  
     end if
   ELSE
     TAVGW(JWD)=-99.0
-    IF(CONSTITUENTS)CAVGW(JWD,CN(1:NAC))=-99.0
+    IF(CONSTITUENTS)CAVGW(JWD,CN(1:NAC))=-99.0 
     IF(DERIVED_CALC)CDAVGW(JWD,CDN(1:NACD(JW),JW))=-99.0
   ENDIF
   KTW(JWD) = KTOP
@@ -588,8 +613,8 @@ ENTRY LATERAL_WITHDRAWAL
   END IF
   IF (ESTRTEST > EL(KT,I)) ELWD = EL(KT,I)
   IF (KBWD(JJWD) < KWD) THEN
-    KWD  = KT
-    ELWD = EL(KT,I)
+    KWD  = KTOP        ! KT
+    ELWD = EL(KTOP,I)  ! EL(KT,I)
   END IF
 
 ! Boundary interference
@@ -675,7 +700,17 @@ ENTRY LATERAL_WITHDRAWAL
   END DO
 
 ! Outflows
+  
+    IF(VSUM==0.0)THEN
+      WRITE(WRN,'(A,F12.3,A,I5,A,I5,A,I5,A,E12.4,A)')'LATERAL WITHDRAWAL ESTIMATE: VSUM=0.0 on JDAY:',JDAY,' KTOP:',KTOP,' KBOT:',KBOT,' KWD:',KWD,' DLRHOMAX:',DLRHOMAX,' SET TO EQUAL WITHDRAWALS WITH DEPTH'
+      VSUM=1.0
+      DO K=KTOP,KBOT
+      VNORM(K)=1.0/(KTOP-KBOT+1)
+      ENDDO
+  ENDIF
 
+
+  TEMPEST = 0.0                                                                                                       !SR 12/19/2022
   DO K=KTOP,KBOT
     tempest=tempest+t2(k,i)*(VNORM(K)/VSUM)*QWD(JJWD)
   END DO
@@ -688,29 +723,47 @@ ENTRY LATERAL_WITHDRAWAL
 END SUBROUTINE WITHDRAWAL
 
 
-
-MODULE SELECTIVE1
+!***********************************************************************************************************************************
+!**                                                S E L E C T I V E   I N I T                                                    **
+!***********************************************************************************************************************************
+MODULE SELECTIVE1 
  REAL                                          :: NXTSTR, NXTTCD, NXTSPLIT,TCDFREQ,TFRQTMP
   CHARACTER(8)                                 :: TEMPC,TSPLTC
-  CHARACTER(8), ALLOCATABLE, DIMENSION(:)      :: TCELEVCON,TCYEARLY,TCNTR,TSPLTCNTR,MONCTR,TSYEARLY,DYNSEL,ELCONTSPL,DYNSELSPLT
-  INTEGER                                      :: NUMTEMPC,NUMTSPLT, TEMPN
+  CHARACTER(8), ALLOCATABLE, DIMENSION(:)      :: TCELEVCON,TCYEARLY,TCNTR,TSPLTCNTR,TSYEARLY,DYNSEL,ELCONTSPL,DYNSELSPLT
+  INTEGER                                      :: NUMTEMPC,NUMTSPLT, TEMPN        
   INTEGER, ALLOCATABLE, DIMENSION(:)           :: TCNELEV,TCJB,TCJS,TCISEG,TSPLTJB,NOUTS,KSTRSPLT, JBMON, JSMON, NCOUNTCW,SELD
   REAL,          ALLOCATABLE, DIMENSION(:,:)   :: TCELEV, TEMPCRIT,QSTRFRAC
   REAL,          ALLOCATABLE, DIMENSION(:)     :: TCTEMP,TCTEND,TCTSRT,TCKLAY,TSPLTT,VOLM,QWDFRAC,TSTEND,TSTSRT,NXSEL,TEMP2,NXSELSPLT,TEMP3
   INTEGER, ALLOCATABLE, DIMENSION(:,:)         :: JSTSPLT, NCOUNTC, JSTSPLTT
-  REAL,          ALLOCATABLE, DIMENSION(:,:)  :: VOLMC
+  REAL,          ALLOCATABLE, DIMENSION(:,:)  :: VOLMC 
   LOGICAL, ALLOCATABLE, DIMENSION(:)          :: DYNSF,DYNSPF
   REAL, ALLOCATABLE, DIMENSION(:)             :: MINWL   ! Minimum water level above centerline of outlet if TCELEVCON is ON
 END MODULE SELECTIVE1
 
 SUBROUTINE SELECTIVEINIT
 
-USE SELECTIVE1;   USE MAIN
-  USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
+use SELECTIVE1
+   USE MAIN
+  use GLOBAL
+     use NAMESC
+ use GEOMC
+  use LOGICC
+ use PREC
+  use SURFHE
+  use KINETIC
+ use SHADEC
+ USE EDDY
+  use STRUCTURES
+ use TRANS
+  use TVDC
+   use SELWC
+  use GDAYC
+ use SCREENC
+ use TDGAS
+   USE RSTART
 
   IMPLICIT NONE
-
+  
   INTEGER N, IFILE
   REAL DAYTEST
   CHARACTER(1) :: INFORMAT,CHAR1
@@ -719,7 +772,7 @@ USE SELECTIVE1;   USE MAIN
 
 !**                                                   Task 2: Calculations                                                        **
 !***********************************************************************************************************************************
-
+      
       IFILE=1949
       TAVG=0.0
       TAVGW=0.0
@@ -739,27 +792,17 @@ USE SELECTIVE1;   USE MAIN
                 READ (IFILE,*,END=13) JDAY1            !READ (IFILE,'(F10.0)',END=13) JDAY1
                 END DO
                 BACKSPACE (IFILE)
-                13     JDAY1=0.0
+                13     JDAY1=0.0    
         ELSE
                 OPEN  (IFILE,FILE='str_br'//segnum(1:l)//'.csv',status='unknown')
                 WRITE(IFILE,*)'Branch:,',jb,', # of structures:,',nstr(jb),', outlet temperatures'
-
-                ! Is this even valid fortran? There's only a format string here, no actual data
-                ! WRITE(IFILE,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
-
-                ! Try to interpret what the original intent was...
-                ! Note this one is comma separated,  but the others in this file are not!
-                WRITE(IFILE, '(A)') '      JDAY,' // &
-                    REPEAT('      T(C),', nstr(jb)) // &
-                    REPEAT('   Q(m3/s),', nstr(jb)) // &
-                    REPEAT('    ELEVCL,', nstr(jb))
-
+                WRITE(IFILE,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
         ENDIF
         ENDIF
       END DO
-
+ 
       IF(NWD > 0)THEN
-       IFILE=IFILE+1
+       IFILE=IFILE+1  
        IF(RESTART_IN)THEN
                 OPEN  (IFILE,FILE='wd_out.opt',POSITION='APPEND')
                 JDAY1=0.0
@@ -769,25 +812,17 @@ USE SELECTIVE1;   USE MAIN
                 READ (IFILE,'(F10.0)',END=14) JDAY1
                 END DO
                 BACKSPACE (IFILE)
-                14    JDAY1=0.0
+                14    JDAY1=0.0   
        ELSE
         OPEN  (IFILE,FILE='wd_out.opt',STATUS='unknown')
         WRITE(IFILE,*)'Withdrawals: # of withdrawals:',nwd,' outlet temperatures'
-
-        ! Is this even valid fortran? There's only a format string here, no actual data
-        ! WRITE(IFILE,'("      JDAY",<nwd>(6x,"T(C)"),<nwd>(3x,"Q(m3/s)"),<nwd>(4x,"ELEVCL"))')
-
-        ! Try to interpret what the original intent was...
-        WRITE(IFILE, '(A)') '      JDAY' // &
-            REPEAT('      T(C)', nwd) // &
-            REPEAT('   Q(m3/s)', nwd) // &
-            REPEAT('    ELEVCL', nwd)
+        WRITE(IFILE,'("      JDAY",<nwd>(6x,"T(C)"),<nwd>(3x,"Q(m3/s)"),<nwd>(4x,"ELEVCL"))')
        ENDIF
       end if
-
-
+ 
+      
       OPEN(NUNIT,FILE='w2_selective.npt',STATUS='old')
-
+      
       read(NUNIT,'(a)')CHAR1
       read(NUNIT,*)
       read(NUNIT,*)
@@ -812,16 +847,26 @@ USE SELECTIVE1;   USE MAIN
       READ(NUNIT,'(8X,F8.0)')TFRQTMP
       READ(NUNIT,'(//8X,A8,I8,F8.0)')TEMPC,NUMTEMPC,TCDFREQ
       ENDIF
-      NXTSTR=TMSTRT
-      NXTTCD=TMSTRT
-      NXTSPLIT=TMSTRT
+      !NXTSTR=TMSTRT
+      !NXTTCD=TMSTRT
+      !NXTSPLIT=TMSTRT
+      IF(JDAY>TMSTRT)THEN   ! SW 8/10/2023  During restart this allows continuing output
+          NXTSTR=JDAY          
+          NXTTCD=JDAY   
+          NXTSPLIT=JDAY
+      ELSE
+          NXTSTR=TMSTRT
+          NXTTCD=TMSTRT   
+          NXTSPLIT=TMSTRT
+      ENDIF
 
-  ALLOCATE (TCNELEV(NUMTEMPC),TCJB(NUMTEMPC),TCJS(NUMTEMPC), TCELEV(NUMTEMPC,11),TCTEMP(NUMTEMPC),TCTEND(NUMTEMPC),TCTSRT(NUMTEMPC),NCOUNTC(NST,NBR),TCISEG(NUMTEMPC),TCKLAY(NUMTEMPC),TCELEVCON(NUMTEMPC))
-  ALLOCATE (TCYEARLY(NUMTEMPC), JBMON(NUMTEMPC),JSMON(NUMTEMPC),TCNTR(NUMTEMPC))
-  ALLOCATE (VOLM(NWB),MONCTR(NUMTEMPC),NCOUNTCW(NWD),QWDFRAC(NWD),QSTRFRAC(NST,NBR),DYNSEL(NUMTEMPC),SELD(NUMTEMPC),NXSEL(NUMTEMPC),TEMP2(NUMTEMPC))
-  ALLOCATE (DYNSF(NUMTEMPC),MINWL(NUMTEMPC))
+      
+  ALLOCATE (TCNELEV(NUMTEMPC),TCJB(NUMTEMPC),TCJS(NUMTEMPC), TCELEV(NUMTEMPC,100),TCTEMP(NUMTEMPC),TCTEND(NUMTEMPC),TCTSRT(NUMTEMPC),NCOUNTC(NST,NBR),TCISEG(NUMTEMPC),TCKLAY(NUMTEMPC),TCELEVCON(NUMTEMPC)) 
+  ALLOCATE (TCYEARLY(NUMTEMPC), JBMON(NUMTEMPC),JSMON(NUMTEMPC),TCNTR(NUMTEMPC)) 
+  ALLOCATE (VOLM(NWB),NCOUNTCW(NWD),QWDFRAC(NWD),QSTRFRAC(NST,NBR),DYNSEL(NUMTEMPC),SELD(NUMTEMPC),NXSEL(NUMTEMPC),TEMP2(NUMTEMPC))       
+  ALLOCATE (DYNSF(NUMTEMPC),MINWL(NUMTEMPC))    
   DYNSF=.FALSE.;MINWL=0.0
-
+  
       DO J=1,2
       READ(NUNIT,*)
       END DO
@@ -830,12 +875,12 @@ USE SELECTIVE1;   USE MAIN
             IF(CHAR1=='$')THEN
               READ(NUNIT,*)CHAR8,TCNTR(J),TCJB(J),TCJS(J),TCYEARLY(J),TCTSRT(J),TCTEND(J),TCTEMP(J),TCNELEV(J),(TCELEV(J,N),N=1,TCNELEV(J))
               TCNTR(J)=ADJUSTR(TCNTR(J))
-              TCYEARLY=ADJUSTR(TCYEARLY)
+              TCYEARLY=ADJUSTR(TCYEARLY) 
             ELSE
               READ(NUNIT,'(8X,A8,I8,I8,A8,F8.0,F8.0,F8.0,I8,10(F8.0))')TCNTR(J),TCJB(J),TCJS(J),TCYEARLY(J),TCTSRT(J),TCTEND(J),TCTEMP(J),TCNELEV(J),(TCELEV(J,N),N=1,TCNELEV(J))
             ENDIF
-
-        IF(TCNTR(J)=='      ST')THEN
+            
+        IF(TCNTR(J)=='      ST')THEN      
         TCELEV(J,TCNELEV(J)+1)=ESTR(TCJS(J),TCJB(J))   ! ALWAYS PUT THE ORIGINAL ELEVATION AS THE LAST ELEVATION
         ELSE
         TCELEV(J,TCNELEV(J)+1)=EWD(TCJS(J))   ! ALWAYS PUT THE ORIGINAL ELEVATION AS THE LAST ELEVATION
@@ -846,37 +891,37 @@ USE SELECTIVE1;   USE MAIN
       END DO
       DO J=1,NUMTEMPC
                       IF(CHAR1=='$')THEN
-                                READ(NUNIT,*)CHAR8,TCISEG(J),TCKLAY(J),DYNSEL(J);DYNSEL(J)=ADJUSTR(DYNSEL(J))
-                      ELSE
-                                READ(NUNIT,'(8X,I8,F8.0,A8)')TCISEG(J),TCKLAY(J),DYNSEL(J)
+                                READ(NUNIT,*)CHAR8,TCISEG(J),TCKLAY(J),DYNSEL(J);DYNSEL(J)=ADJUSTR(DYNSEL(J)) 
+                      ELSE 
+                                READ(NUNIT,'(8X,I8,F8.0,A8)')TCISEG(J),TCKLAY(J),DYNSEL(J) 
                       ENDIF
-
+                      
       END DO
       DO J=1,2
       READ(NUNIT,*)
       END DO
       DO J=1,NUMTEMPC
                       IF(CHAR1=='$')THEN
-                                      READ(NUNIT,*)CHAR8,TCELEVCON(J),MINWL(J);tcelevcon(J)=ADJUSTR(tcelevcon(J))
-                      ELSE
-                                      READ(NUNIT,'(8X,A8,F8.0)')TCELEVCON(J),MINWL(J)
+                                      READ(NUNIT,*)CHAR8,TCELEVCON(J),MINWL(J);tcelevcon(J)=ADJUSTR(tcelevcon(J)) 
+                      ELSE 
+                                      READ(NUNIT,'(8X,A8,F8.0)')TCELEVCON(J),MINWL(J) 
                       ENDIF
       END DO
       DO J=1,2
       READ(NUNIT,*)
       END DO
                       IF(CHAR1=='$')THEN
-                                    READ(NUNIT,*)CHAR8,TSPLTC,NUMTSPLT;TSPLTC=ADJUSTR(TSPLTC)
-                      ELSE
+                                    READ(NUNIT,*)CHAR8,TSPLTC,NUMTSPLT;TSPLTC=ADJUSTR(TSPLTC) 
+                      ELSE 
                                     READ(NUNIT,'(8X,A8,I8)')TSPLTC,NUMTSPLT
                       ENDIF
 
-
+      
       ALLOCATE(TSYEARLY(NUMTSPLT),TSTSRT(NUMTSPLT),TSTEND(NUMTSPLT),TSPLTJB(NUMTSPLT),TSPLTT(NUMTSPLT),NOUTS(NUMTSPLT),   &
                JSTSPLT(NUMTSPLT,10),KSTRSPLT(NUMTSPLT),TSPLTCNTR(NUMTSPLT))
       ALLOCATE(JSTSPLTT(NUMTSPLT,10),ELCONTSPL(NUMTSPLT),DYNSELSPLT(NUMTSPLT),DYNSPF(NUMTSPLT),NXSELSPLT(NUMTSPLT),TEMP3(NUMTSPLT))
       DYNSPF=.FALSE.
-
+      
       DO J=1,2
       READ(NUNIT,*)
       END DO
@@ -887,26 +932,26 @@ USE SELECTIVE1;   USE MAIN
                     TSYEARLY(J)=ADJUSTR(TSYEARLY(J))
                     ELCONTSPL(J)=ADJUSTR(ELCONTSPL(J))
                     DYNSELSPLT(J)=ADJUSTR(DYNSELSPLT(J))
-              ELSE
+              ELSE 
                     READ(NUNIT,'(8X,A8,I8,A8,F8.0,F8.0,F8.0,I8,2I8,A8,A8)')TSPLTCNTR(J),TSPLTJB(J),TSYEARLY(J),TSTSRT(J),TSTEND(J),TSPLTT(J),NOUTS(J),(JSTSPLTT(J,N),N=1,2),ELCONTSPL(J),DYNSELSPLT(J)
               ENDIF
       NOUTS(J)=2                ! NUMBER OF OUTLETS FOR EACH SPLIT FLOW PERIOD LIMITED TO 2
       !IF(NOUTS(J).GT.2)WRITE(*,*)'TCD NOUTS > 2 - ONLY FIRST 2 WILL BE USED'
       ENDDO
       JSTSPLT=JSTSPLTT                                                                                             ! CB 10/14/11 START
-      DO J=1,NUMTSPLT  !REODERING OUTLETS SO THAT HIGHEST ELEVATION STRUCTURE ON TOP (ASSUMING 2 SPLIT OUTLETS)
+      DO J=1,NUMTSPLT  !REODERING OUTLETS SO THAT HIGHEST ELEVATION STRUCTURE ON TOP (ASSUMING 2 SPLIT OUTLETS) 
 !        IF(TCNTR(J) == '      ST')THEN
         IF(TSPLTCNTR(J) == '      ST')THEN                                                                        ! cb 11/11/12
-          IF(ESTR(JSTSPLTT(J,1),TSPLTJB(J)) < ESTR(JSTSPLTT(J,2),TSPLTJB(J)))THEN
-            JSTSPLT(J,1)=JSTSPLTT(J,2)
-            JSTSPLT(J,2)=JSTSPLTT(J,1)
-          END IF
+          IF(ESTR(JSTSPLTT(J,1),TSPLTJB(J)) < ESTR(JSTSPLTT(J,2),TSPLTJB(J)))THEN                               
+            JSTSPLT(J,1)=JSTSPLTT(J,2)                                                                          
+            JSTSPLT(J,2)=JSTSPLTT(J,1)                                                                          
+          END IF                                                                                                
 !        ELSE IF(TCNTR(J) == '      WD')THEN
         ELSE IF(TSPLTCNTR(J) == '      WD')THEN                                                                        ! cb 11/11/12
-          IF(EWD(JSTSPLTT(J,1)) < EWD(JSTSPLTT(J,2)))THEN
-            JSTSPLT(J,1)=JSTSPLTT(J,2)
-            JSTSPLT(J,2)=JSTSPLTT(J,1)
-          END IF
+          IF(EWD(JSTSPLTT(J,1)) < EWD(JSTSPLTT(J,2)))THEN                                    
+            JSTSPLT(J,1)=JSTSPLTT(J,2)                                                                          
+            JSTSPLT(J,2)=JSTSPLTT(J,1)                                                                          
+          END IF                                                                                                
         END IF
       END DO                                                                                                       ! CB 10/14/11 END
       DO J=1,2
@@ -914,7 +959,7 @@ USE SELECTIVE1;   USE MAIN
       END DO
                IF(CHAR1=='$')THEN
                     READ(NUNIT,*)CHAR8,TEMPN
-              ELSE
+              ELSE 
                     READ(NUNIT,'(8X,I8)')TEMPN
               ENDIF
       DO J=1,2
@@ -923,14 +968,14 @@ USE SELECTIVE1;   USE MAIN
       ALLOCATE(TEMPCRIT(NWB,TEMPN),VOLMC(NWB,TEMPN))
       DO J=1,TEMPN
         IF(CHAR1=='$')THEN
-        READ(NUNIT,*)CHAR8,(TEMPCRIT(JW,J),JW=1,NWB)   ! NOTE MAX OF 100 WATERBODIES   sw 4/20/15
+        READ(NUNIT,*)CHAR8,(TEMPCRIT(JW,J),JW=1,NWB)   ! NOTE MAX OF 100 WATERBODIES   sw 4/20/15  
         ELSE
         READ(NUNIT,'(8X,100F8.0)')(TEMPCRIT(JW,J),JW=1,NWB)   ! NOTE MAX OF 100 WATERBODIES   sw 4/20/15
         ENDIF
       END DO
       CLOSE(NUNIT)
 
-
+      
       DO JW=1,NWB
         IFILE=IFILE+1
         WRITE (SEGNUM,'(I0)') JW
@@ -945,33 +990,36 @@ USE SELECTIVE1;   USE MAIN
                 READ (IFILE,'(F10.0)',END=15) JDAY1
                 END DO
                 BACKSPACE (IFILE)
-                15    JDAY1=0.0
+                15    JDAY1=0.0   
        ELSE
         OPEN  (IFILE,FILE='VOLUME_WB'//SEGNUM(1:L)//'.OPT',STATUS='UNKNOWN')
-        WRITE(IFILE, '(A)') "JDAY    VOLUME    " // REPEAT("VOLCRIT      ", TEMPN)
+        WRITE(IFILE,4315)
        ENDIF
       ENDDO
+      
+4315  FORMAT("JDAY    VOLUME    ",<TEMPN>("VOLCRIT      "))
+
 
 ! INITIALIZING STRUCTURE ELEVATION IF STRUCTURE
-IF(TEMPC=='      ON')THEN
+IF(TEMPC=='      ON')THEN     
   DO JW=1,NWB
    DO JB=BS(JW),BE(JW)
     DO JS=1,NST
-     DO J=1,NUMTEMPC
+     DO J=1,NUMTEMPC        
        IF(TCJB(J) == JB .AND. TCJS(J) == JS .AND. TCNTR(J) == '      ST')THEN
            IF(TCYEARLY(J) == '     OFF')THEN
              DAYTEST=JDAY
            ELSE
              DAYTEST=REAL(JDAYG)+JDAY-INT(JDAY)
            END IF
-           IF(DAYTEST >= TCTSRT(J) .AND. DAYTEST < TCTEND(J))THEN
+           IF(DAYTEST >= TCTSRT(J) .AND. DAYTEST < TCTEND(J))THEN               
                ! MAKING SURE THAT STRUCTURE IS BELOW WATER SURFACE
              DO NN=1,TCNELEV(J)
                IF(TCELEV(J,NN) < ELWS(DS(JB)))THEN
                  NCOUNTC(JS,JB)=NN
                  ESTR(JS,JB)=TCELEV(J,NCOUNTC(JS,JB))
                  EXIT
-               END IF
+               END IF                 
              END DO
 		   END IF
 	   END IF
@@ -979,27 +1027,27 @@ IF(TEMPC=='      ON')THEN
 	END DO
    END DO
   END DO
-
-
+   
+   
    ! INITIALIZING STRUCTURE ELEVATION IF WITHDRAWAL
 
   DO JWD=1,NWD
-
-     DO J=1,NUMTEMPC
+   
+     DO J=1,NUMTEMPC        
        IF(TCJS(J) == JWD .AND. TCNTR(J) == '      WD')THEN
            IF(TCYEARLY(J) == '     OFF')THEN
              DAYTEST=JDAY
            ELSE
              DAYTEST=REAL(JDAYG)+JDAY-INT(JDAY)
            END IF
-           IF(DAYTEST >= TCTSRT(J) .AND. DAYTEST < TCTEND(J))THEN
+           IF(DAYTEST >= TCTSRT(J) .AND. DAYTEST < TCTEND(J))THEN               
                ! MAKING SURE THAT STRUCTURE IS BELOW WATER SURFACE
              DO NN=1,TCNELEV(J)
                IF(TCELEV(J,NN) < ELWS(IWD(JWD)))THEN
                  NCOUNTCW(JWD)=NN
                  EWD(JWD)=TCELEV(J,NCOUNTCW(JWD))
                  EXIT
-               END IF
+               END IF                 
              END DO
 		   END IF
 	   END IF
@@ -1007,86 +1055,104 @@ IF(TEMPC=='      ON')THEN
 
   END DO
 
-
+  
   ! OPEN DYNAMIC SELECTIVE WITHDRAWAL FILES
-
+  
   DO J=1,numtempc
      if(DYNSEL(J) == '      ON')then
-     WRITE (SEGNUM,'(I0)') J
+     WRITE (SEGNUM,'(I0)') J     
      SEGNUM = ADJUSTL(SEGNUM)
-     L      = LEN_TRIM(SEGNUM)
-     SELD(J) = 1009+J
-     OPEN (SELD(J),FILE='dynselective'//SEGNUM(1:L)//'.npt',STATUS='OLD')
-
+     L      = LEN_TRIM(SEGNUM)   
+     SELD(J) = 1009+J  
+     OPEN (SELD(J),FILE='dynselective'//SEGNUM(1:L)//'.npt',STATUS='OLD') 
+     
       READ(SELD(J),'(A1)')INFORMAT    ! SW 8/28/2019
       IF(INFORMAT=='$')DYNSF(J)=.TRUE.
-
+    
         IF(DYNSF(J))THEN
         READ (SELD(J),'(/)')
         READ (SELD(J),*) NXSEL(J),TEMP2(J)
         tctemp(J)=TEMP2(J)
-        READ (SELD(J),*) NXSEL(J),TEMP2(J)
-
+        READ (SELD(J),*) NXSEL(J),TEMP2(J)       
+        
         ELSE
         READ (SELD(J),'(//1000F8.0)') NXSEL(J),TEMP2(J)
         tctemp(J)=TEMP2(J)
         READ (SELD(J),'(1000F8.0)') NXSEL(J),TEMP2(J)
         ENDIF
-
+     
       !READ (SELD(J),'(///1000F8.0)') NXSEL(J),TEMP2(J)
       !  tctemp(J)=TEMP2(J)
       !READ (SELD(J),'(1000F8.0)') NXSEL(J),TEMP2(J)
      END IF
-  ENDDO
+  ENDDO 
 END IF
 
 IF(TSPLTC == '      ON')THEN
     DO J=1,NUMTSPLT
      IF(DYNSELSPLT(J) == '      ON')then
-     WRITE (SEGNUM,'(I0)') J
+     WRITE (SEGNUM,'(I0)') J     
      SEGNUM = ADJUSTL(SEGNUM)
-     L      = LEN_TRIM(SEGNUM)
-     SELD(J) = 1059+J
-     OPEN (SELD(J),FILE='dynselective'//SEGNUM(1:L)//'_splt.npt',STATUS='OLD')
-
+     L      = LEN_TRIM(SEGNUM)   
+     SELD(J) = 1059+J  
+     OPEN (SELD(J),FILE='dynselective'//SEGNUM(1:L)//'_splt.npt',STATUS='OLD') 
+     
       READ(SELD(J),'(A1)')INFORMAT    ! SW 8/28/2019
       IF(INFORMAT=='$')DYNSPF(J)=.TRUE.
-
+    
         IF(DYNSPF(J))THEN
         READ (SELD(J),'(/)')
         READ (SELD(J),*) NXSELSPLT(J),TEMP3(J)
         TSPLTT(J)=TEMP3(J)
-        READ (SELD(J),*) NXSELSPLT(J),TEMP3(J)
-
+        READ (SELD(J),*) NXSELSPLT(J),TEMP3(J)       
+        
         ELSE
         READ (SELD(J),'(//1000F8.0)') NXSELSPLT(J),TEMP3(J)
         TSPLTT(J)=TEMP2(J)
         READ (SELD(J),'(1000F8.0)') NXSELSPLT(J),TEMP3(J)
         ENDIF
-
+     
      END IF
-    ENDDO
+    ENDDO 
     OPEN(2900,FILE='Split_Temp_Debug.csv',status='unknown')
         WRITE(2900,*)'JDAY,TSPLTT,TTOP,TBOT,QALL,QSTR1,QSTR2,ESTR1,ESTR2'
 ENDIF
 
-
+  
  RETURN
 
 END SUBROUTINE SELECTIVEINIT
 
+!***********************************************************************************************************************************
+!**                                                   S E L E C T I V E                                                           **
+!***********************************************************************************************************************************
 SUBROUTINE SELECTIVE
  USE SELECTIVE1
   USE MAIN
-  USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-
+  use GLOBAL
+     use NAMESC
+ use GEOMC
+  use LOGICC
+ use PREC
+  use SURFHE
+  use KINETIC
+ use SHADEC
+ USE EDDY
+  use STRUCTURES
+ use TRANS
+  use TVDC
+   use SELWC
+  use GDAYC
+ use SCREENC
+ use TDGAS
+   USE RSTART
+  
   IMPLICIT NONE
-  !** Timestep violation entry point  210 CONTINUE
+  !** Timestep violation entry point  210 CONTINUE                
   INTEGER JJ, JJW, KK, KS, IFILE, KSTR
   REAL DAYTEST, ELR, QALL, TCOMP, TEMPBOT, TEMPEST, TEMPTOP, TMOD, WSEL
 
-  IF(TSPLTC=='      ON')THEN
+  IF(TSPLTC=='      ON')THEN    
     DO J=1,NUMTSPLT
       IF(TSYEARLY(J) == '     OFF')THEN
         DAYTEST=JDAY
@@ -1106,21 +1172,21 @@ SUBROUTINE SELECTIVE
                     READ (SELD(J),*) NXSELSPLT(J),TEMP3(J)
                 ELSE
                     READ (SELD(J),'(1000F8.0)') NXSELSPLT(J),TEMP3(J)
-                ENDIF
+                ENDIF   
     END DO
    ENDIF
    ENDDO
 END IF
 
- IF(TSPLTC=='      ON'.AND.JDAY.GE.NXTSPLIT)THEN
-
+ IF(TSPLTC=='      ON'.AND.JDAY.GE.NXTSPLIT)THEN  
+ 
   DO J=1,NUMTSPLT
         IF(TSYEARLY(J) == '     OFF')THEN
             DAYTEST=JDAY
           ELSE
         DAYTEST=REAL(JDAYG)+JDAY-INT(JDAY)
         END IF
-   IF(DAYTEST >= TSTSRT(J) .AND. DAYTEST < TSTEND(J))THEN
+   IF(DAYTEST >= TSTSRT(J) .AND. DAYTEST < TSTEND(J))THEN 
     ! DO STRUCTURES FIRST
     DO JW=1,NWB
         DO JB=BS(JW),BE(JW)
@@ -1134,10 +1200,10 @@ END IF
                     END DO
                 KSTR = K-1
                 KSTRSPLT(JJ) = MIN(KSTR,KB(DS(JB)))
-                ENDDO
+                ENDDO               
               DO JJ=1,NOUTS(J)               ! cb 11/11/12 dividing total flow between outlets for temperature test - if no flow there is no temperature test
                   QSTR(JSTSPLT(J,JJ),TSPLTJB(J)) = qall/real(nouts(j))
-              ENDDO
+              ENDDO               
               ID=DS(JB)
               ELR  = SINA(JB)*DLX(ID)*0.5          ! CB 10/14/11
               WSEL = ELWS(ID)-ELR                  ! CB 10/14/11
@@ -1147,7 +1213,7 @@ END IF
              IF(ESTR(JSTSPLT(J,1),TSPLTJB(J)) > WSEL .AND. ELCONTSPL(J) =='     OFF') THEN   ! NO FLOWS THROUG THIS OUTLET IF WSEL BELOW LEVEL OF OUTLET  ! CB 10/14/11
                QSTR(JSTSPLT(J,1),TSPLTJB(J))=0.0
                QSTRFRAC(JSTSPLT(J,1),TSPLTJB(J))=0.0
-
+              
             ELSE IF(TEMPTOP > TSPLTT(J)  .AND.  TEMPBOT > TSPLTT(J) ) THEN   ! NO FLOWS THROUG THIS OUTLET IF T1 AND T2 > TCRITERIA
                QSTR(JSTSPLT(J,1),TSPLTJB(J))=0.0
                QSTRFRAC(JSTSPLT(J,1),TSPLTJB(J))=0.0
@@ -1194,15 +1260,15 @@ END IF
                 KSTR = K-1
                 KSTRSPLT(JJ) = MIN(KSTR,KB(IWD(JWD)))
                ENDDO
-               JJ=1               ! ASSIGN FLOW TO FIRST OUTLET
+               JJ=1               ! ASSIGN FLOW TO FIRST OUTLET               
                WSEL = ELWS(IWD(JWD))-ELR                  ! CB 10/14/11
                I=IWD(JWD)
                kt=ktwb(jjw)      ! cb 07/24/19
                CALL LATERAL_WITHDRAWAL_ESTIMATE(JSTSPLT(J,1),TEMPTOP,EWD(JSTSPLT(J,1)))
-               CALL LATERAL_WITHDRAWAL_ESTIMATE(JSTSPLT(J,2),TEMPBOT,EWD(JSTSPLT(J,2)))
+               CALL LATERAL_WITHDRAWAL_ESTIMATE(JSTSPLT(J,2),TEMPBOT,EWD(JSTSPLT(J,2)))              
               IF(EWD(JSTSPLT(J,1)) > WSEL .AND. TCELEVCON(J) =='     OFF') THEN
                 QWD(JSTSPLT(J,1))=0.0
-                QWDFRAC(JSTSPLT(J,1))=0.0
+                QWDFRAC(JSTSPLT(J,1))=0.0             
              ELSE IF(TEMPTOP > TSPLTT(J)  .AND.  TEMPBOT > TSPLTT(J) ) THEN   ! NO FLOWS THROUG THIS OUTLET IF T1 AND T2 > TCRITERIA
                QWD(JSTSPLT(J,1))=0.0
                QWDFRAC(JSTSPLT(J,1))=0.0
@@ -1229,7 +1295,7 @@ END IF
        END DO
      ENDIF
      ENDDO
-
+  
    NXTSPLIT=NXTSPLIT+TCDFREQ
   END IF
   IF(TSPLTC=='      ON')THEN
@@ -1240,7 +1306,7 @@ END IF
           ELSE
         DAYTEST=REAL(JDAYG)+JDAY-INT(JDAY)
         END IF
-    IF(DAYTEST >= TSTSRT(J) .AND. DAYTEST < TSTEND(J))THEN
+    IF(DAYTEST >= TSTSRT(J) .AND. DAYTEST < TSTEND(J))THEN 
     ! DO STRUCTURES FIRST
       DO JW=1,NWB
         DO JB=BS(JW),BE(JW)
@@ -1254,7 +1320,7 @@ END IF
                     END DO
                 KSTR = K-1
                 KSTRSPLT(JJ) = MIN(KSTR,KB(DS(JB)))
-                ENDDO
+                ENDDO               
               QSTR(JSTSPLT(J,1),TSPLTJB(J))=QSTRFRAC(JSTSPLT(J,1),TSPLTJB(J))*QALL
               QSTR(JSTSPLT(J,2),TSPLTJB(J))=QSTRFRAC(JSTSPLT(J,2),TSPLTJB(J))*QALL
              EXIT
@@ -1279,7 +1345,7 @@ END IF
                     END DO
                 KSTR = K-1
                 KSTRSPLT(JJ) = MIN(KSTR,KB(IWD(JWD)))
-               ENDDO
+               ENDDO               
                QWD(JSTSPLT(J,1))=  QWDFRAC(JSTSPLT(J,1))*QALL
                QWD(JSTSPLT(J,2))=  QWDFRAC(JSTSPLT(J,2))*QALL
              EXIT
@@ -1287,57 +1353,57 @@ END IF
       END DO
       ENDIF
     ENDDO
-
-  ENDIF
-
+   
+  ENDIF   
+ 
 
       IF (JDAY.GE.NXTSTR) THEN
-        NXTSTR = NXTSTR+TFRQTMP
+        NXTSTR = NXTSTR+TFRQTMP   
         IFILE=1949
         DO JB=1,NBR
             IF(NSTR(JB) > 0)THEN
             IFILE=IFILE+1
-            WRITE (IFILE,'(F10.4,",",*(F10.2,","))') JDAY,(TAVG(I,JB),I=1,NSTR(JB)),(QSTR(I,JB),I=1,NSTR(JB)),(ESTR(I,JB),I=1,NSTR(JB))
+            WRITE (IFILE,'(F10.4,",",<NSTR(JB)>(F10.2,","),<NSTR(JB)>(F10.2,","),<NSTR(JB)>(F10.2,","))') JDAY,(TAVG(I,JB),I=1,NSTR(JB)),(QSTR(I,JB),I=1,NSTR(JB)),(ESTR(I,JB),I=1,NSTR(JB))
             END IF
-         ENDDO
+         ENDDO          
           IF(NWD > 0)THEN
             IFILE=IFILE+1
-            WRITE (IFILE,'(F10.4,*(F10.2))') JDAY,(TAVGW(I),I=1,NWD),(QWD(I),I=1,NWD),(EWD(I),I=1,NWD)
+            WRITE (IFILE,'(F10.4,<NWD>F10.2,<NWD>F10.2,<NWD>F10.2)') JDAY,(TAVGW(I),I=1,NWD),(QWD(I),I=1,NWD),(EWD(I),I=1,NWD)
           END IF
-         ! TEMPERATURE CONTROL LOGIC
+         ! TEMPERATURE CONTROL LOGIC 
 
-         ! COMPUTING RESERVOIR VOLUME AND VOLUME BELOW 'TEMPCRIT'
+         ! COMPUTING RESERVOIR VOLUME AND VOLUME BELOW 'TEMPCRIT'        
         VOLMC=0.0
         VOLM=0.0
         DO JW=1,NWB
          KT = KTWB(JW)
-           DO JB=BS(JW),BE(JW)
+           DO JB=BS(JW),BE(JW)           
              DO I=CUS(JB),DS(JB)
-               VOLM(JW) = VOLM(JW) +BH2(KT,I)*DLX(I)
+               VOLM(JW) = VOLM(JW) +BH2(KT,I)*DLX(I)               
                DO K=KT+1,KB(I)
-                 VOLM(JW) = VOLM(JW)+BH(K,I)*DLX(I)
+                 VOLM(JW) = VOLM(JW)+BH(K,I)*DLX(I)               
                END DO
-               DO KK=1,TEMPN
-                 IF(T2(KT,I).LE.TEMPCRIT(JW,KK))VOLMC(JW,KK) = VOLMC(JW,KK)+BH2(KT,I)*DLX(I)
-                 DO K=KT+1,KB(I)
+               DO KK=1,TEMPN                                         
+                 IF(T2(KT,I).LE.TEMPCRIT(JW,KK))VOLMC(JW,KK) = VOLMC(JW,KK)+BH2(KT,I)*DLX(I)                                                 
+                 DO K=KT+1,KB(I)                 
                    IF(T2(K,I).LE.TEMPCRIT(JW,KK))VOLMC(JW,KK) = VOLMC(JW,KK)+BH(K,I)*DLX(I)
                  END DO
-               END DO
-             END DO
+               END DO               
+             END DO         
            END DO
-
+     
          IFILE=IFILE+1
          WRITE(IFILE,5315)JDAY,VOLM(JW),(VOLMC(JW,KK), KK=1,TEMPN)
 5315     FORMAT(F8.2,100(G12.4,G12.4))
        ENDDO
-
+         
       ENDIF
 
 
 
-IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
+IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN  
 
-! IF DYNAMIC SELECTIVE CHANGE TEMPERATURE
+! IF DYNAMIC SELECTIVE CHANGE TEMPERATURE 
 
  DO J=1,NUMTEMPC
   IF(DYNSEL(J) == '      ON')THEN
@@ -1348,25 +1414,25 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
                     READ (SELD(J),*) NXSEL(J),TEMP2(J)
                 ELSE
                     READ (SELD(J),'(1000F8.0)') NXSEL(J),TEMP2(J)
-                ENDIF
+                ENDIF   
     END DO
    ENDIF
   ENDDO
 
-
-! STRUCTURES
-
+  
+! STRUCTURES  
+  
   DO JW=1,NWB
    DO JB=BS(JW),BE(JW)
     DO JS=1,NST
-     DO J=1,NUMTEMPC
+     DO J=1,NUMTEMPC      
 
-
+          
       IF(TCJB(J) == JB .AND. TCJS(J) == JS .AND.  TCNTR(J) == '      ST')THEN
           IF(TCISEG(J).EQ.0)THEN
             TCOMP=TAVG(TCJS(J),TCJB(J))   !CB 9/8/06   TAVG(JSMON(J),JBMON(J))
           ELSEIF(TCISEG(J) < 0)THEN
-            TCOMP=TWDO(ABS(TCISEG(J)))      ! SW 11/26/10
+            TCOMP=TWDO(ABS(TCISEG(J)))      ! SW 11/26/10       
           ELSE
 
 ! CHECKING TO SEE IF THE MONITORING SEGMENT TCISEG IS IN THE SAME BRANCH AND WATER BODY AS THE STRUCTURE
@@ -1377,13 +1443,13 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
               IF (JJB >= BS(JJW) .AND. JJB <= BE(JJW)) EXIT
             END DO
 
-            IF (TCKLAY(J)< 0) THEN
+            IF (TCKLAY(J)< 0) THEN                                                                                       
               K = INT(ABS(TCKLAY(J)))
             ELSE
               DO K=KTWB(JJW),KB(TCISEG(J))
-                IF (DEPTHB(K,TCISEG(J)) > TCKLAY(J)) EXIT
+                IF (DEPTHB(K,TCISEG(J)) > TCKLAY(J)) EXIT                                                                      
               END DO
-              K = MIN(K,KB(TCISEG(J)))
+              K = MIN(K,KB(TCISEG(J)))                                                                                         
             END IF
             TCOMP=T2(K,TCISEG(J))
           ENDIF
@@ -1391,21 +1457,21 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
             DAYTEST=JDAY
           ELSE
             DAYTEST=REAL(JDAYG)+JDAY-INT(JDAY)
-          END IF
+          END IF          
           IF(DAYTEST >= TCTSRT(J) .AND. DAYTEST < TCTEND(J))THEN
                ACTIVE_RULE_W2SELECTIVE(JS,JB)=.TRUE.
                IF(TCOMP > TCTEMP(J) .AND. TCNELEV(J) > NCOUNTC(JS,JB))THEN
                ! MAKING SURE THAT THE NEXT LOWER STRUCTURE FOR A PARTICULAR 'J' IS FOUND
-                 DO NN=NCOUNTC(JS,JB)+1,TCNELEV(J)
+                 DO NN=NCOUNTC(JS,JB)+1,TCNELEV(J)                 
                    IF(TCELEV(J,NN) < ESTR(JS,JB))THEN
                       NCOUNTC(JS,JB)=NN
                       ESTR(JS,JB)=TCELEV(J,NCOUNTC(JS,JB))
                       EXIT
-                   END IF
-                 END DO
+                   END IF                 
+                 END DO                                               
                ELSEIF(TCOMP < TCTEMP(J) .AND.  NCOUNTC(JS,JB).GT. 1)THEN
                  ! TO PREVENT THIS HAPPENING AT EACH TIME IT CHECKS IT AND HENCE OSCIALLTING BACK AND FORTH - CHECK THE TEMP AT THE UPPER OUTLET ALSO
-                 IF(TCISEG(J) > 0)THEN
+                 IF(TCISEG(J) > 0)THEN  
                     IF(JB.EQ.JJB)THEN
                       DO KS=KTWB(JW),KB(DS(JB))
                         IF (DEPTHB(KS,TCISEG(J)) > TCELEV(J,NCOUNTC(JS,JB)-1)) EXIT                                                                          !TC 01/03/02
@@ -1413,16 +1479,16 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
                       KS = MIN(KS,KB(TCISEG(J)))
                       TMOD= T2(KS,DS(JB))
                     ELSE
-                      TMOD=T2(K,TCISEG(J))
+                      TMOD=T2(K,TCISEG(J))                      
                     END IF
-                    IF(TMOD < TCTEMP(J) .AND. TCELEV(J,NCOUNTC(JS,JB)-1) < ELWS(DS(JB)))THEN
+                    IF(TMOD < TCTEMP(J) .AND. TCELEV(J,NCOUNTC(JS,JB)-1) < ELWS(DS(JB)))THEN                      
                       ! MAKING SURE THAT THE NEXT UPPER STRUCTURE FOR A PARTICULAR 'J' IS FOUND
                       DO NN=NCOUNTC(JS,JB)-1,1,-1
                         IF(TCELEV(J,NN) > ESTR(JS,JB))THEN
                           NCOUNTC(JS,JB)=NN
                           ESTR(JS,JB)=TCELEV(J,NCOUNTC(JS,JB))
                           EXIT
-                        END IF
+                        END IF                 
                       END DO
                     ENDIF
                  END IF  ! CB 9/8/06
@@ -1430,7 +1496,7 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
 ! CALCULATE THE ESTIMATED OUTFLOW TEMPERATURE AT HIGHER PORTS WHEN TCOMP<TCTEMP(J), AND MOVE UP IF HIGHER PORT STILL MEETS TO CRITERIA - THIS DOESN'T HAPPEN WHEN TCISEG < 0
                    DO NN=1,NCOUNTC(JS,JB)-1
                      ID=DS(JB)
-                     KT=KTWB(JW)
+                     KT=KTWB(JW)                     
                      CALL DOWNSTREAM_WITHDRAWAL_ESTIMATE(JS,TEMPEST,TCELEV(J,NN))
                      IF(TEMPEST < TCTEMP(J) .AND. TCELEV(J,NN) < ELWS(DS(JB)))THEN
                        NCOUNTC(JS,JB)=NN
@@ -1440,21 +1506,21 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
                    END DO
                  END IF
                ENDIF
-               IF(TCELEVCON(J) =='      ON' .AND. TCNELEV(J) > NCOUNTC(JS,JB).AND. ESTR(JS,JB) > (ELWS(DS(JB))-MINWL(J)))THEN
+               IF(TCELEVCON(J) =='      ON' .AND. TCNELEV(J) > NCOUNTC(JS,JB).AND. ESTR(JS,JB) > (ELWS(DS(JB))-MINWL(J)))THEN  
                  NCOUNTC(JS,JB)=NCOUNTC(JS,JB)+1
                  ESTR(JS,JB)=TCELEV(J,NCOUNTC(JS,JB))
                END IF
           ELSE
               ACTIVE_RULE_W2SELECTIVE(JS,JB)=.FALSE.
-          ENDIF
-      ENDIF
+          ENDIF          
+      ENDIF            
      END DO
     END DO
    END DO
   ENDDO
-
- ! Withdrawals
-
+  
+ ! Withdrawals 
+  
 
   DO JWD=1,NWD
      DO J=1,NUMTEMPC
@@ -1462,7 +1528,7 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
           IF(TCISEG(J).EQ.0)THEN
 !           TCOMP=TOUT(JB)
             TCOMP=TAVGW(TCJS(J))   !CB 9/8/06   TAVGW(JSMON(J))
-          ELSEIF(TCISEG(J) < 0)THEN
+          ELSEIF(TCISEG(J) < 0)THEN  
             TCOMP=TWDO(ABS(TCISEG(J)))
           ELSE
 
@@ -1474,13 +1540,13 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
               IF (JJB >= BS(JJW) .AND. JJB <= BE(JJW)) EXIT
             END DO
 
-            IF (TCKLAY(J)< 0) THEN
+            IF (TCKLAY(J)< 0) THEN                                                                                       
               K = INT(ABS(TCKLAY(J)))
             ELSE
               DO K=KTWB(JJW),KB(TCISEG(J))
-                IF (DEPTHB(K,TCISEG(J)) > TCKLAY(J)) EXIT
+                IF (DEPTHB(K,TCISEG(J)) > TCKLAY(J)) EXIT                                                                      
               END DO
-              K = MIN(K,KB(TCISEG(J)))
+              K = MIN(K,KB(TCISEG(J)))                                                                                         
             END IF
             TCOMP=T2(K,TCISEG(J))
           ENDIF
@@ -1492,32 +1558,32 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
           IF(DAYTEST >= TCTSRT(J) .AND. DAYTEST < TCTEND(J))THEN
                IF(TCOMP > TCTEMP(J) .AND. TCNELEV(J) > NCOUNTCW(JWD))THEN
                ! MAKING SURE THAT THE NEXT LOWER STRUCTURE FOR A PARTICULAR 'J' IS FOUND
-                 DO NN=NCOUNTCW(JWD)+1,TCNELEV(J)
+                 DO NN=NCOUNTCW(JWD)+1,TCNELEV(J)                 
                    IF(TCELEV(J,NN) < EWD(JWD))THEN
                       NCOUNTCW(JWD)=NN
                       EWD(JWD)=TCELEV(J,NCOUNTCW(JWD))
                       EXIT
-                   END IF
-                 END DO
+                   END IF                 
+                 END DO                                               
                ELSEIF(TCOMP < TCTEMP(J) .AND.  NCOUNTCW(JWD).GT. 1)THEN
                  ! TO PREVENT THIS HAPPENING AT EACH TIME IT CHECKS IT AND HENCE OSCIALLTING BACK AND FORTH - CHECK THE TEMP AT THE UPPER OUTLET ALSO
-                 IF(TCISEG(J) >  0)THEN
-                      TMOD=T2(K,TCISEG(J))
-                    IF(TMOD < TCTEMP(J) .AND. TCELEV(J,NCOUNTCW(JWD)-1) < ELWS(IWD(JWD)))THEN
+                 IF(TCISEG(J) >  0)THEN  
+                      TMOD=T2(K,TCISEG(J))                      
+                    IF(TMOD < TCTEMP(J) .AND. TCELEV(J,NCOUNTCW(JWD)-1) < ELWS(IWD(JWD)))THEN                      
                       ! MAKING SURE THAT THE NEXT UPPER STRUCTURE FOR A PARTICULAR 'J' IS FOUND
                       DO NN=NCOUNTCW(JWD)-1,1,-1
                         IF(TCELEV(J,NN) > EWD(JWD))THEN
                           NCOUNTCW(JWD)=NN
                           EWD(JWD)=TCELEV(J,NCOUNTCW(JWD))
                           EXIT
-                        END IF
+                        END IF                 
                       END DO
                     ENDIF
                  END IF  ! CB 9/8/06
                  IF(TCISEG(J) == 0)THEN
 ! CALCULATE THE ESTIMATED OUTFLOW TEMPERATURE AT HIGHER PORTS WHEN TCOMP<TCTEMP(J), AND MOVE UP IF HIGHER PORT STILL MEETS TO CRITERIA
                    I         = MAX(CUS(JBWD(JWD)),IWD(JWD))
-                   DO NN=1,NCOUNTCW(JWD)-1
+                   DO NN=1,NCOUNTCW(JWD)-1                     
                      CALL LATERAL_WITHDRAWAL_ESTIMATE(JWD,TEMPEST,TCELEV(J,NN))
                      IF(TEMPEST < TCTEMP(J) .AND. TCELEV(J,NN) < ELWS(IWD(JWD)))THEN
                        NCOUNTCW(JWD)=NN
@@ -1527,30 +1593,30 @@ IF(TEMPC=='      ON'.AND.JDAY.GE.NXTTCD)THEN
                    END DO
                  END IF
                ENDIF
-               IF(TCELEVCON(J) =='      ON' .AND. TCNELEV(J) > NCOUNTCW(JWD).AND. EWD(JWD) > ELWS(IWD(JWD)))THEN
+               IF(TCELEVCON(J) =='      ON' .AND. TCNELEV(J) > NCOUNTCW(JWD).AND. EWD(JWD) > ELWS(IWD(JWD)))THEN  
                  NCOUNTCW(JWD)=NCOUNTCW(JWD)+1
                  EWD(JWD)=TCELEV(J,NCOUNTCW(JWD))
                END IF
-          ENDIF
-      ENDIF
+          ENDIF          
+      ENDIF            
      END DO
   ENDDO
-
-  NXTTCD = NXTTCD+TCDFREQ
-ENDIF
-
+  
+  NXTTCD = NXTTCD+TCDFREQ    
+ENDIF  
+  
 RETURN
 ENTRY DEALLOCATE_SELECTIVE
 CLOSE(2900)
-  DEALLOCATE (TCNELEV,TCJB,TCJS, TCELEV,TCTEMP,TCTEND,TCTSRT,NCOUNTC,TCISEG,TCKLAY,TCELEVCON,ELCONTSPL)
-  DEALLOCATE (TSPLTJB,TSPLTT,NOUTS,JSTSPLT,KSTRSPLT,TCYEARLY, JBMON,JSMON,TCNTR,TSPLTCNTR,JSTSPLTT)
-  DEALLOCATE (VOLM,MONCTR,NCOUNTCW,QWDFRAC,QSTRFRAC,MINWL)
+  DEALLOCATE (TCNELEV,TCJB,TCJS, TCELEV,TCTEMP,TCTEND,TCTSRT,NCOUNTC,TCISEG,TCKLAY,TCELEVCON,ELCONTSPL) 
+  DEALLOCATE (TSPLTJB,TSPLTT,NOUTS,JSTSPLT,KSTRSPLT,TCYEARLY, JBMON,JSMON,TCNTR,TSPLTCNTR,JSTSPLTT) 
+  DEALLOCATE (VOLM,NCOUNTCW,QWDFRAC,QSTRFRAC,MINWL)    
   DEALLOCATE(TEMPCRIT,VOLMC,DYNSEL,SELD,NXSEL,TEMP2,TSYEARLY,TSTEND,TSTSRT,DYNSF,DYNSPF,DYNSELSPLT,TEMP3,NXSELSPLT)
-RETURN
+RETURN   
 
 END SUBROUTINE SELECTIVE
 !***********************************************************************************************************************************
-!**                                                S E L E C T I V E   I N I T                                                    **
+!**                                            S E L E C T I V E   I N I T   U S G S                                              **
 !***********************************************************************************************************************************
 
 Module Selective1USGS
@@ -1571,22 +1637,43 @@ Module Selective1USGS
   LOGICAL,       ALLOCATABLE, DIMENSION(:)     :: wd_active, share_flow
   LOGICAL,       ALLOCATABLE, DIMENSION(:,:)   :: no_flow, str_active
   LOGICAL, ALLOCATABLE, DIMENSION(:)           :: DYNSF
+  CHARACTER(30)                                :: CHAR30
+  REAL, ALLOCATABLE, DIMENSION(:)              :: MINWL   ! Minimum water level above centerline of outlet if TCELEVCON is ON
 
 End Module Selective1USGS
 
 
 Subroutine SelectiveInitUSGS
 
-  Use Selective1USGS; USE MAIN
-  USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
+  use Selective1USGS
+ USE MAIN
+  use GLOBAL
+     use NAMESC
+ use GEOMC
+  use LOGICC
+ use PREC
+  use SURFHE
+  use KINETIC
+ use SHADEC
+ USE EDDY
+  use STRUCTURES
+ use TRANS
+  use TVDC
+   use SELWC
+  use GDAYC
+ use SCREENC
+ use TDGAS
+   USE RSTART
   IMPLICIT NONE
-
+  
   integer      :: ifile, nj, N, JJ
   REAL         :: DAYTEST
-  character(8) :: tsshare
-  CHARACTER(1) INFORMAT
-
+  character(8) :: tsshare, AID1
+  CHARACTER(1) :: INFORMAT        
+  LOGICAL      :: CSVFORMAT
+  INTEGER      :: NoOutlets   !ZZ 4/2023 maximum no of blending outlets
+  
+  NoOutlets=20
   ifile=1949
   tavg=0.0
   tavgw=0.0
@@ -1610,13 +1697,7 @@ Subroutine SelectiveInitUSGS
       ELSE
         open  (ifile,file='str_br'//segnum(1:l)//'.csv',status='unknown')
         write (ifile,*)'Branch:,',jb,', # of structures:,',nstr(jb),', outlet temperatures'
-        ! write (ifile,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
-
-        ! Note this one is comma separated, but the one below is not...
-        write(ifile, '(A)') '      JDAY,' // &
-            repeat('      T(C),', nstr(jb)) // &
-            repeat('   Q(m3/s),', nstr(jb)) // &
-            repeat('    ELEVCL,', nstr(jb))
+        write (ifile,'("      JDAY,",<nstr(jb)>(6x,"T(C),"),<nstr(jb)>(3x,"Q(m3/s),"),<nstr(jb)>(4x,"ELEVCL,"))')
       ENDIF
     endif
   end do
@@ -1636,101 +1717,249 @@ Subroutine SelectiveInitUSGS
     ELSE
       open  (ifile,file='wd_out.opt',status='unknown')
       write (ifile,*)'Withdrawals: # of withdrawals:',nwd,' outlet temperatures'
-
-      ! Not comma separated...
-      write(ifile, '(A)') '      JDAY' // &
-            repeat('      T(C)', nstr(jb)) // &
-            repeat('   Q(m3/s)', nstr(jb)) // &
-            repeat('    ELEVCL', nstr(jb))
+      write (ifile,'("      JDAY",<nwd>(6x,"T(C)"),<nwd>(3x,"Q(m3/s)"),<nwd>(4x,"ELEVCL"))')
     ENDIF
   end if
 
-  open (NUNIT,file='w2_selective.npt',status='old')
-  read (NUNIT,'(///8x,f8.0)') tfrqtmp
+  !ZZ 4/2023, add a CSV format input 
+  open (NUNIT,file='w2_selective.npt',status='old')   
+  READ (NUNIT,'(A)') AID1 
+  IF (INDEX(AID1, "$") == 0) THEN
+    CSVFORMAT=.FALSE.
+        ! Check for commas -- another sign that it is comma-delimited
+    READ (NUNIT,'(A)') CHAR30
+    DO J=1,30
+      IF (CHAR30(J:J)==',') THEN
+        CSVFORMAT=.TRUE.
+        EXIT
+      END IF
+    END DO
+    BACKSPACE(NUNIT)     
+  ELSE
+    CSVFORMAT=.TRUE.
+  END IF
+  IF (CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+    READ (NUNIT,*) AID1, tfrqtmp
+    READ (NUNIT,*)
+    READ (NUNIT,*)    
+    READ (NUNIT,*) AID1, tempc, numtempc, tcdfreq
+    tempc=ADJUSTR(tempc)
+  ELSE  
+    read (NUNIT,'(//8x,f8.0)') tfrqtmp
   read (NUNIT,'(//8x,a8,i8,f8.0)') tempc, numtempc, tcdfreq
-  nxtstr   = tmstrt
-  nxttcd   = tmstrt
-  nxtsplit = tmstrt
+  END IF
+  !nxtstr   = tmstrt
+  !nxttcd   = tmstrt
+  !nxtsplit = tmstrt
+        IF(JDAY>TMSTRT)THEN   ! SW 8/10/2023  During restart this allows continuing output
+          NXTSTR=JDAY          
+          NXTTCD=JDAY   
+          NXTSPLIT=JDAY
+      ELSE
+          NXTSTR=TMSTRT
+          NXTTCD=TMSTRT   
+          NXTSPLIT=TMSTRT
+      ENDIF
 
-  allocate (tcnelev(numtempc),tcjb(numtempc),tcjs(numtempc),tcelev(numtempc,11),tctemp(numtempc),tctend(numtempc),tctsrt(numtempc))
+  allocate (tcnelev(numtempc),tcjb(numtempc),tcjs(numtempc),tcelev(numtempc,100),tctemp(numtempc),tctend(numtempc),tctsrt(numtempc))
   allocate (ncountc(nst,nbr),tciseg(numtempc),tcklay(numtempc),tcelevcon(numtempc))
   Allocate (tcyearly(numtempc), tcntr(numtempc))
   allocate (volm(nwb),ncountcw(nwd),qwdfrac(nwd),qstrfrac(nst,nbr),DYNSEL(numtempc),SELD(numtempc),NXSEL(numtempc),TEMP2(numtempc))
-  ALLOCATE(DYNSF(NUMTEMPC))
-  DYNSF=.FALSE.
-
+  ALLOCATE(DYNSF(NUMTEMPC),MINWL(NUMTEMPC))
+  DYNSF=.FALSE.;MINWL=0.0
+  
   ncountc=0
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtempc
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, tcntr(j),tcjb(j),tcjs(j),tcyearly(j),tctsrt(j),tctend(j),tctemp(j),tcnelev(j),(tcelev(j,n),n=1,tcnelev(j))
+      tcntr(j)=ADJUSTR(tcntr(j))
+    ELSE
     read(NUNIT,'(8x,a8,i8,i8,a8,f8.0,f8.0,f8.0,i8,10(f8.0))')tcntr(j),tcjb(j),tcjs(j),tcyearly(j),tctsrt(j),tctend(j),tctemp(j),tcnelev(j),(tcelev(j,n),n=1,tcnelev(j))
+    END IF
     if(tcntr(j)=='      ST')then
       tcelev(j,tcnelev(j)+1)=ESTR(tcjs(j),tcjb(j))   ! always put the original elevation as the last elevation
     else
       tcelev(j,tcnelev(j)+1)=EWD(tcjs(j))   ! always put the original elevation as the last elevation
     endif
   end do
+
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtempc
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, tciseg(j), tcklay(j), DYNSEL(J)
+      DYNSEL(J)=ADJUSTR(DYNSEL(J))
+    ELSE
     read (NUNIT,'(8x,i8,f8.0,A8)') tciseg(j), tcklay(j), DYNSEL(J)
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtempc
-    read (NUNIT,'(8x,a8)') tcelevcon(j)
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, tcelevcon(j),MINWL(j)
+      tcelevcon(j)=ADJUSTR(tcelevcon(j))
+    ELSE
+    read (NUNIT,'(8x,a8,F8.0)') tcelevcon(j),MINWL(j)
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+    READ (NUNIT,*) AID1, tspltc, numtsplt, tspltfreq, tsconv
+    tspltc=ADJUSTR(tspltc)
+  ELSE  
   read (NUNIT,'(//8x,a8,i8,2f8.0)') tspltc, numtsplt, tspltfreq, tsconv
-
+  END IF
+  
   allocate (tsyearly(numtsplt), tstsrt(numtsplt), tstend(numtsplt), tspltjb(numtsplt), tspltt(numtsplt), nouts(numtsplt))
-  allocate (jstsplt(numtsplt,10), kstrsplt(10), tspltcntr(numtsplt), elcontspl(numtsplt))
-  allocate (tsdepth(numtsplt,10), tstype(numtsplt,10), tsminfrac(numtsplt,10), tsprior(numtsplt,10))
-  allocate (tsminhead(numtsplt,10), tsmaxhead(numtsplt,10), tsmaxflow(numtsplt,10), no_flow(numtsplt,10), share_flow(numtsplt))
-  allocate (tsdynsel(numtsplt), tsseld(numtsplt), nxtssel(numtsplt), tstemp2(numtsplt))
-  allocate (nout0(10), nout1(10), nout2(10), minfrac1(10), maxfrac1(10), minfrac2(10), maxfrac2(10), splt2t(10), splt2e(10))
+  !allocate (jstsplt(numtsplt,10), kstrsplt(10), tspltcntr(numtsplt), elcontspl(numtsplt))
+  !allocate (tsdepth(numtsplt,10), tstype(numtsplt,10), tsminfrac(numtsplt,10), tsprior(numtsplt,10))
+  !allocate (tsminhead(numtsplt,10), tsmaxhead(numtsplt,10), tsmaxflow(numtsplt,10), no_flow(numtsplt,10), share_flow(numtsplt))
+  !allocate (tsdynsel(numtsplt), tsseld(numtsplt), nxtssel(numtsplt), tstemp2(numtsplt))
+  !allocate (nout0(10), nout1(10), nout2(10), minfrac1(10), maxfrac1(10), minfrac2(10), maxfrac2(10), splt2t(10), splt2e(10))
   allocate (ewdsav(nwd), wd_active(nwd), estrsav(nst,nbr), str_active(nst,nbr))
+  !
+  allocate (jstsplt(numtsplt,NoOutlets), kstrsplt(NoOutlets), tspltcntr(numtsplt), elcontspl(numtsplt))
+  allocate (tsdepth(numtsplt,NoOutlets), tstype(numtsplt,NoOutlets), tsminfrac(numtsplt,NoOutlets), tsprior(numtsplt,NoOutlets))
+  allocate (tsminhead(numtsplt,NoOutlets), tsmaxhead(numtsplt,NoOutlets), tsmaxflow(numtsplt,NoOutlets), no_flow(numtsplt,NoOutlets), share_flow(numtsplt))
+  allocate (tsdynsel(numtsplt), tsseld(numtsplt), nxtssel(numtsplt), tstemp2(numtsplt))
+  allocate (nout0(NoOutlets), nout1(NoOutlets), nout2(NoOutlets), minfrac1(NoOutlets), maxfrac1(NoOutlets), minfrac2(NoOutlets), maxfrac2(NoOutlets), splt2t(NoOutlets), splt2e(NoOutlets))  
 
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, tspltcntr(j), tspltjb(j), tsyearly(j), tstsrt(j), tstend(j), tspltt(j), tsdynsel(j), elcontspl(j), nouts(j), tsshare
+      tspltcntr(j)=ADJUSTR(tspltcntr(j)); tsyearly(j)=ADJUSTR(tsyearly(j)); tsdynsel(j)=ADJUSTR(tsdynsel(j)); elcontspl(j)=ADJUSTR(elcontspl(j)); tsshare=ADJUSTR(tsshare)
+    ELSE
     read (NUNIT,'(8x,a8,i8,a8,3f8.0,2a8,i8,a8)') tspltcntr(j), tspltjb(j), tsyearly(j), tstsrt(j), tstend(j),                       &
                                                 tspltt(j), tsdynsel(j), elcontspl(j), nouts(j), tsshare
+    END IF
     if (tspltc == '      ON') then
       if (nouts(j) < 2) then
         write (w2err, '(A,I0)') 'ERROR-- Less than two outlets specified for blending group ',j
         ERROR_OPEN = .TRUE.     ! will trigger the program to end when this subroutine is completed
         return
-      else if (nouts(j) > 10) then
-        write (w2err, '(A,I0)') 'ERROR-- More than ten outlets specified for blending group ',j
+      else if (nouts(j) > 20) then
+        write (w2err, '(A,I0)') 'ERROR-- More than 20 outlets specified for blending group ',j
         ERROR_OPEN = .TRUE.
         return
       end if
     end if
     share_flow(j) = tsshare == '      ON'
   end do
+
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
-    read (NUNIT,'(8x,10i8)') (jstsplt(j,n),n=1,nouts(j))
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (jstsplt(j,n),n=1,nouts(j))
+    ELSE
+      read (NUNIT,'(8x,20i8)') (jstsplt(j,n),n=1,nouts(j))
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
-    read (NUNIT,'(8x,10f8.0)') (tsdepth(j,n),n=1,nouts(j))
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (tsdepth(j,n),n=1,nouts(j))
+    ELSE
+      read (NUNIT,'(8x,20f8.0)') (tsdepth(j,n),n=1,nouts(j))
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
-    read (NUNIT,'(8x,10f8.0)') (tsminfrac(j,n),n=1,nouts(j))
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (tsminfrac(j,n),n=1,nouts(j))
+    ELSE
+      read (NUNIT,'(8x,20f8.0)') (tsminfrac(j,n),n=1,nouts(j))
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
-    read (NUNIT,'(8x,10i8)') (tsprior(j,n),n=1,nouts(j))
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (tsprior(j,n),n=1,nouts(j))
+    ELSE
+      read (NUNIT,'(8x,20i8)') (tsprior(j,n),n=1,nouts(j))
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
-    read (NUNIT,'(8x,10f8.0)') (tsminhead(j,n),n=1,nouts(j))
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (tsminhead(j,n),n=1,nouts(j))
+    ELSE
+      read (NUNIT,'(8x,20f8.0)') (tsminhead(j,n),n=1,nouts(j))
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
-    read (NUNIT,'(8x,10f8.0)') (tsmaxhead(j,n),n=1,nouts(j))
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (tsmaxhead(j,n),n=1,nouts(j))
+    ELSE
+      read (NUNIT,'(8x,20f8.0)') (tsmaxhead(j,n),n=1,nouts(j))
+    END IF
   end do
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,numtsplt
-    read (NUNIT,'(8x,10f8.0)') (tsmaxflow(j,n),n=1,nouts(j))
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (tsmaxflow(j,n),n=1,nouts(j))
+    ELSE
+      read (NUNIT,'(8x,20f8.0)') (tsmaxflow(j,n),n=1,nouts(j))
+    END IF
   end do
 
   estrsav = estr    ! Save the original structure elevations
@@ -1748,11 +1977,26 @@ Subroutine SelectiveInitUSGS
   if (tsconv <= 0.0) tsconv = 0.005   ! constrain the convergence criterion to be > 0.0 and <= 0.1
   if (tsconv >  0.1) tsconv = 0.1
 
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+    READ (NUNIT,*) AID1, tempn
+  ELSE
   read (NUNIT,'(//8x,i8)') tempn
+  END IF
   allocate (tempcrit(nwb,tempn),volmc(nwb,tempn))
+  IF(CSVFORMAT) THEN
+    READ (NUNIT,*)
+    READ (NUNIT,*)
+  ELSE
   read (NUNIT,'(/)')
+  END IF
   do j=1,tempn
+    IF(CSVFORMAT) THEN
+      READ (NUNIT,*) AID1, (tempcrit(jw,j), jw=1,nwb) 
+    ELSE
     read (NUNIT,'(8x,10f8.0)') (tempcrit(jw,j), jw=1,nwb)   ! Note max of 10 waterbodies
+    END IF
   end do
   close (NUNIT)
 
@@ -1773,9 +2017,11 @@ Subroutine SelectiveInitUSGS
 15    JDAY1=0.0
     ELSE
       open (ifile,file='Volume_wb'//segnum(1:l)//'.opt',status='unknown')
-      write(ifile,'(A)') "jday    Volume    " // repeat("Volcrit      ", tempn)
+      write(ifile,4315)
     END IF
   end do
+
+4315  format("jday    Volume    ",<tempn>("Volcrit      "))
 
   if (tempc == '      ON') then
     do j=1,numtempc
@@ -1818,22 +2064,22 @@ Subroutine SelectiveInitUSGS
         L       = LEN_TRIM(SEGNUM)
         SELD(J) = 1009+J
         OPEN (SELD(J),FILE='dynselective'//SEGNUM(1:L)//'.npt',STATUS='OLD')
-
+        
           READ(SELD(J),'(A1)')INFORMAT    ! SW 8/28/2019
         IF(INFORMAT=='$')DYNSF(J)=.TRUE.
-
+    
         IF(DYNSF(J))THEN
         READ (SELD(J),'(/)')
         READ (SELD(J),*) NXSEL(J),TEMP2(J)
         tctemp(J)=TEMP2(J)
-        READ (SELD(J),*) NXSEL(J),TEMP2(J)
-
+        READ (SELD(J),*) NXSEL(J),TEMP2(J)       
+        
         ELSE
         READ (SELD(J),'(//1000F8.0)') NXSEL(J),TEMP2(J)
         tctemp(J)=TEMP2(J)
         READ (SELD(J),'(1000F8.0)') NXSEL(J),TEMP2(J)
-        ENDIF
-
+        ENDIF       
+        
         !READ (SELD(J),'(///1000F8.0)') NXSEL(J),TEMP2(J)
         !tctemp(J)=TEMP2(J)
         !READ (SELD(J),'(1000F8.0)') NXSEL(J),TEMP2(J)
@@ -1859,6 +2105,10 @@ Subroutine SelectiveInitUSGS
 
 ! Test to see if the user specified inconsistent inputs. If so, stop with an error message.
   if (tspltc == '      ON') then
+    if (tspltfreq <= 0.0) then                                                                                        !SR 12/19/2022
+      write (w2err, '(A)') 'ERROR-- Update frequency for temperature blending must be greater than zero.'             !SR 12/19/2022
+      ERROR_OPEN = .TRUE.                                                                                             !SR 12/19/2022
+    end if                                                                                                            !SR 12/19/2022
     do j=1,numtsplt
       do n=1,nouts(j)-1
         do nj=n+1,nouts(j)
@@ -1889,8 +2139,10 @@ Subroutine SelectiveInitUSGS
     do j=1,numtsplt
       do n=1,nouts(j)
         if (tsprior(j,n) < -1) then
-          write (w2err, '(A,I0,A,I0,A)') 'w2_selective.npt USGS ERROR-- Priority input for outlet ', jstsplt(j,n), ' in group ', j, ' is less than -1.'
-          ERROR_OPEN = .TRUE.            ! will trigger the program to end when this subroutine is completed
+          tsprior(j,n) = -1                                                           ! reassign, rather than error   !SR 12/19/2022
+          write (wrn, '(A,I0,A,I0,A)') 'w2_selective USGS: WARNING-- Priority input for outlet ', jstsplt(j,n),                                       &
+                                       ' in group ', j, ' reassigned to -1.'                                          !SR 12/19/2022
+          WARNING_OPEN = .TRUE.                                                                                       !SR 12/19/2022
         end if
         if (tsminhead(j,n) > 0.0 .and. tsmaxhead(j,n) > 0.0 .and. tsminhead(j,n) > tsmaxhead(j,n)) then
           write (wrn, '(A,I0,A,I0,A)') 'w2_selective.npt USGS WARNING-- Minimum and maximum head constraints for outlet ', jstsplt(j,n), ' in group ',   &
@@ -1950,22 +2202,32 @@ End subroutine SelectiveInitUSGS
 !***********************************************************************************************************************************
 
 Subroutine SelectiveUSGS
-  Use Selective1USGS; USE MAIN
-  USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
+  use Selective1USGS
+ USE MAIN
+  use GLOBAL
+     use NAMESC
+ use GEOMC
+  use LOGICC
+ use PREC
+  use SURFHE
+  use KINETIC
+ use SHADEC
+ USE EDDY
+  use STRUCTURES
+ use TRANS
+  use TVDC
+   use SELWC
+  use GDAYC
+ use SCREENC
+ use TDGAS
+   USE RSTART
   IMPLICIT NONE
 
-  integer :: jj, jst, n, nj, num_noflow, ng0, prior1, prior2, ng1max, ng1min, num_left
-  integer :: j2hi, j2lo, j2max, j2min, j2pref
-  real    :: qall, elr, wsel, q_notblended, sum_minfrac0, sum_maxfrac1, sum_maxfrac2, sumfrac
-  real    :: maxelev, minelev, blendfrac, excess_frac, addfrac, maxtemp, mintemp
-  real    :: lastfrac, lastfrac2, ttarg, sumtemp, etemp, etemp1, etemp2, sumelev, elev1, elev2
-
-  INTEGER JJW, KK, KS, IFILE, KSTR
-  REAL DAYTEST, TCOMP, TEMPEST, TMOD
-
-! qstr = qstrsav   ! xxx not sure how to do this yet -- need to reset QSTR when control periods expire
-! qwd  = qwdsav    ! xxx not sure how to do this yet -- need to reset QWD when control periods expire
+  integer :: ifile, j2lo, j2hi, j2max, j2min, j2pref, jj, jjw, jst, kk, ks
+  integer :: n, ng0, ng1max, ng1min, nj, num_left, num_noflow, prior1, prior2
+  real    :: addfrac, blendfrac, daytest, elev1, elev2, elr, etemp, etemp1, etemp2, excess_frac
+  real    :: lastfrac, lastfrac2, maxelev, maxtemp, minelev, mintemp, q_notblended, qall
+  real    :: sum_minfrac0, sum_maxfrac1, sum_maxfrac2, sumelev, sumfrac, sumtemp, tcomp, tempest, tmod, ttarg, wsel
 
   str_active = .FALSE.
   wd_active  = .FALSE.
@@ -2010,16 +2272,15 @@ Subroutine SelectiveUSGS
     end do
   end if
 
-! Reset elevations of outlets back to original values outside of control periods
-  do jst=1,nst
-    do jb=1,nbr
+! Reset outlet elevations back to original values outside of control periods
+  do jb=1,nbr                                                               ! swapped loops: jb, then jst             !SR 12/19/2022
+    do jst=1,nstr(jb)                                                       ! changed from nst to nstr(jb)            !SR 12/19/2022
       if (.not. str_active(jst,jb)) estr(jst,jb) = estrsav(jst,jb)
     end do
   end do
   do jwd=1,nwd
     if (.not. wd_active(jwd)) ewd(jwd) = ewdsav(jwd)
   end do
-
 
 ! Check to see if it's time to update temperature targets and flow fractions for blended groups.
   if (tspltc=='      ON' .and. jday .ge. nxtsplit) then
@@ -2034,15 +2295,16 @@ Subroutine SelectiveUSGS
       end if
     end do
 
+  ! Loop over blending groups
     do j=1,numtsplt
       qall    = 0.0                                                          ! sum up all the flows
       sumfrac = 0.0                                                          ! sum of flow fraction multipliers
       do jj=1,nouts(j)
         if (tspltcntr(j) == '      ST') then
-          qall    = qall    + qstr(jstsplt(j,jj),tspltjb(j))
+          qall    = qall    + qstrsav(jstsplt(j,jj),tspltjb(j))                                                       !SR 06/29/2021
           sumfrac = sumfrac + qstrfrac(jstsplt(j,jj),tspltjb(j))
         else if (tspltcntr(j) == '      WD') then
-          qall    = qall    + qwd(jstsplt(j,jj))
+          qall    = qall    + qwdsav(jstsplt(j,jj))                                                                   !SR 06/29/2021
           sumfrac = sumfrac + qwdfrac(jstsplt(j,jj))
         end if
       end do
@@ -2117,12 +2379,12 @@ Subroutine SelectiveUSGS
             if (.not. no_flow(j,jj) .and. tsprior(j,jj) == -1) then
               ng0 = ng0 + 1
               nout0(ng0) = jj
-              if (qstr(jst,jb) > tsmaxflow(j,jj) .and. tsmaxflow(j,jj) > 0.0) then
+              if (qstrsav(jst,jb) > tsmaxflow(j,jj) .and. tsmaxflow(j,jj) > 0.0) then                                 !SR 06/29/2021
                 q_notblended = q_notblended + tsmaxflow(j,jj)
                 qstrfrac(jst,jb) = tsmaxflow(j,jj) / qall
               else if (qall > 0.0) then
-                q_notblended = q_notblended + qstr(jst,jb)
-                qstrfrac(jst,jb) = qstr(jst,jb) / qall
+                q_notblended = q_notblended + qstrsav(jst,jb)                                                         !SR 06/29/2021
+                qstrfrac(jst,jb) = qstrsav(jst,jb) / qall                                                             !SR 06/29/2021
               end if
             end if
           end do
@@ -2214,16 +2476,16 @@ Subroutine SelectiveUSGS
                 ng1min  = n
               end if
             end do
-            blendfrac = 1.0 - sum_minfrac0 - sum_minfrac1 + minfrac1(ng1max) + minfrac1(ng1min)
-            if (maxfrac1(ng1max) + maxfrac1(ng1min) < blendfrac) then
-              if (sum_maxfrac1 < 1.0 - sum_minfrac0) then
-                write (wrn,'(A,I0,A,F0.3)') 'Warning-- Maximum flows for outlets exceeded for group ', j, ' at day ', jday
+            blendfrac = 1.0 - sum_minfrac0 - sum_minfrac1 + minfrac1(ng1max) + minfrac1(ng1min)   ! flow frac to ng1max and ng1min
+            if (maxfrac1(ng1max) + maxfrac1(ng1min) < blendfrac) then                             ! cannot handle all intended flow
+              if (sum_maxfrac1 < 1.0 - sum_minfrac0) then                                         ! max flows exceeded
+                write (wrn,'(A,I0,A,F0.3)') 'WARNING-- Maximum flows for outlets exceeded for group ', j, ' at day ', jday
                 WARNING_OPEN = .TRUE.
                 do n=1,ng1
-                  if (n .ne. ng1max .and. n .ne. ng1min) minfrac1(n) = maxfrac1(n)
+                  minfrac1(n) = maxfrac1(n)                        ! all group 1 outlets at maximum flow              !SR 06/29/2021
                 end do
-              else
-                excess_frac = blendfrac - maxfrac1(ng1max) - maxfrac1(ng1min)
+              else                                                                                ! push excess to other outlets
+                excess_frac = blendfrac - maxfrac1(ng1max) - maxfrac1(ng1min)                     ! ng1max and ng1min will be at max
                 num_left = ng1 - 2
                 do nj=1,ng1                                        ! iterative process to redistribute excess flows
                   if (num_left > 0 .and. excess_frac > 0.0) then
@@ -2242,6 +2504,8 @@ Subroutine SelectiveUSGS
                     end do
                   end if
                 end do
+                minfrac1(ng1max) = maxfrac1(ng1max)                                               ! set to max flow   !SR 06/29/2021
+                minfrac1(ng1min) = maxfrac1(ng1min)                                               ! set to max flow   !SR 06/29/2021
               end if
             end if
             do n=1,ng1                                       ! assign the other priority 1 outlets to nonblended status
@@ -2283,7 +2547,6 @@ Subroutine SelectiveUSGS
             prior2       = prior1
           end if
 
-
         ! Begin the blending decisions.
         ! No usable outlets.  All flow fractions remain at zero.
           if (nouts(j) == num_noflow) then
@@ -2317,14 +2580,25 @@ Subroutine SelectiveUSGS
               qstrfrac(jst,jb) = minfrac2(n)
             end do
 
+        ! Nonblended outlets all at maximum flows.  No blending calculations required.                                !SR 06/29/2021
+          else if (ng1 > 0 .and. sum_minfrac1 == sum_maxfrac1 .and. (ng2 == 0 .or. sum_minfrac2 == sum_maxfrac2)) then !SR 06/29/2021
+            do n=1,ng1                                                                                                !SR 06/29/2021
+              jst = jstsplt(j,nout1(n))                                                                               !SR 06/29/2021
+              qstrfrac(jst,jb) = minfrac1(n)                                                                          !SR 06/29/2021
+            end do                                                                                                    !SR 06/29/2021
+            do n=1,ng2                                                                                                !SR 06/29/2021
+              jst = jstsplt(j,nout2(n))                                                                               !SR 06/29/2021
+              qstrfrac(jst,jb) = minfrac2(n)                                                                          !SR 06/29/2021
+            end do                                                                                                    !SR 06/29/2021
+
         ! More than one usable outlet, and blending among priority 1 outlet(s) and priority 2 outlet(s) required.
           else
             id = ds(jb)                                                      ! needed for downstream_withdrawal_estimate
             kt = ktwb(jw)                                                    ! needed for downstream_withdrawal_estimate
 
-          ! Warn the user if maximum flow criteria are likely to decrease the specified outflows.
-            if (sum_minfrac0 + sum_maxfrac1 + sum_maxfrac2 < 1.0) then
-              write (wrn,'(A,A,I0,A,F0.3)') 'Warning-- Total release flow rate may be decreased to comply with maximum flow ',     &
+          ! Warn the user if maximum flow criteria are likely to decrease the specified outflows.  Use 0.999999 for round-off.
+            if (sum_minfrac0 + sum_maxfrac1 + sum_maxfrac2 < 0.999999) then                                           !SR 06/29/2021
+              write (wrn,'(A,A,I0,A,F0.3)') 'WARNING-- Total release flow rate may be decreased to comply with maximum flow ',     &
                                             'criteria for structures in group ', j, ' at day ', jday
               WARNING_OPEN = .TRUE.
             end if
@@ -2673,12 +2947,12 @@ Subroutine SelectiveUSGS
             if (.not. no_flow(j,jj) .and. tsprior(j,jj) == -1) then
               ng0 = ng0 + 1
               nout0(ng0) = jj
-              if (qwd(jwd) > tsmaxflow(j,jj) .and. tsmaxflow(j,jj) > 0.0) then
+              if (qwdsav(jwd) > tsmaxflow(j,jj) .and. tsmaxflow(j,jj) > 0.0) then                                     !SR 06/29/2021
                 q_notblended = q_notblended + tsmaxflow(j,jj)
                 qwdfrac(jwd) = tsmaxflow(j,jj) / qall
               else if (qall > 0.0) then
-                q_notblended = q_notblended + qwd(jwd)
-                qwdfrac(jwd) = qwd(jwd) / qall
+                q_notblended = q_notblended + qwdsav(jwd)                                                             !SR 06/29/2021
+                qwdfrac(jwd) = qwdsav(jwd) / qall                                                                     !SR 06/29/2021
               end if
             end if
           end do
@@ -2776,10 +3050,10 @@ Subroutine SelectiveUSGS
                 write (wrn,'(A,I0,A,F0.3)') 'Warning-- Maximum flows for outlets exceeded for group ', j, ' at day ', jday
                 WARNING_OPEN = .TRUE.
                 do n=1,ng1
-                  if (n .ne. ng1max .and. n .ne. ng1min) minfrac1(n) = maxfrac1(n)
+                  minfrac1(n) = maxfrac1(n)                        ! all group 1 outlets at maximum flow              !SR 06/29/2021
                 end do
-              else
-                excess_frac = blendfrac - maxfrac1(ng1max) - maxfrac1(ng1min)
+              else                                                                                ! push excess to other outlets
+                excess_frac = blendfrac - maxfrac1(ng1max) - maxfrac1(ng1min)                     ! ng1max and ng1min will be at max
                 num_left = ng1 - 2
                 do nj=1,ng1                                        ! iterative process to redistribute excess flows
                   if (num_left > 0 .and. excess_frac > 0.0) then
@@ -2798,6 +3072,8 @@ Subroutine SelectiveUSGS
                     end do
                   end if
                 end do
+                minfrac1(ng1max) = maxfrac1(ng1max)                                               ! set to max flow   !SR 06/29/2021
+                minfrac1(ng1min) = maxfrac1(ng1min)                                               ! set to max flow   !SR 06/29/2021
               end if
             end if
             do n=1,ng1                                       ! assign the other priority 1 outlets to nonblended status
@@ -2873,14 +3149,25 @@ Subroutine SelectiveUSGS
               qwdfrac(jwd) = minfrac2(n)
             end do
 
+        ! Nonblended outlets all at maximum flows.  No blending calculations required.                                !SR 06/29/2021
+          else if (ng1 > 0 .and. sum_minfrac1 == sum_maxfrac1 .and. (ng2 == 0 .or. sum_minfrac2 == sum_maxfrac2)) then !SR 06/29/2021
+            do n=1,ng1                                                                                                !SR 06/29/2021
+              jwd = jstsplt(j,nout1(n))                                                                               !SR 06/29/2021
+              qwdfrac(jwd) = minfrac1(n)                                                                              !SR 06/29/2021
+            end do                                                                                                    !SR 06/29/2021
+            do n=1,ng2                                                                                                !SR 06/29/2021
+              jwd = jstsplt(j,nout2(n))                                                                               !SR 06/29/2021
+              qwdfrac(jwd) = minfrac2(n)                                                                              !SR 06/29/2021
+            end do                                                                                                    !SR 06/29/2021
+
         ! More than one usable outlet, and blending among priority 1 outlet(s) and priority 2 outlet(s) required.
           else
             I  = iwd(jstsplt(j,nout1(1)))                                    ! needed for lateral_withdrawal_estimate
             kt = ktwb(jw)                                                    ! needed for lateral_withdrawal_estimate
 
-          ! Warn the user if maximum flow criteria are likely to decrease the specified outflows.
-            if (sum_minfrac0 + sum_maxfrac1 + sum_maxfrac2 < 1.0) then
-              write (wrn,'(A,A,I0,A,F0.3)') 'Warning-- Total release flow rate may be decreased to comply with maximum flow ',     &
+          ! Warn the user if maximum flow criteria are likely to decrease the specified outflows.  Use 0.999999 for round-off.
+            if (sum_minfrac0 + sum_maxfrac1 + sum_maxfrac2 < 0.999999) then                                           !SR 06/29/2021
+              write (wrn,'(A,A,I0,A,F0.3)') 'WARNING-- Total release flow rate may be decreased to comply with maximum flow ',     &
                                             'criteria for withdrawals in group ', j, ' at day ', jday
               WARNING_OPEN = .TRUE.
             end if
@@ -3185,7 +3472,7 @@ Subroutine SelectiveUSGS
       ! Do structures first
         if (tspltcntr(j) == '      ST') then
           do jj=1,nouts(j)
-            qall = qall + qstr(jstsplt(j,jj),tspltjb(j))                            ! sum up all the flows
+            qall = qall + qstrsav(jstsplt(j,jj),tspltjb(j))                         ! sum up all the flows            !SR 06/29/2021
           end do
           do jj=1,nouts(j)                                                          ! set the flows and honor the maximum flow
             jst = jstsplt(j,jj)
@@ -3196,7 +3483,7 @@ Subroutine SelectiveUSGS
       ! Do Withdrawals next
         else if (tspltcntr(j) == '      WD') then
           do jj=1,nouts(j)
-            qall = qall + qwd(jstsplt(j,jj))                                        ! sum up all the flows
+            qall = qall + qwdsav(jstsplt(j,jj))                                     ! sum up all the flows            !SR 06/29/2021
           end do
           do jj=1,nouts(j)                                                          ! set the flows and honor the maximum flow
             jwd = jstsplt(j,jj)
@@ -3215,12 +3502,12 @@ Subroutine SelectiveUSGS
     do jb=1,nbr
       if (nstr(jb) > 0) then
         ifile=ifile+1
-        write (ifile,'(f10.4,",",*(f10.2,","))') jday, (tavg(i,jb),i=1,nstr(jb)), (qstr(i,jb),i=1,nstr(jb)), (estr(i,jb),i=1,nstr(jb))                   ! SW 8/28/2019
+        write (ifile,'(f10.4,",",<nstr(jb)>(f10.2,","),<nstr(jb)>(f10.2,","),<nstr(jb)>(f10.2,","))') jday,(tavg(i,jb),i=1,nstr(jb)),(qstr(i,jb),i=1,nstr(jb)),(estr(i,jb),i=1,nstr(jb))                   ! SW 8/28/2019
       end if
     end do
     if (nwd > 0) then
       ifile=ifile+1
-      write (ifile,'(f10.4,*(f10.2))') jday, (tavgw(i),i=1,nwd), (qwd(i),i=1,nwd), (ewd(i),i=1,nwd)
+      write (ifile,'(f10.4,<nwd>f10.2,<nwd>f10.2,<nwd>f10.2)') jday,(tavgw(i),i=1,nwd),(qwd(i),i=1,nwd),(ewd(i),i=1,nwd)
     end if
 
   ! computing reservoir volume and volume below 'tempcrit'
@@ -3262,7 +3549,7 @@ Subroutine SelectiveUSGS
                     READ (SELD(J),*) NXSEL(J),TEMP2(J)
                 ELSE
                     READ (SELD(J),'(1000F8.0)') NXSEL(J),TEMP2(J)
-                ENDIF
+                ENDIF   
           !READ (SELD(J),'(1000F8.0)') NXSEL(J),TEMP2(J)
         END DO
       END IF
@@ -3360,7 +3647,7 @@ Subroutine SelectiveUSGS
               end do
             end if
           end if
-          if (tcelevcon(j) == '      ON' .and. tcnelev(j) > ncountc(js,jb) .and. estr(js,jb) > elws(ds(jb))) then
+          if (tcelevcon(j) == '      ON' .and. tcnelev(j) > ncountc(js,jb) .and. estr(js,jb) > elws(ds(jb)-MINWL(J))) then
             ncountc(js,jb) = ncountc(js,jb)+1
             estr(js,jb)    = tcelev(j,ncountc(js,jb))
           end if
@@ -3448,7 +3735,7 @@ Subroutine SelectiveUSGS
               end do
             end if
           end if
-          if (tcelevcon(j) == '      ON' .and. tcnelev(j) > ncountcw(jwd) .and. ewd(jwd) > elws(iwd(jwd))) then
+          if (tcelevcon(j) == '      ON' .and. tcnelev(j) > ncountcw(jwd) .and. ewd(jwd) > elws(iwd(jwd))-MINWL(J)) then
             ncountcw(jwd) = ncountcw(jwd)+1
             ewd(jwd)      = tcelev(j,ncountcw(jwd))
           end if
@@ -3459,12 +3746,12 @@ Subroutine SelectiveUSGS
     nxttcd = nxttcd + tcdfreq
   end if
 return
-
-
+		  
+		  
 ENTRY DEALLOCATE_SELECTIVEUSGS
   DEAllocate (tcnelev,tcjb,tcjs, tcelev,tctemp,tctend,tctsrt,ncountc,tciseg,tcklay,tcelevcon,elcontspl)
   DEAllocate (tspltjb,tspltt,nouts,jstsplt,kstrsplt,tcyearly, tcntr,tspltcntr)
-  DEallocate (volm,ncountcw,qwdfrac,qstrfrac)
+  DEallocate (volm,ncountcw,qwdfrac,qstrfrac,MINWL)
   DEallocate (tempcrit,volmc,DYNSEL,SELD,NXSEL,TEMP2,TSYEARLY,TSTEND,TSTSRT)
   deallocate (tsdepth, tstype, tsminfrac, tsprior, tsminhead, tsmaxhead, tsmaxflow, no_flow)
   deallocate (tsdynsel, tsseld, nxtssel, tstemp2, ewdsav, estrsav, share_flow, wd_active, str_active)

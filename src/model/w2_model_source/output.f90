@@ -4,9 +4,15 @@
 !***********************************************************************************************************************************
 
 SUBROUTINE OUTPUT (JDAY,IUPR,IDPR,KBR,ISNP,BL,NBL)
-  USE GLOBAL; USE GDAYC;  USE GEOMC;  USE KINETIC; USE TVDC; USE NAMESC; USE LOGICC
+  use GLOBAL
+ use GDAYC
+  use GEOMC
+  use KINETIC
+ use TVDC
+ use NAMESC
+ USE LOGICC
   USE MACROPHYTEC
-  Use CEMAVars
+  Use CEMAVars  
   IMPLICIT NONE
 
 ! Type declaration
@@ -50,7 +56,7 @@ SUBROUTINE OUTPUT (JDAY,IUPR,IDPR,KBR,ISNP,BL,NBL)
   WRITE (SNP(JW),'(/A//2X,1000I10)') '          Water Surface, m',(ISNP(I,JW),I=IUPR,IDPR)
   WRITE (SNP(JW),'(2X,1000A10/)') (CONV(1,I),I=IUPR,IDPR)
   DO I=IUPR,IDPR
-    WRITE (CONV(1,I),'(F10.4)') Z(ISNP(I,JW))
+    WRITE (CONV(1,I),'(F10.4)') SNGL(Z(ISNP(I,JW)))
   END DO
   WRITE (SNP(JW),'(/A//2X,1000I10)') '          Water Surface Deviation (positive downwards), m',(ISNP(I,JW),I=IUPR,IDPR)
   WRITE (SNP(JW),'(2X,1000A10/)') (CONV(1,I),I=IUPR,IDPR)

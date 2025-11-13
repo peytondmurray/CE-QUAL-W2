@@ -3,9 +3,26 @@
 !***********************************************************************************************************************************
 SUBROUTINE INITCOND
 USE MAIN
-USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC
+use GLOBAL
+     use NAMESC
+ use GEOMC
+  use LOGICC
+ use PREC
+  use SURFHE
+  use KINETIC
+ use SHADEC
+ USE EDDY
+  use STRUCTURES
+ use TRANS
+  use TVDC
+   use SELWC
+  use GDAYC
+ use SCREENC
+ use TDGAS
+   USE RSTART
+  use MACROPHYTEC
+ use POROSITYC
+ USE ZOOPLANKTONC
   Use CEMAVars, ONLY:CEMARelatedCode,IncludeCEMASedDiagenesis                         ! cb 07/23/18
   USE CEMASedimentDiagenesis
   IMPLICIT NONE
@@ -25,7 +42,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
 
       OPEN (VPR(JW),FILE=VPRFN(JW),STATUS='OLD')
       READ (VPR(JW),'(A1)')ICHAR
-
+ 
       IF(ICHAR=='$')THEN
          READ( VPR(JW),'(/)')
          IF (VERT_TEMP(JW)) READ (VPR(JW),*) IBLANK, (TVP(K,JW),K=KT,KBMAX(JW))
@@ -120,7 +137,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
     DO JE=1,NEP
         IF (EPIPHYTON_CALC(JW,JE)) THEN
         IF (LONG_EPIPHYTON(JW,JE).AND.ICHAR=='$')READ (LPR(JW),*)
-           DO JB=BS(JW),BE(JW)
+           DO JB=BS(JW),BE(JW) 
            DO I=CUS(JB),DS(JB)
               IF (LONG_EPIPHYTON(JW,JE))THEN
                   IF(ICHAR=='$')THEN
@@ -135,14 +152,14 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
            END DO
         END IF
     END DO
-
+    
 !**** macrophytes - added 8/21/15
 
 
     DO m=1,nmc
         IF (macrophyte_CALC(JW,m)) THEN
         IF (LONG_macrophyte(JW,m).AND.ICHAR=='$')READ (LPR(JW),*)
-           DO JB=BS(JW),BE(JW)
+           DO JB=BS(JW),BE(JW) 
            DO I=CUS(JB),DS(JB)
               IF (LONG_macrophyte(JW,m))THEN
                   IF(ICHAR=='$')THEN
@@ -152,7 +169,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                 ENDIF
               ENDIF
               !IF (ISO_macrophyte(JW,m))  macrc(:,I,m) = macwbci(JW,m)
-              !IF (VERT_macrophyte(JW,m)) macrc(:,I,m) = macrcvp(:,JW,m)
+              !IF (VERT_macrophyte(JW,m)) macrc(:,I,m) = macrcvp(:,JW,m)    
             END DO
            END DO
         END IF
@@ -168,7 +185,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           DO I=CUS(JB),DS(JB)
             IF (LONG_SEDIMENT(JW))THEN
                 IF(ICHAR=='$')THEN
-                    READ (LPR(JW),*)IBLANK, (SED(K,I),K=KT,KB(I))
+                    READ (LPR(JW),*)IBLANK, (SED(K,I),K=KT,KB(I)) 
                     ELSE
                     READ (LPR(JW),'(//(8X,9F8.0))') (SED(K,I),K=KT,KB(I))
                 ENDIF
@@ -179,10 +196,10 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
             END DO
             SED(KT,I)         = SED(KT,I)/H2(KT,I)
             If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)then   ! cb 07/23/18
-              SED(KT+1:KB(I)-1,I) = SED(KT+1:KB(I)-1,I)/H2(KT+1:KB(I)-1,I)
+              SED(KT+1:KB(I)-1,I) = SED(KT+1:KB(I)-1,I)/H2(KT+1:KB(I)-1,I)             
               sed(kb(i),i)=0.0
-            else
-            SED(KT+1:KB(I),I) = SED(KT+1:KB(I),I)/H2(KT+1:KB(I),I)
+            else              
+            SED(KT+1:KB(I),I) = SED(KT+1:KB(I),I)/H2(KT+1:KB(I),I)             
             end if
           END DO
         END IF
@@ -197,9 +214,9 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
               END DO
               SEDP(KT,I)         = SEDP(KT,I)/H2(KT,I)
               If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)then   ! cb 07/23/18
-                SEDp(KT+1:KB(I)-1,I) = SEDp(KT+1:KB(I)-1,I)/H2(KT+1:KB(I)-1,I)
+                SEDp(KT+1:KB(I)-1,I) = SEDp(KT+1:KB(I)-1,I)/H2(KT+1:KB(I)-1,I)             
                 sedp(kb(i),i)=0.0
-              else
+              else                
               SEDP(KT+1:KB(I),I) = SEDP(KT+1:KB(I),I)/H2(KT+1:KB(I),I)
               end if
             END DO
@@ -214,7 +231,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                 IF (LONG_SEDIMENT(JW)) sedn(k,i)=orgn(jw)*sed(k,i)
               END DO
               SEDn(KT,I)         = SEDn(KT,I)/H2(KT,I)
-              If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)then   ! cb 07/23/18
+              If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)then   ! cb 07/23/18                
                 SEDn(KT+1:KB(I)-1,I) = SEDn(KT+1:KB(I)-1,I)/H2(KT+1:KB(I)-1,I)
                 sedn(kb(i),i)=0.0
               else
@@ -232,7 +249,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                 IF (LONG_SEDIMENT(JW)) sedc(k,i)=orgc(jw)*sed(k,i)
               END DO
               SEDc(KT,I)         = SEDc(KT,I)/H2(KT,I)
-              If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)then   ! cb 07/23/18
+              If(CEMARelatedCode .and. IncludeCEMASedDiagenesis)then   ! cb 07/23/18                
                 SEDc(KT+1:KB(I)-1,I) = SEDc(KT+1:KB(I)-1,I)/H2(KT+1:KB(I)-1,I)
                 sedc(kb(i),i)=0.0
               else
@@ -248,7 +265,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
       SEDc(:,US(BS(JW)):DS(BE(JW))) = SEDc(:,US(BS(JW)):DS(BE(JW)))*FSED(JW)
 
 !  Amaila start Additional sediment compartments
-      DO JB=BS(JW),BE(JW)
+      DO JB=BS(JW),BE(JW)      
         IF (SEDIMENT_CALC1(JW)) THEN
             !IF(LONG_SEDIMENT(JW).AND.JB==BS(JW))READ (LPR(JW),*)
             IF(LONG_SEDIMENT(JW).AND.ICHAR=='$')READ (LPR(JW),*)      ! cb 6/10/13
@@ -256,7 +273,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
            DO I=US(JB),DS(JB)              ! cb 6/17/17
             IF (LONG_SEDIMENT1(JW))THEN
                 IF(ICHAR=='$')THEN
-                    !READ (LPR(JW),*)IBLANK, (SED1(K,I),K=KT,KB(I))
+                    !READ (LPR(JW),*)IBLANK, (SED1(K,I),K=KT,KB(I)) 
                     READ (LPR(JW),*)IBLANK, (SED1(K,I),K=2,KB(I))   ! cb 6/17/17
                     ELSE
                     !READ (LPR(JW),'(//(8X,9F8.0))') (SED1(K,I),K=KT,KB(I))
@@ -268,12 +285,12 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
               IF (VERT_SEDIMENT1(JW)) SED1(K,I) = SEDVP1(K,JW)
             END DO
             !SED1(KT,I)         = SED1(KT,I)/H2(KT,I)   ! intial conditions for "tree" sediment compartments are given in g/m^3
-            !SED1(KT+1:KB(I),I) = SED1(KT+1:KB(I),I)/H2(KT+1:KB(I),I)
+            !SED1(KT+1:KB(I),I) = SED1(KT+1:KB(I),I)/H2(KT+1:KB(I),I)             
           END DO
         END IF
       END DO
-
-       DO JB=BS(JW),BE(JW)
+      
+       DO JB=BS(JW),BE(JW)      
         IF (SEDIMENT_CALC2(JW)) THEN
             !IF(LONG_SEDIMENT(JW).AND.JB==BS(JW))READ (LPR(JW),*)
             IF(LONG_SEDIMENT(JW).AND.ICHAR=='$')READ (LPR(JW),*)      ! cb 6/10/13
@@ -281,7 +298,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
           DO I=US(JB),DS(JB)              ! cb 6/17/17
             IF (LONG_SEDIMENT2(JW))THEN
                 IF(ICHAR=='$')THEN
-                    !READ (LPR(JW),*)IBLANK, (SED2(K,I),K=KT,KB(I))
+                    !READ (LPR(JW),*)IBLANK, (SED2(K,I),K=KT,KB(I)) 
                     READ (LPR(JW),*)IBLANK, (SED2(K,I),K=2,KB(I))   ! cb 6/17/17
                     ELSE
                     !READ (LPR(JW),'(//(8X,9F8.0))') (SED2(K,I),K=KT,KB(I))
@@ -293,21 +310,21 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
               IF (VERT_SEDIMENT2(JW)) SED2(K,I) = SEDVP2(K,JW)
             END DO
             !SED2(KT,I)         = SED2(KT,I)/H2(KT,I)      ! intial conditions for "tree" sediment compartments are given in g/m^3
-            !SED2(KT+1:KB(I),I) = SED2(KT+1:KB(I),I)/H2(KT+1:KB(I),I)
+            !SED2(KT+1:KB(I),I) = SED2(KT+1:KB(I),I)/H2(KT+1:KB(I),I)             
           END DO
         END IF
       END DO
 
-       DO JB=BS(JW),BE(JW)    ! 9/3/17
+       DO JB=BS(JW),BE(JW)    ! 9/3/17      
          DO I=US(JB),DS(JB)
            do k=kt,kb(i)
-             sdfirstadd(k,i)=.false.
+             sdfirstadd(k,i)=.false.   
            end do
          end do
        end do
 
        SED1(:,US(BS(JW)):DS(BE(JW))) = SED1(:,US(BS(JW)):DS(BE(JW)))*FSEDc1(JW)  ! cb 6/7/17
-       SED2(:,US(BS(JW)):DS(BE(JW))) = SED2(:,US(BS(JW)):DS(BE(JW)))*FSEDc2(JW)
+       SED2(:,US(BS(JW)):DS(BE(JW))) = SED2(:,US(BS(JW)):DS(BE(JW)))*FSEDc2(JW)       
        sed1ic=sed1     ! cb 6/17/17
        sed2ic=sed2     ! cb 6/17/17
 
@@ -339,11 +356,11 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                   K=J
                 END IF
                 !MACRC(J,K,I,M) = MACWBCI(JW,M)
-                !SMACRC(J,K,I,M) = MACWBCI(JW,M)
+                !SMACRC(J,K,I,M) = MACWBCI(JW,M)                
                 IF (ISO_macrophyte(JW,m))  macrc(j,k,I,m) = macwbci(JW,m)     ! cb 8/24/15
-                IF (VERT_macrophyte(JW,m)) macrc(j,k,I,m) = macrcvp(k,JW,m)
+                IF (VERT_macrophyte(JW,m)) macrc(j,k,I,m) = macrcvp(k,JW,m)    
                 IF (long_macrophyte(JW,m)) macrc(j,k,I,m) = macrclp(K,I,m)
-                SMACRC(J,K,I,M) = macrc(j,k,I,m)
+                !SMACRC(J,K,I,M) = macrc(j,k,I,m)
               END DO
             END DO
 
@@ -386,7 +403,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                 END IF
                 COLDEP=ELWS(I)-COLB
                 MACRM(J,KT,I,M)=MACRC(J,KT,I,M)*COLDEP*CW(J,I)*DLX(I)
-                SMACRM(J,KT,I,M)=MACRM(J,KT,I,M)
+               ! SMACRM(J,KT,I,M)=MACRM(J,KT,I,M)
               END DO
 
               DO K=KT+1,KB(I)
@@ -397,7 +414,7 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
                 DO J=JT,JE
 
                   MACRM(J,K,I,M)=MACRC(J,K,I,M)*H2(K,I)*CW(J,I)*DLX(I)
-                  SMACRM(J,K,I,M)=MACRM(J,K,I,M)
+                 ! SMACRM(J,K,I,M)=MACRM(J,K,I,M)
                 END DO
 
               END DO
@@ -482,13 +499,13 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
     DO JB=BS(JW),BE(JW)
       DO I=CUS(JB),DS(JB)-1
         DO K=KT,KBMIN(I)
-          DX(K,I) = ABS(DXI(JW))    ! SW 8/2/2017 FIRST TIME STEP EVEN IF NEGATIVE USE AS ABS OF DX SINCE IT WILL ALWAYS BE LESS THAN 1
+          DX(K,I) = ABS(DXI(JW))    ! SW 8/2/2017 FIRST TIME STEP EVEN IF NEGATIVE USE AS ABS OF DX SINCE IT WILL ALWAYS BE LESS THAN 1     
           IF (INTERNAL_WEIR(K,I)) DX(K,I) = 0.0
         END DO
       END DO
     END DO
     IF (VERT_PROFILE(JW)) CLOSE (VPR(JW))
-    IF (LONG_PROFILE(JW)) CLOSE (LPR(JW))
+    IF (LONG_PROFILE(JW)) CLOSE (LPR(JW))   
   END DO
 
 ! Atmospheric pressure
@@ -497,15 +514,15 @@ USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE 
         YEAROLD=YEAR
         IF(CO2YEARLYPPM=='      ON')THEN
             IF(YEAR<1980)THEN
-             PCO2 = (0.000041392*REAL(YEAR*YEAR*YEAR) - 0.231409975*REAL(YEAR*YEAR) + 430.804190829*REAL(YEAR) - 266735.857433224)*PALT(DS(BE(1)))*1.0E-6      ! PPM CO2 AND ALTITUDE CORRECTION
+             PCO2 = (0.000041392*REAL(YEAR)*real(YEAR)*real(YEAR) - 0.231409975*REAL(YEAR)*real(YEAR) + 430.804190829*REAL(YEAR) - 266735.857433224)*PALT(DS(BE(1)))*1.0E-6      ! PPM CO2 AND ALTITUDE CORRECTION 
             ELSE
-             PCO2  = (0.015903*YEAR**2 - 61.799598*YEAR + 60357.055057)*PALT(DS(BE(1)))*1.0E-6
+             PCO2  = (0.015903*real(YEAR)*real(year) - 61.799598*real(YEAR) + 60357.055057)*PALT(DS(BE(1)))*1.0E-6    ! SW 2/29/2024
             ENDIF
         ELSE
         PCO2=PCO2ATMPPM*PALT(DS(BE(1)))*1.0E-6    ! IN ATM
         ENDIF
     ENDIF
-
+    
     ELWS_INI(:) = ELWS(:)         ! systdg - Add ELWS_INI
   RETURN
 

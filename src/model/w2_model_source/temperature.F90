@@ -1,31 +1,49 @@
 subroutine temperature
 
 USE MAIN
-USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
-  USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  USE MACROPHYTEC; USE POROSITYC; USE ZOOPLANKTONC
-  Use CEMAVars
+use GLOBAL
+     use NAMESC
+ use GEOMC
+  use LOGICC
+ use PREC
+  use SURFHE
+  use KINETIC
+ use SHADEC
+ USE EDDY
+  use STRUCTURES
+ use TRANS
+  use TVDC
+   use SELWC
+  use GDAYC
+ use SCREENC
+ use TDGAS
+   USE RSTART
+  use MACROPHYTEC
+ use POROSITYC
+ USE ZOOPLANKTONC
+  use CEMAVars
+ USE MetFileRegion
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
-
+  
   REAL(R8) :: BTA1(1000),GMA1(1000)   ! places a limit of 1000 vertical layers
-  REAL     :: RN1
+  REAL     :: RN1    
 
 DO JW=1,NWB
       IF (READ_EXTINCTION(JW))GAMMA(:,US(BS(JW)):DS(BE(JW))) = EXH2O(JW)      ! SW 1/28/13
       KT = KTWB(JW)
+      if(.not.Met_Regions)then
       IF (.NOT. NO_HEAT(JW)) THEN
         IF (.NOT. READ_RADIATION(JW)) CALL SHORT_WAVE_RADIATION (JDAY)
         IF (TERM_BY_TERM(JW))THEN                                      ! SW 1/25/05
            IF(TAIR(JW).GE.5.0)THEN
-           !RANLW(JW) = 5.31D-13*(273.15D0+TAIR(JW))**6*(1.0D0+0.0017D0*CLOUD(JW)**2)*0.97D0
            RANLW(JW) = 5.31D-13*(273.15D0+TAIR(JW))**6*(1.0D0+0.0017D0*CLOUD(JW)*CLOUD(JW))*0.97D0    ! SW 4/20/16 SPEED
            ELSE
-           !RANLW(JW) = 5.62D-8*(273.15D0+TAIR(JW))**4*(1.D0-0.261D0*DEXP(-7.77D-4*TAIR(JW)**2))*(1.0D0+0.0017D0*CLOUD(JW)**2)*0.97D0
            RANLW(JW) = 5.62D-8*(273.15D0+TAIR(JW))**4*(1.D0-0.261D0*DEXP(-7.77D-4*TAIR(JW)*TAIR(JW)))*(1.0D0+0.0017D0*CLOUD(JW)*CLOUD(JW))*0.97D0     ! SW 4/20/16 SPEED
            ENDIF
         ENDIF
       END IF
+      endif
       DO JB=BS(JW),BE(JW)
       IF(BR_INACTIVE(JB))CYCLE
         IU = CUS(JB)
@@ -35,6 +53,22 @@ DO JW=1,NWB
 
         IF (.NOT. NO_HEAT(JW)) THEN
           DO I=IU,ID
+              if(Met_Regions)then
+                        NMet=I_MetRegions(I)
+                        IF (.NOT. NO_HEAT(JW)) THEN
+                        IF (.NOT. READ_RADIATION(JW)) CALL SHORT_WAVE_RADIATION (JDAY)
+                        IF (TERM_BY_TERM(JW))THEN                                      ! SW 1/25/05
+                           IF(TAIR(NMet).GE.5.0)THEN
+                           RANLW(NMet) = 5.31D-13*(273.15D0+TAIR(NMet))**6*(1.0D0+0.0017D0*CLOUD(NMet)*CLOUD(NMet))*0.97D0    ! SW 4/20/16 SPEED
+                           ELSE
+                           RANLW(NMet) = 5.62D-8*(273.15D0+TAIR(I_MetRegions(JW)))**4*(1.D0-0.261D0*DEXP(-7.77D-4*TAIR(NMet)*TAIR(NMet)))*(1.0D0+0.0017D0*CLOUD(NMet)*CLOUD(NMet))*0.97D0     ! SW 4/20/16 SPEED
+                           ENDIF
+                        ENDIF
+                      END IF
+
+  
+              endif
+              
             IF (DYNAMIC_SHADE(I)) CALL SHADING
 
 !********** Surface
@@ -42,16 +76,27 @@ DO JW=1,NWB
             IF (.NOT. ICE(I)) THEN
               IF (TERM_BY_TERM(JW)) THEN
                 CALL SURFACE_TERMS (T2(KT,I))
-                RS(I)     = SRON(JW)*SHADE(I)
-                RN(I)     = RS(I)+RANLW(JW)-RB(I)-RE(I)-RC(I)
+                 if(Met_Regions)then
+                    RS(I)     = SRON(NMet)*SHADE(I)
+                    RN(I)     = RS(I)+RANLW(NMet)-RB(I)-RE(I)-RC(I)
+                     else
+                    RS(I)     = SRON(JW)*SHADE(I)
+                    RN(I)     = RS(I)+RANLW(JW)-RB(I)-RE(I)-RC(I)
+                endif
                 HEATEX    = RN(I)/RHOWCP*BI(KT,I)*DLX(I)
+
               ELSE
                 CALL EQUILIBRIUM_TEMPERATURE
                 HEATEX = (ET(I)-T2(KT,I))*CSHE(I)*BI(KT,I)*DLX(I)
               END IF
               TSS(KT,I) =  TSS(KT,I)+HEATEX
               TSSS(JB)  =  TSSS(JB) +HEATEX*DLT
-              SROOUT    = (1.0D0-BETA(JW))*(SRON(JW)*SHADE(I)/RHOWCP)*BI(KT,I)*DLX(I)*EXP(-GAMMA(KT,I)*DEPTHB(KT,I))
+              if(Met_Regions)then
+              SROOUT    = (1.0D0-BETA(JW))*(SRON(NMet)*SHADE(I)/RHOWCP)*BI(KT,I)*DLX(I)*DEXP(-GAMMA(KT,I)*DEPTHB(KT,I))
+              else
+              SROOUT    = (1.0D0-BETA(JW))*(SRON(JW)*SHADE(I)/RHOWCP)*BI(KT,I)*DLX(I)*DEXP(-GAMMA(KT,I)*DEPTHB(KT,I))    
+              endif
+              
               TSS(KT,I) =  TSS(KT,I)-SROOUT
               TSSS(JB)  =  TSSS(JB) -SROOUT*DLT
               IF(KT == KB(I))THEN    ! SW 4/18/07
@@ -63,7 +108,7 @@ DO JW=1,NWB
               TSSS(JB)  =  TSSS(JB) +SROSED*DLT
               SROIN     =  SROOUT*B(KT+1,I)/BI(KT,I)
               DO K=KT+1,KB(I)
-                SROOUT   = SROIN*EXP(-GAMMA(K,I)*(H1(K,I)))
+                SROOUT   = SROIN*DEXP(-GAMMA(K,I)*(H1(K,I)))
                 SRONET   = SROIN-SROOUT
                 IF(K /= KB(I))THEN                                         ! SW 1/18/08
                 SROSED   = SROOUT*(1.0D0-BI(K+1,I)/BI(K,I))*TSEDF(JW)
@@ -110,7 +155,7 @@ DO JW=1,NWB
                 RIMT = -0.0545*TDS(KT,I)                                         ! REGRESSION FOR TDS BETWEEN 0 AND 35 PPT
                 ELSE
                 RIMT=-0.31462-0.04177*TDS(KT,I)-0.000166*TDS(KT,I)*TDS(KT,I)     ! REGRESSION EQN FOR TDS>35 PPT
-                ENDIF
+                ENDIF                                                                                
               ELSE
               RIMT=0.0
               ENDIF
@@ -131,18 +176,33 @@ DO JW=1,NWB
 !************** Ice balance
 
                 IF (ICE(I)) THEN
+                  if(Met_Regions)then
+                  NMet=I_MetRegions(I)
+                  TICE = TAIR(NMet)
+                  else
                   TICE = TAIR(JW)
+                  endif
                   DEL  = 2.0D0
                   J    = 1
+                  if(Met_Regions)then
+                    IF(TAIR(NMet).GE.5.0)THEN
+                    RANLW(NMet) = 5.31D-13*(273.15D0+TAIR(NMet))**6*(1.0D0+0.0017D0*CLOUD(NMet)**2)*0.97D0
+                    ELSE
+                    RANLW(NMet) = 5.62D-8*(273.15D0+TAIR(NMet))**4*(1.D0-0.261D0*DEXP(-7.77D-4*TAIR(NMet)**2))*(1.0D0+0.0017D0*CLOUD(NMet)**2)*0.97D0
+                    ENDIF
+                    RN1=SRON(NMet)/REFL*SHADE(I)*(1.0D0-ALBEDO(JW))*BETAI(JW)+RANLW(NMet)               ! SW 4/19/10 eliminate spurious divsion of SRO by RHOCP
+                  else
                     IF(TAIR(JW).GE.5.0)THEN
                     RANLW(JW) = 5.31D-13*(273.15D0+TAIR(JW))**6*(1.0D0+0.0017D0*CLOUD(JW)**2)*0.97D0
                     ELSE
                     RANLW(JW) = 5.62D-8*(273.15D0+TAIR(JW))**4*(1.D0-0.261D0*DEXP(-7.77D-4*TAIR(JW)**2))*(1.0D0+0.0017D0*CLOUD(JW)**2)*0.97D0
                     ENDIF
-                    RN1=SRON(JW)/REFL*SHADE(I)*(1.0D0-ALBEDO(JW))*BETAI(JW)+RANLW(JW)               ! SW 4/19/10 eliminate spurious divsion of SRO by RHOCP
+                    RN1=SRON(JW)/REFL*SHADE(I)*(1.0D0-ALBEDO(JW))*BETAI(JW)+RANLW(JW)               ! SW 4/19/10 eliminate spurious divsion of SRO by RHOCP  
+                  endif
+                  
                   DO WHILE (ABS(DEL) > 1.0 .AND. J < 500)                                         ! SW 4/21/10 Should have been ABS of DEL
-                    CALL SURFACE_TERMS (TICE)
-                    RN(I) = RN1-RB(I)-RE(I)-RC(I)    ! 4/19/10
+                    CALL SURFACE_TERMS (TICE)      
+                    RN(I) = RN1-RB(I)-RE(I)-RC(I)    ! 4/19/10 
 !                    RN(I) = SRON(JW)/(REFL*RHOWCP)*SHADE(I)*(1.0-ALBEDO(JW))*BETAI(JW)+RANLW(JW)-RB(I)-RE(JW)-RC(I)
                     DEL   = RN(I)+RK1*(RIMT-TICE)/ICETH(I)     ! RK1 is ice conductivity 2.12 W/m/oC
                     IF (ABS(DEL) > 1.0) TICE = TICE+DEL/500.0D0
@@ -150,9 +210,14 @@ DO JW=1,NWB
                   END DO
 
 !**************** Solar radiation attenuation
-
+                  if(Met_Regions)then
+                  TFLUX      = DLX(I)*SRON(WB_MetRegions(JW))/(RHOWCP*REFL)*SHADE(I)*(1.0D0-ALBEDO(JW))*(1.0D0-BETAI(JW))                             &   ! SW 4/21/10 Eliminate spurious divide by RHOCP
+                               *DEXP(-GAMMAI(JW)*ICETH(I))*BI(KT,I)
+                  else
                   TFLUX      = DLX(I)*SRON(JW)/(RHOWCP*REFL)*SHADE(I)*(1.0D0-ALBEDO(JW))*(1.0D0-BETAI(JW))                             &   ! SW 4/21/10 Eliminate spurious divide by RHOCP
-                               *EXP(-GAMMAI(JW)*ICETH(I))*BI(KT,I)
+                               *DEXP(-GAMMAI(JW)*ICETH(I))*BI(KT,I)                      
+                  endif
+                  
                   TSS(KT,I)  = TSS(KT,I) +TFLUX
                   TSSICE(JB) = TSSICE(JB)+TFLUX*DLT
                   IF (TICE > 0.0) THEN
@@ -197,28 +262,28 @@ DO JW=1,NWB
                             ICE(II) = .FALSE.
                             ENDDO
                         ENDIF
-
+                        
                     ELSE
                         ICEQSS(I)=-(ICETHICKNESSCHANGE/ICETH(I))*ICEBANK(I)*0.917/DLT     ! SW 9/29/15
                         ICEBANK(I)=(1.+ICETHICKNESSCHANGE/ICETH(I))*ICEBANK(I)            ! Note: ICETHICKNESSCHANGE is negative
                         IF(I==IU .AND. US(JB) < IU)THEN    ! CHECK SUBTRACTED SEGMENTS THAT MAY HAVE ICE, MELT THEM AND PUT WATER IN SEGMENT IU
                             DO II=US(JB),IU-1
-                                ICEQSS(IU)=ICEQSS(IU)-(ICETHICKNESSCHANGE/ICETH(IU))*ICEBANK(II)*0.917/DLT
+                                ICEQSS(IU)=ICEQSS(IU)-(ICETHICKNESSCHANGE/ICETH(IU))*ICEBANK(II)*0.917/DLT 
                                 ICEBANK(II)=(1.+ICETHICKNESSCHANGE/ICETH(IU))*ICEBANK(II)
                             ENDDO
                         ENDIF
                     ENDIF
                   ENDIF
                   !VolIce(jb)=VolIce(jb)+iceqss(i)*dlt   ! since this flow is not exercised until the next time step - moved code to main program calculation of qss
-                 ENDIF
-
+                 ENDIF 
+                  
                 IF (ICETH(I) < ICE_TOL) ICETH(I) = 0.0D0
      !           IF (WINTER .AND. (.NOT. ICE_IN(JB))) THEN            ! RC 4/28/11 No reason for this
      !             IF (.NOT. ALLOW_ICE(I)) ICETH(I) = 0.0
      !           END IF
                 ICE(I)   = ICETH(I) > 0.0
                 IF (ICE(I))THEN    ! 3/27/08 SW
-                 ICESW(I) = 0.0
+                 ICESW(I) = 0.0   ! wind shear if ice is zero
                  ELSE
                  ICESW(I) = 1.0
                 ENDIF
@@ -226,11 +291,11 @@ DO JW=1,NWB
                 ICETH1   = 0.0
                 ICETH2   = 0.0
                 IF (ICETH(I) < ICE_TOL .AND. ICETH(I) > 0.0) ICETH(I) = ICE_TOL
-              ELSE                                                         ! IF no ice the preceding time step
+              ELSE                             ! for non-detailed model                ! IF no ice the preceding time step
                 IF(TERM_BY_TERM(JW))CALL EQUILIBRIUM_TEMPERATURE           ! SW 10/20/09 Must call this first otherwise ET and CSHE are 0
                 HIA      = 0.2367D0*CSHE(I)/5.65D-8                          ! JM 11/08 convert SI units of m/s to English (btu/ft2/d/F) and then back to SI W/m2/C
 !                ICETH(I) = MAX(0.0,ICETH(I)+DLT*((RIMT-ET(I))/(ICETH(I)/RK1+1.0/HIA)-(T2(KT,I)-RIMT))/RHOIRL1)
-                ICETH(I) = MAX(0.0, ICETH(I)+DLT*((RIMT-ET(I))/(ICETH(I)/RK1+1.0/HIA)-HWI(JW)*(T2(KT,I)-RIMT))/RHOIRL1)   ! SW 10/20/09 Revised missing HWI(JW)
+                ICETH(I) = MAX(0.0,ICETH(I)+DLT*((RIMT-ET(I))/(ICETH(I)/RK1+1.0D0/HIA)-HWI(JW)*(T2(KT,I)-RIMT))/RHOIRL1)   ! SW 10/20/09 Revised missing HWI(JW)
                 ICE(I)   = ICETH(I) > 0.0
                 ICESW(I) = 1.0
                 IF (ICE(I)) THEN
@@ -399,7 +464,7 @@ IF(NIT==0)THEN
         CALL TEMPERATURE_RATES
         CALL KINETIC_RATES
         IF(CDWBC(PH_DER,JW)=='      ON')CALL PH_CO2
-        ENDDO
+        ENDDO        
         CALL DERIVED_CONSTITUENTS
         ENDDO
     ENDIF
@@ -423,15 +488,15 @@ ENDIF
      !   SSB  => TSS(:,:)
      !   SSK  => CSSB(:,:,1)
      !   CALL HORIZONTAL_TRANSPORT
-
+        
         DO I=IU,ID    !CONCURRENT(I=IU:ID)   !
         DO K=KT,KB(I)     !CONCURRENT(K=KT:KB(I))      !FORALL                                         !DO K=KT,KB(I)
         DT(K,I) = (COLD(K,I)*BH2(K,I)/DLT+(ADX(K,I)*BHR1(K,I)-ADX(K,I-1)*BHR1(K,I-1))/DLX(I)+(1.0D0-THETA(JW))                     &
                     *(ADZ(K,I)*BB(K,I)-ADZ(K-1,I)*BB(K-1,I))+TSS(K,I)/DLX(I))*DLT/BH1(K,I)
        END DO
        END DO
-
-
+        
+        
         DO I=IU,ID   !CONCURRENT(I=IU:ID)   !
           DO K=KT,KB(I)
             AT(K,I) = 0.0D0; CT(K,I) = 0.0D0; VT(K,I) = 0.0D0    !; DT(:,I) = 0.0D0    SW CODE SPEEDUP 6/15/13

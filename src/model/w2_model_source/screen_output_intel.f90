@@ -2,14 +2,16 @@
 !**                                                 F U N C T I O N   W I N M A I N                                               **
 !***********************************************************************************************************************************
 
-INTEGER*4 FUNCTION WINMAIN (HINSTANCE,HPREVINSTANCE,LPSZCMDLINE,NCMDSHOW)
+INTEGER FUNCTION WINMAIN (HINSTANCE,HPREVINSTANCE,LPSZCMDLINE,NCMDSHOW)
   !DEC$ IF DEFINED(_X86_)
   !DEC$ ATTRIBUTES STDCALL, ALIAS : '_WinMain@16' :: WINMAIN
   !DEC$ ELSE
   !DEC$ ATTRIBUTES STDCALL, ALIAS: 'WinMain':: WinMain
   !DEC$ ENDIF
-  USE DFLIB; USE DFWIN, RENAMED => DLT; USE DFLOGM
-  INTEGER(4) :: HINSTANCE, HPREVINSTANCE, LPSZCMDLINE, NCMDSHOW
+  use DFLIB
+ USE IFWIN, RENAMED => DLT; USE IFLOGM        !use DFLOGM
+ use dfwin
+  INTEGER(8) :: HINSTANCE, HPREVINSTANCE, LPSZCMDLINE, NCMDSHOW
 
   CALL W2_DIALOG
   WINMAIN = 0
@@ -21,13 +23,14 @@ END FUNCTION WINMAIN
 !***********************************************************************************************************************************
 
 subroutine W2_DIALOG
-  USE DFLOGM; USE MSCLIB
+  use IFLOGM
+ USE MSCLIB          !DFLOGM
   INTEGER       :: RESULT
   LOGICAL       :: RSO_EXISTS=.FALSE., RESTARTED, RESULTLOG
   TYPE (DIALOG) :: DLG
   EXTERNAL RUN_W2
 
-  RESTARTED = .FALSE.
+  RESTARTED = .FALSE.                                                                               
   OPEN (1,FILE='rso.opt',STATUS='OLD',IOSTAT=RESULT); CLOSE (1)                                   !Does restart file exist?
   RSO_EXISTS = RESULT == 0                                                                        !Restart file exists
   RESULTLOG = DLGINIT   (OUTPUT_DIALOG,DLG)                                                          !Initialize dialog box
@@ -55,7 +58,9 @@ END subroutine W2_DIALOG
 !***********************************************************************************************************************************
 
 SUBROUTINE RUN_W2 (DLG,CONTROL_NAME,ACTION)
-  USE DFWIN, RENAMED => DLT; USE DFLOGM; USE MSCLIB; USE GLOBAL, ONLY: CDATE, CCTIME;  USE MAIN, ONLY: END_RUN               !Rename DLT in DFWIN
+  USE IFWIN, RENAMED => DLT; use IFLOGM
+ use MSCLIB
+ USE GLOBAL, ONLY: CDATE, CCTIME;  USE MAIN, ONLY: END_RUN               !Rename DLT in DFWIN   DFLOGM  DFWIN
   IMPLICIT NONE
   INTEGER                             :: ACTION, IDTHREAD, CONTROL_NAME, I
   LOGICAL                             :: RESULT
@@ -65,9 +70,9 @@ SUBROUTINE RUN_W2 (DLG,CONTROL_NAME,ACTION)
   TYPE(DIALOG)                        :: DLG
   TYPE(T_SECURITY_ATTRIBUTES),POINTER :: NULL_SA
   INTERFACE
-    INTEGER(4) FUNCTION CE_QUAL_W2 (H)
+    INTEGER FUNCTION CE_QUAL_W2 (H)
     !DEC$ATTRIBUTES STDCALL :: CE_QUAL_W2
-      INTEGER H
+      INTEGER :: H
     END FUNCTION
   END INTERFACE
 
@@ -77,7 +82,7 @@ SUBROUTINE RUN_W2 (DLG,CONTROL_NAME,ACTION)
       CALL DATE_AND_TIME (CDATE,CCTIME)
       RESTART_PUSHED = .FALSE.
       STOP_PUSHED    = .FALSE.
-      HTHREAD        =  CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread
+      HTHREAD        =  CREATETHREAD (0,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread    CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))   
       TIME           =  CCTIME(1:2)//':'//CCTIME(3:4)//':'//CCTIME(5:6)
       RESULT         =  DLGSET (DLG,RUN,           .FALSE.,DLG_ENABLE)                             !Disable 'Run'     button
       RESULT         =  DLGSET (DLG,CLOSE,         .FALSE.,DLG_ENABLE)                             !Disable 'Run'     button
@@ -90,7 +95,7 @@ SUBROUTINE RUN_W2 (DLG,CONTROL_NAME,ACTION)
       CALL DATE_AND_TIME (CDATE,CCTIME)
       RESTART_PUSHED = .FALSE.
       STOP_PUSHED    = .FALSE.
-      HTHREAD        =  CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread
+      HTHREAD        =  CREATETHREAD (0,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread    CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))
       TIME           =  CCTIME(1:2)//':'//CCTIME(3:4)//':'//CCTIME(5:6)
       RESULT         =  DLGSET (DLG,RUN,           .FALSE.,DLG_ENABLE)                             !Disable 'Run'     button
       RESULT         =  DLGSET (DLG,CLOSE,         .FALSE.,DLG_ENABLE)                             !Disable 'Run'     button
@@ -108,7 +113,7 @@ SUBROUTINE RUN_W2 (DLG,CONTROL_NAME,ACTION)
       STOP_PUSHED    = .FALSE.
       RESTART_PUSHED = .TRUE.
       END_RUN        = .FALSE.
-      HTHREAD        =  CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread
+      HTHREAD        =  CREATETHREAD (0,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread    CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))    
       RESULT         =  DLGSET       (DLG,ENDING_TIME,   ' ')
       RESULT         =  DLGSET       (DLG,RUN,           .FALSE.,DLG_ENABLE)                       !Disable 'Run'     button
       RESULT         =  DLGSET       (DLG,CLOSE,         .FALSE.,DLG_ENABLE)                       !Disable 'Run'     button
@@ -158,7 +163,8 @@ ENTRY STOP_W2 (DLG,TEXT)
 END SUBROUTINE RUN_W2
 
 SUBROUTINE ENABLE (DLG)
-  USE DFWIN, RENAMED => DLT; USE DFLOGM; USE MSCLIB                                                !Rename DLT in DFWIN
+  USE DFWIN, RENAMED => DLT; use DFLOGM
+ USE MSCLIB                                                !Rename DLT in DFWIN
   LOGICAL :: RESULT                                                                                ! 9/27/07 SW
   TYPE(DIALOG) :: DLG
 
@@ -175,8 +181,19 @@ END SUBROUTINE ENABLE
 !***********************************************************************************************************************************
 
 SUBROUTINE SCREEN_UPDATE (DLG)
-  USE DFLOGM; USE DFLIB; USE MSCLIB; USE GEOMC; USE GLOBAL; USE GDAYC; USE SCREENC; USE SURFHE; USE TVDC; USE LOGICC; USE NAMESC
-  USE STRUCTURES; USE MAIN, ONLY:TMSTRT, TMEND
+  use IFLOGM
+ use DFLIB
+ use MSCLIB
+ use GEOMC
+ use GLOBAL
+ use GDAYC
+ use SCREENC
+ use SURFHE
+ use TVDC
+ use LOGICC
+ USE NAMESC    ! USE DFLOGM
+  use STRUCTURES
+ USE MAIN, ONLY:TMSTRT, TMEND; USE MetFileRegion
   IMPLICIT NONE
   CHARACTER(8)    :: TIME
   CHARACTER(3000) :: TEXT1
@@ -201,14 +218,30 @@ SUBROUTINE SCREEN_UPDATE (DLG)
   WRITE (TEXT1,'(I0)')                NIT;                        RESULT = DLGSET (DLG,ITERATIONS,                       TEXT1)
   WRITE (TEXT1,'(I0)')                NV;                         RESULT = DLGSET (DLG,TIMESTEP_VIOLATIONS,              TEXT1)
   WRITE (TEXT1,'(F0.2)')              FLOAT(NV)/FLOAT(NIT)*100.0; RESULT = DLGSET (DLG,PERCENT,                          TEXT1)
+  
+  if(.Not.Met_Regions)then
   WRITE (TEXT1,'(F0.2)')              TAIR(JW);                   RESULT = DLGSET (DLG,AIR_TEMPERATURE,                  TEXT1)
   WRITE (TEXT1,'(F0.2)')              TDEW(JW);                   RESULT = DLGSET (DLG,DEW_POINT_TEMPERATURE,            TEXT1)
   WRITE (TEXT1,'(F0.2)')              WIND(JW);                   RESULT = DLGSET (DLG,WIND_SPEED,                       TEXT1)
   WRITE (TEXT1,'(F0.2)')              PHI(JW);                    RESULT = DLGSET (DLG,WIND_DIRECTION,                   TEXT1)
   WRITE (TEXT1,'(F0.2)')              CLOUD(JW);                  RESULT = DLGSET (DLG,CLOUD_COVER,                      TEXT1)
+  else
+  WRITE (TEXT1,'(F0.2)')              TAIR(1);                   RESULT = DLGSET (DLG,AIR_TEMPERATURE,                  TEXT1)
+  WRITE (TEXT1,'(F0.2)')              TDEW(1);                   RESULT = DLGSET (DLG,DEW_POINT_TEMPERATURE,            TEXT1)
+  WRITE (TEXT1,'(F0.2)')              WIND(1);                   RESULT = DLGSET (DLG,WIND_SPEED,                       TEXT1)
+  WRITE (TEXT1,'(F0.2)')              PHI(1);                    RESULT = DLGSET (DLG,WIND_DIRECTION,                   TEXT1)
+  WRITE (TEXT1,'(F0.2)')              CLOUD(1);                  RESULT = DLGSET (DLG,CLOUD_COVER,                      TEXT1)    
+  endif
+  
+  
   WRITE (TEXT1,'(F0.1)')              ET(DS(JBDN(JW)));           RESULT = DLGSET (DLG,EQUILIBRIUM_TEMP,                 TEXT1)
   WRITE (TEXT1,'(F0.1)')              CSHE(DS(JBDN(JW)))*RHOWCP;  RESULT = DLGSET (DLG,SURFACE_HEAT_EXCHANGE,            TEXT1)
+    if(.Not.Met_Regions)then
   WRITE (TEXT1,'(F0.1)')              SRON(JW);                   RESULT = DLGSET (DLG,SOLAR_RADIATION,                  TEXT1)
+    else
+  WRITE (TEXT1,'(F0.1)')              SRON(1);                    RESULT = DLGSET (DLG,SOLAR_RADIATION,                  TEXT1)
+    endif
+    
   WRITE (TEXT1,'(A)')                 TIME;                       RESULT = DLGSET (DLG,CURRENT_TIME,                     TEXT1)
   WRITE (TEXT1,'(I0)')                KTWB(JW);                   RESULT = DLGSET (DLG,SURFACE_LAYER,                    TEXT1)
   WRITE (TEXT1,'(F0.2)')              ELKT(JW);                   RESULT = DLGSET (DLG,SURFACE_ELEVATION,                TEXT1)
@@ -226,12 +259,12 @@ SUBROUTINE SCREEN_UPDATE (DLG)
   WRITE (TEXT1,'(*(F0.2,2X))')        QSP;                        RESULT = DLGSET (DLG,SPILLWAYFLOW,                     TEXT1)
   WRITE (TEXT1,'(*(F0.2,2X))')        QPI;                        RESULT = DLGSET (DLG,PIPEFLOW,                         TEXT1)
   WRITE (TEXT1,'(*(F0.2,2X))')        QGT;                        RESULT = DLGSET (DLG,GATEFLOW,                         TEXT1)
-  WRITE (TEXT1,'(A180)')           MODDIR;                        RESULT = DLGSET (DLG,MODELDIRECTORY,                 TEXT1)
+  WRITE (TEXT1,'(A180)')           MODDIR;                        RESULT = DLGSET (DLG,MODELDIRECTORY,                 TEXT1) 
 
   WRITE (TEXT1,'(F0.2)')             (CURRENT)/60.0;              RESULT = DLGSET (DLG,CPU_TIMES,                        TEXT1)
   IF (MINDLT >= 1.0) WRITE (TEXT1,'(I0)') INT(MINDLT);            IF (MINDLT < 1.0) WRITE (TEXT1,'(F0.3)') MINDLT
   RESULT = DLGSET (DLG,MIN_TIMESTEP,                     TEXT1)
-
+  
   IPROG=INT(((JDAY-TMSTRT)/(TMEND-TMSTRT))*100)   ! range is 0 to 100
   RESULT = DLGSET (DLG,PROGRESSBAR,IPROG,DLG_POSITION)
 RETURN
@@ -260,3 +293,4 @@ ENTRY BLANK_DIALOG (DLG)
   RESULT = DLGSET (DLG,PUMPFLOW,             ' ');                RESULT = DLGSET (DLG,MODELDIRECTORY,             ' ')
   RESULT = DLGSET (DLG,PROGRESSBAR,0,DLG_POSITION)
 END SUBROUTINE SCREEN_UPDATE
+
