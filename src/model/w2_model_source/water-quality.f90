@@ -85,7 +85,7 @@ SUBROUTINE KINETICS
             READ(2450,*)
             READ(2450,*)KHS_ALG,(I_ALG(N),N=1,NAL)
             OPEN(ALGRED,FILE='AlgaeRedFactorOutput.csv',status='unknown')
-            WRITE(ALGRED,'(A,f8.3,a,<NAL>(a,i3,a,i3,a))')'JDAY,I,AlgSum(surface)gm-3,ReductionFactor, KHS=,',khs_alg,',Active algae groups(=1):,',('Group:',N,'(',i_alg(n),')',n=1,nal)
+            WRITE(ALGRED,'(A,f8.3,a,*(a,i3,a,i3,a))')'JDAY,I,AlgSum(surface)gm-3,ReductionFactor, KHS=,',khs_alg,',Active algae groups(=1):,',('Group:',N,'(',i_alg(n),')',n=1,nal)
         ELSE
             REDUCE_GAS_TRANSFER = .FALSE.
         ENDIF
@@ -738,8 +738,8 @@ ENTRY KINETIC_RATES
                 ENDIF
                 IF(ALGMIGRATION_DEBUG==1)WRITE(2451,'("Model2:,",3(I3,","),3(F15.5,","))')K,I,JA,JDAY,ASETTLE(K,I,JA)
             ELSEIF(MIGRATE_MODEL(MIGI) == 3)THEN    ! DENSITY CHANGE VELOCITY
-                VISCK = DEXP((T2(K,I)+495.691)/(-37.3877)) ! dynamic viscosity of water
-                IF (T2(K,I) > 30.0)  VISCK = DEXP((T2(K,I)+782.190)/(-57.7600))
+                VISCK = EXP((T2(K,I)+495.691)/(-37.3877)) ! dynamic viscosity of water
+                IF (T2(K,I) > 30.0)  VISCK = EXP((T2(K,I)+782.190)/(-57.7600))
                 IF(NITWQ == 1)THEN ! SET INITIAL DENSITY
                     IF(K==KT)THEN
                         DEN(K,I,NITWQ,MIGI) = DENSI(MIGI)
@@ -749,7 +749,7 @@ ENTRY KINETIC_RATES
                     ELSE
                         DEN(K,I,NITWQ,MIGI) = DENSI(MIGI)+(DENBI(MIGI)-DENSI(MIGI))*(1.-EXP(-DEPTHM(K,I)));
                     ENDIF
-                    RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
+                    RHO(K,I) = DENSITY(T2(K,I),MAX(TDS(K,I),0.0),MAX(TISS(K,I),0.0))
                     ASETTLE(K,I,JA) = 2.*G*(RAD(MIGI)**2)*(DEN(K,I,NITWQ,MIGI)/RHO(K,I)-1.)/(9.*VISCK) ! stoke's settling velocity
                     ALLIM_OLD(K,I,MIGI) = ALLIM(K,I,JA)
                     IF(ALGMIGRATION_DEBUG==1)WRITE(2451,'("Model3:,",4(I6,","),4(F15.5,","))')K,I,JA,nitwq,JDAY,ASETTLE(K,I,JA),DEN_avg(K,I,MIGI),den(k,i,min(nitwq,ts_dec(migi)),migi)
@@ -757,7 +757,7 @@ ENTRY KINETIC_RATES
                     IF(K==KT .AND. I==IU) TWQ(NITWQ,MIGI)=JDAY
                     if(den(k,i,nitwq-1,migi)<=0)then
                         den(k,i,nitwq-1,migi) = den(k+1,i,nitwq-1,migi)
-                        RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
+                        RHO(K,I) = DENSITY(T2(K,I),MAX(TDS(K,I),0.0),MAX(TISS(K,I),0.0))
                         allim_old(k,i,migi)=allim(k,i,migi)
                     endif
                     DEN(K,I,NITWQ,MIGI) = (C_DENINC(MIGI)*ALLIM_OLD(K,I,MIGI)-C_DENDEC(MIGI))*(JDAY-TWQ(NITWQ-1,MIGI))*86400. + DEN(K,I,NITWQ-1,MIGI) ! new colony density
@@ -784,7 +784,7 @@ ENTRY KINETIC_RATES
                     DEN(K,I,1:TS_DEC(MIGI)-1,MIGI) = DEN(K,I,2:TS_DEC(MIGI),MIGI)
                     if(den(k,i,ts_dec(migi)-1,migi)<=0)then
                         den(k,i,ts_dec(migi)-1,migi) = den(k+1,i,ts_dec(migi)-1,migi)
-                        RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
+                        RHO(K,I) = DENSITY(T2(K,I),MAX(TDS(K,I),0.0),MAX(TISS(K,I),0.0))
                         allim_old(k,i,migi)=allim(k,i,migi)
                     endif
                     DEN(K,I,TS_DEC(MIGI),MIGI) = (C_DENINC(MIGI)*ALLIM_OLD(K,I,MIGI)-C_DENDEC(MIGI))*(JDAY-TWQ(ts_dec(migi)-1,MIGI))*86400. + DEN(K,I,TS_DEC(MIGI)-1,MIGI) ! new colony density
@@ -805,8 +805,8 @@ ENTRY KINETIC_RATES
                     IF(ALGMIGRATION_DEBUG==1)WRITE(2451,'("Model3:,",4(I6,","),4(F15.5,","))')K,I,JA,nitwq,JDAY,ASETTLE(K,I,JA),DEN_avg(K,I,MIGI),den(k,i,min(nitwq,ts_dec(migi)),migi)
                 ENDIF
             ELSE     ! DENSITY CHANGE VELOCITY (VISSER)
-                VISCK = DEXP((T2(K,I)+495.691)/(-37.3877)) ! dynamic viscosity of water
-                IF (T2(K,I) > 30.0)  VISCK = DEXP((T2(K,I)+782.190)/(-57.7600))
+                VISCK = EXP((T2(K,I)+495.691)/(-37.3877)) ! dynamic viscosity of water
+                IF (T2(K,I) > 30.0)  VISCK = EXP((T2(K,I)+782.190)/(-57.7600))
                 DENP_MIN(K) = DENP_MINS(MIGI) + (DEPTHM(K,I)/DEPTHB(KB(I),I))*(DENP_MINB(MIGI)-DENP_MINS(MIGI))
                 IF(NITWQ == 1)THEN ! SET INITIAL DENSITY
                     IF(K==KT)THEN
@@ -816,7 +816,7 @@ ENTRY KINETIC_RATES
                     ELSE
                         DEN1(K,I,MIGI) = DENSI(MIGI)+(DENBI(MIGI)-DENSI(MIGI))*(1-EXP(-DEPTHM(K,I)));
                     ENDIF
-                    RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
+                    RHO(K,I) = DENSITY(T2(K,I),MAX(TDS(K,I),0.0),MAX(TISS(K,I),0.0))
                     ASETTLE(K,I,JA) = 2.*G*(RAD(MIGI)**2)*(DEN1(K,I,MIGI)/RHO(K,I)-1.)/(9.*VISCK) ! stoke's settling velocity
                     if(abs(asettle(k,i,ja))>1000.) asettle(k,1,ja)=0.0
                     DENP(K,I,MIGI) = DENP_MIN(K)
@@ -827,7 +827,7 @@ ENTRY KINETIC_RATES
                     if(den1(k,i,migi)<=0)then
                         den1(k,i,migi) = den1(k+1,i,migi)
                         denp(k,i,migi) = denp(k+1,i,migi)
-                        RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
+                        RHO(K,I) = DENSITY(T2(K,I),MAX(TDS(K,I),0.0),MAX(TISS(K,I),0.0))
                     endif
                     LAM3=LOLD(I,MIGI)
                     LAM4 = LAM3
