@@ -18,6 +18,7 @@ SUBROUTINE TIME_VARYING_DATA
   USE modSYSTDG, ONLY: TWETSC, TWEFN, TWE_TS;
   USE TDGAS                                     ! systdg
   use path
+  use posix
   IMPLICIT NONE
 
 ! Type declaration
@@ -366,7 +367,7 @@ SUBROUTINE TIME_VARYING_DATA
         DO WHILE (.NOT. INPUT_FILE_EXISTS)                                                                              !SR 11/28/19
           WRITE (*,'(3A)')    'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'                 !SR 11/28/19
           WRITE (9911,'(3A)') 'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'                 !SR 11/28/19
-          CALL SLEEP(WAIT_TIME)
+          call c_sleep(WAIT_TIME)
           INQUIRE (FILE=TRIM(FULL_FILE_NAME), EXIST=INPUT_FILE_EXISTS)                                                  !SR 11/28/19
         END DO                                                                                                          !SR 11/28/19
         RESULT1 = copy_file(TRIM(FULL_FILE_NAME), ".")
@@ -376,7 +377,7 @@ SUBROUTINE TIME_VARYING_DATA
         LAST_JDAY = GET_LAST_JDAY(QTRFN(JT))                                  ! Find last JDAY in input file            !SR 11/28/19
         DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file           !SR 11/28/19
           WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input QTR',JT,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND       !SR 11/28/19
-          CALL SLEEP(WAIT_TIME)                                                                                  !SR 11/28/19
+          call c_sleep(WAIT_TIME)                                                                                  !SR 11/28/19
           RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory        !SR 11/28/19
           WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                             !SR 11/28/19
           IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QTR',JT)              ! Problem with copy; write msg and stop   !SR 11/28/19
@@ -399,7 +400,7 @@ SUBROUTINE TIME_VARYING_DATA
         DO WHILE (.NOT. INPUT_FILE_EXISTS)                                                                              !SR 11/28/19
           WRITE (*,'(3A)')    'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'                 !SR 11/28/19
           WRITE (9911,'(3A)') 'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'                 !SR 11/28/19
-          CALL SLEEP(WAIT_TIME)
+          call c_sleep(WAIT_TIME)
           INQUIRE (FILE=TRIM(FULL_FILE_NAME), EXIST=INPUT_FILE_EXISTS)                                                  !SR 11/28/19
         END DO                                                                                                          !SR 11/28/19
         RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                     ! Copy file into current directory        !SR 11/28/19
@@ -409,7 +410,7 @@ SUBROUTINE TIME_VARYING_DATA
         LAST_JDAY = GET_LAST_JDAY(TTRFN(JT))                                  ! Find last JDAY in input file            !SR 11/28/19
         DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file           !SR 11/28/19
           WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input TTR',JT,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND       !SR 11/28/19
-          CALL SLEEP(WAIT_TIME)
+          call c_sleep(WAIT_TIME)
           RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory        !SR 11/28/19
           WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                             !SR 11/28/19
           IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TTR',JT)              ! Problem with copy; write msg and stop   !SR 11/28/19
@@ -435,7 +436,7 @@ SUBROUTINE TIME_VARYING_DATA
           DO WHILE (.NOT. INPUT_FILE_EXISTS)                                                                            !SR 11/28/19
             WRITE (*,'(3A)')    'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'               !SR 11/28/19
             WRITE (9911,'(3A)') 'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'               !SR 11/28/19
-            CALL SLEEP(WAIT_TIME)
+            call c_sleep(WAIT_TIME)
             INQUIRE (FILE=TRIM(FULL_FILE_NAME), EXIST=INPUT_FILE_EXISTS)                                                !SR 11/28/19
           END DO                                                                                                        !SR 11/28/19
           RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                    ! Copy file into current directory       !SR 11/28/19
@@ -445,7 +446,7 @@ SUBROUTINE TIME_VARYING_DATA
           LAST_JDAY = GET_LAST_JDAY(CTRFN(JT))                                 ! Find last JDAY in input file           !SR 11/28/19
           DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER) ! Not enough data in input file          !SR 11/28/19
             WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input CTR',JT,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND     !SR 11/28/19
-            CALL SLEEP(WAIT_TIME)
+            call c_sleep(WAIT_TIME)
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                  ! Copy file into current directory       !SR 11/28/19
             WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                           !SR 11/28/19
             IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CTR',JT)             ! Problem with copy; write msg and stop  !SR 11/28/19
@@ -550,7 +551,7 @@ SUBROUTINE TIME_VARYING_DATA
             DO WHILE (.NOT. INPUT_FILE_EXISTS)                                                                          !SR 11/28/19
               WRITE (*,'(3A)')    'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'             !SR 11/28/19
               WRITE (9911,'(3A)') 'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'             !SR 11/28/19
-              CALL SLEEP(WAIT_TIME)
+              call c_sleep(WAIT_TIME)
               INQUIRE (FILE=TRIM(FULL_FILE_NAME), EXIST=INPUT_FILE_EXISTS)                                              !SR 11/28/19
             END DO                                                                                                      !SR 11/28/19
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                     ! Copy file into current directory    !SR 11/28/19
@@ -560,7 +561,7 @@ SUBROUTINE TIME_VARYING_DATA
             LAST_JDAY = GET_LAST_JDAY(QINFN(JB))                                  ! Find last JDAY in input file        !SR 11/28/19
             DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file       !SR 11/28/19
               WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input QIN',JB,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND   !SR 11/28/19
-              CALL SLEEP(WAIT_TIME)
+              call c_sleep(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory    !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
               IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QIN',JB)              ! Problem with copy; write msg, stop  !SR 11/28/19
@@ -583,7 +584,7 @@ SUBROUTINE TIME_VARYING_DATA
             DO WHILE (.NOT. INPUT_FILE_EXISTS)                                                                          !SR 11/28/19
               WRITE (*,'(3A)')    'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'             !SR 11/28/19
               WRITE (9911,'(3A)') 'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'             !SR 11/28/19
-              CALL SLEEP(WAIT_TIME)
+              call c_sleep(WAIT_TIME)
               INQUIRE (FILE=TRIM(FULL_FILE_NAME), EXIST=INPUT_FILE_EXISTS)                                              !SR 11/28/19
             END DO                                                                                                      !SR 11/28/19
             RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                     ! Copy file into current directory    !SR 11/28/19
@@ -593,7 +594,7 @@ SUBROUTINE TIME_VARYING_DATA
             LAST_JDAY = GET_LAST_JDAY(TINFN(JB))                                  ! Find last JDAY in input file        !SR 11/28/19
             DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER)  ! Not enough data in input file       !SR 11/28/19
               WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input TIN',JB,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND   !SR 11/28/19
-              CALL SLEEP(WAIT_TIME)
+              call c_sleep(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                   ! Copy file into current directory    !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
               IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TIN',JB)              ! Problem with copy; write msg, stop  !SR 11/28/19
@@ -619,7 +620,7 @@ SUBROUTINE TIME_VARYING_DATA
               DO WHILE (.NOT. INPUT_FILE_EXISTS)                                                                        !SR 11/28/19
                 WRITE (*,'(3A)')    'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'           !SR 11/28/19
                 WRITE (9911,'(3A)') 'Input file ', TRIM(FULL_FILE_NAME), ' does not exist (yet).  Waiting...'           !SR 11/28/19
-                CALL SLEEP(WAIT_TIME)
+                call c_sleep(WAIT_TIME)
                 INQUIRE (FILE=TRIM(FULL_FILE_NAME), EXIST=INPUT_FILE_EXISTS)                                            !SR 11/28/19
               END DO                                                                                                    !SR 11/28/19
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                    ! Copy file into current directory   !SR 11/28/19
@@ -629,7 +630,7 @@ SUBROUTINE TIME_VARYING_DATA
               LAST_JDAY = GET_LAST_JDAY(CINFN(JB))                                 ! Find last JDAY in input file       !SR 11/28/19
               DO WHILE (LAST_JDAY <= TMEND-0.5 .AND. JDAY > LAST_JDAY-TIME_BUFFER) ! Not enough data in input file      !SR 11/28/19
                 WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input CIN',JB,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND !SR 11/28/19
-                CALL SLEEP(WAIT_TIME)
+                call c_sleep(WAIT_TIME)
                 RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                  ! Copy file into current directory   !SR 11/28/19
                 WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                       !SR 11/28/19
                 IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CIN',JB)             ! Problem with copy; write msg, stop !SR 11/28/19
@@ -1485,7 +1486,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                       (LAST_JDAY  > TMEND-0.5 .AND. LAST_JDAY < TMEND .AND. ITER < 3)) ! Not enough data in input file  !SR 11/28/19
               ITER = ITER + 1                                                                                           !SR 11/28/19
               WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input QTR',JT,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND   !SR 11/28/19
-              CALL SLEEP(WAIT_TIME)
+              call c_sleep(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                 ! Copy file into current directory      !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
               IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QTR',JT)            ! Problem with copy; write msg, stop    !SR 11/28/19
@@ -1566,7 +1567,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                       (LAST_JDAY  > TMEND-0.5 .AND. LAST_JDAY < TMEND .AND. ITER < 3)) ! Not enough data in input file  !SR 11/28/19
               ITER = ITER + 1                                                                                           !SR 11/28/19
               WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input TTR',JT,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND   !SR 11/28/19
-              CALL SLEEP(WAIT_TIME)
+              call c_sleep(WAIT_TIME)
               RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                 ! Copy file into current directory      !SR 11/28/19
               WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                         !SR 11/28/19
               IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TTR',JT)            ! Problem with copy; write msg, stop    !SR 11/28/19
@@ -1673,7 +1674,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                         (LAST_JDAY  > TMEND-0.5 .AND. LAST_JDAY < TMEND .AND. ITER < 3)) ! Not enough data in input file!SR 11/28/19
                 ITER = ITER + 1                                                                                         !SR 11/28/19
                 WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input CTR',JT,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND !SR 11/28/19
-                CALL SLEEP(WAIT_TIME)
+                call c_sleep(WAIT_TIME)
                 RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                 ! Copy file into current directory    !SR 11/28/19
                 WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                       !SR 11/28/19
                 IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CTR',JT)            ! Problem with copy; write msg, stop  !SR 11/28/19
@@ -1777,7 +1778,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                           (LAST_JDAY  > TMEND-0.5 .AND. LAST_JDAY < TMEND .AND. ITER < 3)) ! Not enough data in file    !SR 11/28/19
                   ITER = ITER + 1                                                                                       !SR 11/28/19
                   WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input QIN',JB,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND !SR 11/28/19
-                  CALL SLEEP(WAIT_TIME)
+                  call c_sleep(WAIT_TIME)
                   RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                ! Copy file into current directory   !SR 11/28/19
                   WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                     !SR 11/28/19
                   IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('QIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
@@ -1854,7 +1855,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                           (LAST_JDAY  > TMEND-0.5 .AND. LAST_JDAY < TMEND .AND. ITER < 3)) ! Not enough data in file    !SR 11/28/19
                   ITER = ITER + 1                                                                                       !SR 11/28/19
                   WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input TIN',JB,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND !SR 11/28/19
-                  CALL SLEEP(WAIT_TIME)
+                  call c_sleep(WAIT_TIME)
                   RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')                ! Copy file into current directory   !SR 11/28/19
                   WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                     !SR 11/28/19
                   IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('TIN',JB)           ! Problem with copy; write msg, stop !SR 11/28/19
@@ -1952,7 +1953,7 @@ ENTRY READ_INPUT_DATA (NXTVD)
                             (LAST_JDAY  > TMEND-0.5 .AND. LAST_JDAY < TMEND .AND. ITER < 3)) ! Not enough data in file  !SR 11/28/19
                     ITER = ITER + 1                                                                                     !SR 11/28/19
                     WRITE (9911,'(A,I0,3(A,F0.4))') 'WAIT: Input CIN',JB,' DAY= ',LAST_JDAY,' JDAY= ',JDAY,' TMEND= ',TMEND !SR 11/28/19
-                    CALL SLEEP(WAIT_TIME)
+                    call c_sleep(WAIT_TIME)
                     RESULT1 = copy_file(TRIM(FULL_FILE_NAME), '.')              ! Copy file into current directory   !SR 11/28/19
                     WRITE (9911,'(F12.4,2X,A,A)') JDAY, 'COPY ', TRIM(FULL_FILE_NAME)                                   !SR 11/28/19
                     IF (RESULT1 /= 0) CALL PRINT_ERROR_AND_STOP('CIN',JB)         ! Problem with copy; write msg, stop !SR 11/28/19

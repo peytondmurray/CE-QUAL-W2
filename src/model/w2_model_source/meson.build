@@ -23,7 +23,7 @@ sources = [
   'density.f90',
   'endsimulation.F90',
   'envir_perf.f90',
-  # 'fish-particle.f90',
+  # 'fish-particle.f90', # <-- not part of the current v4.5 build on the W2 main site
   'fishhabitat.f90',
   'gas-transfer.f90',
   'heat-exchange.f90',
@@ -38,7 +38,7 @@ sources = [
   'output.f90',
   'outputa2w2tools.F90',
   'outputinitw2tools.F90',
-  # 'particle.f90',
+  'particle.f90',
   'restart.f90',
   # 'screen_output_intel.f90', # <-- only needed if GUI is being built
   'shading.f90',
@@ -57,6 +57,7 @@ sources = [
   # 'Resource.fd',
   'path.F90',
   'gate-spill-pipe.f90',
+  'sleep.f90',
 ]
 
 add_project_arguments(

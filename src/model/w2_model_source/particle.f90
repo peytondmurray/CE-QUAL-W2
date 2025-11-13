@@ -24,7 +24,6 @@ Module Fishy
       DOUBLE PRECISION FXHVCOUNT,FXVVCOUNT,FXDOCOUNT,FXTPCOUNT,FXRDCOUNT,TOTFXWGT
       DOUBLE PRECISION FZHVCOUNT,FZVVCOUNT,FZDOCOUNT,FZTPCOUNT,FZRDCOUNT,TOTFZWGT
       DOUBLE PRECISION FX00COUNT,FZ00COUNT,nfsfreq,RUNDIFF
-      REAL ::   wmax,zmin,zmax  ! SW 2/16/01
       REAL            FXLOC,FYLOC,FZLOC,XREFL,YREFL,ZBOTREFL,ZSURREFL
       REAL            UFISH,VFISH,WFISH,FYVEL,ALPHAX,ALPHAZ
       REAL            OUTFREQ,JDAYDIFF,TSETP2MULT
@@ -78,6 +77,8 @@ Module Fishy
       INTEGER         VARYHVEL,VARYVVEL,FATPT
       INTEGER         FSNAG,NET,SND
       integer         nfishpcel,nfishseg,ncollector    ! SW 1/16/01
+      integer, allocatable, save, DIMENSION (:) :: TOTELE,TOTBRNN
+
 
       CHARACTER*2     AMPM
       CHARACTER*4     TXTNULLWQ,TXTNULLFF,TXTSTIMRULE,TXTVELORULE,&
@@ -110,6 +111,8 @@ Module Fishy
       LOGICAL, ALLOCATABLE, DIMENSION(:) :: NEXT_BRANCH
 
       INTEGER :: DIAGFN=8001, DATADEBUGFN=8002, BARCHRTXFN=8003,BARCHRTZFN=8004,FINALFN=8005,INITIALFN=8006, NMONITORS
+      REAL, ALLOCATABLE, DIMENSION(:) :: FXLOCINIT,FZLOCINIT,SEDVELINIT,DELAYDATEINIT
+
 
 End Module Fishy
 
@@ -119,21 +122,31 @@ End Module Fishy
 !      FINDNEWBR,FISHPLOT,INTERCONST,INTERFLOWF
 
 
-      SUBROUTINE FISH
+SUBROUTINE FISH
 
-     USE SURFHE; Use Fishy; Use GDAYC;  Use SCREENC; Use GEOMC; USE GLOBAL;   Use MAIN, only: IWD, FISH_PARTICLE_EXIST, KBI
+   USE SURFHE
+   USE Fishy
+   USE GDAYC
+   USE SCREENC
+   USE GEOMC
+   USE GLOBAL
+   Use MAIN, only: IWD, FISH_PARTICLE_EXIST, KBI, RESTART_IN
      IMPLICIT NONE
 
      REAL :: DZ
      INTEGER :: JF,KK,N, IW, GROUPLAST
 
-  IF (NIT.EQ.0) THEN             ! The very first time the Subroutine FISH is called
-
+  IF (NIT.EQ.0 .or. restart_in) THEN             ! The very first time the Subroutine FISH is called; SW 6/2025
+      FXSENSPH=0.0;BXSENSPH=0.0;UZSENSPH=0.0;DZSENSPH=0.0;UFISH=0.0;VFISH=0.0;WFISH=0.0
 !***** Open 'Numerical Fish Surrogate' files
       Call Read_Fish_Data
       IF(.NOT.FISH_PARTICLE_EXIST)RETURN  !STOP ALL PROCESSING
-      OPEN (DIAGFN,FILE='DIAGNOSTICS.OUT',STATUS='UNKNOWN')                         !FISH
-      OPEN (DATADEBUGFN,FILE='DATADEBUG.OUT',STATUS='UNKNOWN')                           !FISH
+
+      OPEN (DIAGFN,FILE='Particle_Diagnostic.opt',STATUS='UNKNOWN')                         !FISH
+      if(debug)then
+      OPEN (DATADEBUGFN,FILE='Particle_Debug.opt',STATUS='UNKNOWN')                           !FISH
+      endif
+
       OPEN (FINALFN,file='finalparticle.csv',status='unknown')                             !FISH
       OPEN (INITIALFN,file='initialparticle.csv',status='unknown')
 
@@ -187,7 +200,7 @@ End Module Fishy
             FISHES(FN,4)  = 0.           ! FZLOC   = assumed to be zero for LINE
             fimp=fishes(fn,1)
             call whatjr
-            dz=h(fishes(fn,3),fjr)/nfishpcel
+            dz=h(int(fishes(fn,3)),fjr)/nfishpcel
             GROUPLAST=GROUP(FN)
             N=1
            else
@@ -361,10 +374,10 @@ End Module Fishy
 
         CALL RANDOM(SEED,RRR)                                           ! Subroutine which calculates a random number
 
-        FXSENSPH = (FBDYSEARCH * FSIZE) * RRR                           ! FXSENSPH = Leading edge of the sensory sphere
-        BXSENSPH = (BBDYSEARCH * FSIZE) * RRR                           ! BXSENSPH = Trailing edge of the sensory sphere
-        UZSENSPH = (UBDYSEARCH * FSIZE) * RRR                           ! UZSENSPH = Upper edge of the sensory sphere
-        DZSENSPH = (DBDYSEARCH * FSIZE) * RRR                           ! DZSENSPH = Lower edge of the sensory sphere
+        !FXSENSPH = (FBDYSEARCH * FSIZE) * RRR                           ! FXSENSPH = Leading edge of the sensory sphere   ! Not necessary just for random particles
+        !BXSENSPH = (BBDYSEARCH * FSIZE) * RRR                           ! BXSENSPH = Trailing edge of the sensory sphere
+        !UZSENSPH = (UBDYSEARCH * FSIZE) * RRR                           ! UZSENSPH = Upper edge of the sensory sphere
+        !DZSENSPH = (DBDYSEARCH * FSIZE) * RRR                           ! DZSENSPH = Lower edge of the sensory sphere
 
         CALL WHATJR                                                     ! What waterbody,JR, is the fish in?
         KTWBF = KTWB(FJR)                                                 ! Water Surface Layer of waterbody fish is located in
@@ -389,12 +402,12 @@ End Module Fishy
             XLOK = FXLOC                                      ! Location within Segment I where Variable Value is desired
             KLOK = FKMP                                       ! Layer K where Variable Value is desired
             ZLOK = FZLOC                                      ! Location within Layer K where Variable Value is desired
-            IF ((LOCATE.EQ.1).AND.(DIR.EQ.1)) XLOK=FXLOC+FXSENSPH       ! Location forward of Fish when Fish swimming DOWNstream
-            IF  (LOCATE.EQ.2)                 ZLOK=FZLOC+DZSENSPH       ! Location below Fish
-            IF ((LOCATE.EQ.3).AND.(DIR.EQ.1)) XLOK=FXLOC-BXSENSPH       ! Location behind Fish when Fish swimming DOWNstream
-            IF  (LOCATE.EQ.4)                 ZLOK=FZLOC-UZSENSPH       ! Location above Fish
-            IF ((LOCATE.EQ.1).AND.(DIR.EQ.-1)) XLOK=FXLOC-FXSENSPH      ! Location forward of Fish when Fish swimming UPstream
-            IF ((LOCATE.EQ.3).AND.(DIR.EQ.-1)) XLOK=FXLOC+BXSENSPH      ! Location behind Fish when Fish swimming UPstream
+            !IF ((LOCATE.EQ.1).AND.(DIR.EQ.1)) XLOK=FXLOC+FXSENSPH       ! Location forward of Fish when Fish swimming DOWNstream  ***Not necessary for particles only
+            !IF  (LOCATE.EQ.2)                 ZLOK=FZLOC+DZSENSPH       ! Location below Fish
+            !IF ((LOCATE.EQ.3).AND.(DIR.EQ.1)) XLOK=FXLOC-BXSENSPH       ! Location behind Fish when Fish swimming DOWNstream
+            !IF  (LOCATE.EQ.4)                 ZLOK=FZLOC-UZSENSPH       ! Location above Fish
+            !IF ((LOCATE.EQ.1).AND.(DIR.EQ.-1)) XLOK=FXLOC-FXSENSPH      ! Location forward of Fish when Fish swimming UPstream
+            !IF ((LOCATE.EQ.3).AND.(DIR.EQ.-1)) XLOK=FXLOC+BXSENSPH      ! Location behind Fish when Fish swimming UPstream
             CALL SPLINE                                                 ! Bilinear Spline Interpolation Subroutine
             IF (VARIABLE.EQ.1) FXVEL(LOCATE)     = VALUE                ! Horiz Vel at Location of Interest: (+) is Downstream !!!
             IF (VARIABLE.EQ.2) FZVEL(LOCATE)     = VALUE                ! Vert Vel at Location of Interest:  (+) is Downward !!!
@@ -408,11 +421,8 @@ End Module Fishy
      call lateral_velocity
 !        FYVEL = 0.0                                                     ! Lateral Velocity
 
-
 !  Calculate (Linear) Gradients within Fish Sensory Sphere:
-CALL PART_TRANSPORT
-
-
+     CALL PART_TRANSPORT
 
 !***************************************************************
 !  C H E C K   F O R   B O U N D A R Y   V I O L A T I O N S   *
@@ -530,8 +540,8 @@ CALL PART_TRANSPORT
    10   IF (FXLOC.GT.DLX(FIMP)) THEN
 
            IF(FIMP < DS(FNBP))THEN
-                FIMP = FIMP + 1
                 FXLOC = FXLOC-DLX(FIMP)
+                FIMP = FIMP + 1
            ELSEIF(FXVEL(5) > 0.0 .AND. DHS(FNBP)==0)THEN
               ! CHECK IF A BRANCH DOWNSTREAM TO PASS THE PARTICLE TO
                IF(NEXT_BRANCH(FNBP))THEN
@@ -635,7 +645,7 @@ CALL PART_TRANSPORT
                   end if
                else
                    if(fzloc.le.h(kti(fimp),fjr)+z(fimp))then
-                     if(z(fimp).gt.0.0)write(DATADEBUGFN,*)'Debug Error in vertical reflection:FN,I,K,JDAY',fn,fimp,fkmp,jday
+                     if(z(fimp).gt.0.0 .AND. DEBUG)write(DATADEBUGFN,*)'Debug Error in vertical reflection:FN,I,K,JDAY',fn,fimp,fkmp,jday
                    fzloc=(h(kti(fimp),fjr)+z(fimp))+h(fkmp,fjr)*(1-zsurrefl)
                    end if
                end if
@@ -666,9 +676,9 @@ CALL PART_TRANSPORT
             IF (FZLOC.GT.H(FKMP,FJR)) GOTO 30              ! Did fish move down more than one layer
           END IF
         ELSE IF (FZLOC.LT.0) THEN                      ! Did fish move up?  --  YES
-          IF (DEBUG) WRITE(DATADEBUGFN,*) 'FZLOC LT 0'
+          IF (DEBUG) WRITE(DATADEBUGFN,'(A,i5,f10.3,f10.3,i5,i5,f9.3)') 'FZLOC LT 0; fn,fzloc,fxloc,fimp,fkmp,jday:', fn,fzloc,fxloc,fimp,fkmp,jday
           IF (FKMP.EQ.(KTWBF+1)) THEN                   ! Is fish just below surface layer KTWBF?  --  YES
-            IF (DEBUG) WRITE(DATADEBUGFN,*) 'FKMP EQ KTWBF+1'
+            IF (DEBUG) WRITE(DATADEBUGFN,'(A,i5,f10.3,f10.3,i5,i5,f9.3)') 'FKMP EQ KTWBF+1; fn,fzloc,fxloc,fimp,fkmp,jday:', fn,fzloc,fxloc,fimp,fkmp,jday
             IF (ABS(FZLOC).GT.(H(KTWBF,FJR)-Z(FIMP))) THEN  ! Did fish move above water surface?  --  YES
               FROMKTBOT = (H(KTWBF,FJR)-Z(FIMP))*(1-ZSURREFL)
             ELSE                                       ! Did fish move above water surface?  --  NO
@@ -676,7 +686,7 @@ CALL PART_TRANSPORT
             END IF
             SURFCALC = 1
           ELSE IF (FKMP.EQ.KTWBF) THEN
-            IF (DEBUG) WRITE(DATADEBUGFN,*) 'FKMP EQ KTWBF'
+            IF (DEBUG) WRITE(DATADEBUGFN,'(A,i5,f10.3,f10.3,i5,i5,f9.3)') 'FKMP EQ KTWBF; fn,fzloc,fxloc,fimp,fkmp,jday:', fn,fzloc,fxloc,fimp,fkmp,jday
             IF ((ABS(FZLOC)+H(KTWBF,FJR)).GT.(H(KTWBF,FJR)-Z(FIMP))) THEN
               FROMKTBOT = (H(KTWBF,FJR)-Z(FIMP))*(1-ZSURREFL)
             ELSE
@@ -684,7 +694,7 @@ CALL PART_TRANSPORT
             END IF
             SURFCALC = 1
           ELSE IF (FKMP.LE.(KTWBF-1)) THEN
-            IF (DEBUG) WRITE(DATADEBUGFN,*) 'FKMP LE KTWBF-1'
+            IF (DEBUG) WRITE(DATADEBUGFN,'(A,i5,f10.3,f10.3,i5,i5,f9.3)') 'FKMP LE KTWBF-1; fn,fzloc,fxloc,fimp,fkmp,jday:', fn,fzloc,fxloc,fimp,fkmp,jday
             FROMKTBOT = 0.0
             DO 40 KK = KTWBF,(FKMP+1),-1
               FROMKTBOT = FROMKTBOT + H(KK,FJR)
@@ -697,7 +707,7 @@ CALL PART_TRANSPORT
             END IF
             SURFCALC = 1
           ELSE
-            IF (DEBUG) WRITE(DATADEBUGFN,*) 'ORDINARY FZLOC LT 0'
+            IF (DEBUG) WRITE(DATADEBUGFN,'(A,i5,f10.3,f10.3,i5,i5,f9.3)') 'ORDINARY FZLOC LT 0; fn,fzloc,fxloc,fimp,fkmp,jday:', fn,fzloc,fxloc,fimp,fkmp,jday
             FKMP = FKMP - 1
             FZLOC = H(FKMP,FJR) + FZLOC
             IF (FZLOC.LT.0) GOTO 30                    ! Did fish move up more than one layer - must improve this.
@@ -718,7 +728,7 @@ CALL PART_TRANSPORT
         ELSE
         END IF
         IF (FKMP.LT.KTI(FIMP)) THEN
-          WRITE(DATADEBUGFN,9350) FKMP,FZLOC,KTI(FIMP),(H(KTWBF,FJR)-Z(FIMP))
+          IF (DEBUG)WRITE(DATADEBUGFN,9350) FKMP,FZLOC,KTI(FIMP),(H(KTWBF,FJR)-Z(FIMP))
  9350     FORMAT('FKMP.LT.KTI(FIMP) ==> FKMP=',I6,' FZLOC=',F10.3&
                  ,' KTI(FIMP)=',I6,' and (H(KTWBF)-Z(FIMP))=',F10.3)
         END IF
@@ -734,7 +744,11 @@ CALL PART_TRANSPORT
 
       END IF
 
-   20 CONTINUE
+20    CONTINUE
+
+     UFISH=FXVEL(5)     ! Longitudinal velocity of fish relative to water
+     VFISH=FYVEL    ! Lateral velocity of fish relative to water
+     WFISH=FZVEL(5)
 
       call findnewbr
       FISHES(FN,1)  = REAL(FIMP)      ! Segment IMP where fish is located
@@ -755,7 +769,7 @@ CALL PART_TRANSPORT
       DO N=1,NMONITORS
           IF(MONITORONOFF(FN,N)==0)THEN
               IF(IMONITOR(N)==FIMP)THEN
-                  IF(XSHIFTMONITOR(N) >= FXLOC)THEN
+                  IF(XSHIFTMONITOR(N) <= FXLOC)THEN          !                  IF(XSHIFTMONITOR(N) >= FXLOC)THEN  SW 7/10/2024
                       MONITORONOFF(FN,N)=1
                       TMONITOR(FN,N)=JDAY
                   ENDIF
@@ -786,6 +800,7 @@ CALL PART_TRANSPORT
 
     SUBROUTINE NEXTBRANCH   ! SW 8/7/2016
     USE Fishy; Use GLOBAL; USE STRUCTURES
+    IMPLICIT NONE
     INTEGER :: JS, JG, JP
     NEXT_BRANCH=.FALSE.      ! Set all branch connections to FALSE
     DO JB=1,NBR
@@ -892,8 +907,8 @@ CALL PART_TRANSPORT
           END IF
   100   CONTINUE
         IF ((NR.GT.1).OR.(NL.GT.1)) THEN                        ! CHECK: Can only have one Branch join a segment from each side from the same side
-          WRITE(DATADEBUGFN,*) 'ERROR: More than 1 branch joining segment'
-          WRITE(DATADEBUGFN,9140) I
+          IF (DEBUG)WRITE(DATADEBUGFN,*) 'ERROR: More than 1 branch joining segment'
+          IF (DEBUG)WRITE(DATADEBUGFN,9140) I
  9140     FORMAT('ERROR occurred at segment ',I6)
           STOP
         ELSE
@@ -927,9 +942,9 @@ CALL PART_TRANSPORT
       ELSE
         TRIB = TRIB + 1
         IF (TRIB.GT.NBR) THEN                                 ! CHECK: TRIB can't be more
-          WRITE(DATADEBUGFN,*) 'ERROR: Finding new FNBP in Subroutine'  !        than NBR # BRANCHES
-          WRITE(DATADEBUGFN,*) 'ERROR: FIMP=',FIMP,' JDAY=',JDAY
-          WRITE(DATADEBUGFN,*) 'FIMP=FIMP-1'
+          IF (DEBUG)WRITE(DATADEBUGFN,*) 'ERROR: Finding new FNBP in Subroutine'  !        than NBR # BRANCHES
+          IF (DEBUG)WRITE(DATADEBUGFN,*) 'ERROR: FIMP=',FIMP,' JDAY=',JDAY
+          IF (DEBUG)WRITE(DATADEBUGFN,*) 'FIMP=FIMP-1'
           FIMP=FIMP-1
           GO TO 81
           !STOP
@@ -962,7 +977,7 @@ CALL PART_TRANSPORT
       WBDY = 0                                              ! WBDY = Water Body
    90 WBDY = WBDY + 1
       IF (WBDY.GT.NWB) THEN                                 ! CHECK: WBDY can't be more
-        WRITE(DATADEBUGFN,*) 'ERROR: Finding current WB in Subroutine'!        than NWB
+        IF (DEBUG)WRITE(DATADEBUGFN,*) 'ERROR: Finding current WB in Subroutine'!        than NWB
         STOP
       ELSE
       END IF
@@ -1007,7 +1022,7 @@ CALL PART_TRANSPORT
       Use FISHY
       USE GLOBAL
       Use GEOMC
-      Use SCREENC; USE MAIN, ONLY: KBI
+      Use SCREENC; USE MAIN, ONLY: KBI, RESTART_IN
 
       IMPLICIT NONE
 
@@ -1015,7 +1030,6 @@ CALL PART_TRANSPORT
       INTEGER     BRCHNN,KK,II,ND,ELE,EE,K
       INTEGER     TOTNN
       INTEGER     JOININGTRIB
-      integer, allocatable, save, DIMENSION (:) :: TOTELE,TOTBRNN
       logical, SAVE  ::  FEGRID
       REAL :: XDIST,ZDIST,VERTFLOW
 
@@ -1025,7 +1039,7 @@ CALL PART_TRANSPORT
       CHARACTER*4  :: FILE_SUFFIX='.dat'
       CHARACTER*12 FILENAME
 
-      IF (NIT.EQ.0)then
+      IF (NIT.EQ.0 .OR. RESTART_IN)then   ! SW 6/2025
       FEGRID = .FALSE.                  ! The first pass is used to set up the FE grid
       allocate(totele(NBR),totbrnn(NBR))    ! SW 1/14/01
       end if
@@ -1049,7 +1063,7 @@ CALL PART_TRANSPORT
             FILENAME=FILE_PREFIX//DTYP2//FILE_SUFFIX  !                64 Data Sets for Fish Display
  9220       FORMAT(I2)
             ELSE                                        ! CHECK
-            WRITE(DATADEBUGFN,*) 'ERROR: Exceeded Maximum Number of TecPlot Data Sets ==> # Data Sets = # of Branches'
+            IF (DEBUG)WRITE(DATADEBUGFN,*) 'ERROR: Exceeded Maximum Number of TecPlot Data Sets ==> # Data Sets = # of Branches'
             STOP
             END IF
 
@@ -1057,16 +1071,13 @@ CALL PART_TRANSPORT
             WRITE(20000+JB,9240) JB                           ! Creating Output File Header for TecPlot
  9240       FORMAT('TITLE = "GRID NODE INFO for Branch',I6,'"')
             WRITE(20000+JB,9270)                                ! Creating Output File Header for TecPlot
- 9270       FORMAT('VARIABLES = "X", "Z", "WATER", "HorizVel", "VertVel"&
-      , "Temp", "DO", "KLayer", "ISegment"')
+ 9270       FORMAT('VARIABLES = "X", "Z", "WATER", "HorizVel", "VertVel", "Temp", "DO", "KLayer", "ISegment"')
             WRITE(20000+JB,9250) JDAY,TOTBRNN(JB),TOTELE(JB)! Creating Output File Header for TecPlot
- 9250       FORMAT('ZONE T="JDAY ',F9.2,'", N=',I8,', E=',I8,&
-      ', F=FEPOINT, ET=QUADRILATERAL')
+ 9250       FORMAT('ZONE T="JDAY ',F9.2,'", N=',I8,', E=',I8,', F=FEPOINT, ET=QUADRILATERAL')
           ELSE                                                    ! Subsequent Passes thru Subroutine
             WRITE(20000+JB,*) ' '
             WRITE(20000+JB,9280) JDAY,TOTBRNN(JB),TOTELE(JB)
- 9280       FORMAT('ZONE T="JDAY ',F9.2,'", N=',I8,', E=',I8,&
-      ', F=FEPOINT, ET=QUADRILATERAL, D=(FECONNECT)')
+ 9280       FORMAT('ZONE T="JDAY ',F9.2,'", N=',I8,', E=',I8,', F=FEPOINT, ET=QUADRILATERAL, D=(FECONNECT)')
           END IF
    94     ZDIST = H(2,WB)                                            ! Begin Calculations to set up FE grid
           NNLAST = NN
@@ -1107,7 +1118,7 @@ CALL PART_TRANSPORT
                                (MILTIME.LE.SKYNIGHT)) THEN             ! During the Evening, the Sky is
                         WATER = -25                                    !   ORANGE
                       ELSE                                             ! CHECK
-                        WRITE(DATADEBUGFN,*) 'ERROR: MILTIME not Corresponding with Intervals Set for Determining Sky Color for TecPlot'
+                        IF (DEBUG)WRITE(DATADEBUGFN,*) 'ERROR: MILTIME not Corresponding with Intervals Set for Determining Sky Color for TecPlot'
                         STOP
                       END IF
                     ELSE
@@ -1291,10 +1302,12 @@ CALL PART_TRANSPORT
                 II = NDINFO(NN,4)                                  ! PRE-CHECK CALCULATION
                 IF ((I.NE.II).OR.(K.NE.KK)) THEN                   ! CHECK
 
+                  IF (DEBUG)THEN
                   WRITE(DATADEBUGFN,*) 'ERROR: Nodes not matching up for Constituent Interpolation'
                   write(DATADEBUGFN,*)'JDAY=',jday
                   write(DATADEBUGFN,*)'Waterbody=',wb,' Branch JB=', JB
                   write(DATADEBUGFN,*)'NN=',nn,' kk=',kk,' ii=',ii,' k=',k,' i=',i
+                  ENDIF
                   !STOP
                 !ELSE
                 END IF
@@ -1449,11 +1462,12 @@ CALL PART_TRANSPORT
                 NN = NN + 1                                        ! PRE-CHECK CALCULATION
                 KK = NDINFO(NN,3)                                  ! PRE-CHECK CALCULATION
                 II = NDINFO(NN,4)                                  ! PRE-CHECK CALCULATION
-                IF ((I.NE.II).OR.(K.NE.KK)) THEN                   ! CHECK
+                IF ((I.NE.II).OR.(K.NE.KK)) THEN
+                 IF (DEBUG)THEN      ! CHECK
                   WRITE(DATADEBUGFN,*) 'ERROR: Nodes not matching up for Flowfield Interpolation'
                   write(DATADEBUGFN,*)'WB=',wb,' JB=', JB
                   write(DATADEBUGFN,*)'NN=',nn,' kk=',kk,' ii=',ii,' k=',k,' i=',i
-
+                ENDIF
                   !STOP
                 !ELSE
                 END IF
@@ -1658,7 +1672,6 @@ CALL PART_TRANSPORT
           ENDDO
       ENDDO
 
-
       RETURN
       END
 
@@ -1739,7 +1752,7 @@ CALL PART_TRANSPORT
             FILENAME=FILE_PREFIX//FTYP2//FILE_SUFFIX  !                64 Data Sets for Fish Display
  9130       FORMAT(I2)
           ELSE                                        ! CHECK
-            WRITE(DATADEBUGFN,*) 'ERROR: Exceeded Maximum Number of TecPlot Data Sets ==># Data Sets = # of Branches'
+            IF (DEBUG)WRITE(DATADEBUGFN,*) 'ERROR: Exceeded Maximum Number of TecPlot Data Sets ==># Data Sets = # of Branches'
             STOP
           END IF
 
@@ -1916,6 +1929,7 @@ CALL PART_TRANSPORT
       END IF
 
       VALUE = XH1+(XH2-XH1)/DX*DV+(H3-XH1)/DY*DW+(H4-H3-XH2+XH1)/(DX*DY)*DV*DW
+      !IF(DEBUG)WRITE(DIAGFN,'("Variable:",I2," Value:",f10.3," ILOK:",i4," KLOK:",i4)')VARIABLE,VALUE,ILOK,KLOK
 
 !End Bilinear Spline Interpolation Algorithm
 
@@ -1939,9 +1953,9 @@ INTEGER :: CATCH,DINT,DINTLAST,CATCHDEPTH,DOTALLY,TEMPTALLY, FIJ, JF, TAGGED, FV
 
 ! final fish output
    IF(NMONITORS<10)THEN
-       write(FINALFN,'(A214,<NMONITORS>(A11,I1,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
+       write(FINALFN,'(A214,*(A11,I1,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
    ELSE
-       write(FINALFN,'(A214,<NMONITORS>(A11,I2,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
+       write(FINALFN,'(A214,*(A11,I2,","))')'Part#,Seg#,XLocationwithinSegmentfromUpstreamSide(m),Layer#,VerticalDistfromTop(m),LateralDistfromLeftBank,Branch#,ParticleInModel(=0),JDAYleftsystem,DetentionTime(days),RemovalMechanism,SedVelocity(m/d),DateStart,',('MonitorDate',I,I=1,NMONITORS) !Monitor2Date, Monitor3Date'
    ENDIF
 
     do jf=1,nfish
@@ -1952,7 +1966,7 @@ INTEGER :: CATCH,DINT,DINTLAST,CATCHDEPTH,DOTALLY,TEMPTALLY, FIJ, JF, TAGGED, FV
     CALL HISTOGRAM_OUTPUT
     close(FINALFN)
 ! End fish output section
-                                                             !FISH
+    CALL PARTICLE_DEALLOCATE                                           !FISH
 
       Return                                                               !FISH
 End Subroutine FishOutput
@@ -1964,7 +1978,6 @@ Subroutine Read_Fish_Data
 Use Fishy; Use SCREENC, ONLY:JDAY; USE MAIN, ONLY: FISH_PARTICLE_EXIST
 IMPLICIT NONE
 
-REAL, ALLOCATABLE, DIMENSION(:) :: FXLOCINIT,FZLOCINIT,SEDVELINIT,DELAYDATEINIT
 character*3 ALINE
 INTEGER :: NG,I,J,NA, IDEBUG, NFISHLAST,ILINEAR,HTSTBOT,HTSTSIDE
 
@@ -2238,12 +2251,22 @@ Subroutine Part_transport
 End Subroutine Part_transport
 
     Function Gasdev(idum3)
+IMPLICIT NONE
+INTEGER :: IDUM3,ISET,N,K,I
+REAL :: V1,V2,R,FAC,GSET,GASDEV
+real :: random_value
+    integer, allocatable, dimension(:) :: iseed
+
+    iseed = IDUM3
+    call random_seed(put=iseed)
 
 ! From S. Li, PSU, PArticle Transport Algorithm
       data iset /0/
       if (iset.eq.0)then
- 1       v1=2.*ran(idum3)-1
-	 v2=2.*ran(idum3)-1
+        call RANDOM_NUMBER(random_value)
+ 1       v1=2.*random_value-1
+     call RANDOM_NUMBER(random_value)
+	 v2=2.*random_value-1
 	 r=v1**2+v2**2
 	 if(r.ge.1)goto 1
 	 fac=sqrt(-2.*log(r)/r)
@@ -2336,7 +2359,9 @@ End Subroutine Part_transport
 !************************************
    SUBROUTINE HISTOGRAM
    USE Fishy; USE GLOBAL; USE GEOMC; USE MAIN, ONLY: KBI
-   REAL :: DepthParticle
+   IMPLICIT NONE
+   REAL :: DepthParticle,V_CRIT,D_CRIT,T_CRIT
+   INTEGER :: N,K
 
     N=FN   ! N IS THE FISH NUMBER - THIS ROUTINE IS CALLED FOR EACH FISH FN
    ! Velocity
@@ -2411,7 +2436,10 @@ End Subroutine Part_transport
 
     END SUBROUTINE HISTOGRAM
     SUBROUTINE HISTOGRAM_OUTPUT
-        USE Fishy
+        USE Fishy; USE ENVIRPMOD, only: CONE
+        integer :: N,I
+        real :: TEMP_C,VEL_C,D_C
+
         if(HIST_T)then
           DO N=1,NFISH
           if(t_cnt(N).gt.0.0)then
@@ -2423,7 +2451,7 @@ End Subroutine Part_transport
 
         open(CONE,file='envrprf_t_particle.csv',status='unknown')
         write(CONE,*)'Temperature interval,Fraction of time,Number of Particles:',nfish,','
-        write(CONE,'("Interval,",<NFISH>("Particle",i4,","))')(I,I=1,NFISH)   !"Interval,",<NFISH>("Particle",i4,",")
+        write(CONE,'("Interval,",*("Particle",i4,","))')(I,I=1,NFISH)   !"Interval,",<NFISH>("Particle",i4,",")
         temp_c=temp_top
           do i=1,numclass
           write(CONE,125)temp_c,(t_class(N,i)/sumvolt(N),N=1,NFISH)
@@ -2433,9 +2461,9 @@ End Subroutine Part_transport
           ENDDO
           end do
         write(CONE,'(1x)')
-        write(CONE,'(" Sum of fractions, ",<nfish>(e12.4,","))')(t_sum(N),N=1,NFISH)
+        write(CONE,'(" Sum of fractions, ",*(e12.4,","))')(t_sum(N),N=1,NFISH)
         write(CONE,'(1x)')
-        write(CONE,'(" Average, ",<nfish>(e12.4,","))')(t_avg(N), N=1,NFISH)
+        write(CONE,'(" Average, ",*(e12.4,","))')(t_avg(N), N=1,NFISH)
         close(CONE)
         end if
 
@@ -2449,7 +2477,7 @@ End Subroutine Part_transport
           ENDDO
         open(CONE,file='envrprf_v_particle.csv',status='unknown')
         write(CONE,*)'Velocity interval,Fraction of volume,Number of Particles:',nfish,','
-        write(CONE,'("Interval,",<NFISH>("Particle",i4,","))')(I,I=1,NFISH)
+        write(CONE,'("Interval,",*("Particle",i4,","))')(I,I=1,NFISH)
         vel_c=vel_top
           do i=1,numclass
           write(CONE,125)vel_c,(v_class(N,i)/sumvolt(N),N=1,NFISH)
@@ -2459,9 +2487,9 @@ End Subroutine Part_transport
           ENDDO
           end do
         write(CONE,'(1x)')
-        write(CONE,'(" Sum of fractions, ",<nfish>(e12.4,","))')(v_sum(N),N=1,NFISH)
+        write(CONE,'(" Sum of fractions, ",*(e12.4,","))')(v_sum(N),N=1,NFISH)
         write(CONE,'(1x)')
-        write(CONE,'(" Average, ",<nfish>(e12.4,","))')(v_avg(N),N=1,NFISH)
+        write(CONE,'(" Average, ",*(e12.4,","))')(v_avg(N),N=1,NFISH)
         close(CONE)
         end if
 
@@ -2476,7 +2504,7 @@ End Subroutine Part_transport
           END DO
         open(CONE,file='envrprf_depth_particle.csv',status='unknown')
         write(CONE,*)'Depth interval,Fraction of time,Number of Particles:',nfish,','
-        write(CONE,'("Interval,",<NFISH>("Particle",i4,","))')(I,I=1,NFISH)
+        write(CONE,'("Interval,",*("Particle",i4,","))')(I,I=1,NFISH)
         d_c=d_top
           do i=1,numclass
           write(CONE,125)d_c,(d_class(N,i)/d_cnt(N),n=1,nfish)
@@ -2486,15 +2514,40 @@ End Subroutine Part_transport
           ENDDO
           end do
         write(CONE,'(1x)')
-        write(CONE,'(" Sum of fractions, ",<nfish>(e12.4,","))')(d_sum(N), N=1,NFISH)
+        write(CONE,'(" Sum of fractions, ",*(e12.4,","))')(d_sum(N), N=1,NFISH)
         write(CONE,'(1x)')
-        write(CONE,'(" Average, ",<nfish>(e12.4,","))')(d_avg(N), N=1,NFISH)
+        write(CONE,'(" Average, ",*(e12.4,","))')(d_avg(N), N=1,NFISH)
         close(CONE)
         end if
 
-
-
-125       format((f8.2,',',<NFISH>(e12.4,',')))
+125       format((f8.2,',',*(e12.4,',')))
 
     RETURN
     END SUBROUTINE HISTOGRAM_OUTPUT
+   SUBROUTINE PARTICLE_DEALLOCATE
+    USE Fishy
+
+    DEAllocate(FISHES,WQFIELD,FLOWFIELD,NETCATCH,SNDCATCH,RIMPBR,LIMPBR, NODES,&
+           NDINFO,CORNERS,LASTFIELD,BRCHFISH,NBRF)
+    DEALLOCATE(NEXT_BRANCH,FNEXT)
+    DEallocate(totele,totbrnn)
+    DEAllocate(ifish,ifisht,ifishb,delaydateinit,fxlocinit,fzlocinit,sedvelinit)
+     DEALLOCATE (GROUP,FXLOCI,FZLOCI,DELAYDATE,SEDVEL)
+        IF(NUMCLASS /= 0)DEALLOCATE(SUMVOLT)
+        IF(VEL_INT /= 0.0)THEN
+            DEallocate (v_class)
+            DEALLOCATE(V_TOT,V_CNT,V_SUM,V_AVG)
+        ENDIF
+        IF(TEMP_INT /= 0.0)THEN
+             DEALLOCATE (T_TOT,T_CNT,T_SUM,T_AVG)
+             DEallocate (t_class)
+        ENDIF
+
+        IF(D_INT /= 0.0)THEN
+            DEALLOCATE (D_TOT,D_CNT,D_SUM,D_AVG)
+            DEallocate(d_class)
+        ENDIF
+           DEALLOCATE(IMONITOR,TMONITOR,XSHIFTMONITOR,MONITORONOFF)
+
+   RETURN
+   END SUBROUTINE PARTICLE_DEALLOCATE

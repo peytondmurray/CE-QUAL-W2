@@ -27,6 +27,7 @@ SUBROUTINE OUTPUTA
   use CEMAVars
   USE CEMAOutputRoutines
   USE ALGAE_TOXINS
+  USE posix
   IMPLICIT NONE
 
   EXTERNAL RESTART_OUTPUT
@@ -1184,19 +1185,19 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
         END DO
 2499      WRITE (WDO(J,1),'(F10.3,",",F9.3,",",8X,*(F9.3,","))',ERR=2500) JDAY, QWDO(J), (QOUTLET(I),I=1,NUMOUTLETS)     ! sw 3/2019 This code was necessary during multiple WB read/write possible error with one file copying and another writing at the same time
           GO TO 2501
-2500      CALL SLEEP(1)
+2500      CALL c_sleep(1)
           WRITE(9911,'(A,f12.3,A,f12.3,A,f12.3)')'ERROR writing qwo file output on JDAY',JDAY,' retrying read after pausing 0.1 s'
           go to 2499
 2501      CONTINUE
           WRITE (WDO(J,2),'(F10.3,",",F8.2,",",8X,*(F8.2,","))',ERR=2502) JDAY, TWDO(J), (TOUTLET(I),I=1,NUMOUTLETS)
           GO TO 2503
-2502      CALL SLEEP(1)
+2502      CALL c_sleep(1)
           WRITE(9911,'(A,f12.3,A,f12.3,A,f12.3)')'ERROR writing two file output on JDAY',JDAY,' retrying read after pausing 0.1 s'
           go to 2501
 2503      CONTINUE
           IF (CONSTITUENTS) WRITE (WDO(J,3),'(F10.3,",",*(A10,","))',ERR=2504) JDAY,(CWDOC(CN(JC)),     JC=1,NAC)
           GO TO 2505
-2504      CALL SLEEP(1)
+2504      CALL c_sleep(1)
           WRITE(9911,'(A,f12.3,A,f12.3,A,f12.3)')'ERROR writing cwo file output on JDAY',JDAY,' retrying read after pausing 0.1 s'
           go to 2503
 2505      CONTINUE
