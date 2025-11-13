@@ -7,8 +7,8 @@ Subroutine ReduceReaeration
   use GLOBAL
   use KINETIC
  USE AlgaeReduceGasTransfer
- 
-  
+
+
   IMPLICIT NONE
 real :: algsum
 

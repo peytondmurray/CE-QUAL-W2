@@ -106,7 +106,7 @@ MODULE STRUCTURES
   INTEGER,           ALLOCATABLE, DIMENSION(:)       :: IWR,    KTWR,   KBWR
   LOGICAL,           ALLOCATABLE, DIMENSION(:)       :: LATERAL_SPILLWAY, LATERAL_PIPE, LATERAL_GATE, LATERAL_PUMP, BEGIN, WLFLAG
   CHARACTER(8),      ALLOCATABLE, DIMENSION(:)       :: LATGTC, LATSPC, LATPIC, LATPUC, DYNGTC, DYNPIPE, DYNPUMP                         ! SW 5/10/10
-  CHARACTER(8)                                       :: GT2CHAR 
+  CHARACTER(8)                                       :: GT2CHAR
   REAL,          ALLOCATABLE, DIMENSION(:)     :: EPU,    STRTPU, ENDPU,  EONPU,  EOFFPU, QPU
   INTEGER,       ALLOCATABLE, DIMENSION(:)     :: IUPU,   IDPU,   KTPU,   KBPU,   JWUPU,  JWDPU,  JBUPU,  JBDPU
   real :: THR, OMEGA, EPS2
@@ -146,7 +146,7 @@ MODULE TVDC
 END MODULE TVDC
 MODULE KINETIC
   USE PREC
-  REAL                                               :: kdo, CO2PPM                        
+  REAL                                               :: kdo, CO2PPM
   REAL(R8),    POINTER,               DIMENSION(:,:)     :: TDS,    COL,    NH4,    NO3,    PO4,    FE,     DSI,    PSI,    LDOM
   REAL(R8),    POINTER,               DIMENSION(:,:)     :: RDOM,   LPOM,   RPOM,   O2,     TIC,    ALK
   REAL(R8),    POINTER,               DIMENSION(:,:)     :: COLSS,  NH4SS,  NO3SS,  PO4SS,  FESS,   DSISS,  PSISS,  LDOMSS
@@ -398,7 +398,7 @@ USE PREC
   REAL          :: TAIRV,EA,ES,DTV
   REAL          :: T2R4
   INTEGER       :: CON,    RSI,    GRF,  NDG=16             ! cb 1/26/09
-  integer       :: vsf,    sif 
+  integer       :: vsf,    sif
   LOGICAL       :: ADD_LAYER,      SUB_LAYER,          WARNING_OPEN,    ERROR_OPEN,      VOLUME_WARNING, SURFACE_WARNING
   LOGICAL       :: END_RUN,        BRANCH_FOUND,       NEW_PAGE,        UPDATE_KINETICS, UPDATE_RATES
   LOGICAL       :: WEIR_CALC,      DERIVED_CALC,       RESTART_IN,      RESTART_OUT
@@ -408,8 +408,8 @@ USE PREC
   CHARACTER(2)  :: DEG
   CHARACTER(3)  :: GDCH
   CHARACTER(8)  :: RSOC,   RSIC,   CCC,   LIMC,   WDOC,   TSRC,   EXT, SELECTC, CLOSEC, HABTATC,ENVIRPC, AERATEC, inituwl, DLTINTER      ! SW 7/31/09; 8/24/09
-  CHARACTER(8)  ::SYSTDG,   N2BND,   DOBND, CDUM  
-  CHARACTER(10) :: BLANK,  BLANK1, sedch,   sedpch,   sednch,   sedcch 
+  CHARACTER(8)  ::SYSTDG,   N2BND,   DOBND, CDUM
+  CHARACTER(10) :: BLANK,  BLANK1, sedch,   sedpch,   sednch,   sedcch
   CHARACTER(72) :: WDOFN,  RSOFN,  TSRFN, SEGNUM, LINE, SEGNUM2
   LOGICAL       :: RETLOG
 
@@ -516,20 +516,20 @@ USE PREC
   DATA ICE_TOL /0.005/
   DATA BLANK /'          '/, BLANK1 /'    -99.00'/
   DATA CON   /10/,  RSI /11/
-  data thrkti /0.10/  
+  data thrkti /0.10/
 
 END Module Main
 
-Module Selective1 
+Module Selective1
  REAL                                          :: nxtstr, nxttcd, nxtsplit,tcdfreq,tfrqtmp
   CHARACTER(8)                                 :: tempc,tspltc
   CHARACTER(8), ALLOCATABLE, DIMENSION(:)      :: tcelevcon,tcyearly,tcntr,tspltcntr,monctr,tsyearly,DYNSEL, ELCONTSPL
-  INTEGER                                      :: numtempc,numtsplt, tempn,nstt    
+  INTEGER                                      :: numtempc,numtsplt, tempn,nstt
   INTEGER, ALLOCATABLE, DIMENSION(:)           :: tcnelev,tcjb,tcjs,tciseg,tspltjb,nouts,kstrsplt, jbmon, jsmon, ncountcw,SELD
   REAL,          ALLOCATABLE, DIMENSION(:,:)   :: tcelev, tempcrit,qstrfrac
   REAL,          ALLOCATABLE, DIMENSION(:)     :: tctemp,tctend,tctsrt,tcklay,tspltt,volm,qwdfrac,tstend,tstsrt,NXSEL,TEMP2
   INTEGER, ALLOCATABLE, DIMENSION(:,:)         :: jstsplt, ncountc
-   REAL,          ALLOCATABLE, DIMENSION(:,:)  :: volmc 
+   REAL,          ALLOCATABLE, DIMENSION(:,:)  :: volmc
 
 End Module Selective1
 
@@ -550,7 +550,7 @@ MODULE extra
   CHARACTER(8),  ALLOCATABLE, DIMENSION(:)     :: gen_name,alg_name, ss_name
   CHARACTER(8),  ALLOCATABLE, DIMENSION(:)     :: zoo_name,epi_name, mac_name, bod_name
   CHARACTER(8),  ALLOCATABLE, DIMENSION(:)     :: br_name,wb_name, tr_name
-  CHARACTER(8),  ALLOCATABLE, DIMENSION(:)     :: pipe_name,spill_name, gate_name, pump_name  
+  CHARACTER(8),  ALLOCATABLE, DIMENSION(:)     :: pipe_name,spill_name, gate_name, pump_name
   CHARACTER(72)                                :: CONFNwrite, selfnwrite, habfnwrite
   CHARACTER(72),  ALLOCATABLE, DIMENSION(:)     :: bthline1,bthline2,vprline1,vprline2
   CHARACTER(72),  ALLOCATABLE, DIMENSION(:)    :: bthfnwrite, vprfnwrite
@@ -568,17 +568,17 @@ PROGRAM control_file_read_write
   USE RSTART
   use macrophytec; use porosityc; use zooplanktonc  !v3.5
   use extra
-  use ifport, only:chdir  
+  use ifport, only:chdir
   IMPLICIT NONE
   INTEGER(4) length,istatus,IERR
-  character*512 dirc  
+  character*512 dirc
   logical S_OPEN, S_EXIST,h_open, h_exist,changes_exist
   integer s_number,h_number, LL2, LL4
-   
+
   w2select=.false.
   w2hab=.false.
-  
-call get_command_argument(1,dirc,length,istatus)  
+
+call get_command_argument(1,dirc,length,istatus)
 dirc=TRIM(dirc)
 
 if(length /= 0)then
@@ -589,7 +589,7 @@ if(length /= 0)then
       case(20)   ! ENOTDIR
         write(*,*)'This is not a directory:', dirc
       case(0)    ! no error
-    end select  
+    end select
 endif
 
      vertprf=.true.
@@ -607,10 +607,10 @@ endif
        STOP
        ENDIF
        CALL READ_CONTROL_FILECSV
-  ELSE 
+  ELSE
      call read_control_fileNPT            !also reads bathymetry and vertical profile file(s)
   ENDIF
-  
+
 
 ! writing files with changes
      CONFNwrite='w2_con45.csv'
@@ -618,7 +618,7 @@ endif
      call control_file_csv2
      CALL WRITE_CSV
      call WRITE_CSV2
-      
+
   STOP
     END PROGRAM control_file_read_write
 !***************************************
@@ -626,18 +626,18 @@ endif
     USE MAIN
     USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  use macrophytec; use porosityc; use zooplanktonc  
+  use macrophytec; use porosityc; use zooplanktonc
   use initialvelocity
-  use extra  
+  use extra
   IMPLICIT NONE
-  
+
   character*1 char1,ichar1
   character*8 AID
   character*72 linetest
   CHARACTER(8)  :: IBLANK,DMULT
   character(2)   :: ichar2
   INTEGER :: NPT, NNBP, NCBP,NINTERNAL,NUP,KTMAX,NTR1,JJ,NALT,NZPTT,NMCTT,NDUM,NIDUM
-  
+
   ALLOCATE (TITLE(11))
   READ (CON,*)
   READ (CON,*)
@@ -646,22 +646,22 @@ endif
   READ (CON,*)TITLE(J)
   ENDDO
   READ (CON,*)
-  READ (CON,*) 
-  
-  READ (CON,*) NWB, NBR, IMX, KMX, NPROC, CLOSEC; CLOSEC=ADJUSTR(CLOSEC)                   !'(A,5I0,A)'  
+  READ (CON,*)
+
+  READ (CON,*) NWB, NBR, IMX, KMX, NPROC, CLOSEC; CLOSEC=ADJUSTR(CLOSEC)                   !'(A,5I0,A)'
   READ (CON,*)
   READ (CON,*)
-  
+
   READ (CON,*) NTR, NST, NIW, NWD, NGT, NSP, NPI, NPU
   READ (CON,*)
-  READ (CON,*)  
-  
-  READ (CON,*) NGC, NSS, NAL, NEP, NBOD, NMC, NZP  
   READ (CON,*)
-  READ (CON,*) 
-  
-  READ (CON,*) NOD,SELECTC,HABTATC,ENVIRPC,AERATEC,INITUWL           !'(I0,5(A))'   
-  SELECTC=ADJUSTR(SELECTC);HABTATC=ADJUSTR(HABTATC);ENVIRPC=ADJUSTR(ENVIRPC);AERATEC=ADJUSTR(AERATEC);INITUWL=ADJUSTR(INITUWL)    
+
+  READ (CON,*) NGC, NSS, NAL, NEP, NBOD, NMC, NZP
+  READ (CON,*)
+  READ (CON,*)
+
+  READ (CON,*) NOD,SELECTC,HABTATC,ENVIRPC,AERATEC,INITUWL           !'(I0,5(A))'
+  SELECTC=ADJUSTR(SELECTC);HABTATC=ADJUSTR(HABTATC);ENVIRPC=ADJUSTR(ENVIRPC);AERATEC=ADJUSTR(AERATEC);INITUWL=ADJUSTR(INITUWL)
 
   IF(NTR==0)THEN
       NTR1=1
@@ -672,10 +672,10 @@ endif
   NTDS  = 1
   NGCS  = 2
   NGCE  = NGCS+NGC-1
- 
+
   NSSS  = NGCE+1
   NSSE  = NSSS+NSS-1
- 
+
   NPO4  = NSSE+1
   NNH4  = NPO4+1
   NNO3  = NNH4+1
@@ -711,10 +711,10 @@ if(nbod.gt.0)then
     ibod=ibod+1
   end do
   nbodne=ibod-1
- 
+
   else
     nbodcs=1; nbodce=1; nbodps=1; nbodpe=1; nbodns=1; nbodne=1     ! SW 11/21/2016
-  
+
 end if
 !    NBODE = NBODS+NBOD-1
   NBODE = NBODS+NBOD*3-1
@@ -726,7 +726,7 @@ end if
   NALK  = NTIC+1
   NZOOS = NALK+1
   NZOOE = NZOOS+NZP-1
- 
+
   NLDOMP= NZOOE+1
   NRDOMP= NLDOMP+1
   NLPOMP= NRDOMP+1
@@ -753,9 +753,9 @@ end if
   ELSE
       NSTT=5
   ENDIF
-  
+
 ! Allocation declarations
-    
+
   ALLOCATE (EXC(NWB),    EXIC(NWB))
   ALLOCATE (CUNIT(NCT),  CNAME(NCT),  CNAME1(NCT), CNAME2(NCT), CDNAME(NDC), CDMULT(NDC), CMULT(NCT), CUNIT1(NCT), CUNIT2(NCT))    ! SW 1/16/04 8/25/05
   ALLOCATE (HNAME(NHY),CDNAME2(NDC))
@@ -810,7 +810,7 @@ end if
   ALLOCATE (US(NBR),     DS(NBR),     CUS(NBR),    UHS(NBR),    DHS(NBR),    UQB(NBR),     DQB(NBR))
   ALLOCATE (NL(NBR),     NPOINT(NBR), SLOPE(NBR),SLOPEC(NBR))
   ALLOCATE (NSTR(NBR))
- 
+
   ALLOCATE (Z(IMX),      DLX(IMX),    KB(IMX))
   ALLOCATE (ICETH(IMX),  KTI(IMX),    ELWS(IMX),   SHADE(IMX))
   ALLOCATE (SOD(IMX),    PHI0(IMX),   FRIC(IMX))
@@ -841,7 +841,7 @@ end if
   ALLOCATE (IWR(NIW),    KTWR(NIW),   KBWR(NIW))
   ALLOCATE (IWD(NWDT),   JBWD(NWD),   EWD(NWDT),   KTWD(NWDT),  KBWD(NWDT))
   ALLOCATE (ITR(NTRT),   QTRFN(NTR),  TTRFN(NTR),  CTRFN(NTR),  ELTRT(NTRT),  ELTRB(NTRT),  TRC(NTRT))
-  
+
   ALLOCATE (JBTR(NTR),    NACTR(NTR),  NACIN(NBR),  NACPR(NWB),  NACDT(NBR))
   ALLOCATE (TSRD(NOD),   TSRF(NOD),   WDOD(NOD),   WDOF(NOD))
   ALLOCATE (T2(KMX,IMX),DYNPUMP(NPU))
@@ -907,7 +907,7 @@ end if
   allocate  (smact(kmx,kmx,imx), smac(kmx,imx,nmct))
   allocate  (mt1(nmct),mt2(nmct),mt3(nmct),mt4(nmct),mk1(nmct),mk2(nmct),mk3(nmct),mk4(nmct),mg(nmct),mr(nmct),mm(nmct))
   allocate  (mbmp(nmct), mmax(nmct), cdDRAG(nmct),dWv(nmct),dwsa(nmct),anorm(nmct))
-  
+
   allocate  (mp(nmct), mn(nmct), mc(nmct),psed(nmct),nsed(nmct),mhsp(nmct),mhsn(nmct),mhsc(nmct),msat(nmct),exm(nmct))
   allocate  (O2MG(nmct), O2MR(nmct),  LRPMAC(nmct),  MPOM(nmct))
   allocate  (kticol(imx),armac(imx),macwbci(nwb,nmctT))
@@ -916,7 +916,7 @@ end if
   allocate  (mactrmr(kmx,imx,nmct), mactrmf(kmx,imx,nmct),mactrm(kmx,imx,nmct))
   allocate  (mlfpr(kmx,kmx,imx,nmct))
   allocate  (mllim(kmx,kmx,imx,nmct), mplim(kmx,imx,nmct),mclim(kmx,imx,nmct),mnlim(kmx,imx,nmct))
-  ALLOCATE  (GAMMAj(kmx,KMX,IMX))	
+  ALLOCATE  (GAMMAj(kmx,KMX,IMX))
   allocate (por(kmx,imx),VOLKTi(imx),VOLi(Kmx,Imx),vstem(kmx,imx,nmct),vstemkt(imx,nmct),sarea(nmct))
   ALLOCATE (IWIND(NWB))
   allocate (cbodp(kmx,imx,nbod), cbodn(kmx,imx,nbod))
@@ -925,12 +925,12 @@ end if
   ALLOCATE (DDUM(NOD),FDUM(NOD), IDUM(IMX),KFNAME(NFL), KFNAME2(NFL))
 
   READ (CON,*)
-  READ (CON,*) 
-    
-  READ (CON,*)  TMSTRT,   TMEND,    YEAR    
   READ (CON,*)
-  READ (CON,*) 
-    
+
+  READ (CON,*)  TMSTRT,   TMEND,    YEAR
+  READ (CON,*)
+  READ (CON,*)
+
   READ (CON,*)  NDLT,     DLTMIN, DLTINTER; DLTD=0.0; DLTINTER=ADJUSTR(DLTINTER)
   READ (CON,*)
   READ (CON,*)
@@ -939,8 +939,8 @@ end if
   READ (CON,*)
   READ (CON,*)  (DLTMAX(J), J =1,NDLT)
   READ (CON,*)
-  READ (CON,*) 
-    
+  READ (CON,*)
+
   READ (CON,*)  (DLTF(J),   J =1,NDLT)
   READ (CON,*)
   READ (CON,*)
@@ -951,7 +951,7 @@ end if
 
 ! Grid definition cards
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
   READ (CON,*)  (US(JB),    JB=1,NBR)
   READ (CON,*)  (DS(JB),    JB=1,NBR)
@@ -961,7 +961,7 @@ end if
   READ (CON,*)  (SLOPE(JB), JB=1,NBR)
   READ (CON,*)  (SLOPEC(JB),JB=1,NBR)
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
   READ (CON,*)   (LAT(JW),                     JW=1,NWB)
   READ (CON,*)   (LONGIT(JW),                    JW=1,NWB)
@@ -983,7 +983,7 @@ end if
 
   READ (CON,*)            (VBC(JW),              JW=1,NWB); VBC=ADJUSTR(VBC)
   READ (CON,*)            (EBC(JW),              JW=1,NWB); EBC=ADJUSTR(EBC)
-  READ (CON,*)            (MBC(JW),              JW=1,NWB); MBC=ADJUSTR(MBC)   
+  READ (CON,*)            (MBC(JW),              JW=1,NWB); MBC=ADJUSTR(MBC)
   READ (CON,*)            (PQC(JW),              JW=1,NWB); PQC=ADJUSTR(PQC)
   READ (CON,*)            (EVC(JW),              JW=1,NWB); EVC=ADJUSTR(EVC)
   READ (CON,*)            (PRC(JW),              JW=1,NWB); PRC=ADJUSTR(PRC)
@@ -1042,21 +1042,21 @@ end if
   READ (CON,*)
   READ (CON,*)
 
-  READ (CON,*)      (AZC(JW),    JW=1,NWB);AZC=ADJUSTR(AZC)          
-  READ (CON,*)      (AZSLC(JW),  JW=1,NWB);AZSLC=ADJUSTR(AZSLC)          
-  READ (CON,*)      (AZMAX(JW),  JW=1,NWB)          
-  READ (CON,*)      (TKEBC(JW),  JW=1,NWB)          
-  READ (CON,*)      (EROUGH(JW), JW=1,NWB)          
-  READ (CON,*)      (ARODI(JW),  JW=1,NWB)          
-  READ (CON,*)      (STRICK(JW), JW=1,NWB)          
-  READ (CON,*)      (TKELATPRDCONST(JW),JW=1,NWB)   
+  READ (CON,*)      (AZC(JW),    JW=1,NWB);AZC=ADJUSTR(AZC)
+  READ (CON,*)      (AZSLC(JW),  JW=1,NWB);AZSLC=ADJUSTR(AZSLC)
+  READ (CON,*)      (AZMAX(JW),  JW=1,NWB)
+  READ (CON,*)      (TKEBC(JW),  JW=1,NWB)
+  READ (CON,*)      (EROUGH(JW), JW=1,NWB)
+  READ (CON,*)      (ARODI(JW),  JW=1,NWB)
+  READ (CON,*)      (STRICK(JW), JW=1,NWB)
+  READ (CON,*)      (TKELATPRDCONST(JW),JW=1,NWB)
   READ (CON,*)      (IMPTKE(JW),JW=1,NWB);IMPTKE=ADJUSTR(IMPTKE)          !FBC(JW),AZE(JW),ARODI(JW),STRCKLR(JW),BOUNDFR(JW),TKECAL(JW)
   READ (CON,*)
   READ (CON,*)
 
   READ (CON,*)            (NSTR(JB),      JB=1,NBR)
   READ (CON,*)            (DYNSTRUC(JB),  JB=1,NBR); DYNSTRUC=adjustr(DYNSTRUC)
-  
+
   DO JS=1,NSTT
     READ (CON,*)        (STRIC(JS,JB),  JB=1,NBR)
   END DO
@@ -1090,20 +1090,20 @@ end if
   READ (CON,*)  (FPI(JP),   JP=1,NPI)
   READ (CON,*)  (FMINPI(JP),JP=1,NPI)
   READ (CON,*)  (LATPIC(JP),JP=1,NPI);LATPIC=adjustr(LATPIC)
-  READ (CON,*)  (DYNPIPE(JP),JP=1,NPI);DYNPIPE=adjustr(DYNPIPE) 
-  
+  READ (CON,*)  (DYNPIPE(JP),JP=1,NPI);DYNPIPE=adjustr(DYNPIPE)
+
   READ (CON,*)  (PUPIC(JP),  JP=1,NPI);PUPIC=adjustr(PUPIC)
   READ (CON,*)  (ETUPI(JP),  JP=1,NPI)
   READ (CON,*)  (EBUPI(JP),  JP=1,NPI)
   READ (CON,*)  (KTUPI(JP),  JP=1,NPI)
   READ (CON,*)  (KBUPI(JP),  JP=1,NPI)
-  
+
   READ (CON,*)  (PDPIC(JP),  JP=1,NPI);PDPIC=adjustr(PDPIC)
   READ (CON,*)  (ETDPI(JP),  JP=1,NPI)
   READ (CON,*)  (EBDPI(JP),  JP=1,NPI)
   READ (CON,*)  (KTDPI(JP),  JP=1,NPI)
   READ (CON,*)  (KBDPI(JP),  JP=1,NPI)
-  
+
   READ (CON,*)
   READ (CON,*)
 
@@ -1115,25 +1115,25 @@ end if
   READ (CON,*) (A2SP(JS),    JS=1,NSP)
   READ (CON,*) (B2SP(JS),    JS=1,NSP)
   READ (CON,*) (LATSPC(JS),  JS=1,NSP);LATSPC=ADJUSTR(LATSPC)
-  
+
   READ (CON,*) (PUSPC(JS),   JS=1,NSP);PUSPC=adjustr(PUSPC)
   READ (CON,*) (ETUSP(JS),   JS=1,NSP)
   READ (CON,*) (EBUSP(JS),   JS=1,NSP)
   READ (CON,*) (KTUSP(JS),   JS=1,NSP)
   READ (CON,*) (KBUSP(JS),   JS=1,NSP)
-  
-  READ (CON,*) (PDSPC(JS),   JS=1,NSP) ;PDSPC=ADJUSTR(PDSPC) 
+
+  READ (CON,*) (PDSPC(JS),   JS=1,NSP) ;PDSPC=ADJUSTR(PDSPC)
   READ (CON,*) (ETDSP(JS),   JS=1,NSP)
   READ (CON,*) (EBDSP(JS),   JS=1,NSP)
   READ (CON,*) (KTDSP(JS),   JS=1,NSP)
   READ (CON,*) (KBDSP(JS),   JS=1,NSP)
-  
+
   READ (CON,*) (GASSPC(JS),  JS=1,NSP);GASSPC=ADJUSTR(GASSPC)
   READ (CON,*) (EQSP(JS),    JS=1,NSP)
   READ (CON,*) (AGASSP(JS),  JS=1,NSP)
   READ (CON,*) (BGASSP(JS),  JS=1,NSP)
   READ (CON,*) (CGASSP(JS),  JS=1,NSP)
-  
+
   READ (CON,*)
   READ (CON,*)
 
@@ -1147,14 +1147,14 @@ end if
   READ (CON,*) (B2GT(JG),   JG=1,NGT)
   READ (CON,*) (G2GT(JG),   JG=1,NGT)
   READ (CON,*) (LATGTC(JG), JG=1,NGT);LATGTC=ADJUSTR(LATGTC)
-  
-  READ (CON,*) (GTA1(JG),   JG=1,NGT)  
-  READ (CON,*) (GTB1(JG),   JG=1,NGT)  
-  READ (CON,*) (GTA2(JG),   JG=1,NGT)  
-  READ (CON,*) (GTB2(JG),   JG=1,NGT)  
-  READ (CON,*) (DYNGTC(JG), JG=1,NGT);DYNGTC=ADJUSTR(DYNGTC)  
-  READ (CON,*) (GTIC(JG),   JG=1,NGT);GTIC=ADJUSTR(GTIC)  
-  
+
+  READ (CON,*) (GTA1(JG),   JG=1,NGT)
+  READ (CON,*) (GTB1(JG),   JG=1,NGT)
+  READ (CON,*) (GTA2(JG),   JG=1,NGT)
+  READ (CON,*) (GTB2(JG),   JG=1,NGT)
+  READ (CON,*) (DYNGTC(JG), JG=1,NGT);DYNGTC=ADJUSTR(DYNGTC)
+  READ (CON,*) (GTIC(JG),   JG=1,NGT);GTIC=ADJUSTR(GTIC)
+
   READ (CON,*) (PUGTC(JG),  JG=1,NGT);PUGTC=ADJUSTR(PUGTC)
   READ (CON,*) (ETUGT(JG),  JG=1,NGT)
   READ (CON,*) (EBUGT(JG),  JG=1,NGT)
@@ -1165,17 +1165,17 @@ end if
   READ (CON,*) (EBDGT(JG),  JG=1,NGT)
   READ (CON,*) (KTDGT(JG),  JG=1,NGT)
   READ (CON,*) (KBDGT(JG),  JG=1,NGT)
-  
-  READ (CON,*) (GASGTC(JG), JG=1,NGT);GASGTC=ADJUSTR(GASGTC)  
-  READ (CON,*) (EQGT(JG),   JG=1,NGT)  
-  READ (CON,*) (AGASGT(JG), JG=1,NGT)  
-  READ (CON,*) (BGASGT(JG), JG=1,NGT)  
-  READ (CON,*) (CGASGT(JG), JG=1,NGT)  
-  
+
+  READ (CON,*) (GASGTC(JG), JG=1,NGT);GASGTC=ADJUSTR(GASGTC)
+  READ (CON,*) (EQGT(JG),   JG=1,NGT)
+  READ (CON,*) (AGASGT(JG), JG=1,NGT)
+  READ (CON,*) (BGASGT(JG), JG=1,NGT)
+  READ (CON,*) (CGASGT(JG), JG=1,NGT)
+
   READ (CON,*)
   READ (CON,*)
 
-  
+
   READ (CON,*) (IUPU(JP),   JP=1,NPU)
   READ (CON,*) (IDPU(JP),   JP=1,NPU)
   READ (CON,*) (EPU(JP),    JP=1,NPU)
@@ -1195,8 +1195,8 @@ end if
   READ (CON,*)
 
   READ (CON,*)         (IWR(JW),    JW=1,NIW)
-  READ (CON,*)        (KTWR(JW),   JW=1,NIW)               
-  READ (CON,*)        (KBWR(JW),   JW=1,NIW)   
+  READ (CON,*)        (KTWR(JW),   JW=1,NIW)
+  READ (CON,*)        (KBWR(JW),   JW=1,NIW)
   READ (CON,*)
   READ (CON,*)
 
@@ -1215,10 +1215,10 @@ end if
   READ (CON,*)        (ELTRB(JT),  JT=1,NTR)
   READ (CON,*)        (QTRFN(JT),  JT=1,NTR)
   READ (CON,*)        (TTRFN(JT),  JT=1,NTR)
-  READ (CON,*)        (CTRFN(JT),  JT=1,NTR)  
+  READ (CON,*)        (CTRFN(JT),  JT=1,NTR)
   READ (CON,*)
   READ (CON,*)
-  
+
   READ (CON,*)      (DTRC(JB),   JB=1,NBR);DTRC=adjustr(DTRC)
   READ (CON,*)
   READ (CON,*)
@@ -1234,7 +1234,7 @@ end if
   READ (CON,*)        NSNP(1)
       SNPC(2:NWB)=SNPC(1);SNPC=ADJUSTR(SNPC)
       NSNP(2:NWB)=NSNP(1)
-      
+
   NISNP=0     ! SW 3/31/2020
   DO JW=1,NWB
       DO JB=BS(JW),BE(JW)
@@ -1252,14 +1252,14 @@ end if
     ENDDO
 
   READ (CON,*)
-  READ (CON,*) 
-  READ (CON,*)         SCRC(1);  SCRC(1)=ADJUSTR(SCRC(1))    
+  READ (CON,*)
+  READ (CON,*)         SCRC(1);  SCRC(1)=ADJUSTR(SCRC(1))
   READ (CON,*)         NSCR(1)
   READ (CON,*)          (SCRD(J,1),J=1,NSCR(1))
   READ (CON,*)          (SCRF(J,1),J=1,NSCR(1))
   READ (CON,*)
-  READ (CON,*)  
-  
+  READ (CON,*)
+
   IF(NWB > 1)THEN
       SCRC(2:NWB)=SCRC(1)
       NSCR(2:NWB)=NSCR(1)
@@ -1268,30 +1268,30 @@ end if
       SCRF(J,2:NWB)=SCRF(J,1)
   ENDDO
   ENDIF
-   
+
   CDUM='     OFF'
-  READ (CON,*)      CDUM;CDUM=ADJUSTR(CDUM)         
-  READ (CON,*)      NDUM       ! PRFC(1), NPRF(1), NIPRF(1)    
-  READ (CON,*)      NIDUM       ! PRFC(1), NPRF(1), NIPRF(1)    
-  
+  READ (CON,*)      CDUM;CDUM=ADJUSTR(CDUM)
+  READ (CON,*)      NDUM       ! PRFC(1), NPRF(1), NIPRF(1)
+  READ (CON,*)      NIDUM       ! PRFC(1), NPRF(1), NIPRF(1)
+
   READ (CON,*)      (DDUM(J),J=1,NDUM)    !(PRFD(J,1),J=1,NPRF(1))
   READ (CON,*)      (FDUM(J),J=1,NDUM)    !(PRFF(J,1),J=1,NPRF(1))
   READ (CON,*)      (IDUM(J),J=1,NIDUM)   !(IPRF(J,1),J=1,NIPRF(1))
   READ (CON,*)
-  READ (CON,*)  
-  
+  READ (CON,*)
+
   PRFC='     OFF'
   NPRF=0
   NIPRF=0
-  IF(CDUM == '      ON')THEN                      !NWB>1 .AND. 
+  IF(CDUM == '      ON')THEN                      !NWB>1 .AND.
   DO J=1,NDUM
   PRFD(J,1:NWB)=DDUM(J)
   PRFF(J,1:NWB)=FDUM(J)
   ENDDO
-  NPRF(1:NWB)=NDUM   
-      DO JW=1,NWB 
+  NPRF(1:NWB)=NDUM
+      DO JW=1,NWB
           JJ=0
-          DO J=1,NIDUM  
+          DO J=1,NIDUM
               IF(IDUM(J) >= US(BS(JW)) .AND. IDUM(J) <= DS(BE(JW)))THEN
                   JJ=JJ+1
                   IPRF(JJ,JW)=IDUM(J)
@@ -1299,31 +1299,31 @@ end if
                   PRFC(JW)='      ON'
               ENDIF
           ENDDO
-      ENDDO     
+      ENDDO
   ENDIF
-   
+
   CDUM='     OFF'
-  READ (CON,*)      CDUM;CDUM=ADJUSTR(CDUM)         
-  READ (CON,*)      NDUM         
-  READ (CON,*)      NIDUM          
-  READ (CON,*)      (DDUM(J),J=1,NDUM)    
-  READ (CON,*)      (FDUM(J),J=1,NDUM)    
-  READ (CON,*)      (IDUM(J),J=1,NIDUM)   
+  READ (CON,*)      CDUM;CDUM=ADJUSTR(CDUM)
+  READ (CON,*)      NDUM
+  READ (CON,*)      NIDUM
+  READ (CON,*)      (DDUM(J),J=1,NDUM)
+  READ (CON,*)      (FDUM(J),J=1,NDUM)
+  READ (CON,*)      (IDUM(J),J=1,NIDUM)
   READ (CON,*)
-  READ (CON,*)  
-  
+  READ (CON,*)
+
   SPRC='     OFF'
   NSPR=0
   NISPR=0
-  IF(CDUM == '      ON')THEN               !NWB>1 .AND. 
+  IF(CDUM == '      ON')THEN               !NWB>1 .AND.
   DO J=1,NDUM
   SPRD(J,1:NWB)=DDUM(J)
   SPRF(J,1:NWB)=FDUM(J)
   ENDDO
-  NSPR(1:NWB)=NDUM  
-      DO JW=1,NWB 
+  NSPR(1:NWB)=NDUM
+      DO JW=1,NWB
           JJ=0
-          DO J=1,NIDUM 
+          DO J=1,NIDUM
               IF(IDUM(J) >= US(BS(JW)) .AND. IDUM(J) <= DS(BE(JW)))THEN
                   JJ=JJ+1
                   ISPR(JJ,JW)=IDUM(J)
@@ -1331,7 +1331,7 @@ end if
                   SPRC(JW)='      ON'
               ENDIF
           ENDDO
-      ENDDO     
+      ENDDO
   ENDIF
 
   VPLC='     OFF'
@@ -1341,24 +1341,24 @@ end if
   READ (CON,*)   (VPLD(J,1), J=1,NVPL(1))
   READ (CON,*)   (VPLF(J,1), J=1,NVPL(1))
   READ (CON,*)
-  READ (CON,*)  
+  READ (CON,*)
 
   READ (CON,*)      CPLC(1);CPLC(1)=ADJUSTR(CPLC(1))
   READ (CON,*)      NCPL(1)
   READ (CON,*)      TECPLOT(1);TECPLOT(1)=ADJUSTR(TECPLOT(1))
-  
+
   CPLC(2:NWB)=CPLC(1)
   NCPL(2:NWB)=NCPL(1)
   TECPLOT(2:NWB)=TECPLOT(1)
   READ (CON,*)    (CPLD(J,1), J=1,NCPL(1))
   READ (CON,*)    (CPLF(J,1), J=1,NCPL(1))
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
   DO J=1,NCPL(1)
     CPLD(J,2:NWB)=CPLD(J,1)
     CPLF(J,2:NWB)=CPLF(J,1)
-  ENDDO    
-    
+  ENDDO
+
   READ (CON,*)        FLXC(1);FLXC(1)=ADJUSTR(FLXC(1))
   READ (CON,*)        NFLX(1)
   FLXC(2:NWB)=FLXC(1)
@@ -1367,26 +1367,26 @@ end if
   READ (CON,*)       (FLXD(J,1), J=1,NFLX(1))
   READ (CON,*)       (FLXF(J,1), J=1,NFLX(1))
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
   DO J=1,NFLX(1)
   FLXD(J,2:NWB)=FLXD(J,1)
-  FLXF(J,2:NWB)=FLXF(J,1) 
+  FLXF(J,2:NWB)=FLXF(J,1)
   ENDDO
 
   READ (CON,*)           TSRC;TSRC=ADJUSTR(TSRC)
   READ (CON,*)           NTSR
   READ (CON,*)          NIKTSR
   READ (CON,*)          TSRFN
-  
+
   READ (CON,*)        (TSRD(J), J=1,NTSR)
   READ (CON,*)        (TSRF(J), J=1,NTSR)
   READ (CON,*)        (ITSR(J), J=1,NIKTSR)
   READ (CON,*)        (ETSR(J), J=1,NIKTSR)
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
-  READ (CON,*)           WDOC; WDOC=ADJUSTR(WDOC)   
-  READ (CON,*)           NWDO 
+  READ (CON,*)           WDOC; WDOC=ADJUSTR(WDOC)
+  READ (CON,*)           NWDO
   READ (CON,*)           NIWDO
   READ (CON,*)           WDOFN
 
@@ -1395,7 +1395,7 @@ end if
   READ (CON,*)       (WDOF(J), J=1,NWDO)
   READ (CON,*)       (IWDO(J), J=1,NIWDO)
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
   READ (CON,*)         RSOC;RSOC=ADJUSTR(RSOC)
   READ (CON,*)         NRSO
@@ -1406,27 +1406,27 @@ end if
   READ (CON,*)           (RSOD(J), J=1,NRSO)
   READ (CON,*)           (RSOF(J), J=1,NRSO)
   READ (CON,*)
-  READ (CON,*)    
+  READ (CON,*)
 
-    
+
     ! Constituent control cards
 
-  READ (CON,*)           CCC, LIMC, CUF,CO2PPM,CO2YRLY;CCC=ADJUSTR(CCC);LIMC=ADJUSTR(LIMC);CO2YRLY=ADJUSTR(CO2YRLY) 
+  READ (CON,*)           CCC, LIMC, CUF,CO2PPM,CO2YRLY;CCC=ADJUSTR(CCC);LIMC=ADJUSTR(LIMC);CO2YRLY=ADJUSTR(CO2YRLY)
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
   DO JC=1,NCT
-  READ (CON,*)CNAME2(JC),CNAME(JC),CAC(JC), FMTC(JC), CMULT(JC), (C2I(JC,JW), JW=1,NWB),(CPRWBC(JC,JW), JW=1,NWB), (CINBRC(JC,JB), JB=1,NBR),(CTRTRC(JC,JT), JT=1,NTR1), (CDTBRC(JC,JB), JB=1,NBR), (CPRBRC(JC,JB), JB=1,NBR)  
+  READ (CON,*)CNAME2(JC),CNAME(JC),CAC(JC), FMTC(JC), CMULT(JC), (C2I(JC,JW), JW=1,NWB),(CPRWBC(JC,JW), JW=1,NWB), (CINBRC(JC,JB), JB=1,NBR),(CTRTRC(JC,JT), JT=1,NTR1), (CDTBRC(JC,JB), JB=1,NBR), (CPRBRC(JC,JB), JB=1,NBR)
   ENDDO
   CAC=ADJUSTR(CAC);CPRWBC=ADJUSTR(CPRWBC);CINBRC=ADJUSTR(CINBRC);CTRTRC=ADJUSTR(CTRTRC);CDTBRC=ADJUSTR(CDTBRC);CPRBRC=ADJUSTR(CPRBRC)
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
   DO JD=1,NDC2
   READ (CON,*)  CDNAME2(JD),CDNAME(JD),FMTCD(JD),CDMULT(JD),(CDWBC(JD,JW), JW=1,NWB)
   ENDDO
   CDWBC=ADJUSTR(CDWBC)
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
   KFWBC   ='     '   ! SW 9/27/13 INITIALIZE ENTIRE ARRAY
   DO JF=1,73   ! Fix this later
@@ -1436,7 +1436,7 @@ end if
 
 ! Kinetics coefficients
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
   READ (CON,*)     (EXH2O(JW),  JW=1,NWB)
   READ (CON,*)     (EXSS(JW),   JW=1,NWB)
@@ -1444,39 +1444,39 @@ end if
   READ (CON,*)     (BETA(JW),   JW=1,NWB)
   READ (CON,*)     (EXC(JW),    JW=1,NWB);EXC=ADJUSTR(EXC)
   READ (CON,*)     (EXIC(JW),   JW=1,NWB);EXIC=ADJUSTR(EXIC)
- 
+
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
   READ (CON,*)         (EXA(JA),  JA=1,NAL)
   READ (CON,*)
-  READ (CON,*) 
+  READ (CON,*)
 
-  READ (CON,*)         (EXZ(JZ),  JZ=1,NZPT)  
+  READ (CON,*)         (EXZ(JZ),  JZ=1,NZPT)
   READ (CON,*)
-  READ (CON,*) 
-  
-  READ (CON,*)         (EXM(JM),   JM=1,NMCT)  
   READ (CON,*)
-  READ (CON,*) 
+
+  READ (CON,*)         (EXM(JM),   JM=1,NMCT)
+  READ (CON,*)
+  READ (CON,*)
 
   READ (CON,*)         (CGQ10(JG),  JG=1,NGC)
   READ (CON,*)         (CG0DK(JG),  JG=1,NGC)
-  READ (CON,*)         (CG1DK(JG),  JG=1,NGC) 
-  READ (CON,*)         (CGS(JG),    JG=1,NGC) 
-  READ (CON,*)         (CGLDK(JG),  JG=1,NGC) 
-  READ (CON,*)         (CGKLF(JG),  JG=1,NGC) 
-  READ (CON,*)         (CGCS(JG),   JG=1,NGC) 
- 
+  READ (CON,*)         (CG1DK(JG),  JG=1,NGC)
+  READ (CON,*)         (CGS(JG),    JG=1,NGC)
+  READ (CON,*)         (CGLDK(JG),  JG=1,NGC)
+  READ (CON,*)         (CGKLF(JG),  JG=1,NGC)
+  READ (CON,*)         (CGCS(JG),   JG=1,NGC)
+
   READ (CON,*)
-  READ (CON,*)  
+  READ (CON,*)
 
   READ (CON,*)   (SSS(JS),    JS=1,NSS)     ! READ (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
   READ (CON,*)   (SEDRC(JS),  JS=1,NSS)     ! READ (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
   READ (CON,*)   (TAUCR(JS),  JS=1,NSS)     ! READ (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
   SEDRC=ADJUSTR(SEDRC)
   READ (CON,*)
-  READ (CON,*)  
+  READ (CON,*)
 
   READ (CON,*) (AG(JA),          JA=1,NAL)
   READ (CON,*) (AR(JA),          JA=1,NAL)
@@ -1509,7 +1509,7 @@ end if
   READ (CON,*) (O2AR(JA),        JA=1,NAL)
   READ (CON,*) (O2AG(JA),        JA=1,NAL)
   READ (CON,*)
-  READ (CON,*)  
+  READ (CON,*)
 
   DO JE=1,NEPTT
   READ (CON,*)         (EPIC(JW,JE),  JW=1,NWB)
@@ -1519,8 +1519,8 @@ end if
   EPIC=ADJUSTR(EPIC);EPIPRC=ADJUSTR(EPIPRC)
 
   READ (CON,*)
-  READ (CON,*)  
-  
+  READ (CON,*)
+
   READ (CON,*) (EG(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (ER(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EE(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -1528,13 +1528,13 @@ end if
   READ (CON,*) (EB(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EHSP(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EHSN(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  READ (CON,*) (EHSSI(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13  
-  
+  READ (CON,*) (EHSSI(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
+
   READ (CON,*) (ESAT(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EHS(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (ENEQN(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  READ (CON,*) (ENPR(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13  
-  
+  READ (CON,*) (ENPR(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
+
   READ (CON,*) (ET1(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (ET2(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (ET3(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -1543,7 +1543,7 @@ end if
   READ (CON,*) (EK2(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EK3(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EK4(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  
+
   READ (CON,*) (EP(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EN(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*) (EC(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -1554,8 +1554,8 @@ end if
   READ (CON,*) (O2EG(JE),         JE=1,NEPT)
 
   READ (CON,*)
-  READ (CON,*)  
-   
+  READ (CON,*)
+
   READ (CON,*)         (ZG(JZ),    JZ=1,NZPT)
   READ (CON,*)         (ZR(JZ),    JZ=1,NZPT)
   READ (CON,*)         (ZM(JZ),    JZ=1,NZPT)
@@ -1570,9 +1570,9 @@ end if
   READ (CON,*)         (ZK1(JZ),   JZ=1,NZPT)
   READ (CON,*)         (ZK2(JZ),   JZ=1,NZPT)
   READ (CON,*)         (ZK3(JZ),   JZ=1,NZPT)
-  READ (CON,*)         (ZK4(JZ),   JZ=1,NZPT) 
-  
-  READ (CON,*)         (ZP(JZ),    JZ=1,NZPT)  
+  READ (CON,*)         (ZK4(JZ),   JZ=1,NZPT)
+
+  READ (CON,*)         (ZP(JZ),    JZ=1,NZPT)
   READ (CON,*)         (ZN(JZ),    JZ=1,NZPT)
   READ (CON,*)         (ZC(JZ),    JZ=1,NZPT)
 
@@ -1583,11 +1583,11 @@ end if
   END DO
 
   DO JZ=1,NZPTT
-    READ (CON,*)    (PREFZ(JZ,JJZ),   JJZ=1,NZPT)       
+    READ (CON,*)    (PREFZ(JZ,JJZ),   JJZ=1,NZPT)
   END DO
-  
+
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
   DO JM=1,NMCTT
     READ (CON,*)   (MACWBC(JW,JM),  JW=1,NWB)
@@ -1599,11 +1599,11 @@ end if
     READ (CON,*)   (MACWBCI(JW,JM),  JW=1,NWB)
   END DO
   MACWBC=ADJUSTR(MACWBC);MPRWBC=ADJUSTR(MPRWBC)
-    
+
   READ (CON,*)
   READ (CON,*)
 
-  
+
   READ (CON,*)         (MG(JM),     JM=1,NMCT)
   READ (CON,*)         (MR(JM),     JM=1,NMCT)
   READ (CON,*)         (MM(JM),     JM=1,NMCT)
@@ -1613,8 +1613,8 @@ end if
   READ (CON,*)         (MHSC(JM),   JM=1,NMCT)
   READ (CON,*)         (MPOM(JM),   JM=1,NMCT)
   READ (CON,*)         (LRPMAC(JM), JM=1,NMCT)
-  
-  READ (CON,*)         (PSED(JM),   JM=1,NMCT)  
+
+  READ (CON,*)         (PSED(JM),   JM=1,NMCT)
   READ (CON,*)         (NSED(JM),   JM=1,NMCT)
 
   READ (CON,*)         (MBMP(JM),   JM=1,NMCT)
@@ -1622,7 +1622,7 @@ end if
   READ (CON,*)         (CDDRAG(JM), JM=1,NMCT)  !CB 6/29/06
   READ (CON,*)         (DWV(JM),    JM=1,NMCT)  !CB 6/29/06
   READ (CON,*)         (DWSA(JM),   JM=1,NMCT)  !CB 6/29/06
-  READ (CON,*)         (ANORM(JM),  JM=1,NMCT)  !CB 6/29/06  
+  READ (CON,*)         (ANORM(JM),  JM=1,NMCT)  !CB 6/29/06
 
   READ (CON,*)         (MT1(JM),    JM=1,NMCT)
   READ (CON,*)         (MT2(JM),    JM=1,NMCT)
@@ -1632,32 +1632,32 @@ end if
   READ (CON,*)         (MK2(JM),    JM=1,NMCT)
   READ (CON,*)         (MK3(JM),    JM=1,NMCT)
   READ (CON,*)         (MK4(JM),    JM=1,NMCT)
-  
+
   READ (CON,*)         (MP(JM),     JM=1,NMCT)
   READ (CON,*)         (MN(JM),     JM=1,NMCT)
   READ (CON,*)         (MC(JM),     JM=1,NMCT)
- 
+
   READ (CON,*)         (O2MR(JM),   JM=1,NMCT)
   READ (CON,*)         (O2MG(JM),   JM=1,NMCT)
 
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
   READ (CON,*)         (LDOMDK(JW),  JW=1,NWB)
   READ (CON,*)         (RDOMDK(JW),  JW=1,NWB)
-  READ (CON,*)         (LRDDK(JW),   JW=1,NWB) 
+  READ (CON,*)         (LRDDK(JW),   JW=1,NWB)
 
   READ (CON,*)
-  READ (CON,*)   
-   
+  READ (CON,*)
+
   READ (CON,*)         (LPOMDK(JW),   JW=1,NWB)
   READ (CON,*)         (RPOMDK(JW),   JW=1,NWB)
   READ (CON,*)         (LRPDK(JW),    JW=1,NWB)
   READ (CON,*)         (POMS(JW),     JW=1,NWB)
-  
+
   READ (CON,*)
-  READ (CON,*)   
-  
+  READ (CON,*)
+
   READ (CON,*)         (ORGP(JW),     JW=1,NWB)
   READ (CON,*)         (ORGN(JW),     JW=1,NWB)
   READ (CON,*)         (ORGC(JW),     JW=1,NWB)
@@ -1670,7 +1670,7 @@ end if
   READ (CON,*)         (OMK2(JW),     JW=1,NWB)
 
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
   READ (CON,*)         (KBOD(JB),     JB=1,NBOD)
   READ (CON,*)         (TBOD(JB),     JB=1,NBOD)
@@ -1679,9 +1679,9 @@ end if
   READ (CON,*)         (BODP(JB),     JB=1,NBOD)
   READ (CON,*)         (BODN(JB),     JB=1,NBOD)
   READ (CON,*)         (BODC(JB),     JB=1,NBOD)
-  
+
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
   READ (CON,*)         (PO4R(JW),     JW=1,NWB)
   READ (CON,*)         (PARTP(JW),    JW=1,NWB)
@@ -1703,45 +1703,45 @@ end if
   READ (CON,*)         (PSIS(JW),     JW=1,NWB)
   READ (CON,*)         (PSIDK(JW),    JW=1,NWB)
   READ (CON,*)         (PARTSI(JW),   JW=1,NWB)
-    
+
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
   READ (CON,*)         (FER(JW),       JW=1,NWB)
   READ (CON,*)         (FES(JW),       JW=1,NWB)
-     
+
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
   READ (CON,*)          (CO2R(JW),     JW=1,NWB)
   READ (CON,*)
-  READ (CON,*)   
-  
+  READ (CON,*)
+
   READ (CON,*)          KDO
 
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
-  READ (CON,*)     (SEDCC(JW),   JW=1,NWB); SEDCC=adjustr(SEDCC)  
-  READ (CON,*)     (SEDPRC(JW),  JW=1,NWB); SEDPRC=adjustr(SEDPRC) 
-  READ (CON,*)     (SEDCI(JW),   JW=1,NWB)  
-  READ (CON,*)     (SDK(JW),   JW=1,NWB)     
-  READ (CON,*)     (SEDS(JW),    JW=1,NWB)  
-  READ (CON,*)     (FSOD(JW),    JW=1,NWB)  
-  READ (CON,*)     (FSED(JW),    JW=1,NWB) 
-  READ (CON,*)     (SEDB(JW),   JW=1,NWB)  
+  READ (CON,*)     (SEDCC(JW),   JW=1,NWB); SEDCC=adjustr(SEDCC)
+  READ (CON,*)     (SEDPRC(JW),  JW=1,NWB); SEDPRC=adjustr(SEDPRC)
+  READ (CON,*)     (SEDCI(JW),   JW=1,NWB)
+  READ (CON,*)     (SDK(JW),   JW=1,NWB)
+  READ (CON,*)     (SEDS(JW),    JW=1,NWB)
+  READ (CON,*)     (FSOD(JW),    JW=1,NWB)
+  READ (CON,*)     (FSED(JW),    JW=1,NWB)
+  READ (CON,*)     (SEDB(JW),   JW=1,NWB)
   READ (CON,*)     (DYNSEDK(JW), JW=1,NWB); DYNSEDK=adjustr(DYNSEDK)
   READ (CON,*)     (SODT1(JW),   JW=1,NWB)
   READ (CON,*)     (SODT2(JW),   JW=1,NWB)
   READ (CON,*)     (SODK1(JW),   JW=1,NWB)
   READ (CON,*)     (SODK2(JW),   JW=1,NWB)
   READ (CON,*)
-  READ (CON,*)   
+  READ (CON,*)
 
   READ (CON,*)  (SOD(I),  I=1,IMX)
-  
+
   READ (CON,*)
-  READ (CON,*)    
+  READ (CON,*)
 
   READ (CON,*)   (REAERC(JW), JW=1,NWB); REAERC=adjustr(REAERC)
   READ (CON,*)   (NEQN(JW),   JW=1,NWB)
@@ -1750,8 +1750,8 @@ end if
   READ (CON,*)   (RCOEF3(JW), JW=1,NWB)
   READ (CON,*)   (RCOEF4(JW), JW=1,NWB)
   READ (CON,*)
-  READ (CON,*)    
-  
+  READ (CON,*)
+
 ! Input filenames
 
   READ (CON,*)  QWDFN
@@ -1760,10 +1760,10 @@ end if
   READ (CON,*)  SHDFN
   READ (CON,*)  VPLFN(1)
   VPLFN(2:NWB)=VPLFN(1)
-  
+
   READ (CON,*)
-  READ (CON,*)    
- 
+  READ (CON,*)
+
   READ (CON,*) (BTHFN(JW), JW=1,NWB)
   READ (CON,*) (METFN(JW), JW=1,NWB)
   READ (CON,*) (EXTFN(JW), JW=1,NWB)
@@ -1777,10 +1777,10 @@ end if
   READ (CON,*) (CPLFN(JW), JW=1,NWB)
   READ (CON,*) (SPRFN(JW), JW=1,NWB)
   READ (CON,*) (FLXFN(JW), JW=1,NWB)
-  
+
   READ (CON,*)
-  READ (CON,*)    
- 
+  READ (CON,*)
+
   READ (CON,*) (QINFN(JB), JB=1,NBR)
   READ (CON,*) (TINFN(JB), JB=1,NBR)
   READ (CON,*) (CINFN(JB), JB=1,NBR)
@@ -1797,8 +1797,8 @@ end if
   READ (CON,*) (EDHFN(JB), JB=1,NBR)
   READ (CON,*) (TDHFN(JB), JB=1,NBR)
   READ (CON,*) (CDHFN(JB), JB=1,NBR)
- 
-  CLOSE (CON) 
+
+  CLOSE (CON)
 RETURN
 
     END SUBROUTINE READ_CONTROL_FILECSV
@@ -1809,11 +1809,11 @@ RETURN
 	USE MAIN
     USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
-  use macrophytec; use porosityc; use zooplanktonc  
+  use macrophytec; use porosityc; use zooplanktonc
   use initialvelocity
-  use extra  
+  use extra
   IMPLICIT NONE
-  
+
   character*1 char1,ichar1
   character*8 AID
   character*72 linetest
@@ -1829,7 +1829,7 @@ RETURN
   READ (CON,'(///(8X,A72))') (TITLE(J),J=1,10)
   READ (CON,'(//8X,5I8,2A8)') NWB, NBR, IMX, KMX, NPROC, CLOSEC                     ! SW 7/31/09
   READ (CON,'(//8X,8I8)')     NTR, NST, NIW, NWD, NGT, NSP, NPI, NPU
-  READ (CON,'(//8X,7I8,a8)')  NGC, NSS, NAL, NEP, NBOD, nmc, nzp  
+  READ (CON,'(//8X,7I8,a8)')  NGC, NSS, NAL, NEP, NBOD, nmc, nzp
   READ (CON,'(//8X,I8,8A8)')  NOD,SELECTC,HABTATC,ENVIRPC,AERATEC,inituwl,SYSTDG,N2BND,DOBND
 
   if(NPROC == 0)NPROC=1                                                                 ! SW 7/31/09
@@ -1837,7 +1837,7 @@ RETURN
   if(SELECTC=='        ')then
      SELECTC='     OFF'
   endif
-  
+
 ! Constituent numbers
 
   NTDS  = 1
@@ -1859,10 +1859,10 @@ RETURN
 if(nbod.gt.0)then    ! variable stoichiometry for CBOD    ! cb 6/6/10
  ALLOCATE (nbodc(nbod), nbodp(nbod), nbodn(nbod))
   ibod=nbods
-  nbodcs=ibod  
+  nbodcs=ibod
   do jcb=1,nbod
      nbodc(jcb)=ibod
-     ibod=ibod+1    
+     ibod=ibod+1
   end do
   nbodce=ibod-1
   nbodps=ibod
@@ -1880,7 +1880,7 @@ if(nbod.gt.0)then    ! variable stoichiometry for CBOD    ! cb 6/6/10
   ELSE
     NBODNS=1;NBODNE=1;NBODPS=1;NBODPE=1;NBODCS=1;NBODCE=1
 end if
-!    NBODE = NBODS+NBOD-1 
+!    NBODE = NBODS+NBOD-1
   NBODE = NBODS+NBOD*3-1
   NAS   = NBODE+1
   NAE   = NAS+NAL-1
@@ -1926,7 +1926,7 @@ end if
   ALLOCATE (QOLD(NPI),   DTP(NPI),    DTPS(NPI),   QOLDS(NPI))
   ALLOCATE (LATGTC(NGT), LATSPC(NSP), LATPIC(NPI), DYNPIPE(NPI),DYNPUMP(NPU),LATPUC(NPU), DYNGTC(NGT))
   ALLOCATE (gtic(NGT),BGTo(NGT),   EGTo(NGT) )   ! cb 8/13/2010
-  ALLOCATE (INTERP_gate(ngt))                     ! cb 8/13/2010  
+  ALLOCATE (INTERP_gate(ngt))                     ! cb 8/13/2010
   ALLOCATE (OPT(NWB,7))
   ALLOCATE (CDWBC(NDC,NWB),     KFWBC(NFL,NWB),        CPRWBC(NCT,NWB),    CINBRC(NCT,NBR),     CTRTRC(NCT,NTRT))
   ALLOCATE (CDTBRC(NCT,NBR),    CPRBRC(NCT,NBR))
@@ -2003,7 +2003,7 @@ end if
   ALLOCATE (TIN(NBR),    TOUT(NBR),   TPR(NBR),    TDTR(NBR),   TPB(NBR))
   ALLOCATE (NACPR(NBR),  NACIN(NBR),  NACDT(NBR),  NACTR(NTR),  NACD(NWB))
   ALLOCATE (QSUM(NBR),   NOUT(NBR),   KTQIN(NBR),  KBQIN(NBR),  ELUH(NBR),   ELDH(NBR))
-  ALLOCATE (NL(NBR),     NPOINT(NBR), SLOPE(NBR),  SLOPEC(NBR), ALPHA(NBR),  COSA(NBR),   SINA(NBR),   SINAC(NBR), ilayer(imx))   
+  ALLOCATE (NL(NBR),     NPOINT(NBR), SLOPE(NBR),  SLOPEC(NBR), ALPHA(NBR),  COSA(NBR),   SINA(NBR),   SINAC(NBR), ilayer(imx))
   ALLOCATE (CPRFN(NBR),  EUHFN(NBR),  TUHFN(NBR),  CUHFN(NBR),  EDHFN(NBR),  TDHFN(NBR),  QOTFN(NBR),  PREFN(NBR))
   ALLOCATE (QINFN(NBR),  TINFN(NBR),  CINFN(NBR),  CDHFN(NBR),  QDTFN(NBR),  TDTFN(NBR),  CDTFN(NBR),  TPRFN(NBR))
   ALLOCATE (VOLWD(NBR),  VOLSBR(NBR), VOLTBR(NBR), DLVOL(NBR),  VOLG(NWB),   VOLSR(NWB),  VOLTR(NWB),  VOLEV(NBR))
@@ -2157,13 +2157,13 @@ end if
   allocate  (mactrmr(kmx,imx,nmct), mactrmf(kmx,imx,nmct),mactrm(kmx,imx,nmct))
   allocate  (mlfpr(kmx,kmx,imx,nmct))
   allocate  (mllim(kmx,kmx,imx,nmct), mplim(kmx,imx,nmct),mclim(kmx,imx,nmct),mnlim(kmx,imx,nmct))
-  ALLOCATE  (GAMMAj(kmx,KMX,IMX))	
+  ALLOCATE  (GAMMAj(kmx,KMX,IMX))
   allocate (por(kmx,imx),VOLKTi(imx),VOLi(Kmx,Imx),vstem(kmx,imx,nmct),vstemkt(imx,nmct),sarea(nmct))
   ALLOCATE (IWIND(NWB))
   ALLOCATE (LAYERCHANGE(NWB))
   ALLOCATE(DLTADD(NWB))
-  allocate (cbodp(kmx,imx,nbod), cbodn(kmx,imx,nbod))     
-  
+  allocate (cbodp(kmx,imx,nbod), cbodn(kmx,imx,nbod))
+
   ! start specific allocations for control_file_read_write.f90 program
   allocate (hyd_prin(nhy),cst_icon(nct),cst_prin(nct))
   allocate  (cin_con(nct), ctr_con(nct), cdt_con(nct), cpr_con(nct))
@@ -2171,8 +2171,8 @@ end if
   allocate  (zoo_name(nzpt),epi_name(Nept),mac_name(nmct),bod_name(nbod))
   allocate  (tr_name(ntr),wb_name(nwb),br_name(nbr))
   allocate  (pipe_name(npi),spill_name(nsp), gate_name(ngt), pump_name(npu))
-   ALLOCATE (BTHFNwrite(NWB), bthtype(nwb), bthline1(nwb),bthline2(nwb),vprfnwrite(nwb),vprtype(nwb),vprline1(nwb),vprline2(nwb))  
-  zoo_name=blank;epi_name=blank; mac_name=blank; bod_name=blank  
+   ALLOCATE (BTHFNwrite(NWB), bthtype(nwb), bthline1(nwb),bthline2(nwb),vprfnwrite(nwb),vprtype(nwb),vprline1(nwb),vprline2(nwb))
+  zoo_name=blank;epi_name=blank; mac_name=blank; bod_name=blank
 ! end specific allocations for control_file_read_write.f90 program
 
 
@@ -2397,7 +2397,7 @@ end if
   IF(CO2YRLY /='      ON' .AND.  CO2YRLY /='     OFF')CO2YRLY ='      ON'
   READ (CON,'(//(2A8))')              (CNAME2(JC),  CAC(JC),      JC=1,NCT)
   READ (CON,'(/)')
-  
+
   DO JD=1,NDC2
     READ (CON,'(A8,9A8:/(:8X,9A8))')           CDNAME2(JD),(CDWBC(JD,JW), JW=1,NWB)
   END DO
@@ -2430,7 +2430,7 @@ end if
   IF(NTR==0)THEN
       CTRTRC(:,1)='     OFF'
   ENDIF
-  
+
   READ (CON,'(/)')
   DO JC=1,NCT
     READ (CON,'(a8,9A8:/(:8X,9A8))')            cdt_con(jc),(CDTBRC(JC,JB), JB=1,NBR)
@@ -2594,7 +2594,7 @@ end if
       DO I=US(BS(JW))-1,DS(BE(JW))+1
       H2(:,I) = H(:,JW)
       END DO
-      ELSE	
+      ELSE
     rewind(bth(jw))
     read(bth(jw),'(a)')bthline1
     read(bth(jw),'(a)')bthline2
@@ -2617,9 +2617,9 @@ end if
        endif
 
     OPEN (11,FILE=BTHFN(jw),STATUS='UNKNOWN')
-    
+
 	WRITE  (11,'(a1)')'$'                                ! New Bathymetry format option SW 6/22/09
-    
+
       Write(11,'(",",1000(i3,","))')(I,I=us(bs(jw))-1,ds(be(jw))+1 )
       Write(11,'("DLX,",1000(f10.3,","))') (DLX(I), I=us(bs(jw))-1,ds(be(jw))+1)
       Write(11,'("ELWS,",1000(f10.3,","))') (ELWS(I), I=us(bs(jw))-1,ds(be(jw))+1)
@@ -2630,7 +2630,7 @@ end if
       WRITE (11,'(f8.3,",",<imx>(f10.3,","),i3)') H(K,jw),(B(K,I),I=us(bs(jw))-1,ds(be(jw))+1),K
       END DO
     close(11)
-    
+
       endif
     CLOSE (BTH(JW))
   END DO
@@ -2640,7 +2640,7 @@ end if
   ALLOCATE(BSAVE(KMX,IMX))
   BSAVE=0.0
   BSAVE = B
-  
+
   npt=11
   OPEN (NPT,FILE='graph.npt',STATUS='OLD')                                           ! SW 1/16/04 replaced section
   READ  (NPT,'(///(A43,1X,A9,3F8.0,A8))') (HNAME(J),  FMTH(J),  HMULT(J),  HYMIN(J), HYMAX(J), HPLTC(J), J=1,NHY)
@@ -2648,7 +2648,7 @@ end if
   READ  (NPT,'(// (A43,1X,A9,3F8.0,A8))') (CDNAME(J), FMTCD(J), CDMULT(J), CDMIN(J), CDMAX(J), CDPLTC(J),J=1,NDC2)
   CLOSE(NPT)
 
-  
+
   DO JC=1,NCT
     L1         = SCAN (CNAME(JC),',')+2
     L2         = SCAN (CNAME(JC)(L1:43),'  ')+L1
@@ -2662,35 +2662,35 @@ end if
     END IF
     IF (CUNIT(JC)(1:2) /= 'g' .AND. CUNIT(JC)(1:2) /= 'mg') CUNIT1(JC) = '  '
   END DO
-  
-  
+
+
   ! Initialize logical control variables
   CONSTITUENTS =  CCC  == '      ON'
-  VERT_PROFILE = .FALSE.  
-  DO JW=1,NWB    
-    VERT_TEMP(JW)        = T2I(JW)     == -1    
-    IF(CONSTITUENTS)THEN                     ! CB 12/04/08    
-    VERT_SEDIMENT(JW)    = SEDCI(JW)   == -1.0 .AND. SEDCC(JW)   == '      ON'    
+  VERT_PROFILE = .FALSE.
+  DO JW=1,NWB
+    VERT_TEMP(JW)        = T2I(JW)     == -1
+    IF(CONSTITUENTS)THEN                     ! CB 12/04/08
+    VERT_SEDIMENT(JW)    = SEDCI(JW)   == -1.0 .AND. SEDCC(JW)   == '      ON'
     VERT_EPIPHYTON(JW,:) = EPICI(JW,:) == -1.0 .AND. EPIC(JW,:) == '      ON'
-    DO JC=1,NCT      
-      VERT_CONC(JC,JW) = C2I(JC,JW) == -1.0 .AND. CAC(JC) == '      ON'      
-      IF (VERT_CONC(JC,JW)) VERT_PROFILE(JW) = .TRUE.      
+    DO JC=1,NCT
+      VERT_CONC(JC,JW) = C2I(JC,JW) == -1.0 .AND. CAC(JC) == '      ON'
+      IF (VERT_CONC(JC,JW)) VERT_PROFILE(JW) = .TRUE.
     END DO
-    IF (VERT_SEDIMENT(JW))         VERT_PROFILE(JW) = .TRUE.    
-    IF (ANY(VERT_EPIPHYTON(JW,:))) VERT_PROFILE(JW) = .TRUE.    
+    IF (VERT_SEDIMENT(JW))         VERT_PROFILE(JW) = .TRUE.
+    IF (ANY(VERT_EPIPHYTON(JW,:))) VERT_PROFILE(JW) = .TRUE.
     END IF                          ! cb 12/04/08
-    IF (VERT_TEMP(JW))             VERT_PROFILE(JW) = .TRUE.    
+    IF (VERT_TEMP(JW))             VERT_PROFILE(JW) = .TRUE.
   END DO
   PH_CALC               = CONSTITUENTS .AND. CDWBC(20,:) == '      ON'
   IZMIN  = 0;   KTWB   = 2;   KMIN   = 1;   IMIN   = 1; KBMAX  = 0
-  
+
   ! Convert slope to angle alpha in radians
 
   ALPHA = ATAN(SLOPE)
   SINA  = SIN(ALPHA)
   SINAC = SIN(ATAN(SLOPEC))
   COSA  = COS(ALPHA)
-    
+
   TIME_SERIES           = TSRC        == '      ON'
   if(WDOC== '      ON' .or. WDOC   == '     ONH' .or. WDOC        == '     ONS')DOWNSTREAM_OUTFLOW = .TRUE.  ! cb 4/11/18
   SEDIMENT_CALC         = CONSTITUENTS .AND. SEDCc        == '      ON'
@@ -2698,7 +2698,7 @@ end if
   ICE_COMPUTATION       = ANY(ICE_CALC)
   DERIVED_CALC          = CONSTITUENTS .AND. ANY(CDWBC   == '      ON')
   VECTOR             = VPLC   == '      ON'
-  
+
   NAC    = 0;   NTAC   = 0;   NACD   = 0;   NACIN  = 0;   NACTR  = 0;   NACDT  = 0;   NACPR  = 0; NAF    = 0
   IF (CONSTITUENTS) THEN
     DO JC=1,NCT
@@ -2740,12 +2740,12 @@ end if
           KFCN(NAF(JW),JW) = JF
         elseif(ph_calc(jw).and. jf==121)then
           NAF(JW)          = NAF(JW)+1
-          KFCN(NAF(JW),JW) = JF       
+          KFCN(NAF(JW),JW) = JF
         END IF
       END DO
     END DO
   END IF
-  
+
   return
 END SUBROUTINE
 
@@ -2757,14 +2757,14 @@ END SUBROUTINE
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
   use macrophytec; use porosityc; use zooplanktonc;   use initialvelocity  ;  use extra, ONLY:CONFNwrite
   IMPLICIT NONE
-  
+
   INTEGER :: N    !,NNDC
 
 
   open(CON,file=CONFNwrite,status='unknown')
 
 ! Title and array dimensions
-  
+
   write (CON,'(A,",")')'CE-QUAL-W2 Version,,4.5'
   write (CON,'(A,",")')'Control File version,,4.5,w2_con45.csv'
   write (CON,'(A,",")')'Title comments: next 10 lines'
@@ -2773,24 +2773,24 @@ END SUBROUTINE
   ENDDO
   write (CON,*)
   write (CON,'(A,",")')'NWB, NBR, IMX, KMX, NPROC, CLOSEC'
-  write (CON,'(5(I8,","),A,",")') NWB, NBR, IMX, KMX, NPROC, ADJUSTL(CLOSEC)  
+  write (CON,'(5(I8,","),A,",")') NWB, NBR, IMX, KMX, NPROC, ADJUSTL(CLOSEC)
   write (CON,*)
   write (CON,'(A,",")')'NTR, NST, NIW, NWD, NGT, NSP, NPI, NPU'
   write (CON,'(8(I4,","),",")') NTR, NST, NIW, NWD, NGT, NSP, NPI, NPU
   write (CON,*)
   write (CON,'(A,",")')'NGC, NSS, NAL, NEP, NBOD, NMC, NZP'
-  write (CON,'(7(I4,","),",")') NGC, NSS, NAL, NEP, NBOD, NMC, NZP  
+  write (CON,'(7(I4,","),",")') NGC, NSS, NAL, NEP, NBOD, NMC, NZP
   write (CON,*)
   write (CON,'(A,",")')'NDAY,SELECTC,HABTATC,ENVIRPC,AERATEC,INITUWL'
-  write (CON,'(I3,",",5(A,","))') NOD,ADJUSTL(SELECTC),ADJUSTL(HABTATC),ADJUSTL(ENVIRPC),ADJUSTL(AERATEC),ADJUSTL(INITUWL)           !'(I0,5(A))'   
+  write (CON,'(I3,",",5(A,","))') NOD,ADJUSTL(SELECTC),ADJUSTL(HABTATC),ADJUSTL(ENVIRPC),ADJUSTL(AERATEC),ADJUSTL(INITUWL)           !'(I0,5(A))'
 
 
 ! Time control cards
 
- 
+
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'TMSTRT, TMEND,YEAR'
-  WRITE (CON,'(2(F14.4,","),I4,",")')  TMSTRT,   TMEND,    YEAR    
+  WRITE (CON,'(2(F14.4,","),I4,",")')  TMSTRT,   TMEND,    YEAR
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'NDLT,DLTMIN, DLTINTER'
   WRITE (CON,'((I8,","),F12.4,",",A,",")')  NDLT,     DLTMIN, ADJUSTL(DLTINTER)
@@ -2834,8 +2834,8 @@ END SUBROUTINE
   WRITE (CON,'(<NWB>(I8,","))')   (JBDN(JW),                    JW=1,NWB)
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10,'
-  
-  
+
+
 ! Initial condition cards
 
   WRITE (CON,'(<NWB>(F10.4,","))')      (T2I(JW),                              JW=1,NWB)
@@ -2847,7 +2847,7 @@ END SUBROUTINE
 
   WRITE (CON,'(<NWB>(A,","))')            (ADJUSTL(VBC(JW)),              JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')            (ADJUSTL(EBC(JW)),              JW=1,NWB)
-  WRITE (CON,'(<NWB>(A,","))')            (ADJUSTL(MBC(JW)),              JW=1,NWB)  
+  WRITE (CON,'(<NWB>(A,","))')            (ADJUSTL(MBC(JW)),              JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')            (ADJUSTL(PQC(JW)),              JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')            (ADJUSTL(EVC(JW)),              JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')            (ADJUSTL(PRC(JW)),              JW=1,NWB)
@@ -2906,23 +2906,23 @@ END SUBROUTINE
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10,'
 
-  WRITE (CON,'(<NWB>(A,","))')      (ADJUSTL(AZC(JW)),    JW=1,NWB)        
-  WRITE (CON,'(<NWB>(A,","))')      (ADJUSTL(AZSLC(JW)),  JW=1,NWB)        
-  WRITE (CON,'(<NWB>(F10.4,","))')      (AZMAX(JW),  JW=1,NWB)          
-  WRITE (CON,'(<NWB>(I5,","))')      (TKEBC(JW),  JW=1,NWB)          
-  WRITE (CON,'(<NWB>(F10.4,","))')      (EROUGH(JW), JW=1,NWB)          
-  WRITE (CON,'(<NWB>(F10.4,","))')      (ARODI(JW),  JW=1,NWB)          
-  WRITE (CON,'(<NWB>(F10.4,","))')      (STRICK(JW), JW=1,NWB)          
-  WRITE (CON,'(<NWB>(F10.4,","))')      (TKELATPRDCONST(JW),JW=1,NWB)   
-  WRITE (CON,'(<NWB>(A,","))')      (ADJUSTL(IMPTKE(JW)),JW=1,NWB)        
+  WRITE (CON,'(<NWB>(A,","))')      (ADJUSTL(AZC(JW)),    JW=1,NWB)
+  WRITE (CON,'(<NWB>(A,","))')      (ADJUSTL(AZSLC(JW)),  JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.4,","))')      (AZMAX(JW),  JW=1,NWB)
+  WRITE (CON,'(<NWB>(I5,","))')      (TKEBC(JW),  JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.4,","))')      (EROUGH(JW), JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.4,","))')      (ARODI(JW),  JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.4,","))')      (STRICK(JW), JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.4,","))')      (TKELATPRDCONST(JW),JW=1,NWB)
+  WRITE (CON,'(<NWB>(A,","))')      (ADJUSTL(IMPTKE(JW)),JW=1,NWB)
 
 ! Inflow-outflow cards
-  
+
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'BR1,BR2,BR3,BR4,BR5,BR6,BR7,BR8,BR9,BR10,'
   WRITE (CON,'(<NBR>(I4,","))')           (NSTR(JB),      JB=1,NBR)
   WRITE (CON,'(<NBR>(A,","))')            (ADJUSTL(DYNSTRUC(JB)),  JB=1,NBR)
-  
+
   DO JS=1,NST
     WRITE (CON,'(<NBR>(A,","))')        (ADJUSTL(STRIC(JS,JB)),  JB=1,NBR)
   END DO
@@ -2931,7 +2931,7 @@ END SUBROUTINE
           WRITE(CON,*)',,,,,,,'
       ENDDO
   ENDIF
-  
+
   DO JS=1,NST
     WRITE (CON,'(<NBR>(I4,","))')        (KTSWT(JS,JB),  JB=1,NBR)
   END DO
@@ -2973,7 +2973,7 @@ END SUBROUTINE
       ENDDO
   ENDIF
   WRITE (CON,*)
-  
+
 return
     end SUBROUTINE CONTROL_FILE_CSV1
     !**************************************************************
@@ -2983,7 +2983,7 @@ return
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
   use macrophytec; use porosityc; use zooplanktonc;   use initialvelocity  ;  use extra, ONLY:CONFNwrite
   IMPLICIT NONE
-  
+
   INTEGER :: N !,NNDC
 
   WRITE (CON,'(A,",")')'PIPE1,PIPE2,PIPE3,PIPE4,PIPE5,PIPE6,PIPE7,PIPE8,PIPE9,PIPE10,'
@@ -2996,20 +2996,20 @@ return
   WRITE (CON,'(<NPI>(F8.4,","))')  (FPI(JP),   JP=1,NPI)
   WRITE (CON,'(<NPI>(F8.4,","))')  (FMINPI(JP),JP=1,NPI)
   WRITE (CON,'(<NPI>(A,","))')  (ADJUSTL(LATPIC(JP)),JP=1,NPI)
-  WRITE (CON,'(<NPI>(A,","))')  (ADJUSTL(DYNPIPE(JP)),JP=1,NPI) 
-  
+  WRITE (CON,'(<NPI>(A,","))')  (ADJUSTL(DYNPIPE(JP)),JP=1,NPI)
+
   WRITE (CON,'(<NPI>(A,","))')  (ADJUSTL(PUPIC(JP)),  JP=1,NPI)
   WRITE (CON,'(<NPI>(F8.3,","))')  (ETUPI(JP),  JP=1,NPI)
   WRITE (CON,'(<NPI>(F8.3,","))')  (EBUPI(JP),  JP=1,NPI)
   WRITE (CON,'(<NPI>(I5,","))')  (KTUPI(JP),  JP=1,NPI)
   WRITE (CON,'(<NPI>(I5,","))')  (KBUPI(JP),  JP=1,NPI)
-  
+
   WRITE (CON,'(<NPI>(A,","))')  (ADJUSTL(PDPIC(JP)),  JP=1,NPI)
   WRITE (CON,'(<NPI>(F8.4,","))')  (ETDPI(JP),  JP=1,NPI)
   WRITE (CON,'(<NPI>(F8.4,","))')  (EBDPI(JP),  JP=1,NPI)
   WRITE (CON,'(<NPI>(I5,","))')  (KTDPI(JP),  JP=1,NPI)
   WRITE (CON,'(<NPI>(I5,","))')  (KBDPI(JP),  JP=1,NPI)
-  
+
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'SP1,SP2,SP3,SP4,SP5,SP6,SP7,SP8,SP9,SP10,'
   WRITE (CON,'(<NSP>(I5,","))') (IUSP(JS),    JS=1,NSP)
@@ -3020,25 +3020,25 @@ return
   WRITE (CON,'(<NSP>(F8.3,","))') (A2SP(JS),    JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (B2SP(JS),    JS=1,NSP)
   WRITE (CON,'(<NSP>(A,","))') (ADJUSTL(LATSPC(JS)),  JS=1,NSP)
-  
+
   WRITE (CON,'(<NSP>(A,","))') (ADJUSTL(PUSPC(JS)),   JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (ETUSP(JS),   JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (EBUSP(JS),   JS=1,NSP)
   WRITE (CON,'(<NSP>(I5,","))') (KTUSP(JS),   JS=1,NSP)
   WRITE (CON,'(<NSP>(I5,","))') (KBUSP(JS),   JS=1,NSP)
-  
-  WRITE (CON,'(<NSP>(A,","))') (ADJUSTL(PDSPC(JS)),   JS=1,NSP) 
+
+  WRITE (CON,'(<NSP>(A,","))') (ADJUSTL(PDSPC(JS)),   JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (ETDSP(JS),   JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (EBDSP(JS),   JS=1,NSP)
   WRITE (CON,'(<NSP>(I5,","))') (KTDSP(JS),   JS=1,NSP)
   WRITE (CON,'(<NSP>(I5,","))') (KBDSP(JS),   JS=1,NSP)
-  
+
   WRITE (CON,'(<NSP>(A,","))') (ADJUSTL(GASSPC(JS)),  JS=1,NSP)
   WRITE (CON,'(<NSP>(I5,","))') (EQSP(JS),    JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (AGASSP(JS),  JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (BGASSP(JS),  JS=1,NSP)
   WRITE (CON,'(<NSP>(F8.3,","))') (CGASSP(JS),  JS=1,NSP)
-  
+
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'GATE1,GATE2,GTE3,GATE4,GATE5,GATE6,GATE7,GATE8,GATE9,GATE10,'
   WRITE (CON,'(<NGT>(I5,","))') (IUGT(JG),   JG=1,NGT)
@@ -3051,11 +3051,11 @@ return
   WRITE (CON,'(<NGT>(F8.3,","))') (B2GT(JG),   JG=1,NGT)
   WRITE (CON,'(<NGT>(F8.3,","))') (G2GT(JG),   JG=1,NGT)
   WRITE (CON,'(<NGT>(A,","))') (ADJUSTL(LATGTC(JG)), JG=1,NGT)
-  
-  WRITE (CON,'(<NGT>(F8.3,","))') (GTA1(JG),   JG=1,NGT)  
-  WRITE (CON,'(<NGT>(F8.3,","))') (GTB1(JG),   JG=1,NGT)  
-  WRITE (CON,'(<NGT>(F8.3,","))') (GTA2(JG),   JG=1,NGT)  
-  WRITE (CON,'(<NGT>(F8.3,","))') (GTB2(JG),   JG=1,NGT)  
+
+  WRITE (CON,'(<NGT>(F8.3,","))') (GTA1(JG),   JG=1,NGT)
+  WRITE (CON,'(<NGT>(F8.3,","))') (GTB1(JG),   JG=1,NGT)
+  WRITE (CON,'(<NGT>(F8.3,","))') (GTA2(JG),   JG=1,NGT)
+  WRITE (CON,'(<NGT>(F8.3,","))') (GTB2(JG),   JG=1,NGT)
   WRITE (CON,'(<NGT>(A,","))') (ADJUSTL(DYNGTC(JG)), JG=1,NGT)
   WRITE (CON,'(<NGT>(A,","))') (ADJUSTL(GTIC(JG)),   JG=1,NGT)
   WRITE (CON,'(<NGT>(A,","))') (ADJUSTL(PUGTC(JG)),  JG=1,NGT)
@@ -3068,16 +3068,16 @@ return
   WRITE (CON,'(<NGT>(F8.3,","))') (EBDGT(JG),  JG=1,NGT)
   WRITE (CON,'(<NGT>(I5,","))') (KTDGT(JG),  JG=1,NGT)
   WRITE (CON,'(<NGT>(I5,","))') (KBDGT(JG),  JG=1,NGT)
-  
+
   WRITE (CON,'(<NGT>(A,","))') (ADJUSTL(GASGTC(JG)), JG=1,NGT)
-  WRITE (CON,'(<NGT>(I5,","))') (EQGT(JG),   JG=1,NGT)  
-  WRITE (CON,'(<NGT>(F8.3,","))') (AGASGT(JG), JG=1,NGT)  
-  WRITE (CON,'(<NGT>(F8.3,","))') (BGASGT(JG), JG=1,NGT)  
-  WRITE (CON,'(<NGT>(F8.3,","))') (CGASGT(JG), JG=1,NGT)  
-  
+  WRITE (CON,'(<NGT>(I5,","))') (EQGT(JG),   JG=1,NGT)
+  WRITE (CON,'(<NGT>(F8.3,","))') (AGASGT(JG), JG=1,NGT)
+  WRITE (CON,'(<NGT>(F8.3,","))') (BGASGT(JG), JG=1,NGT)
+  WRITE (CON,'(<NGT>(F8.3,","))') (CGASGT(JG), JG=1,NGT)
+
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'Pump1,Pump2,Pump3,Pump4,Pump5,Pump6,Pump7,Pump8,Pump9,Pump10,'
-  
+
   WRITE (CON,'(<NPU>(I5,","))') (IUPU(JP),   JP=1,NPU)
   WRITE (CON,'(<NPU>(I5,","))') (IDPU(JP),   JP=1,NPU)
   WRITE (CON,'(<NPU>(F8.3,","))') (EPU(JP),    JP=1,NPU)
@@ -3100,14 +3100,14 @@ return
   WRITE (CON,'(A,",")')'IW1,IW2,IW3,IW4,IW5,IW6,IW7,IW8,IW9,IW10,'
 
   WRITE (CON,'(<NIW>(I5,","))')        (IWR(JW),    JW=1,NIW)
-  WRITE (CON,'(<NIW>(I5,","))')        (KTWR(JW),   JW=1,NIW)               
-  WRITE (CON,'(<NIW>(I5,","))')        (KBWR(JW),   JW=1,NIW)   
+  WRITE (CON,'(<NIW>(I5,","))')        (KTWR(JW),   JW=1,NIW)
+  WRITE (CON,'(<NIW>(I5,","))')        (KBWR(JW),   JW=1,NIW)
   WRITE (CON,*)
-  
+
 return
     end SUBROUTINE CONTROL_FILE_CSV2
-!***************************************    
-    
+!***************************************
+
     !**************************************************************
  SUBROUTINE WRITE_CSV
   USE MAIN
@@ -3115,17 +3115,17 @@ return
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
   use macrophytec; use porosityc; use zooplanktonc;   use initialvelocity  ;  use extra, ONLY:CONFNwrite
   IMPLICIT NONE
-  
+
   INTEGER :: N,NTFORMAT,NNEW,JJ  !NNDC,
   CHARACTER(43) :: TITLE43
 
   WRITE (CON,'(A,",")')'WD1,WD2,WD3,WD4,WD5,WD6,WD7,WD8,WD9,WD10,'
-  
+
   WRITE (CON,'(<NWD>(A,","))')         (ADJUSTL(WDIC(JW)),   JW=1,NWD)
   WRITE (CON,'(<NWD>(I5,","))')         (IWD(JW),    JW=1,NWD)
   WRITE (CON,'(<NWD>(F10.3,","))')      (EWD(JW),    JW=1,NWD)
   WRITE (CON,'(<NWD>(I5,","))')         (KTWD(JW),   JW=1,NWD)
-  WRITE (CON,'(<NWD>(I5,","))')         (KBWD(JW),   JW=1,NWD)  
+  WRITE (CON,'(<NWD>(I5,","))')         (KBWD(JW),   JW=1,NWD)
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'TR1,TR2,TR3,TR4,TR5,TR6,TR7,TR8,TR9,TR10,'
 
@@ -3136,10 +3136,10 @@ return
   WRITE (CON,'(<NTR>(F10.3,","))')    (ELTRB(JT),  JT=1,NTR)
   WRITE (CON,'(<NTR>(A,A,A,","))')        (('"',QTRFN(JT),'"'),  JT=1,NTR)
   WRITE (CON,'(<NTR>(A,A,A,","))')        (('"',TTRFN(JT),'"'),  JT=1,NTR)
-  WRITE (CON,'(<NTR>(A,A,A,","))')        (('"',CTRFN(JT),'"'),  JT=1,NTR)  
+  WRITE (CON,'(<NTR>(A,A,A,","))')        (('"',CTRFN(JT),'"'),  JT=1,NTR)
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'BR1,BR2,BR3,BR4,BR5,BR6,BR7,BR8,BR9,BR10,'
-  
+
   WRITE (CON,'(<NBR>(A,","))')      (ADJUSTL(DTRC(JB)),   JB=1,NBR)
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'HNAME,FMTH,HMULT,HPRWBC1,HPRWBC2,HPRWBC3,HPRWBC4,HPRWBC5,HPRWBC6,HPRWBC7,HPRWBC8,HPRWBC9,HPRWBC10,'
@@ -3149,66 +3149,66 @@ return
   END DO
   WRITE (CON,*)
   WRITE (CON,*)'SNP'
-  
+
   WRITE (CON,'(A,",")')  ADJUSTL(SNPC(1))
   WRITE (CON,*)  NSNP(1)
-      
+
   WRITE (CON,'(<NSNP(1)>(F12.4,","))')  (SNPD(J,1),J=1,NSNP(1))
   WRITE (CON,'(<NSNP(1)>(F12.4,","))')  (SNPF(J,1),J=1,NSNP(1))
 
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'SCR'
-  WRITE (CON,'(A,",")')         ADJUSTL(SCRC(1))    
+  WRITE (CON,'(A,",")')         ADJUSTL(SCRC(1))
   WRITE (CON,*)    NSCR(1)
   WRITE (CON,'(<NSCR(1)>(F12.4,","))')   (SCRD(J,1),J=1,NSCR(1))
   WRITE (CON,'(<NSCR(1)>(F12.4,","))')   (SCRF(J,1),J=1,NSCR(1))
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'PRFC'  
-   
+  WRITE (CON,'(A,",")')'PRFC'
+
   WRITE (CON,'(A,",")')    ADJUSTL(PRFC(1))
   N=NIPRF(1)
   DO JW=2,NWB
   DO J=1,NIPRF(JW)
       N=N+1
-      IPRF(N,1)=IPRF(J,JW)      
+      IPRF(N,1)=IPRF(J,JW)
   ENDDO
   ENDDO
   NIPRF(1)=N
-  
-  WRITE (CON,*)  NPRF(1)       
-  WRITE (CON,*)  NIPRF(1)     
-  
+
+  WRITE (CON,*)  NPRF(1)
+  WRITE (CON,*)  NIPRF(1)
+
   WRITE (CON,'(<NPRF(1)>(F12.4,","))')   (PRFD(J,1),J=1,NPRF(1))
   WRITE (CON,'(<NPRF(1)>(F12.4,","))')   (PRFF(J,1),J=1,NPRF(1))
   WRITE (CON,'(<NIPRF(1)>(I5,","))')   (IPRF(J,1),J=1,NIPRF(1))
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'SPR'  
-  
+  WRITE (CON,'(A,",")')'SPR'
+
   N=NISPR(1)
   DO JW=2,NWB
   DO J=1,NISPR(JW)
       N=N+1
-      ISPR(N,1)=ISPR(J,JW)      
+      ISPR(N,1)=ISPR(J,JW)
   ENDDO
   ENDDO
   NISPR(1)=N
-   
-  WRITE (CON,'(A,",")')      ADJUSTL(SPRC(1))         
-  WRITE (CON,*)      NSPR(1)         
-  WRITE (CON,*)      NISPR(1)          
-  WRITE (CON,'(<NSPR(1)>(F12.3,","))')      (SPRD(J,1),J=1,NSPR(1))    
-  WRITE (CON,'(<NSPR(1)>(F12.3,","))')      (SPRF(J,1),J=1,NSPR(1))    
-  WRITE (CON,'(<NISPR(1)>(I5,","))')        (ISPR(J,1),J=1,NISPR(1))   
+
+  WRITE (CON,'(A,",")')      ADJUSTL(SPRC(1))
+  WRITE (CON,*)      NSPR(1)
+  WRITE (CON,*)      NISPR(1)
+  WRITE (CON,'(<NSPR(1)>(F12.3,","))')      (SPRD(J,1),J=1,NSPR(1))
+  WRITE (CON,'(<NSPR(1)>(F12.3,","))')      (SPRF(J,1),J=1,NSPR(1))
+  WRITE (CON,'(<NISPR(1)>(I5,","))')        (ISPR(J,1),J=1,NISPR(1))
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'W2L'  
-  
+  WRITE (CON,'(A,",")')'W2L'
+
   WRITE (CON,'(A,",")')    ADJUSTL(VPLC(1))
   WRITE (CON,*)    NVPL(1)
   WRITE (CON,'(<NVPL(1)>(F12.3,","))')   (VPLD(J,1), J=1,NVPL(1))
   WRITE (CON,'(<NVPL(1)>(F12.3,","))')   (VPLF(J,1), J=1,NVPL(1))
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'CPL'  
-  
+  WRITE (CON,'(A,",")')'CPL'
+
   WRITE (CON,'(A,",")')      ADJUSTL(CPLC(1))
   WRITE (CON,*)      NCPL(1)
   WRITE (CON,'(A,",")')      ADJUSTL(TECPLOT(1))
@@ -3216,47 +3216,47 @@ return
   WRITE (CON,'(<NCPL(1)>(F12.3,","))')    (CPLD(J,1), J=1,NCPL(1))
   WRITE (CON,'(<NCPL(1)>(F12.3,","))')    (CPLF(J,1), J=1,NCPL(1))
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'FLUX' 
-    
+  WRITE (CON,'(A,",")')'FLUX'
+
   WRITE (CON,'(A,",")') ADJUSTL(FLXC(1))
   WRITE (CON,*)        NFLX(1)
 
   WRITE (CON,'(<NFLX(1)>(F12.3,","))')       (FLXD(J,1), J=1,NFLX(1))
   WRITE (CON,'(<NFLX(1)>(F12.3,","))')       (FLXF(J,1), J=1,NFLX(1))
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'TSR' 
-  
+  WRITE (CON,'(A,",")')'TSR'
+
   WRITE (CON,'(A,",")')   ADJUSTL(TSRC)
   WRITE (CON,*)           NTSR
   WRITE (CON,*)          NIKTSR
   WRITE (CON,'(A,",")')  TSRFN
-  
+
   WRITE (CON,'(<NTSR>(F12.3,","))')        (TSRD(J), J=1,NTSR)
   WRITE (CON,'(<NTSR>(F12.3,","))')        (TSRF(J), J=1,NTSR)
   WRITE (CON,'(<NIKTSR>(I5,","))')      (ITSR(J), J=1,NIKTSR)
   WRITE (CON,'(<NIKTSR>(F12.3,","))')   (ETSR(J), J=1,NIKTSR)
   WRITE (CON,*)
-  
-  
-  WRITE (CON,'(A,",")')'WLEVEL' 
+
+
+  WRITE (CON,'(A,",")')'WLEVEL'
   WRITE (CON,'(A)')'OFF'
   WRITE (CON,*)'14.0'
   WRITE (CON,*)
-  
-  WRITE (CON,'(A,",")')'FLOWBAL' 
+
+  WRITE (CON,'(A,",")')'FLOWBAL'
   WRITE (CON,'(A)')'ON'
   WRITE (CON,*)'14.0'
   WRITE (CON,*)
-  
-  WRITE (CON,'(A,",")')'NPBAL' 
+
+  WRITE (CON,'(A,",")')'NPBAL'
   WRITE (CON,'(A)')'OFF'
   WRITE (CON,*)'14.0'
   WRITE (CON,*)
-  
-  WRITE (CON,'(A,",")')'WDO' 
-   
-  WRITE (CON,'(A,",")')           ADJUSTL(WDOC)   
-  WRITE (CON,*)           NWDO 
+
+  WRITE (CON,'(A,",")')'WDO'
+
+  WRITE (CON,'(A,",")')           ADJUSTL(WDOC)
+  WRITE (CON,*)           NWDO
   WRITE (CON,*)           NIWDO
   WRITE (CON,'(A,",")')           WDOFN
 
@@ -3275,43 +3275,43 @@ return
   WRITE (CON,'(<NRSO>(F12.3,","))')           (RSOF(J), J=1,NRSO)
   WRITE (CON,*)
   WRITE (CON,'(A,",")') 'CCC,LIMC,CUF,CO2PPM,CO2YRLY'
-  
+
   ! Constituent control cards
 
   WRITE (CON,'(A,",",A,",",I4,",",F10.3,",",A,",")')          ADJUSTL(CCC), ADJUSTL(LIMC), CUF,CO2PPM,ADJUSTL(CO2YRLY)
   WRITE (CON,*)
-  
+
   WRITE (CON,'(A)')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10,'
   WRITE (CON,'(<NWB>(A,","))') ('OFF', JW=1,NWB)   !ATM_DEPOSITIONC(JW)
   WRITE (CON,'(<NWB>(A,","))') ('ON', JW=1,NWB)     !ATM_DEPOSITION_INTERPOLATION(JW)
 
-  
+
   WRITE (CON,'(A)')',,,,,Repeat columns as necessary - EVEN IF NO TRIBUTARIES INCLUDE A COLUMN FOR CTRTRC1 (It can be blanks)'
     IF(NTR==0)THEN
         NTFORMAT=1
     ELSE
         NTFORMAT=NTR
-    ENDIF  
-    WRITE (CON,'(A,A,A,A,A,<NWB>(A),<NWB>(A),<NWB>(A),<NBR>(A),<NTFORMAT>(A),<NBR>(A),<NBR>(A))')'CNAME2-short name,','CNAME-long name,','CAC-active,','FMTC-Fortran output,', 'CMULT-output multiplier,', ('C2I(JW)-initial conc,', JW=1,NWB),('CPRWBC(JW)-print,', JW=1,NWB), ('C_ATM_DEPOSITION(JW),', JW=1,NWB),('CINBRC(JB)-inflow c,', JB=1,NBR),('CTRTRC(JT)-trib c,', JT=1,NTFORMAT), ('CDTBRC(JB)-distributed c,', JB=1,NBR), ('CPRBRC(JB)-precip c,', JB=1,NBR)  
+    ENDIF
+    WRITE (CON,'(A,A,A,A,A,<NWB>(A),<NWB>(A),<NWB>(A),<NBR>(A),<NTFORMAT>(A),<NBR>(A),<NBR>(A))')'CNAME2-short name,','CNAME-long name,','CAC-active,','FMTC-Fortran output,', 'CMULT-output multiplier,', ('C2I(JW)-initial conc,', JW=1,NWB),('CPRWBC(JW)-print,', JW=1,NWB), ('C_ATM_DEPOSITION(JW),', JW=1,NWB),('CINBRC(JB)-inflow c,', JB=1,NBR),('CTRTRC(JT)-trib c,', JT=1,NTFORMAT), ('CDTBRC(JB)-distributed c,', JB=1,NBR), ('CPRBRC(JB)-precip c,', JB=1,NBR)
 
-  NNEW=1+NGC+NSS  
+  NNEW=1+NGC+NSS
   DO JC=1,NCT
-      
+
   IF(cname2(jc)=='FE      ' .or. cname2(jc)=='      FE')cycle
-  WRITE (CON,'(A,",",A,A,A,",",A,",",A,",",F14.5,",",<NWB>(F12.5,","),<NWB>(A,","),<NWB>(A,","),<NBR>(A,","),<NTFORMAT>(A,","),<NBR>(A,","),<NBR>(A,","))')CNAME2(JC),'"',CNAME(JC),'"',ADJUSTL(CAC(JC)), FMTC(JC), CMULT(JC), (C2I(JC,JW), JW=1,NWB),(ADJUSTL(CPRWBC(JC,JW)), JW=1,NWB),('OFF',JW=1,NWB), (ADJUSTL(CINBRC(JC,JJB)), JJB=1,NBR),(ADJUSTL(CTRTRC(JC,JT)), JT=1,NTFORMAT), (ADJUSTL(CDTBRC(JC,JJB)), JJB=1,NBR), (ADJUSTL(CPRBRC(JC,JJB)), JJB=1,NBR)  
+  WRITE (CON,'(A,",",A,A,A,",",A,",",A,",",F14.5,",",<NWB>(F12.5,","),<NWB>(A,","),<NWB>(A,","),<NBR>(A,","),<NTFORMAT>(A,","),<NBR>(A,","),<NBR>(A,","))')CNAME2(JC),'"',CNAME(JC),'"',ADJUSTL(CAC(JC)), FMTC(JC), CMULT(JC), (C2I(JC,JW), JW=1,NWB),(ADJUSTL(CPRWBC(JC,JW)), JW=1,NWB),('OFF',JW=1,NWB), (ADJUSTL(CINBRC(JC,JJB)), JJB=1,NBR),(ADJUSTL(CTRTRC(JC,JT)), JT=1,NTFORMAT), (ADJUSTL(CDTBRC(JC,JJB)), JJB=1,NBR), (ADJUSTL(CPRBRC(JC,JJB)), JJB=1,NBR)
   ! ADD NEW STATE VARIABLES
 
   IF(JC==NNEW)THEN
   DO JJ=1,11
-  WRITE (CON,'(A,",",A,A,A,",",A,",",A,",",F14.5,",",<NWB>(F12.5,","),<NWB>(A,","),<NWB>(A,","),<NBR>(A,","),<NTFORMAT>(A,","),<NBR>(A,","),<NBR>(A,","))')NAME1(JJ),'"',NAME2(JJ),'"','OFF','(F10.3)',1.0, (0.0, JW=1,NWB),('OFF', JW=1,NWB),('OFF',JW=1,NWB), ('OFF', JJB=1,NBR),('OFF', JT=1,NTFORMAT), ('OFF', JJB=1,NBR), ('OFF', JJB=1,NBR) 
+  WRITE (CON,'(A,",",A,A,A,",",A,",",A,",",F14.5,",",<NWB>(F12.5,","),<NWB>(A,","),<NWB>(A,","),<NBR>(A,","),<NTFORMAT>(A,","),<NBR>(A,","),<NBR>(A,","))')NAME1(JJ),'"',NAME2(JJ),'"','OFF','(F10.3)',1.0, (0.0, JW=1,NWB),('OFF', JW=1,NWB),('OFF',JW=1,NWB), ('OFF', JJB=1,NBR),('OFF', JT=1,NTFORMAT), ('OFF', JJB=1,NBR), ('OFF', JJB=1,NBR)
   ENDDO
   ENDIF
-  
+
   ENDDO
 
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'CDNAME2,CDNAME,FMTCD,CDMULT,CDWBC1,CDWBC2,CDWBC3,CDWBC4,CDWBC5,CDWBC6,CDWBC7,CDWBC8,CDWBC9'
-  
+
   DO J=23,17,-1
      CDNAME(J+3)=CDNAME(J);CDNAME2(J+3)=CDNAME2(J);FMTCD(J+3)=FMTCD(J);CDWBC(J+3,:)=CDWBC(J,:);CDMULT(J+3)=CDMULT(J)
   ENDDO
@@ -3321,14 +3321,14 @@ return
   ENDDO
   CDNAME2(9)='NH3';CDNAME(9)='Unionized ammonia, g/m3 as N';CDWBC(19,:)='    OFF';CDMULT(9)=1.0;FMTCD(9)=FMTCD(8)
   CDNAME2(27)='Secchi';CDNAME(27)='Secchi disk depth, m';CDWBC(27,:)='    OFF';CDMULT(27)=1.0;FMTCD(27)=FMTCD(26)
-  
+
   DO JD=1,NDC
   WRITE (CON,'(A,",",A,A,A,",",A,",",F14.5,",",<NWB>(A,","))')  CDNAME2(JD),'"',CDNAME(JD),'"',FMTCD(JD),CDMULT(JD),(ADJUSTL(CDWBC(JD,JW)), JW=1,NWB)
   ENDDO
   WRITE (CON,*)
   WRITE (CON,'(A,",")') 'KFNAME2,CFWBC1,CFWBC2,CFWBC3,CFWBC4,CFWBC5,CFWBC6,CFWBC7,CFWBC8'
 
-  
+
   DO J=42,73
       KFNAME2(J-1)=KFNAME2(J);KFWBC(J-1,:)=KFWBC(J,:)
   ENDDO
@@ -3336,7 +3336,7 @@ return
       KFNAME2(J+1)=KFNAME2(J);KFWBC(J+1,:)=KFWBC(J,:)
   ENDDO
  KFNAME2(27)='NH3GAS';KFWBC(J,:)='     OFF'
-  
+
   DO JF=1,72
     WRITE (CON,'(A,",",<NWB>(A,","))')   KFNAME2(JF),(ADJUSTL(KFWBC(JF,JW)),  JW=1,NWB)
   END DO
@@ -3344,7 +3344,7 @@ return
 ! Kinetics coefficients
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
- 
+
 
   WRITE (CON,'(<NWB>(F10.3,","))')     (EXH2O(JW),  JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')     (EXSS(JW),   JW=1,NWB)
@@ -3352,40 +3352,40 @@ return
   WRITE (CON,'(<NWB>(F10.3,","))')     (BETA(JW),   JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')     (ADJUSTL(EXC(JW)),    JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')     (ADJUSTL(EXIC(JW)),   JW=1,NWB)
- 
+
   WRITE (CON,*)
   WRITE (CON,'(A,",")') 'EXA1,EXA2,EXA3,EXA4,EXA5,EXA6,EXA7,EXA8,EXA9,EXA10'
 
   WRITE (CON,'(<NAL>(F10.3,","))')         (EXA(JA),  JA=1,NAL)
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'EXZ1,EXZ2,EXZ3,EXZ4,EXZ5,EXZ6,EXZ7,EXZ8,EXZ9,EXZ10' 
+  WRITE (CON,'(A,",")')'EXZ1,EXZ2,EXZ3,EXZ4,EXZ5,EXZ6,EXZ7,EXZ8,EXZ9,EXZ10'
 
-  WRITE (CON,'(<NZPT>(F10.3,","))')         (EXZ(JZ),  JZ=1,NZPT)  
+  WRITE (CON,'(<NZPT>(F10.3,","))')         (EXZ(JZ),  JZ=1,NZPT)
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'EXM1,EXM2,EXM3,EXM4,EXM5,EXM6,EXM7' 
-  
-  WRITE (CON,'(<NMCT>(F10.3,","))')         (EXM(JM),   JM=1,NMCT)  
+  WRITE (CON,'(A,",")')'EXM1,EXM2,EXM3,EXM4,EXM5,EXM6,EXM7'
+
+  WRITE (CON,'(<NMCT>(F10.3,","))')         (EXM(JM),   JM=1,NMCT)
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'CG1,CG2,CG3,CG4,CG5,CG6,CG7,CG8,CG9,CG10,CG11,CG12' 
+  WRITE (CON,'(A,",")')'CG1,CG2,CG3,CG4,CG5,CG6,CG7,CG8,CG9,CG10,CG11,CG12'
 
   WRITE (CON,'(<NGC>(F10.3,","))')         (CGQ10(JG),  JG=1,NGC)
   WRITE (CON,'(<NGC>(F10.3,","))')         (CG0DK(JG),  JG=1,NGC)
-  WRITE (CON,'(<NGC>(F10.3,","))')         (CG1DK(JG),  JG=1,NGC) 
-  WRITE (CON,'(<NGC>(F10.3,","))')         (CGS(JG),    JG=1,NGC) 
-  WRITE (CON,'(<NGC>(F10.3,","))')         (CGLDK(JG),  JG=1,NGC) 
-  WRITE (CON,'(<NGC>(F10.3,","))')         (CGKLF(JG),  JG=1,NGC) 
-  WRITE (CON,'(<NGC>(F10.3,","))')         (CGCS(JG),   JG=1,NGC) 
+  WRITE (CON,'(<NGC>(F10.3,","))')         (CG1DK(JG),  JG=1,NGC)
+  WRITE (CON,'(<NGC>(F10.3,","))')         (CGS(JG),    JG=1,NGC)
+  WRITE (CON,'(<NGC>(F10.3,","))')         (CGLDK(JG),  JG=1,NGC)
+  WRITE (CON,'(<NGC>(F10.3,","))')         (CGKLF(JG),  JG=1,NGC)
+  WRITE (CON,'(<NGC>(F10.3,","))')         (CGCS(JG),   JG=1,NGC)
   WRITE (CON,'(<NGC>(F10.3,","))')         (0.0,   JG=1,NGC)    ! CGR(JG)
- 
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'SS1,SS2,SS3,SS4,SS5,SS6,SS7,SS8'  
-  
+  WRITE (CON,'(A,",")')'SS1,SS2,SS3,SS4,SS5,SS6,SS7,SS8'
+
   WRITE (CON,'(<NSS>(F10.3,","))')   (SSS(JS),    JS=1,NSS)     ! WRITE (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
   WRITE (CON,'(<NSS>(A,","))')      (ADJUSTL(SEDRC(JS)),  JS=1,NSS)     ! WRITE (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
   WRITE (CON,'(<NSS>(F10.3,","))')   (TAUCR(JS),  JS=1,NSS)     ! WRITE (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
   WRITE (CON,'(<NSS>(F10.3,","))')   (0.0,  JS=1,NSS)   ! SSCS IF =-1 THEN THIS IS MATURE FINE TAILINGS
   WRITE (CON,*)
-    
+
   WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
   WRITE (CON,'(<NWB>(F10.3,","))')     (1.04,  JW=1,NWB)    ! BACTQ10(JW)
     XX=0.001
@@ -3393,7 +3393,7 @@ return
   WRITE (CON,'(<NWB>(F10.3,","))')      (XX,  JW=1,NWB) ! (BACTLDK(JW),  JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')      (XX,  JW=1,NWB) ! (BACTS(JW),    JW=1,NWB)
   WRITE (CON,*)
-  
+
   WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
   WRITE (CON,'(<NWB>(F10.3,","))')      (XX,  JW=1,NWB) !(H2SR(JW),    JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')      (1.04,  JW=1,NWB)  !(H2SQ10(JW),  JW=1,NWB)
@@ -3406,7 +3406,7 @@ return
   WRITE (CON,'(<NWB>(F10.3,","))')     (1.04,  JW=1,NWB)   !(CH4Q10(JW),  JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')     (0.1,  JW=1,NWB)   !(CH41DK(JW),  JW=1,NWB)
   WRITE (CON,*)
- 
+
   WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
   WRITE (CON,'(<NWB>(F10.3,","))')     (XX,  JW=1,NWB)   !(FEIIR(JW),    JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')     (1.04,  JW=1,NWB)   !(KFE_OXID(JW),  JW=1,NWB)
@@ -3420,12 +3420,12 @@ return
   WRITE (CON,'(<NWB>(F10.3,","))')    (1.04,  JW=1,NWB)   ! (KMN_OXID(JW),  JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')    (XX,  JW=1,NWB)   ! (KMN_RED(JW),  JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')    (XX,  JW=1,NWB)   ! (KMNO2_HalfSat(JW),    JW=1,NWB)
-  WRITE (CON,'(<NWB>(F10.3,","))')    (XX,  JW=1,NWB)  ! (MNSetVel(JW),  JW=1,NWB)  
-  
-  
+  WRITE (CON,'(<NWB>(F10.3,","))')    (XX,  JW=1,NWB)  ! (MNSetVel(JW),  JW=1,NWB)
+
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'ALG1,ALG2,ALG3,ALG4,ALG5,ALG6,ALG7,ALG8'  
-  
+  WRITE (CON,'(A,",")')'ALG1,ALG2,ALG3,ALG4,ALG5,ALG6,ALG7,ALG8'
+
   WRITE (CON,'(<NAL>(F10.3,","))') (AG(JA),          JA=1,NAL)
   WRITE (CON,'(<NAL>(F10.3,","))') (AR(JA),          JA=1,NAL)
   WRITE (CON,'(<NAL>(F10.3,","))') (AE(JA),          JA=1,NAL)
@@ -3457,8 +3457,8 @@ return
   WRITE (CON,'(<NAL>(F10.3,","))') (O2AR(JA),        JA=1,NAL)
   WRITE (CON,'(<NAL>(F10.3,","))') (O2AG(JA),        JA=1,NAL)
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'  
-   
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   DO JE=1,NEPT
   WRITE (CON,'(<NWB>(A,","))')         (adjustl(EPIC(JW,JE)),  JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')         (adjustl(EPIPRC(JW,JE)),JW=1,NWB)
@@ -3466,14 +3466,14 @@ return
   ENDDO
   IF(NEPT<5)THEN
   DO JE=NEPT+1,5
-  WRITE (CON,*) ',,,,,,,'  
-  WRITE (CON,*) ',,,,,,,'  
-  WRITE (CON,*) ',,,,,,,'  
+  WRITE (CON,*) ',,,,,,,'
+  WRITE (CON,*) ',,,,,,,'
+  WRITE (CON,*) ',,,,,,,'
   ENDDO
   ENDIF
       WRITE (CON,*)
-  WRITE (CON,'(A,",")')'EP1,EP2,EP3,EP4,EP5,EP6,EP7,EP8'  
-  
+  WRITE (CON,'(A,",")')'EP1,EP2,EP3,EP4,EP5,EP6,EP7,EP8'
+
   WRITE (CON,'(<NEPT>(F10.3,","))') (EG(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (ER(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EE(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -3481,13 +3481,13 @@ return
   WRITE (CON,'(<NEPT>(F10.3,","))') (EB(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EHSP(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EHSN(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  WRITE (CON,'(<NEPT>(F10.3,","))') (EHSSI(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13  
-  
+  WRITE (CON,'(<NEPT>(F10.3,","))') (EHSSI(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
+
   WRITE (CON,'(<NEPT>(F10.3,","))') (ESAT(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EHS(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(I5,","))')    (ENEQN(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  WRITE (CON,'(<NEPT>(F10.3,","))') (ENPR(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13  
-  
+  WRITE (CON,'(<NEPT>(F10.3,","))') (ENPR(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
+
   WRITE (CON,'(<NEPT>(F10.3,","))') (ET1(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (ET2(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (ET3(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -3496,7 +3496,7 @@ return
   WRITE (CON,'(<NEPT>(F10.3,","))') (EK2(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EK3(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EK4(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  
+
   WRITE (CON,'(<NEPT>(F10.3,","))') (EP(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EN(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   WRITE (CON,'(<NEPT>(F10.3,","))') (EC(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -3509,18 +3509,18 @@ return
   WRITE (CON,*)
 return
     end SUBROUTINE WRITE_CSV
-    
+
      SUBROUTINE WRITE_CSV2
   USE MAIN
   USE GLOBAL;     USE NAMESC; USE GEOMC;  USE LOGICC; USE PREC;  USE SURFHE;  USE KINETIC; USE SHADEC; USE EDDY
   USE STRUCTURES; USE TRANS;  USE TVDC;   USE SELWC;  USE GDAYC; USE SCREENC; USE TDGAS;   USE RSTART
   use macrophytec; use porosityc; use zooplanktonc;   use initialvelocity  ;  use extra, ONLY:CONFNwrite
   IMPLICIT NONE
-  
-  INTEGER :: N   
+
+  INTEGER :: N
 
   WRITE (CON,'(A,",")')'Zoo1,Zoo2,Zoo3,Zoo4,Zoo5,Zoo6,Zoo7'
-  
+
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZG(JZ),    JZ=1,NZPT)
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZR(JZ),    JZ=1,NZPT)
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZM(JZ),    JZ=1,NZPT)
@@ -3536,9 +3536,9 @@ return
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZK1(JZ),   JZ=1,NZPT)
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZK2(JZ),   JZ=1,NZPT)
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZK3(JZ),   JZ=1,NZPT)
-  WRITE (CON,'(<NZPT>(F10.3,","))')         (ZK4(JZ),   JZ=1,NZPT) 
-  
-  WRITE (CON,'(<NZPT>(F10.3,","))')         (ZP(JZ),    JZ=1,NZPT)  
+  WRITE (CON,'(<NZPT>(F10.3,","))')         (ZK4(JZ),   JZ=1,NZPT)
+
+  WRITE (CON,'(<NZPT>(F10.3,","))')         (ZP(JZ),    JZ=1,NZPT)
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZN(JZ),    JZ=1,NZPT)
   WRITE (CON,'(<NZPT>(F10.3,","))')         (ZC(JZ),    JZ=1,NZPT)
 
@@ -3554,17 +3554,17 @@ return
   ENDIF
 
   DO JZ=1,NZPT
-    WRITE (CON,'(<NZPT>(F10.3,","))')    (PREFZ(JZ,JJZ),   JJZ=1,NZPT)       
+    WRITE (CON,'(<NZPT>(F10.3,","))')    (PREFZ(JZ,JJZ),   JJZ=1,NZPT)
   END DO
   IF(NZPT<5)THEN
       DO J=NZPT+1,5
           WRITE (CON,*) ',,,,,,,'
       ENDDO
   ENDIF
-  
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
-  
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   DO JM=1,NMCT
     WRITE (CON,'(<NWB>(A,","))')   (ADJUSTL(MACWBC(JW,JM)),  JW=1,NWB)
   END DO
@@ -3573,7 +3573,7 @@ return
           WRITE (CON,*) ',,,,,,,'
       ENDDO
   ENDIF
-  
+
   DO JM=1,NMCT
     WRITE (CON,'(<NWB>(A,","))')   (ADJUSTL(MPRWBC(JW,JM)),  JW=1,NWB)
   END DO
@@ -3593,8 +3593,8 @@ return
   ENDIF
 
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'MacGroup1,MacGroup2,MacGroup3,MacGroup4,MacGroup5,MacGroup6,MacGroup7,MacGroup8,'   
-  
+  WRITE (CON,'(A,",")')'MacGroup1,MacGroup2,MacGroup3,MacGroup4,MacGroup5,MacGroup6,MacGroup7,MacGroup8,'
+
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MG(JM),     JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MR(JM),     JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MM(JM),     JM=1,NMCT)
@@ -3604,8 +3604,8 @@ return
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MHSC(JM),   JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MPOM(JM),   JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (LRPMAC(JM), JM=1,NMCT)
-  
-  WRITE (CON,'(<NMCT>(F10.3,","))')         (PSED(JM),   JM=1,NMCT)  
+
+  WRITE (CON,'(<NMCT>(F10.3,","))')         (PSED(JM),   JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (NSED(JM),   JM=1,NMCT)
 
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MBMP(JM),   JM=1,NMCT)
@@ -3613,8 +3613,8 @@ return
   WRITE (CON,'(<NMCT>(F10.3,","))')         (CDDRAG(JM), JM=1,NMCT)  !CB 6/29/06
   WRITE (CON,'(<NMCT>(F10.3,","))')         (DWV(JM),    JM=1,NMCT)  !CB 6/29/06
   WRITE (CON,'(<NMCT>(F10.3,","))')         (DWSA(JM),   JM=1,NMCT)  !CB 6/29/06
-  WRITE (CON,'(<NMCT>(F10.3,","))')         (ANORM(JM),  JM=1,NMCT)  !CB 6/29/06  
-  
+  WRITE (CON,'(<NMCT>(F10.3,","))')         (ANORM(JM),  JM=1,NMCT)  !CB 6/29/06
+
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MT1(JM),    JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MT2(JM),    JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MT3(JM),    JM=1,NMCT)
@@ -3623,32 +3623,32 @@ return
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MK2(JM),    JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MK3(JM),    JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MK4(JM),    JM=1,NMCT)
-  
+
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MP(JM),     JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MN(JM),     JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (MC(JM),     JM=1,NMCT)
- 
+
   WRITE (CON,'(<NMCT>(F10.3,","))')         (O2MR(JM),   JM=1,NMCT)
   WRITE (CON,'(<NMCT>(F10.3,","))')         (O2MG(JM),   JM=1,NMCT)
 
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
-  
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   WRITE (CON,'(<NWB>(F10.3,","))')         (LDOMDK(JW),  JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (RDOMDK(JW),  JW=1,NWB)
-  WRITE (CON,'(<NWB>(F10.3,","))')         (LRDDK(JW),   JW=1,NWB) 
+  WRITE (CON,'(<NWB>(F10.3,","))')         (LRDDK(JW),   JW=1,NWB)
 
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
-   
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   WRITE (CON,'(<NWB>(F10.3,","))')         (LPOMDK(JW),   JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (RPOMDK(JW),   JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (LRPDK(JW),    JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (POMS(JW),     JW=1,NWB)
-  
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
-  
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   WRITE (CON,'(<NWB>(F10.3,","))')         (ORGP(JW),     JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (ORGN(JW),     JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (ORGC(JW),     JW=1,NWB)
@@ -3659,15 +3659,15 @@ return
   WRITE (CON,'(<NWB>(F10.3,","))')         (OMT2(JW),     JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (OMK1(JW),     JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (OMK2(JW),     JW=1,NWB)
-  
+
   WRITE (CON,*)
   WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
   WRITE (CON,'(<NWB>(F10.3,","))')         (1.1,     JW=1,NWB)  ! COEFFA_TURB
   WRITE (CON,'(<NWB>(F10.3,","))')         (0.05,     JW=1,NWB) ! COEFFB_TURB
   WRITE (CON,'(<NWB>(F10.3,","))')         (1.5,     JW=1,NWB)  ! SECC_PAR
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'BOD1,BOD2,BOD3,BOD4,BOD5,BOD6,BOD7,BOD8,BOD9,BOD10'   
-  
+  WRITE (CON,'(A,",")')'BOD1,BOD2,BOD3,BOD4,BOD5,BOD6,BOD7,BOD8,BOD9,BOD10'
+
   WRITE (CON,'(<NBOD>(F10.3,","))')         (KBOD(JB),     JB=1,NBOD)
   WRITE (CON,'(<NBOD>(F10.3,","))')         (TBOD(JB),     JB=1,NBOD)
   WRITE (CON,'(<NBOD>(F10.3,","))')         (RBOD(JB),     JB=1,NBOD)
@@ -3675,9 +3675,9 @@ return
   WRITE (CON,'(<NBOD>(F10.3,","))')         (BODP(JB),     JB=1,NBOD)
   WRITE (CON,'(<NBOD>(F10.3,","))')         (BODN(JB),     JB=1,NBOD)
   WRITE (CON,'(<NBOD>(F10.3,","))')         (BODC(JB),     JB=1,NBOD)
-  
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
 
   WRITE (CON,'(<NWB>(F10.3,","))')         (PO4R(JW),     JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (PARTP(JW),    JW=1,NWB)
@@ -3700,46 +3700,46 @@ return
   WRITE (CON,'(<NWB>(F10.3,","))')         (PSIS(JW),     JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (PSIDK(JW),    JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')         (PARTSI(JW),   JW=1,NWB)
-    
+
   !WRITE (CON,*)
-  !WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
+  !WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
   !
   !WRITE (CON,'(<NWB>(F10.3,","))')         (FER(JW),       JW=1,NWB)
   !WRITE (CON,'(<NWB>(F10.3,","))')         (FES(JW),       JW=1,NWB)
-     
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
-  
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   WRITE (CON,'(<NWB>(F10.3,","))')          (CO2R(JW),     JW=1,NWB)
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'O2LIMIT'   
-  
+  WRITE (CON,'(A,",")')'O2LIMIT'
+
   WRITE (CON,'(F10.3,",")')  KDO
 
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'   
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
 
-  WRITE (CON,'(<NWB>(A,","))')     (ADJUSTL(SEDCC(JW)),   JW=1,NWB)  
-  WRITE (CON,'(<NWB>(A,","))')     (ADJUSTL(SEDPRC(JW)),  JW=1,NWB) 
-  WRITE (CON,'(<NWB>(F10.3,","))')     (SEDCI(JW),   JW=1,NWB)  
-  WRITE (CON,'(<NWB>(F10.3,","))')     (SDK(JW),     JW=1,NWB)     
-  WRITE (CON,'(<NWB>(F10.3,","))')     (SEDS(JW),    JW=1,NWB)  
-  WRITE (CON,'(<NWB>(F10.3,","))')     (FSOD(JW),    JW=1,NWB)  
-  WRITE (CON,'(<NWB>(F10.3,","))')     (FSED(JW),    JW=1,NWB) 
-  WRITE (CON,'(<NWB>(F10.3,","))')     (SEDB(JW),    JW=1,NWB)  
+  WRITE (CON,'(<NWB>(A,","))')     (ADJUSTL(SEDCC(JW)),   JW=1,NWB)
+  WRITE (CON,'(<NWB>(A,","))')     (ADJUSTL(SEDPRC(JW)),  JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.3,","))')     (SEDCI(JW),   JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.3,","))')     (SDK(JW),     JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.3,","))')     (SEDS(JW),    JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.3,","))')     (FSOD(JW),    JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.3,","))')     (FSED(JW),    JW=1,NWB)
+  WRITE (CON,'(<NWB>(F10.3,","))')     (SEDB(JW),    JW=1,NWB)
   WRITE (CON,'(<NWB>(A,","))')     (ADJUSTL(DYNSEDK(JW)), JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')     (SODT1(JW),   JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')     (SODT2(JW),   JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')     (SODK1(JW),   JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')     (SODK2(JW),   JW=1,NWB)
   WRITE (CON,*)
-  WRITE (CON,'(<IMX>(I5,","))')(I,I=1,IMX)   
-  
+  WRITE (CON,'(<IMX>(I5,","))')(I,I=1,IMX)
+
   WRITE (CON,'(<IMX>(F10.4,","))')  (SOD(I),  I=1,IMX)
-  
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'    
-  
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   WRITE (CON,'(<NWB>(A,","))')   (ADJUSTL(REAERC(JW)), JW=1,NWB)
   WRITE (CON,'(<NWB>(I3,","))')   (NEQN(JW),   JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')   (RCOEF1(JW), JW=1,NWB)
@@ -3748,8 +3748,8 @@ return
   WRITE (CON,'(<NWB>(F10.3,","))')   (RCOEF4(JW), JW=1,NWB)
   WRITE (CON,'(<NWB>(F10.3,","))')   (1.0, JW=1,NWB)   ! RCOEF5
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'FILE NAMES'    
-  
+  WRITE (CON,'(A,",")')'FILE NAMES'
+
 ! Input filenames
 
   WRITE (CON,'(A,A,A,",")')  '"',QWDFN,'"'
@@ -3757,15 +3757,15 @@ return
   WRITE (CON,'(A,A,A,",")')   '"',WSCFN,'"'
   WRITE (CON,'(A,A,A,",")')   '"',SHDFN,'"'
   WRITE (CON,'(A,A,A,",")')   '"',VPLFN(1),'"'
-  
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'    
- 
+  WRITE (CON,'(A,",")')'WB1,WB2,WB3,WB4,WB5,WB6,WB7,WB8,WB9,WB10'
+
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',BTHFN(JW),'"'), JW=1,NWB)
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',METFN(JW),'"'), JW=1,NWB)
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',EXTFN(JW),'"'), JW=1,NWB)
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"','ATM_DEP.CSV','"'), JW=1,NWB)
- 
+
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',VPRFN(JW),'"'), JW=1,NWB)
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',LPRFN(JW),'"'), JW=1,NWB)
 
@@ -3776,10 +3776,10 @@ return
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',CPLFN(JW),'"'), JW=1,NWB)
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',SPRFN(JW),'"'), JW=1,NWB)
   WRITE (CON,'(<NWB>(A,A,A,","))') ( ('"',FLXFN(JW),'"'), JW=1,NWB)
-  
+
   WRITE (CON,*)
-  WRITE (CON,'(A,",")')'BR1,BR2,BR3,BR4,BR5,BR6,BR7,BR8,BR9,BR10'    
- 
+  WRITE (CON,'(A,",")')'BR1,BR2,BR3,BR4,BR5,BR6,BR7,BR8,BR9,BR10'
+
   WRITE (CON,'(<NBR>(A,A,A,","))') ( ('"',QINFN(JB),'"'), JB=1,NBR)
   WRITE (CON,'(<NBR>(A,A,A,","))') ( ('"',TINFN(JB),'"'), JB=1,NBR)
   WRITE (CON,'(<NBR>(A,A,A,","))') ( ('"',CINFN(JB),'"'), JB=1,NBR)
@@ -3798,6 +3798,6 @@ return
   WRITE (CON,'(<NBR>(A,A,A,","))') ( ('"',CDHFN(JB),'"'), JB=1,NBR)
 
   CLOSE (CON)
-  
+
 return
 end SUBROUTINE WRITE_CSV2

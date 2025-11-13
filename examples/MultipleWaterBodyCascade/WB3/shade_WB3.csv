@@ -1,6 +1,6 @@
-$$ Shade file interpolated to 400m segments,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                                                                                                                                                                                            
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                                                                                                                                                                                                                                       
-w2seg,DynSh,TTEleLB,TTEleRB,ClDisLB,ClDiRB,SRFLB1,SRFLB2,SRFRB1,SRFRB2,TOPO1,TOPO2,TOPO3,TOPO4,TOPO5,TOPO6,TOPO7,TOPO8,TOPO9,TOPO10,TOPO11,TOPO12,TOPO13,TOPO14,TOPO15,TOPO16,TOPO17,TOPO18,SRFJD1,SRFJD2                                                           
+$$ Shade file interpolated to 400m segments,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+w2seg,DynSh,TTEleLB,TTEleRB,ClDisLB,ClDiRB,SRFLB1,SRFLB2,SRFRB1,SRFRB2,TOPO1,TOPO2,TOPO3,TOPO4,TOPO5,TOPO6,TOPO7,TOPO8,TOPO9,TOPO10,TOPO11,TOPO12,TOPO13,TOPO14,TOPO15,TOPO16,TOPO17,TOPO18,SRFJD1,SRFJD2
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 2,-1,111.93,119.261,52.078,18.168,1,1,0.82,0.82,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,80,288
 3,-1,114.99,140.56,26.29,22.03,0.29,0.29,0.95,0.95,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,80,288

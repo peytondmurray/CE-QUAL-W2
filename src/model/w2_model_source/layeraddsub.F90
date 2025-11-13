@@ -37,13 +37,13 @@ REAL(R8):: W1,W2,W3, DUMMY
       ZMIN(JW) = -1000.0
       KTMAX    =  2                                                                                                 ! SR 10/17/05
       DO JB=BS(JW),BE(JW)
-         IF(BR_INACTIVE(JB))THEN 
+         IF(BR_INACTIVE(JB))THEN
           IF(DS(JB)-US(JB)+1>=3)THEN
               I_BR_NUM=DS(JB)-2
           ELSE
               I_BR_NUM=DS(JB)-1    ! FOR BRANCHES WITH LESS THAN 3 SEGMENTS
           ENDIF
-          
+
         ! Test to determine whether to re-activate an inactivated branch.  Original test is commented out below.      !SR 11/30/2021
         ! IF(CUS(JBDH(JB))<=DHS(JB) .AND. ELWS(DHS(JB))>EL(KB(I_BR_NUM),I_BR_NUM))THEN     ! ***
 
@@ -66,7 +66,7 @@ REAL(R8):: W1,W2,W3, DUMMY
 
               BR_INACTIVE(JB)=.FALSE.
                IF (SNAPSHOT(JW)) WRITE (SNP(JW),'(/1X,13("*"),1X,A,I0,A,F0.3,A,I0,1X,A,I0,13("*"))') '   Branch Active: ',jb,&
-                                                        ' at Julian day = ',JDAY,'   NIT = ',NIT 
+                                                        ' at Julian day = ',JDAY,'   NIT = ',NIT
           ! IF (SNAPSHOT(JW)) WRITE (SNP(JW),'(/17X,2(A,I0))') ' Add segments ',DS(JB)-1,' through ',DS(JB)           !SR 11/30/2021
             IF (SNAPSHOT(JW)) WRITE (SNP(JW),'(/17X,2(A,I0))') ' Add segments ',IUT,' through ',DS(JB)                !SR 11/30/2021
 
@@ -286,27 +286,27 @@ REAL(R8):: W1,W2,W3, DUMMY
         KTWB(JW) = KTWB(JW)-1
         KT       = KTWB(JW)
         ilayer = 0
-        
-  ! RECOMPUTE INTERNAL WEIR FOR FLOATING WEIR      
+
+  ! RECOMPUTE INTERNAL WEIR FOR FLOATING WEIR
     IF (WEIR_CALC) THEN   !  SW 3/16/18
     DO JWR=1,NIW
      IF(IWR(JWR) >= US(BS(JW)) .AND. IWR(JWR) <= DS(BE(JW)))THEN
-        IF (EKTWR(JWR) == 0.0) THEN  
+        IF (EKTWR(JWR) == 0.0) THEN
             KTWR(JWR)=KTWB(JW)
-        ELSE  
-          KTWR(JWR) = INT(EKTWR(JWR))  
-        END IF 
-        IF (EKBWR(JWR) <= 0.0) THEN  
-            DO K=KTWR(JWR),KB(IWR(JWR))  
+        ELSE
+          KTWR(JWR) = INT(EKTWR(JWR))
+        END IF
+        IF (EKBWR(JWR) <= 0.0) THEN
+            DO K=KTWR(JWR),KB(IWR(JWR))
             IF (DEPTHB(K,IWR(JWR)) > ABS(EKBWR(JWR))) THEN
                 KBWR(JWR)=K
-                EXIT  
+                EXIT
             ENDIF
-            END DO   
-        ELSE  
-          KBWR(JWR) = INT(EKBWR(JWR))  
-        END IF  
-        
+            END DO
+        ELSE
+          KBWR(JWR) = INT(EKBWR(JWR))
+        END IF
+
       DO K=2,KMX-1
       ! IF ((K >= KTWR(JWR) .AND. K <= KBWR(JWR))) INTERNAL_WEIR(K,IWR(JWR)) = .TRUE.                                 !SR 11/30/2021
                     IF (K >= KTWR(JWR) .AND. K <= KBWR(JWR)) THEN                                                     !SR 11/30/2021
@@ -315,11 +315,11 @@ REAL(R8):: W1,W2,W3, DUMMY
                       INTERNAL_WEIR(K,IWR(JWR)) = .FALSE.                                                             !SR 11/30/2021
                     END IF                                                                                            !SR 11/30/2021
       END DO
-     ENDIF     
-    END DO    
+     ENDIF
+    END DO
   END IF
-        
-        
+
+
         DO JB=BS(JW),BE(JW)
         IF(BR_INACTIVE(JB))CYCLE    ! SW 6/12/2017
           IU = CUS(JB)
@@ -436,7 +436,7 @@ REAL(R8):: W1,W2,W3, DUMMY
             AVHR(KT+1,I) =   H1(KT+1,I) +(H1(KT+1,I+1) -H1(KT+1,I))*DLX(I) /(DLX(I)+DLX(I+1))                  !SW 07/29/04 (H1(KT+1,I+1) +H1(KT+1,I))*0.5
             AVHR(KT,I)   =   H1(KT,I)   +(H1(KT,I+1)   -H1(KT,I))*DLX(I)   /(DLX(I)+DLX(I+1))                  !SW 07/29/04 (H1(KT,I+1)   +H1(KT,I))*0.5
             BHR1(KT,I)   =   BH1(KT,I)  +(BH1(KT,I+1)  -BH1(KT,I))*DLX(I)  /(DLX(I)+DLX(I+1))                  !SW 07/29/04  (BH1(KT,I+1)  +BH1(KT,I))*0.5
-            BHR1(KT+1,I) =   BH1(KT+1,I)+(BH1(KT+1,I+1)-BH1(KT+1,I))*DLX(I) /(DLX(I)+DLX(I+1))                 !SW 07/29/04  (BH1(KT+1,I+1)+BH1(KT+1,I))*0.5  
+            BHR1(KT+1,I) =   BH1(KT+1,I)+(BH1(KT+1,I+1)-BH1(KT+1,I))*DLX(I) /(DLX(I)+DLX(I+1))                 !SW 07/29/04  (BH1(KT+1,I+1)+BH1(KT+1,I))*0.5
                              IF(CONSTRICTION(KT,I))THEN    ! SW 6/26/2018 Valid for all K
                                         IF(BHR1(KT,I) > BCONSTRICTION(I)*H1(KT,I))BHR1(KT,I)= BCONSTRICTION(I)*H1(KT,I)
                                         IF(BHR1(KT+1,I) > BCONSTRICTION(I)*H1(KT+1,I))BHR1(KT+1,I)= BCONSTRICTION(I)*H1(KT+1,I)
@@ -526,10 +526,10 @@ REAL(R8):: W1,W2,W3, DUMMY
                 iF(KBI(I) < KB(I))THEN
                 BKT(I)=BH1(KT,I)/(H1(KT,I)-(EL(KBI(I)+1,I)-EL(KB(I)+1,I))/COSA(JB))    ! SW 1/23/06  SR 1/2024
                 DEPTHB(KT,I)= H1(KT,I)-(EL(KBI(I)+1,I)-EL(KB(I)+1,I))/COSA(JB)    ! SW 1/23/06 SR 1/2024
-                DEPTHM(KT,I)=(H1(KT,I)-(EL(KBI(I)+1,I)-EL(KB(I)+1,I))/COSA(JB))*0.5D0    ! SW 1/23/06 
+                DEPTHM(KT,I)=(H1(KT,I)-(EL(KBI(I)+1,I)-EL(KB(I)+1,I))/COSA(JB))*0.5D0    ! SW 1/23/06
                 !IF(I<=DS(JB))THEN  ! SW 8/6/2018
                 !  AVHR(KT,I)= H1(KT,I)-(EL(KBI(I)+1,I)-EL(KB(I)+1,I))/COSA(JB)   +(H1(KT,I+1)-(EL(KBI(I)+1,I+1)-EL(KB(I)+1,I+1))/COSA(JB)  &
-                !  -H1(KT,I)+(EL(KBI(I)+1,I)-EL(KB(I)+1,I))/COSA(JB))*DLX(I)/(DLX(I)+DLX(I+1))   
+                !  -H1(KT,I)+(EL(KBI(I)+1,I)-EL(KB(I)+1,I))/COSA(JB))*DLX(I)/(DLX(I)+DLX(I+1))
                 !ELSE
                 !    AVHR(KT,I)=AVHR(KT,I-1)
                 !ENDIF
@@ -671,7 +671,7 @@ REAL(R8):: W1,W2,W3, DUMMY
                 END IF
               ENDDO
               NTAC = NTAC+KB(I)-(KT+1)+1      ! newly activated cells in added segment, except for KT (added below)   !SR 11/30/2021
-              
+
             DO K=KT,KB(I)  ! SW 12/18/2018
                 T1(K,I)           = T1(K,IU)
                 T2(K,I)           = T1(K,IU)
@@ -723,7 +723,7 @@ REAL(R8):: W1,W2,W3, DUMMY
                     JT=K
                     JE=KB(I)
                     DO J=JT,JE
-                      !MACRC(J,K,I,M)=MACWBCI(JW,M)                      
+                      !MACRC(J,K,I,M)=MACWBCI(JW,M)
                       IF (ISO_macrophyte(JW,m))  macrc(j,k,I,m) = macwbci(JW,m)     ! cb 3/7/16
                       IF (VERT_macrophyte(JW,m)) macrc(j,k,I,m) = 0.1
                       IF (long_macrophyte(JW,m)) macrc(j,k,I,m) = 0.1
@@ -770,7 +770,7 @@ REAL(R8):: W1,W2,W3, DUMMY
           END DO
           NTACMX = MAX(NTAC,NTACMX)
         END DO    ! JB loop
-        CALL INTERPOLATION_MULTIPLIERS   
+        CALL INTERPOLATION_MULTIPLIERS
 
 !****** Additional layers
 
@@ -788,35 +788,35 @@ REAL(R8):: W1,W2,W3, DUMMY
 
       DO WHILE (SUB_LAYER)
         IF (SNAPSHOT(JW)) WRITE (SNP(JW),'(/1X,13("*"),1X,A,I0,A,F0.3,A,I0,1X,A,I0,1x,13("*"))') 'Subtract layer ',&
-        KT,' at Julian day = ', JDAY,' NIT = ',NIT,' IZMIN =',IZMIN(JW)      ! SW 1/23/06   
-        WRITE (WRN,'(/1X,13("*"),1X,A,I0,A,F0.3,A,I0,1X,A,I0,1x,A,i4,1x,13("*"))') 'Subtract layer ',KT,' at Julian day = ', JDAY,' NIT = ',NIT,' IZMIN =',IZMIN(JW),' WaterBody = ',JW   
+        KT,' at Julian day = ', JDAY,' NIT = ',NIT,' IZMIN =',IZMIN(JW)      ! SW 1/23/06
+        WRITE (WRN,'(/1X,13("*"),1X,A,I0,A,F0.3,A,I0,1X,A,I0,1x,A,i4,1x,13("*"))') 'Subtract layer ',KT,' at Julian day = ', JDAY,' NIT = ',NIT,' IZMIN =',IZMIN(JW),' WaterBody = ',JW
 
 !****** Variable initialization
 
         KTWB(JW) = KTWB(JW)+1
         KT       = KTWB(JW)
         ILAYER=0       ! SW 1/23/06  11/7/07
-        
-! RECOMPUTE INTERNAL WEIR FOR FLOATING WEIR      
+
+! RECOMPUTE INTERNAL WEIR FOR FLOATING WEIR
     IF (WEIR_CALC) THEN   !  SW 3/16/18
     DO JWR=1,NIW
      IF(IWR(JWR) >= US(BS(JW)) .AND. IWR(JWR) <= DS(BE(JW)))THEN
-        IF (EKTWR(JWR) == 0.0) THEN  
+        IF (EKTWR(JWR) == 0.0) THEN
             KTWR(JWR)=KTWB(JW)
-        ELSE  
-          KTWR(JWR) = INT(EKTWR(JWR))  
-        END IF 
-        IF (EKBWR(JWR) <= 0.0) THEN  
-            DO K=KTWR(JWR),KB(IWR(JWR))  
+        ELSE
+          KTWR(JWR) = INT(EKTWR(JWR))
+        END IF
+        IF (EKBWR(JWR) <= 0.0) THEN
+            DO K=KTWR(JWR),KB(IWR(JWR))
             IF (DEPTHB(K,IWR(JWR)) > ABS(EKBWR(JWR))) THEN
                 KBWR(JWR)=K
-                EXIT  
+                EXIT
                 ENDIF
-            END DO   
-        ELSE  
-          KBWR(JWR) = INT(EKBWR(JWR))  
-        END IF  
-        
+            END DO
+        ELSE
+          KBWR(JWR) = INT(EKBWR(JWR))
+        END IF
+
       DO K=2,KMX-1
       ! IF ((K >= KTWR(JWR) .AND. K <= KBWR(JWR))) INTERNAL_WEIR(K,IWR(JWR)) = .TRUE.                                 !SR 11/30/2021
                     IF (K >= KTWR(JWR) .AND. K <= KBWR(JWR)) THEN                                                     !SR 11/30/2021
@@ -825,12 +825,12 @@ REAL(R8):: W1,W2,W3, DUMMY
                       INTERNAL_WEIR(K,IWR(JWR)) = .FALSE.                                                             !SR 11/30/2021
                     END IF                                                                                            !SR 11/30/2021
       END DO
-     ENDIF     
-    END DO    
+     ENDIF
+    END DO
   END IF
-        
-        
-        
+
+
+
         DO JB=BS(JW),BE(JW)
         IF(BR_INACTIVE(JB))CYCLE    ! SW 6/12/2017
           IU = CUS(JB)
@@ -974,7 +974,7 @@ REAL(R8):: W1,W2,W3, DUMMY
                              IF(CONSTRICTION(KT,I))THEN    ! SW 6/26/2018 Valid for all K
                                         IF(BHR1(KT,I) > BCONSTRICTION(I)*H1(KT,I))BHR1(KT,I)= BCONSTRICTION(I)*H1(KT,I)
                                         IF(BHR1(KT-1,I) > BCONSTRICTION(I)*H1(KT-1,I))BHR1(KT-1,I)= BCONSTRICTION(I)*H1(KT-1,I)
-                             ENDIF            
+                             ENDIF
           END DO
           U(KT-1,IU-1:ID+1)     = 0.0
           W(KT-1,IU-1:ID+1)     = 0.0
@@ -987,7 +987,7 @@ REAL(R8):: W1,W2,W3, DUMMY
           ADMZ(KT-1,IU-1:ID+1)  = 0.0
           ADZ(KT-1,IU-1:ID+1)   = 0.0
           DECAY(KT-1,IU-1:ID+1) = 0.0
-          T1(KT-1,IU-1:ID+1)    = 0.0   !SR 11/10/2023 
+          T1(KT-1,IU-1:ID+1)    = 0.0   !SR 11/10/2023
           T2(KT-1,IU-1:ID+1)    = 0.0
           CD(KT-1,IU-1:ID+1,CDN(1:NACD(JW),JW)) = 0.0
           IF (UP_HEAD(JB)) THEN
@@ -1017,12 +1017,12 @@ REAL(R8):: W1,W2,W3, DUMMY
                 ilayer(i)=1
                 T1(KB(I),I)           = T1(KT,I)                   !    SW 5/15/06    T1(KB(I)-1,I)
                 C1(KB(I),I,CN(1:NAC)) = C1(KT,I,CN(1:NAC))         !    SW 5/15/06    C1(KB(I)-1,I,CN(1:NAC))
-                CD(KB(I),I,CDN(1:NACD(JW),JW)) = CD(KT,I,CDN(1:NACD(JW),JW))    !SR 11/10/2023 
-                
+                CD(KB(I),I,CDN(1:NACD(JW),JW)) = CD(KT,I,CDN(1:NACD(JW),JW))    !SR 11/10/2023
+
                 IF (SEDIMENT_CALC(JW))THEN      ! SW 5/26/2022
                 SED(KB(I),I)=SED(KT-1,I);SEDC(KB(I),I)=SEDC(KT-1,I);SEDN(KB(I),I)=SEDN(KT-1,I);SEDP(KB(I),I)=SEDP(KT-1,I)
-                ENDIF              
-                
+                ENDIF
+
                 WRITE (WRN,'(2(A,I8),A,F0.3,A,F0.3)') 'Lowering bottom segment ',I,' at iteration ',NIT,' at Julian day ',&
                                                        JDAY,' Z(I)=',Z(I)
                 WARNING_OPEN = .TRUE.
@@ -1119,7 +1119,7 @@ REAL(R8):: W1,W2,W3, DUMMY
           IF (IUT > DS(JB)-1 .AND. JB /= 1 .AND. JB /= JBDN(JW)) THEN                                                 !SR 11/30/2021
             BR_INACTIVE(JB)=.TRUE.  ! SW 6/12/2017
             IF (SNAPSHOT(JW)) WRITE (SNP(JW),'(/1X,13("*"),1X,A,I0,A,F0.3,A,I0,1X,A,I0,13("*"))') '   Branch Inactive: ',jb,&
-                                                        ' at Julian day = ',JDAY,'   NIT = ',NIT 
+                                                        ' at Julian day = ',JDAY,'   NIT = ',NIT
             WARNING_OPEN = .TRUE.
             WRITE (WRN,'(/1X,13("*"),1X,A,I0,A,F0.3,A,I0,1X,A,I0,13("*"))') '   Branch Inactive: ',jb,' at Julian day = ',JDAY,'   NIT = ',NIT    ! SW 11/16/2018
             DO I=IU,DS(JB)   ! SW 12/17/2018
@@ -1188,7 +1188,7 @@ REAL(R8):: W1,W2,W3, DUMMY
                 END IF
               END DO
             END DO
-            
+
             F(IU-1:IUT-1)     =  0.0
             Z(IU-1:IUT-1)     =  0.0
             !ICETH(IU-1:IUT-1) =  0.0    ! SW 9/29/15
@@ -1214,7 +1214,7 @@ REAL(R8):: W1,W2,W3, DUMMY
               CSSK(K,IU-1:IUT-1,CN(1:NAC)) = 0.0
               CD(K,IU-1:IUT-1,CDN(1:NACD(JW),JW)) = 0.0  !SR 11/10/2023
             END DO
-            
+
             DO M=1,NMC
               IF (MACROPHYTE_CALC(JW,M)) THEN
                 MAC(K,I,M)=0.0
@@ -1279,9 +1279,9 @@ REAL(R8):: W1,W2,W3, DUMMY
           END DO
           NTACMN = MIN(NTAC,NTACMN)
         END DO
-        
-        CALL INTERPOLATION_MULTIPLIERS   
-        
+
+        CALL INTERPOLATION_MULTIPLIERS
+
 !****** Additional layer subtractions
 
         ZMIN(JW) = -1000.0

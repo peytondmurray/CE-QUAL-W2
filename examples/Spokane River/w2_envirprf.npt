@@ -1,15 +1,15 @@
 ENVIRONMENTAL PERFORMANCE CRITERIA CE-QUAL-W2 MODEL
-EPR COMP  INTVLS SELECTC   JDAY1   JDAY2    ISTR    IEND 
-              20     OFF    100.    150.       5      25   
+EPR COMP  INTVLS SELECTC   JDAY1   JDAY2    ISTR    IEND
+              20     OFF    100.    150.       5      25
 
-TEMP/VEL VELOCTY   VINCR    VTOP    TEMP   TINCR    TTOP  DEPTHC   DINCR    DTOP   
-             OFF   0.050    0.50      ON     1.0    30.0     OFF     10.    120.  
+TEMP/VEL VELOCTY   VINCR    VTOP    TEMP   TINCR    TTOP  DEPTHC   DINCR    DTOP
+             OFF   0.050    0.50      ON     1.0    30.0     OFF     10.    120.
 
 CST       ACTIVE INTSCLE TOPLMIT
 TDS          OFF    1.00   20.00
-WaterAge      ON    1.00   20.00   
-Gen2          ON    1.00   20.00       
-GEN3          ON    1.00   20.00    
+WaterAge      ON    1.00   20.00
+Gen2          ON    1.00   20.00
+GEN3          ON    1.00   20.00
 ISS1          ON    1.00   20.00
 PO4          OFF    1.00   20.00
 NH4          OFF    1.00   20.00
@@ -34,7 +34,7 @@ LDOM-N       OFF    1.00   20.00
 RDOM-N       OFF    1.00   20.00
 LPOM-N       OFF    1.00   20.00
 RPOM-N       OFF    1.00   20.00
-        
+
 CST DERI  ACTIVE INTSCLE TOPLMIT
 DOC          OFF    1.00   20.00
 POC          OFF    1.00   20.00
@@ -59,4 +59,3 @@ pH           OFF    1.00   20.00
 CO2          OFF    1.00   20.00
 HCO3         OFF    1.00   20.00
 CO3          OFF    1.00   20.00
-               

@@ -56,7 +56,7 @@ ENTRY SHORT_WAVE_RADIATION (JDAY)
     SRON(NMet) = 0.0
   END IF
   endif
-  
+
 RETURN
 
 !***********************************************************************************************************************************
@@ -73,9 +73,9 @@ ENTRY EQUILIBRIUM_TEMPERATURE
   else
   TDEW_F   = DEG_F(TDEW(NMet))
   TAIR_F   = DEG_F(TAIR(NMet))
-  SRO_BR   = SRON(NMet)*W_M2_TO_BTU_FT2_DAY*SHADE(I)   
+  SRO_BR   = SRON(NMet)*W_M2_TO_BTU_FT2_DAY*SHADE(I)
   endif
-  
+
   !WIND_MPH = WIND(JW)*WSC(I)*MPS_TO_MPH
   !WIND2M   = WIND_MPH*DLOG(2.0D0/Z0(JW))/DLOG(WINDH(JW)/Z0(JW))+NONZERO     ! SW 11/28/07  old version z0=0.003
   WIND2M=WIND2(I)*MPS_TO_MPH    ! ALREADY COMPUTED IN w2 MAIN PROGRAM
@@ -159,14 +159,14 @@ endif
  if(.not.Met_Regions)then
   RC(I) = FW*BOWEN_CONSTANT*(TSUR-TAIR(JW))
  else
-  RC(I) = FW*BOWEN_CONSTANT*(TSUR-TAIR(NMet))  
+  RC(I) = FW*BOWEN_CONSTANT*(TSUR-TAIR(NMet))
  endif
- 
+
 
 ! Back radiation flux
 
   RB(I) = 5.51D-8*(TSUR+273.15D0)**4
-  RETURN  
+  RETURN
 END SUBROUTINE HEAT_EXCHANGE
 
 ! Function declaration
@@ -181,4 +181,3 @@ END SUBROUTINE HEAT_EXCHANGE
    REAL(R8) :: X
    DEG_C = (X-32.0)*5.0/9.0
    END FUNCTION DEG_C
-

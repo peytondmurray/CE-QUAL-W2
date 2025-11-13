@@ -30,7 +30,7 @@ Use CEMASedimentDiagenesis ; use MetFileRegion
  USE AlgaeReduceGasTransfer
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
-  INTEGER IFILE 
+  INTEGER IFILE
   CHARACTER(1)  AI_STR                                                 ! for active/inactive error output             !SR 11/30/2021
 !***********************************************************************************************************************************
 !*                                                    Task 3: End Simulation                                                      **
@@ -71,10 +71,10 @@ Use CEMASedimentDiagenesis ; use MetFileRegion
     IF (SPREADSHEET(JW)) CLOSE (SPR(JW))
     IF (CONTOUR(JW))     CLOSE (CPL(JW))
   END DO
-  
+
   ! *** DSI W2_TOOL LINKAGE
   IF(VECTOR(1))CLOSE(VPL(1))
-  
+
   IF (TIME_SERIES) THEN
     DO J=1,NIKTSR
       CLOSE (TSR(J))
@@ -95,14 +95,14 @@ Use CEMASedimentDiagenesis ; use MetFileRegion
    CLOSE (J)
   END DO
 
-      IF (FLOWBALC=='      ON') THEN        
+      IF (FLOWBALC=='      ON') THEN
       CLOSE(FLOWBFN)   ! flowbal file
       ENDIF
 
-      IF (NPBALC=='      ON') THEN    
+      IF (NPBALC=='      ON') THEN
       CLOSE(MASSBFN)   ! MASS BALANCE file
       ENDIF
-    
+
   IF(SELECTC == '      ON')then          ! SW 9/25/13 New Section on closing files
   ifile=1949
   do jb=1,nbr
@@ -121,109 +121,109 @@ Use CEMASedimentDiagenesis ; use MetFileRegion
   enddo
 
   endif
-  
-      IF (DOWNSTREAM_OUTFLOW) THEN  
-      JFILE=0  
-      DO JWD=1,NIWDO  
+
+      IF (DOWNSTREAM_OUTFLOW) THEN
+      JFILE=0
+      DO JWD=1,NIWDO
         CLOSE(WDO(JWD,1))
         CLOSE(WDO(JWD,2))
-        IF (CONSTITUENTS) THEN  
+        IF (CONSTITUENTS) THEN
           CLOSE (WDO(JWD,3))
-        END IF  
-        IF (DERIVED_CALC) THEN  
+        END IF
+        IF (DERIVED_CALC) THEN
           CLOSE(WDO(JWD,4))
-        END IF  
-        CLOSE(WDO(JWD,5))                                                                                           !SR 12/19/2022  
-        ! Determine the # of withdrawals at the WITH SEG  
+        END IF
+        CLOSE(WDO(JWD,5))                                                                                           !SR 12/19/2022
+        ! Determine the # of withdrawals at the WITH SEG
         DO JB=1,NBR  ! structures
-          IF(IWDO(JWD)==DS(JB) .AND. NSTR(JB) /= 0)THEN  
-            DO JS=1,NSTR(JB)  
-              JFILE=JFILE+1  
-              CLOSE(WDO2(JFILE,1))  
+          IF(IWDO(JWD)==DS(JB) .AND. NSTR(JB) /= 0)THEN
+            DO JS=1,NSTR(JB)
+              JFILE=JFILE+1
+              CLOSE(WDO2(JFILE,1))
               CLOSE(WDO2(JFILE,2))
-              IF (CONSTITUENTS) THEN  
+              IF (CONSTITUENTS) THEN
                 CLOSE(WDO2(JFILE,3))
-              ENDIF   
-              IF (DERIVED_CALC) THEN  
+              ENDIF
+              IF (DERIVED_CALC) THEN
                 CLOSE(WDO2(JFILE,4))
-              ENDIF  
-            ENDDO  
-          ENDIF  
-        ENDDO  
-          
+              ENDIF
+            ENDDO
+          ENDIF
+        ENDDO
+
         DO JS=1,NWD  ! withdrawals
-          IF(IWDO(JWD) == IWD(JS))THEN  
-            JFILE=JFILE+1  
+          IF(IWDO(JWD) == IWD(JS))THEN
+            JFILE=JFILE+1
             CLOSE(WDO2(JFILE,1))
             CLOSE(WDO2(JFILE,2))
-            IF (CONSTITUENTS) THEN  
-                CLOSE(WDO2(JFILE,3)) 
-            ENDIF  
-            IF (DERIVED_CALC) THEN  
+            IF (CONSTITUENTS) THEN
+                CLOSE(WDO2(JFILE,3))
+            ENDIF
+            IF (DERIVED_CALC) THEN
              CLOSE(WDO2(JFILE,4))
-            ENDIF  
-          ENDIF  
-        ENDDO  
-          
+            ENDIF
+          ENDIF
+        ENDDO
+
         DO JS=1,NSP  ! spillways
-          IF(IWDO(JWD) == IUSP(JS))THEN  
-            JFILE=JFILE+1  
+          IF(IWDO(JWD) == IUSP(JS))THEN
+            JFILE=JFILE+1
             CLOSE(WDO2(JFILE,1))
             CLOSE(WDO2(JFILE,2))
-            IF (CONSTITUENTS) THEN  
+            IF (CONSTITUENTS) THEN
                 CLOSE(WDO2(JFILE,3))
-            ENDIF  
-            IF (DERIVED_CALC) THEN  
+            ENDIF
+            IF (DERIVED_CALC) THEN
                CLOSE(WDO2(JFILE,4))
-            ENDIF  
-          ENDIF  
-        ENDDO  
-          
+            ENDIF
+          ENDIF
+        ENDDO
+
         DO JS=1,NPU  ! pumps
-          IF(IWDO(JWD) == IUPU(JS))THEN  
-            JFILE=JFILE+1  
+          IF(IWDO(JWD) == IUPU(JS))THEN
+            JFILE=JFILE+1
             CLOSE(WDO2(JFILE,1))
             CLOSE(WDO2(JFILE,2))
-            IF (CONSTITUENTS) THEN  
+            IF (CONSTITUENTS) THEN
                 CLOSE(WDO2(JFILE,3))
-            ENDIF  
-            IF (DERIVED_CALC) THEN  
+            ENDIF
+            IF (DERIVED_CALC) THEN
                 CLOSE(WDO2(JFILE,4))
-            ENDIF  
-          ENDIF  
-        ENDDO  
-           
+            ENDIF
+          ENDIF
+        ENDDO
+
         DO JS=1,NPI  ! pipes
-          IF(IWDO(JWD) == IUPI(JS))THEN  
-            JFILE=JFILE+1  
+          IF(IWDO(JWD) == IUPI(JS))THEN
+            JFILE=JFILE+1
             CLOSE(WDO2(JFILE,1))
             CLOSE(WDO2(JFILE,2))
-            IF (CONSTITUENTS) THEN  
+            IF (CONSTITUENTS) THEN
                 CLOSE(WDO2(JFILE,3))
-            ENDIF  
-            IF (DERIVED_CALC) THEN  
+            ENDIF
+            IF (DERIVED_CALC) THEN
                 CLOSE(WDO2(JFILE,4))
-            ENDIF  
-          ENDIF  
-        ENDDO  
-          
+            ENDIF
+          ENDIF
+        ENDDO
+
         DO JS=1,NGT  ! gates
-          IF(IWDO(JWD) == IUGT(JS))THEN  
-            JFILE=JFILE+1  
+          IF(IWDO(JWD) == IUGT(JS))THEN
+            JFILE=JFILE+1
             CLOSE(WDO2(JFILE,1))
             CLOSE(WDO2(JFILE,2))
-            IF (CONSTITUENTS) THEN  
+            IF (CONSTITUENTS) THEN
                 CLOSE(WDO2(JFILE,3))
-            ENDIF  
-            IF (DERIVED_CALC) THEN  
+            ENDIF
+            IF (DERIVED_CALC) THEN
                 CLOSE(WDO2(JFILE,4))
-            ENDIF  
-          ENDIF  
-        ENDDO  
-          
-      END DO  
-    END IF  
-  
+            ENDIF
+          ENDIF
+        ENDDO
+
+      END DO
+    END IF
+
 IF (ERROR_OPEN) THEN                                           ! modified to be more organized and comma-delimited  !SR 12/26/2019
     OPEN (W2ERR,FILE='W2Errordump.csv',status='unknown')         ! changed to csv                                     !SR 12/26/2019
     WRITE (W2ERR,*) 'JDAY = ', JDAY                                                                                   !SR 12/26/2019
@@ -285,12 +285,12 @@ IF (ERROR_OPEN) THEN                                           ! modified to be 
   DEALLOCATE (LPZOOINC,LPZOOOUTC)
   DEALLOCATE (LDOP, RDOP, LPOP, RPOP, LDON, RDON, LPON, RPON)
   DEALLOCATE (LDOC, RDOC, LPOC, RPOC)
-  DEALLOCATE (PSIEM, SEDEB)                                                                  
+  DEALLOCATE (PSIEM, SEDEB)
   DEALLOCATE (LPOMPEP, LPOMNEP, LPOMCEP)
   DEALLOCATE (LPOMHD,  RPOMHD)
   DEALLOCATE (LDOMCAP, LDOMCEP, LPOMCAP, LPOMCNS, RPOMCNS)
-  DEALLOCATE (LDOMPD,  LRDOMPD, RDOMPD,  LPOMPD,  LRPOMPD, RPOMPD,  LPOMPHD, RPOMPHD) 
-  DEALLOCATE (LDOMND,  LRDOMND, RDOMND,  LPOMND,  LRPOMND, RPOMND,  LPOMNHD, RPOMNHD) 
+  DEALLOCATE (LDOMPD,  LRDOMPD, RDOMPD,  LPOMPD,  LRPOMPD, RPOMPD,  LPOMPHD, RPOMPHD)
+  DEALLOCATE (LDOMND,  LRDOMND, RDOMND,  LPOMND,  LRPOMND, RPOMND,  LPOMNHD, RPOMNHD)
   DEALLOCATE (LDOMCD,  LRDOMCD, RDOMCD,  LPOMCD,  LRPOMCD, RPOMCD,  LPOMCHD, RPOMCHD)
   DEALLOCATE (QSTRSAV, QWDSAV)                                                                                        !SR 06/29/2021
 
@@ -300,11 +300,11 @@ IF (ERROR_OPEN) THEN                                           ! modified to be 
   DEALLOCATE (DSIR,   PSIS,   PSIDK,  PARTSI, SODT1,  SODT2,  SODK1,  SODK2,  O2NH4,  O2OM,   O2AR,   O2AG,   CG1DK,  CGS)
   DEALLOCATE (CGQ10,  CG0DK,  CGLDK, CGKLF,CGCS,CGR,CUNIT,  CUNIT1, CUNIT2, CUNIT3,CAC,    INCAC,  TRCAC,  DTCAC,  PRCAC,  CNAME,  CNAME1, CNAME2, CMULT) !LCJ 2/26/15
   DEALLOCATE (CN,     INCN,   DTCN,   PRCN,   CSUM,   DLTMAX, QWDO,   TWDO,   SSS,    SEDRC,  TAUCR,  XBR, FNO3SED, DYNSTRUC, CDNN)
-!  DEALLOCATE (SSFLOC, FLOCEQN)                                                 
-  !DEALLOCATE (SEDCC1,SEDCC2, ICEQSS,SDK1,sdk2,SEDCI1,SEDCI2,SEDPRC1,SEDPRC2,SEDVP1,SEDVP2,SED1,SED2) 
+!  DEALLOCATE (SSFLOC, FLOCEQN)
+  !DEALLOCATE (SEDCC1,SEDCC2, ICEQSS,SDK1,sdk2,SEDCI1,SEDCI2,SEDPRC1,SEDPRC2,SEDVP1,SEDVP2,SED1,SED2)
   !DEALLOCATE (SEDCC1,SEDCC2, ICEQSS,SDK1,sdk2,SEDCI1,SEDCI2,SEDPRC1,SEDPRC2,SEDVP1,SEDVP2,SED1,SED2,fsedc1,fsedc2,pbiom,nbiom,cbiom)   ! Amaila, cb 6/7/17
   DEALLOCATE (SEDCC1,SEDCC2, ICEQSS,SDK1,sdk2,SEDCI1,SEDCI2,SEDPRC1,SEDPRC2,SEDVP1,SEDVP2,SED1,SED2,fsedc1,fsedc2,pbiom,nbiom,cbiom,sed1ic,sed2ic,sdfirstadd)   ! cb 9/3/17
-  DEALLOCATE (ISO_SEDIMENT1, VERT_SEDIMENT1,LONG_SEDIMENT1,ISO_SEDIMENT2,VERT_SEDIMENT2,LONG_SEDIMENT2,PRINT_SEDIMENT1,PRINT_SEDIMENT2) 
+  DEALLOCATE (ISO_SEDIMENT1, VERT_SEDIMENT1,LONG_SEDIMENT1,ISO_SEDIMENT2,VERT_SEDIMENT2,LONG_SEDIMENT2,PRINT_SEDIMENT1,PRINT_SEDIMENT2)
   DEALLOCATE (SEDIMENT_CALC1,SEDIMENT_CALC2)
   DEALLOCATE (QTAVB,  QTMXB,  BS,     BE,     JBUH,   JBDH,   TSSS,   TSSB,   TSSICE, ESBR,   ETBR,   EBRI,   QDTR,   EVBR)
   DEALLOCATE (QIN,    PR,     QPRBR,  TIN,    TOUT,   TPR,    TDTR,   TPB,    NACPR,  NACIN,  NACDT,  NACTR,  NACD,   ELDH)
@@ -352,7 +352,7 @@ IF (ERROR_OPEN) THEN                                           ! modified to be 
   DEALLOCATE (FETCH_CALC,     LIMITING_DLT,         TERM_BY_TERM,       MANNINGS_N,       PLACE_QTR,       SPECIFY_QTR)
   DEALLOCATE (PLACE_QIN,      PRINT_CONST,          PRINT_HYDRO,        PRINT_SEDIMENT,   ENERGY_BALANCE,  MASS_BALANCE)
   DEALLOCATE (VOLUME_BALANCE, DETAILED_ICE,         ICE_CALC,                ALLOW_ICE,       PH_CALC, BR_INACTIVE)     ! ICE_IN,       RC/SW 4/28/11
-  DEALLOCATE (BOD_CALCP, BOD_CALCN) 
+  DEALLOCATE (BOD_CALCP, BOD_CALCN)
   DEALLOCATE (EVAPORATION,    PRECIPITATION,        RH_EVAP,            NO_INFLOW,        NO_OUTFLOW,      NO_HEAT, BR_NOTECPLOT)   ! SW 8/27/2019
   DEALLOCATE (ISO_TEMP,       VERT_TEMP,            LONG_TEMP,          VERT_PROFILE,     LONG_PROFILE,    NO_WIND)
   DEALLOCATE (SNAPSHOT,       PROFILE,              VECTOR,             CONTOUR,          SPREADSHEET,     INTERNAL_WEIR)
@@ -370,11 +370,11 @@ DEALLOCATE (LATERAL_PIPE)
   IF(REDUCE_GAS_TRANSFER)DEALLOCATE(I_ALG)
   DEALLOCATE (ISO_EPIPHYTON,  VERT_EPIPHYTON,       LONG_EPIPHYTON)          !,     LATERAL_SPILLWAY, LATERAL_GATE,    LATERAL_PUMP
   DEALLOCATE (iso_macrophyte,  vert_macrophyte,       long_macrophyte, macrcvp,   macrclp)  ! cb 8/21/15
-  DEALLOCATE (INTERP_HEAD,    INTERP_WITHDRAWAL,    INTERP_EXTINCTION,  INTERP_DTRIBS,    INTERP_TRIBS)   !LATERAL_PIPE,    
+  DEALLOCATE (INTERP_HEAD,    INTERP_WITHDRAWAL,    INTERP_EXTINCTION,  INTERP_DTRIBS,    INTERP_TRIBS)   !LATERAL_PIPE,
   DEALLOCATE (INTERP_OUTFLOW, INTERP_INFLOW,        INTERP_METEOROLOGY, ZERO_SLOPE)
-  DEALLOCATE (SEDIMENT_RESUSPENSION, ACTIVE_RULE_W2SELECTIVE)   !HYDRO_PLOT, CONSTITUENT_PLOT, DERIVED_PLOT,        
+  DEALLOCATE (SEDIMENT_RESUSPENSION, ACTIVE_RULE_W2SELECTIVE)   !HYDRO_PLOT, CONSTITUENT_PLOT, DERIVED_PLOT,
   DEALLOCATE (ORGPLD, ORGPRD, ORGPLP, ORGPRP, ORGNLD, ORGNRD, ORGNLP)
-  DEALLOCATE (ICPL,TAVG,TAVGW,CAVG,CAVGW,CDAVG,CDAVGW) 
+  DEALLOCATE (ICPL,TAVG,TAVGW,CAVG,CAVGW,CDAVG,CDAVGW)
   DEALLOCATE (ORGNRP,KG_H2O_CONSTANT)
   DEALLOCATE  (PRINT_MACROPHYTE, MACROPHYTE_CALC,MACWBC,CONV2)
   DEALLOCATE  (MAC, MACRC,MACT, MACRM, MACSS)
@@ -403,7 +403,7 @@ DEALLOCATE (LATERAL_PIPE)
   DEALLOCATE (ZK3,ZK4,ZP,ZN,ZC,PREFA,ZMU,TGRAZE,ZRT,ZMT,ZOORM,ZOORMR,ZOORMF,ZSR, ZS) ! POINTERS ,ZOO,ZOOSS,   SW 1/28/2019
   DEALLOCATE (LPZOOOUT,LPZOOIN,PO4ZR,NH4ZR,DOZR,TICZR,AGZ,AGZT)
   DEALLOCATE (GTIC,BGTO,EGTO)   ! CB 8/13/2010
-  DEALLOCATE (INTERP_GATE)                     ! CB 8/13/2010  
+  DEALLOCATE (INTERP_GATE)                     ! CB 8/13/2010
   DEALLOCATE (ZGZ,PREFZ) !OMNIVOROUS ZOOPLANKTON
   DEALLOCATE (LPZOOINP,LPZOOINN,LPZOOOUTP,LPZOOOUTN)
   DEALLOCATE (SEDC, SEDN, SEDP,SEDNINFLUX, SEDPINFLUX, PFLUXIN,NFLUXIN)
@@ -440,7 +440,7 @@ ENDIF
   IF(CONSTITUENTS .AND. AERATEC  == '      ON')CALL DEALLOCATE_AERATE
   IF(SELECTC == '      ON')CALL DEALLOCATE_SELECTIVE
   IF(SELECTC == '    USGS')CALL DEALLOCATE_SELECTIVEUSGS
-  DEALLOCATE(WBSEG, PALT_JW, ELWS_INI, GTTYP, GTPC)                                               ! systdg 
+  DEALLOCATE(WBSEG, PALT_JW, ELWS_INI, GTTYP, GTPC)                                               ! systdg
   IF (SYSTDG) CALL DEALLOCATE_SYSTDG                                                              ! systdg
   IF (TDGTA) CLOSE (targetfnno)                                                                   ! systdg TDGtarget
   IF(TDGTA) CALL DEALLOCATE_TDGtarget                                                             ! systdg TDGtarget
@@ -454,19 +454,19 @@ ENDIF
      ENDIF
     ENDIF
   ENDIF
-  If(CEMARelatedCode) Then         
+  If(CEMARelatedCode) Then
         CALL DEALLOCATE_CEMA
 	End If
-    
+
   if(envirpc == '      ON')THEN
        DEallocate(c_cnt,cd_cnt,c_class,cd_class,c_tot,cd_tot,t_class,v_class,c_sum,cd_sum)
        DEallocate(conc_c,conc_cd)
        DEallocate(cc_e,c_int,c_top,cd_e,cd_int,cd_top,c_avg,cd_avg,cn_e,cdn_e)
        DEALLOCATE(T_TOT,T_CNT,V_TOT,V_CNT,D_TOT,D_CNT,D_CLASS,VOLGL,SUMVOLT)
   ENDIF
-  
-!  deallocate(isegvol,cdo,cpo4,cno3,cnh4,cchla,ctotp,cdos,cpo4s,cno3s,cnh4s,cchlas,ctotps,cgamma,ssedd,fishname,fishtempl,fishtemph,fishdo,habvol,phabvol,habvolbr,habvolwb,phabvolbr,phabvolwb,voltotbr,voltotwb)  
-  
+
+!  deallocate(isegvol,cdo,cpo4,cno3,cnh4,cchla,ctotp,cdos,cpo4s,cno3s,cnh4s,cchlas,ctotps,cgamma,ssedd,fishname,fishtempl,fishtemph,fishdo,habvol,phabvol,habvolbr,habvolwb,phabvolbr,phabvolwb,voltotbr,voltotwb)
+
   RETURN
-  
+
   END SUBROUTINE ENDSIMULATION

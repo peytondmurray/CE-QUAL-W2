@@ -1,6 +1,6 @@
   Subroutine CEMAFFTLayerCode
 
-    Use MAIN 
+    Use MAIN
     Use GLOBAL
     Use GEOMC
     Use SCREENC
@@ -11,19 +11,19 @@
     Use TVDC
     Use KINETIC
     Use CEMAVars
-    
+
     IMPLICIT NONE
-    
+
     Integer iTemp
-    
+
     NMFT=0
-    DO JG=1,NSS  
+    DO JG=1,NSS
       IF(SSCS(JG)==-1.0)THEN
-        NMFT=NSSS+JG-1       
+        NMFT=NSSS+JG-1
         EXIT
       ENDIF
     ENDDO
-    
+
     If(FirstTimeInFFTCode)Then
         FirstTimeInFFTCode = .FALSE.
         FFTActive = .TRUE.
@@ -40,14 +40,14 @@
             END DO
         End Do
         Return
-    End If   
-    
-    
+    End If
+
+
     Do iTemp = 1, NumFFTActivePrds
-    
+
         If(.NOT. FFTActive)Then
             If(JDAY > FFTActPrdSt(iTemp) .and. JDAY < FFTActPrdEn(iTemp))Then
-            
+
                 FFTActive = .TRUE.
                 Do JW=1, NWB
                     DO JB=BS(JW),BE(JW)
@@ -60,14 +60,14 @@
                             C2(K,I,JAC)  = FFTLayConc(I)
                         END DO
                     END DO
-                End Do  
+                End Do
                 FFTActPrd = iTemp
-                Exit  
+                Exit
             End If
         End If
-        
+
     End Do
-    
+
     If(FFTActive)Then
         iTemp = FFTActPrd
         If(JDAY > FFTActPrdEn(iTemp))Then
@@ -87,11 +87,11 @@
             End Do
         End If
     End If
-    
+
   Return
 
   Entry MoveFFTLayerConsolid
-    
+
     Do JW=1, NWB
         KT = KTWB(JW)
         Do JB=BS(JW),BE(JW)

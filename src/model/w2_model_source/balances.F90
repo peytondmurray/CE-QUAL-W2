@@ -34,7 +34,7 @@ use GLOBAL
     !QOUTT = 0.0
     VOLSR = 0.0
     VOLTR = 0.0
-    
+
     DO JW=1,NWB
     VOLINJW=0.0
     VOLPRJW=0.0
@@ -44,18 +44,18 @@ use GLOBAL
     VOLDTJW=0.0
     VOLTRBJW=0.0
     VOLICEJW=0.0
-    
+
     TPWB=0.0
     TPSED=0.0
     TNWB=0.0
     TNSED=0.0
     TNPLANT=0.0
     TPPLANT=0.0
-    
+
       KT = KTWB(JW)
         IF (VOLUME_BALANCE(JW)) THEN
          DO JB=BS(JW),BE(JW)
-          IF(.NOT.BR_INACTIVE(JB))THEN    ! SW 8/8/2018 
+          IF(.NOT.BR_INACTIVE(JB))THEN    ! SW 8/8/2018
           VOLSBR(JB) = VOLSBR(JB)+DLVOL(JB)
           VOLTBR(JB) = VOLEV(JB)+VOLPR(JB)+VOLTRB(JB)+VOLDT(JB)+VOLWD(JB)+VOLUH(JB)+VOLDH(JB)+VOLIN(JB)+VOLOUT(JB)+VOLICE(JB)
           if(sediment_diagenesis)then
@@ -99,7 +99,7 @@ use GLOBAL
 
         IF (FLOWBALC=='      ON') THEN
         IF(JDAY.GE.NXFLOWBAL)THEN
-        !NXFLOWBAL = NXFLOWBAL+FLOWBALF  
+        !NXFLOWBAL = NXFLOWBAL+FLOWBALF
 
             IF(VOLUME_BALANCE(JW))THEN
             WRITE(FLOWBFN,'(F10.3,",",1X,I3,",",11(E16.8,",",1X))')JDAY,JW,VOLINJW,VOLPRJW,VOLOUTJW,VOLWDJW,VOLEVJW,VOLDTJW,VOLTRBJW,VOLICEJW,DLVR(JW)
@@ -107,14 +107,14 @@ use GLOBAL
             WRITE(FLOWBFN,'(F10.3,",",1X,I3,",",10(E16.8,",",1X))')JDAY,JW,VOLINJW,VOLPRJW,VOLOUTJW,VOLWDJW,VOLEVJW,VOLDTJW,VOLTRBJW,VOLICEJW
             ENDIF
         ENDIF
-        
-        END IF  ! CONTOUR INTERVAL FOR WRITING OUT FLOW BALANCE 
+
+        END IF  ! CONTOUR INTERVAL FOR WRITING OUT FLOW BALANCE
         ENDIF   ! VOLUME BALANCE
       IF (ENERGY_BALANCE(JW)) THEN
         ESR(JW) = 0.0
         ETR(JW) = 0.0
         DO JB=BS(JW),BE(JW)
-        IF(BR_INACTIVE(JB))CYCLE    ! SW 8/8/2018 
+        IF(BR_INACTIVE(JB))CYCLE    ! SW 8/8/2018
           ETBR(JB) = EBRI(JB)+TSSEV(JB)+TSSPR(JB)+TSSTR(JB)+TSSDT(JB)+TSSWD(JB)+TSSUH(JB)+TSSDH(JB)+TSSIN(JB)+TSSOUT(JB)+TSSS(JB)  &
                      +TSSB(JB)+TSSICE(JB)
           ESBR(JB) = 0.0
@@ -129,7 +129,7 @@ use GLOBAL
       END IF
       IF (MASS_BALANCE(JW)) THEN
         DO JB=BS(JW),BE(JW)
-        IF(BR_INACTIVE(JB))CYCLE    ! SW 8/8/2018 
+        IF(BR_INACTIVE(JB))CYCLE    ! SW 8/8/2018
           DO JC=1,NAC
             CMBRS(CN(JC),JB) = 0.0
             DO I=CUS(JB),DS(JB)
@@ -143,9 +143,9 @@ use GLOBAL
               DO I=CUS(JB),DS(JB)
               DO K=KT,KB(I)
                 TPWB  =  TPWB  + TP(K,I)    *VOL(K,I)*0.001   !/1000.   ! kg
-                TPSED =  TPSED + SEDP(K,I)  *VOL(K,I)*0.001   !/1000.   ! kg        
+                TPSED =  TPSED + SEDP(K,I)  *VOL(K,I)*0.001   !/1000.   ! kg
                 TNWB  =  TNWB  + TN(K,I)    *VOL(K,I)*0.001   !/1000.  ! kg
-                TNSED =  TNSED + SEDN(K,I)  *VOL(K,I)*0.001   !/1000.  ! kg     
+                TNSED =  TNSED + SEDN(K,I)  *VOL(K,I)*0.001   !/1000.  ! kg
                 PFLUXIN(JW) = PFLUXIN(JW) + SEDPINFLUX(K,I)*VOL(K,I)*0.001   !/1000.   ! kg
                 NFLUXIN(JW) = NFLUXIN(JW) + SEDNINFLUX(K,I)*VOL(K,I)*0.001   !/1000.   ! kg
                 DO M=1,NMC
@@ -159,7 +159,7 @@ use GLOBAL
               END DO
             END DO
           ENDIF
-          
+
 ! MACROPHYTES
           DO M=1,NMC
             IF(MACROPHYTE_CALC(JW,M))THEN
@@ -196,7 +196,7 @@ use GLOBAL
           END DO
 ! END MACROPHYTES
         END DO
-        
+
         IF (NPBALC=='      ON') THEN
         IF(JDAY.GE.NXNPBAL)THEN
             IF(SEDIMENT_DIAGENESIS)THEN
@@ -205,19 +205,19 @@ use GLOBAL
             WRITE(MASSBFN,'(F10.3,",",1X,I3,",",31(E16.8,",",1X))')JDAY,JW,TPWB,TPSED,TPPLANT,TPOUT(JW),TPTRIB(JW),TPDTRIB(JW),TPWD(JW),TPPR(JW),TPIN(JW),ATMDEP_P(JW),TP_SEDSOD_PO4(JW),PFLUXIN(JW),TNWB,TNSED,TNPLANT,TNOUT(JW),TNTRIB(JW),TNDTRIB(JW),TNWD(JW),TNPR(JW),TNIN(JW),ATMDEP_N(JW),NH3GASLOSS(JW),TN_SEDSOD_NH4(JW),NFLUXIN(JW)    ! TP_SEDBURIAL(JW),TN_SEDBURIAL(JW),
                 ENDIF
         ENDIF
-        
-        END IF  ! CONTOUR INTERVAL FOR WRITING OUT FLOW BALANCE 
-        
-        
+
+        END IF  ! CONTOUR INTERVAL FOR WRITING OUT FLOW BALANCE
+
+
       END IF  ! MASS BALANCE
     END DO
-    
-    IF(JDAY.GE.NXNPBAL)NXNPBAL = NXNPBAL+NPBALF  
+
+    IF(JDAY.GE.NXNPBAL)NXNPBAL = NXNPBAL+NPBALF
     IF (FLOWBALC=='      ON') THEN  ! cb 8/22/21
         IF(JDAY.GE.NXFLOWBAL)THEN
-          NXFLOWBAL = NXFLOWBAL+FLOWBALF 
+          NXFLOWBAL = NXFLOWBAL+FLOWBALF
         end if
     end if
-    
+
     RETURN
     END SUBROUTINE BALANCES

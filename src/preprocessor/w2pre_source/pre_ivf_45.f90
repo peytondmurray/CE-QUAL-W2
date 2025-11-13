@@ -79,11 +79,11 @@ MODULE GRIDC
   REAL,          ALLOCATABLE, DIMENSION(:)   :: CMIN,   CMAX,   HYMIN,  HYMAX,  CDMIN,  CDMAX
 END MODULE GRIDC
 MODULE KINETICS
-  REAL,    ALLOCATABLE, DIMENSION(:)             :: CoeffA_Turb, CoeffB_Turb,SECC_PAR,CGR,SSCS 
+  REAL,    ALLOCATABLE, DIMENSION(:)             :: CoeffA_Turb, CoeffB_Turb,SECC_PAR,CGR,SSCS
   REAL,    ALLOCATABLE, DIMENSION(:)             :: H2SQ10, H2S1DK, CH4Q10, CH41DK
   REAL,    ALLOCATABLE, DIMENSION(:)             :: CH4R, H2SR, FEIIR, MNIIR, SO4R
   REAL,    ALLOCATABLE, DIMENSION(:)             :: KFE_OXID, KFE_RED, KFEOOH_HalfSat, FeSetVel, KMN_OXID, KMN_RED, KMNO2_HalfSat, MnSetVel
-  REAL,    ALLOCATABLE, DIMENSION(:)             :: BACTQ10, BACT1DK, BACTLDK, BACTS  !A_DISG, B_DISG, C_DISG              
+  REAL,    ALLOCATABLE, DIMENSION(:)             :: BACTQ10, BACT1DK, BACTLDK, BACTS  !A_DISG, B_DISG, C_DISG
   REAL,    POINTER,           DIMENSION(:,:)     :: N2, H2S, CH4, SO4, FEII, FEOOH, MNII, MNO2
   REAL,    POINTER,           DIMENSION(:,:)     :: WAGE, BACT, DGP
   REAL,    ALLOCATABLE,           DIMENSION(:)     :: ACHLA,  ORGP,   ORGN,   ORGC,   ORGSI,  O2OM,   ALGC,   PARTP
@@ -141,15 +141,15 @@ MODULE KINETICS
   REAL,          ALLOCATABLE, DIMENSION(:)     :: CO2R
   REAL,          ALLOCATABLE, DIMENSION(:)     :: O2NH4,  O2AR,   O2AG
   REAL,          ALLOCATABLE, DIMENSION(:)     :: O2EG,   O2ER, KG_H2O_CONSTANT
-  REAL, ALLOCATABLE, DIMENSION(:,:)            :: MIGON, MIGOFF, LOLD, TWQ   
-  INTEGER, ALLOCATABLE, DIMENSION(:)           :: MIGRATE_GROUP, MIGRATE_MODEL, TS_DEC, DEPTH_LIM_ONOFF, NMINT, DEN_USE, DEPTH_CALC_ONOFF   
+  REAL, ALLOCATABLE, DIMENSION(:,:)            :: MIGON, MIGOFF, LOLD, TWQ
+  INTEGER, ALLOCATABLE, DIMENSION(:)           :: MIGRATE_GROUP, MIGRATE_MODEL, TS_DEC, DEPTH_LIM_ONOFF, NMINT, DEN_USE, DEPTH_CALC_ONOFF
   INTEGER                                      :: ALGMIGRATION_DEBUG, NMIG, NITWQ, MIGI, KK
-  CHARACTER(2)                                 :: MIGRATION  
+  CHARACTER(2)                                 :: MIGRATION
     REAL, ALLOCATABLE, DIMENSION(:,:,:) :: ASETTLE, DEN_AVG, DENP, DEN1, DEN2, ALLIM_OLD  ! CO 6/9/2019
   REAL, ALLOCATABLE, DIMENSION(:,:,:,:) :: DEN  ! CO 6/9/2019
   REAL, ALLOCATABLE, DIMENSION(:)     :: AMP, PHASE, C_COEFF_EXT, RAD, MIND, MAXD, DENSI, DENBI, T_DEC, C_DENINC, C_DENDEC, DEPTH_LIM, LOSS_FRAC  ! CO 6/3/2019
   REAL, ALLOCATABLE, DIMENSION(:)     :: I_C, C_DENINC_1, C_DENINC_2, C_DENDEC_1, C_DENDEC_2, DENP_MINS, DENP_MINB, DENP_MIN, DEN_COR, EXP_DEPTH    ! CO 6/10/2019
- 
+
     END MODULE KINETICS
     MODULE EPIPHYTON
       REAL,              ALLOCATABLE, DIMENSION(:,:,:)   :: EPD
@@ -210,7 +210,7 @@ MODULE TDG_SYSTDG
   INTEGER                           :: ig
   CHARACTER(72)                       :: TITLESYSTDG(10)
   CHARACTER(8)                        :: TWETSC, TDGLOC, SYSTDGC, N2BNDC, DOBNDC, TDGTAC, GTTYP(120)
-  CHARACTER(72)                       :: TWEFN 
+  CHARACTER(72)                       :: TWEFN
   LOGICAL                             :: SYSTDG
 ENDMODULE TDG_SYSTDG
 MODULE HABITAT
@@ -219,7 +219,7 @@ character*80, allocatable, dimension(:) :: fishname
 character*80 :: conhab,conavg,consurf,consod
 real, allocatable, dimension(:) :: fishtemph,fishtempl,fishdo,habvol,phabvol,cdo,cpo4,cno3,cnh4,cchla,ctotp,cdos,cpo4s,cno3s,cnh4s,cchlas,ctotps,cgamma,ssedd
 integer, allocatable, dimension (:) :: isegvol
-END MODULE HABITAT  
+END MODULE HABITAT
 MODULE GRID
   REAL,          ALLOCATABLE, DIMENSION(:)     :: LAT, LONG, YNORTHING, XEASTING
   INTEGER,       ALLOCATABLE, DIMENSION(:)     :: UTMZONE, NPOINT, UHS, DHS, JBDN
@@ -234,7 +234,7 @@ MODULE GRID
     Integer(4), Allocatable, Dimension(:) :: ConsolidationType, ConstPoreWtrRate, NumCEMAPWInst
     Integer(4), Allocatable, Dimension(:) :: ConsRegSegSt, ConsRegSegEn, ConsolidRegnNum
     Character(256)                        :: ConsolidRateRegnFil
-    Real(R8), allocatable, Dimension(:)   :: ConsolidRateTemp													  
+    Real(R8), allocatable, Dimension(:)   :: ConsolidRateTemp
     Real(R8), Allocatable, Dimension(:)   :: BedElevation, BedElevationLayer, BedPorosity
     Real(R8), Allocatable, Dimension(:,:) :: CellArea
     Real(R8), Allocatable, Dimension(:)   :: BedConsolidRate, PorewaterRelRate, ConstConsolidRate
@@ -244,7 +244,7 @@ MODULE GRID
     Logical, Allocatable, Dimension(:)    :: CEMALayerAdded, CEMASSApplied
     Logical, Allocatable, Dimension(:) :: EndBedConsolidation, BedConsolidationSeg   ! cb 6/28/17
     Logical, Allocatable, Dimension(:) :: ApplyCEMAPWRelease
-    
+
     Real(R8), Allocatable, Dimension(:) :: SDRegnPOC_T, SDRegnPON_T, SDRegnPOP_T, SDRegnSul_T
     Real(R8), Allocatable, Dimension(:) :: SDRegnPOC_L_Fr, SDRegnPOC_R_Fr, SDRegnPON_L_Fr
     Real(R8), Allocatable, Dimension(:) :: SDRegnPON_R_Fr, SDRegnPW_DiffCoeff, SDRegnOx_Threshold
@@ -269,25 +269,25 @@ MODULE GRID
     Real(R8), Allocatable, Dimension(:) :: SD_fpon, SD_fpoc, SD_kdiaPON, SD_ThtaPON, SD_kdiaPOC, SD_ThtaPOC
     Real(R8), Allocatable, Dimension(:) :: SD_kdiaPOP, SD_ThtaPOP, SD_NH3T, SD_PO4, SD_FPOP
     Real(R8), Allocatable, Dimension(:) :: SD_JPOC, SD_JPON, SD_JPOP,  SD_TDS
-    
+
     Real(R8), Allocatable, Dimension(:) :: SD_Denit, SD_JDenit, SD_JO2NO3,  SD_HS   ! cb 7/26/18
-    Real(R8), Allocatable, Dimension(:) :: SD_Fe2 
-    Real(R8), Allocatable, Dimension(:) :: SD_Mn2 
+    Real(R8), Allocatable, Dimension(:) :: SD_Fe2
+    Real(R8), Allocatable, Dimension(:) :: SD_Mn2
     Real(R8), Allocatable, Dimension(:) :: SD_pHValue   ! cb 7/26/18    !Real(8), Allocatable, Dimension(:) :: SD_SO4Conc, SD_pHValue
     Real(R8), Allocatable, Dimension(:) :: SD_EPOC, SD_EPON, SD_EPOP
     Real(R8), Allocatable, Dimension(:) :: SD_AerLayerThick
-        
+
     Real(R8), Allocatable, Dimension(:,:,:) :: MFTSedFlxVars, CEMA_SD_Vars
     Real(R8), Allocatable, Dimension(:,:) :: CEMATSSCopy
-    
+
     Integer(4), Allocatable, Dimension(:) :: CEMAMFT_RandC_RegN, CEMAMFT_InCond_RegN
     Integer(4), Allocatable, Dimension(:) :: SedBedInitRegSegSt, SedBedInitRegSegEn
     Integer(4), Allocatable, Dimension(:) :: SedBedDiaRCRegSegSt, SedBedDiaRCRegSegEn
-    
+
     Integer(4), Allocatable, Dimension(:) :: FFTActPrdSt, FFTActPrdEn
     Integer, Allocatable, Dimension(:) :: SDRegn_CH4CompMethod, SDRegn_POMResuspMethod
     Real(R8), Allocatable, Dimension(:) :: FFTLayConc
-    
+
     Real(R8), Allocatable, Dimension(:) :: H2SDis, H2SGas, CH4Dis, CH4Gas, NH4Dis, NH4Gas, CO2Dis, CO2Gas
     Real(R8), Allocatable, Dimension(:) :: BubbleRadiusSed, PresBubbSed, PresCritSed
     Real(R8), Allocatable, Dimension(:) :: CgSed, C0Sed, CtSed
@@ -297,12 +297,12 @@ MODULE GRID
     Integer(4), Allocatable, Dimension(:,:) :: BubblesLNumber, BubblesStatus
     Real(R8), Allocatable, Dimension(:,:) :: BubblesRadius, BubblesRiseV, BubblesCarried
     Real(R8), Allocatable, Dimension(:,:,:) :: BubblesGasConc, BRVoluAGas, BRRateAGas
-    Real(R8), Allocatable, Dimension(:,:) :: BubblesReleaseAllValue, BRRateAGasNet 
+    Real(R8), Allocatable, Dimension(:,:) :: BubblesReleaseAllValue, BRRateAGasNet
     Real(R8), Allocatable, Dimension(:) :: BottomTurbulence
     Logical, Allocatable, Dimension(:) :: CrackOpen
     Logical, Allocatable, Dimension(:,:) :: FirstBubblesRelease, BubblesAtSurface
-    
-    
+
+
     Integer(4) :: CEMAFilN, NumConsolidRegns, CEMASedimentType
     Integer(4) :: CEMASNPOutFilN=2411, CEMATSR1OutFilN=2412, SegNumI, LayerNum
     Integer(4) :: CEMABtmLayFilN=2414, TempCntr1
@@ -329,21 +329,21 @@ MODULE GRID
     Real(R8) :: CEMATurbulenceScaling
     Real(R8) :: IceThicknessChange  ! cb 2/5/13
     Real(R8) :: TAUCRPOM, crshields, spgrav_POM, dia_POM,  GasReleaseCH4  !,GasReleaseCO2   ! SW 10/10/2017   ! SW 10/19/2017
-    REAL(R8) :: NXTSEDIAG,SEDIAGFREQ   ! SW 5/25/2017  
-    
+    REAL(R8) :: NXTSEDIAG,SEDIAGFREQ   ! SW 5/25/2017
+
     Logical CEMARelatedCode, IncludeBedConsolidation, IncludeCEMASedDiagenesis, IncludeFFTLayer, FFTActive, FirstTimeInFFTCode
     Logical IncludeIron, IncludeManganese, IncludeDynamicpH, IncludeAlkalinity, SD_global                                         ! cb 5/22/15
     Logical CEMASedimentProcessesInc, WriteBESnp, WritePWSnp, WriteCEMAMFTSedFlx, CEMA_POM_Resuspension
     Logical FirstTimeinCEMAMFTSedDiag, MoveFFTLayerDown
     Logical LimBubbSize, UseReleaseFraction, FirstTimeInBubbles, ApplyBubbTurb
     LOGICAL sediment_diagenesis, cao_method, Bubbles_Calculation  ! SW 10/20/2017
-    
-    Real(R8), Allocatable, Dimension(:) :: SDRegnH2S_T, SDRegnNH3_T, SDRegnCH4_T, SDRegnNO3_T        
+
+    Real(R8), Allocatable, Dimension(:) :: SDRegnH2S_T, SDRegnNH3_T, SDRegnCH4_T, SDRegnNO3_T
     Real(R8), Allocatable, Dimension(:) :: SDRegnTIC_T, SDRegnALK_T, SDRegnPO4_T
     Real(R8), Allocatable, Dimension(:) :: SDRegnFe2_T, SDRegnFeOOH_T, SDRegnMn2_T, SDRegnMnO2_T
     Real(R8), Allocatable, Dimension(:) :: SDRegnT_T, SDRegnpH
     Real(R8), Allocatable, Dimension(:) :: SDPFLUX, SDNH4FLUX,SDNO3FLUX
-        
+
     End Module CEMAVars
     MODULE ENVIRPMOD
 CHARACTER*3, SAVE, ALLOCATABLE, DIMENSION (:) :: CC_E,CD_E
@@ -356,20 +356,20 @@ INTEGER NUMCLASS,NAC_E,NACD_E,JJ,JACD,ISTART,IEND
     MODULE ALGAE_TOX
     INTEGER, PARAMETER                                 :: NUMATOXINS=4
     INTEGER                                            :: NATS, NATE, ATOXIN_DEBUG_FN=2501
-    LOGICAL                                            :: ALGAE_TOXIN_FILE, ALGAE_TOXINS 
+    LOGICAL                                            :: ALGAE_TOXIN_FILE, ALGAE_TOXINS
     REAL, ALLOCATABLE, DIMENSION (:,:)                 :: CTP,CTB
     REAL, DIMENSION (:)                                :: CTREL(NUMATOXINS),CTD(NUMATOXINS)
     CHARACTER(2)                                       :: ATOX, ATOX_DEBUG
     END MODULE ALGAE_TOX
 
-    
+
 
 !***********************************************************************************************************************************
 !**                                          C E - Q U A L - W 2  P R E P R O C E S S O R                                         **
 !***********************************************************************************************************************************
 
 PROGRAM W2_PRE
-  USE IFPORT, only: chdir,GETDRIVEDIRQQ,FILE$CURDRIVE   
+  USE IFPORT, only: chdir,GETDRIVEDIRQQ,FILE$CURDRIVE
   USE IFQWIN
   USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_IS_NAN    ! FOR NAN CHECK
   !USE DFLIB ! SW 11/9/2017 USED IFPORT INSTEAD
@@ -396,7 +396,7 @@ PROGRAM W2_PRE
   INTEGER       :: CON,    WRN,    NPROC, NPOLY   !   NBR, NPROC   SW 4/6/15   ERR,    ! 7/14/16   NPOLY=1 THEN LINEAR SYSTEM - SET LAT/LONG AT SEG2 FIRST WB, ELSE DOWNSTREAM DAM - SET LAT/LONG AT DAM
   INTEGER       :: YEAR,   CUF, EUHF,TUHF,CUHF,EDHF,TDHF,CDHF,INUM,IMWB
   INTEGER, DIMENSION(:) :: INUMMWB(20)
-  INTEGER       ::  NTR,    NSP,    NWD,    NPU,    NGT,    NPI    ! NWB,   
+  INTEGER       ::  NTR,    NSP,    NWD,    NPU,    NGT,    NPI    ! NWB,
   INTEGER       :: ICST, IOK=0
   INTEGER       :: DOC_DER,POC_DER,TOC_DER,DON_DER,PON_DER,TON_DER,TKN_DER,TN_DER,NH3_DER,DOP_DER,POP_DER,TOP_DER,TP_DER,APR_DER
   INTEGER       :: CHLA_DER,ATOT_DER,O2DG_DER,TDG_DER,TURB_DER,TOTSS_DER,TISS_DER,CBODU_DER,PH_DER,CO2_DER,HCO3_DER,CO3_DER,SECCHI_DER
@@ -404,7 +404,7 @@ PROGRAM W2_PRE
   CHARACTER(1)  :: ESC, ICHAR1,ICHAR2, CHAR1,INFORMAT1
   CHARACTER(2)  :: DEG,IIN,INFORMAT2,MWB
   CHARACTER(2), DIMENSION(:) :: MWB2(20)
-  CHARACTER(3)  :: BRA,    TRA 
+  CHARACTER(3)  :: BRA,    TRA
   CHARACTER(5)  :: FMTA
   CHARACTER(7)  :: BLANK
   CHARACTER(8)  :: AID,     CCC,    LIMC, CLOSEC,SELECTC,HABTATC,ENVIRPC,AERATEC,INITUWL,tcyearly,tspltcntr,tspltc,dltintr,GT2CHAR,dynsel,tcelevcon,elcont,aid1
@@ -460,7 +460,7 @@ PROGRAM W2_PRE
   CHARACTER(8),  ALLOCATABLE, DIMENSION(:)     :: ATM_DEPOSITIONC,ATM_DEPOSITION_INTERPOLATION
   CHARACTER(8),  ALLOCATABLE, DIMENSION(:,:)   :: C_ATM_DEPOSITION
   INTEGER,       ALLOCATABLE, DIMENSION(:,:)   :: ATMDCN
-  CHARACTER(72), ALLOCATABLE, DIMENSION(:)     :: ATMDEPFN  
+  CHARACTER(72), ALLOCATABLE, DIMENSION(:)     :: ATMDEPFN
   REAL(R8),      ALLOCATABLE, DIMENSION(:,:)   :: TSSUH1, TSSDH1, ATM_DEP_LOADING,ATM_DEP_AVG,ATM_DEP_MIN,ATM_DEP_MAX
   REAL,          ALLOCATABLE, DIMENSION(:)     :: ESP,    A1SP,   B1SP,   A2SP,   B2SP,   ETUSP,  EBUSP,  ETDSP,  EBDSP, TINMAX, TINMIN,TRTMAX, TRTMIN
   REAL,          ALLOCATABLE, DIMENSION(:)     :: AGASSP, BGASSP, CGASSP
@@ -584,12 +584,12 @@ PROGRAM W2_PRE
 
   DATA BLANK /'       '/
   DATA DMO2  /2.04E-9/,  DMCO2 /1.63E-9/
-  DATA CON   /21/, NPT /22/, WRN /371/, NEW /372/    !ERR /370/, 
+  DATA CON   /21/, NPT /22/, WRN /371/, NEW /372/    !ERR /370/,
   DATA NDC   /27/, NHY /15/, NFL /72/
   DATA IANGLES /18/         !SW 04/03/02
-  
+
   DYNAMIC_SD=.FALSE.
-  
+
 ! Intel Fortran specific code
 OPEN(10,FILE='PREW2CodeCompilerVersion.opt',status='unknown')
 write(10,*)'Preprocessor Compiler Version and Preprocessor Code Compile Date'
@@ -618,7 +618,7 @@ endif
 moddir = FILE$CURDRIVE              !  Get current directory
 length = GETDRIVEDIRQQ(moddir)
 
-  STAT = ABOUTBOXQQ ('CE-QUAL-W2 Preprocessor V4.5 - PSU Dept. Civil & Environmental Engineering S. Wells'C)   
+  STAT = ABOUTBOXQQ ('CE-QUAL-W2 Preprocessor V4.5 - PSU Dept. Civil & Environmental Engineering S. Wells'C)
   WRITE (WINTITLE,'(A29,A360)') 'CE-QUAL-W2 4.5 preprocessor. ',moddir                  !A260)') 'CE-QUAL-W2 4.1 preprocessor. ',moddir
   WINTITLE=TRIM(WINTITLE)
   OPEN  (WIN,FILE='user',TITLE=WINTITLE)
@@ -685,8 +685,8 @@ length = GETDRIVEDIRQQ(moddir)
   WRITE (WIN,*) 'Control file'
   ALLOCATE (TITLE(11))
   WRITE (WIN,*) '  title cards'
-  
-  
+
+
 IF(CONFN=='w2_con.npt')THEN
 
   READ (CON,'(//A8/(8X,A72))',ERR=400) AID, (TITLE(J),J=2,11)
@@ -696,10 +696,10 @@ IF(CONFN=='w2_con.npt')THEN
 
   WRITE (WIN,*) '  array dimensions'
   READ (CON,'(/A8/(8X,5I8,A8,I8))')       AID, NWB, NBR, IMX, KMX, NPROC, CLOSEC,NPOLY
-  
+
   IF(NPOLY==1)DOWNSTREAMDAM = .FALSE.   ! This implies polygon coordinates are starting at US(JB=1) rather than at the dam - but currently this is disabled
-  
-  
+
+
   IF (AID /= 'GRID    ')               GO TO 400
   READ (CON,'(/A8/(8X,10I8))')         AID, NTR, NST, NIW, NWD,  NGT, NSP, NPI, NPU
   IF (AID /= 'IN/OUTFL')               GO TO 400
@@ -707,7 +707,7 @@ IF(CONFN=='w2_con.npt')THEN
   IF (AID /= 'CONSTITU')               GO TO 400
   READ (CON,'(/A8/(8X,I8,8A8))')       AID, NOD,SELECTC,HABTATC,ENVIRPC,AERATEC,INITUWL,ORGCC,SED_DIAG
   IF (AID /= 'MISCELL ')               GO TO 400
-  
+
 ELSE
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
@@ -721,8 +721,8 @@ ELSE
       AID1='NWB     ';ICST=3
       GO TO 400
   ENDIF
-  
-  READ (CON,*,ERR=400) NWB, NBR, IMX, KMX, NPROC, CLOSEC, NPOLY; CLOSEC=ADJUSTR(CLOSEC)                   !'(A,5I0,A)'  
+
+  READ (CON,*,ERR=400) NWB, NBR, IMX, KMX, NPROC, CLOSEC, NPOLY; CLOSEC=ADJUSTR(CLOSEC)                   !'(A,5I0,A)'
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400) AID
   IF (AID /= 'NTR     ') THEN
@@ -730,23 +730,23 @@ ELSE
       GO TO 400
   ENDIF
     IF(NPOLY==1)DOWNSTREAMDAM = .FALSE.
-  
+
   READ (CON,*,ERR=400) NTR, NST, NIW, NWD, NGT, NSP, NPI, NPU
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)  AID
   IF (AID /= 'NGC     ') THEN
     AID1='NGC     ';ICST=3;GO TO 400
   ENDIF
-  
-  READ (CON,*,ERR=400) NGC, NSS, NAL, NEP, NBOD, NMC, NZP  
+
+  READ (CON,*,ERR=400) NGC, NSS, NAL, NEP, NBOD, NMC, NZP
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400) AID
   IF (AID /= 'NDAY    ') THEN
-    AID1='NDAY    ';ICST=3;GO TO 400  
+    AID1='NDAY    ';ICST=3;GO TO 400
   ENDIF
-  
-  READ (CON,*,ERR=400) NOD,SELECTC,HABTATC,ENVIRPC,AERATEC,INITUWL,ORGCC,SED_DIAG           !'(I0,5(A))'   
-  SELECTC=ADJUSTR(SELECTC);HABTATC=ADJUSTR(HABTATC);ENVIRPC=ADJUSTR(ENVIRPC);AERATEC=ADJUSTR(AERATEC);INITUWL=ADJUSTR(INITUWL)    
+
+  READ (CON,*,ERR=400) NOD,SELECTC,HABTATC,ENVIRPC,AERATEC,INITUWL,ORGCC,SED_DIAG           !'(I0,5(A))'
+  SELECTC=ADJUSTR(SELECTC);HABTATC=ADJUSTR(HABTATC);ENVIRPC=ADJUSTR(ENVIRPC);AERATEC=ADJUSTR(AERATEC);INITUWL=ADJUSTR(INITUWL)
   SED_DIAG=ADJUSTR(SED_DIAG)
 ENDIF
 
@@ -786,7 +786,7 @@ ENDIF
   NFEOOH= NFEII+1;  CCONSTIT(NFEOOH)='FEOOH'
   NMNII = NFEOOH+1;  CCONSTIT(NMNII)='MNII'
   NMNO2 = NMNII+1;  CCONSTIT(NMNO2)='MNO2'
-  
+
   NPO4  = NMNO2+1
   CCONSTIT(NPO4)='PO4-P'
   NNH4  = NPO4+1
@@ -848,7 +848,7 @@ if(nbod.gt.0)then
   ENDDO
   else
     nbodcs=1; nbodce=1; nbodps=1; nbodpe=1; nbodns=1; nbodne=1     ! SW 11/21/2016
-  
+
 end if
 !    NBODE = NBODS+NBOD-1
   NBODE = NBODS+NBOD*3-1
@@ -896,7 +896,7 @@ end if
   CCONSTIT(NATS+1)='CYLINDROSPERMOPSIN'
   CCONSTIT(NATS+2)='ANATOXIN-A'
   CCONSTIT(NATS+3)='SAXITOXIN'
-  
+
   NCT=NATE    !NRPOMN
 
 ! Constituent, tributary, and widthdrawal totals
@@ -916,7 +916,7 @@ end if
   ELSE
       NSTT=5
   ENDIF
-  
+
 ! Allocation declarations
   ALLOCATE (ATMDCN(NCT,NWB), NACATD(NWB),ATM_DEP_AVG(NCT,NWB),ATM_DEP_MIN(NCT,NWB),ATM_DEP_MAX(NCT,NWB))
   ALLOCATE (C_ATM_DEPOSITION(NCT,NWB), ATM_DEPOSITIONC(NWB), ATM_DEP_LOADING(NCT,NWB),ATM_DEPOSITION_INTERPOLATION(NWB),ATMDEPFN(NWB),ATMDEP_P(NWB),ATMDEP_N(NWB))
@@ -1099,7 +1099,7 @@ end if
   allocate  (mactrmr(kmx,imx,nmct), mactrmf(kmx,imx,nmct),mactrm(kmx,imx,nmct), macrcvp(KMX,NWB,nmc),macrclp(KMX,imx,nmc))
   allocate  (mlfpr(kmx,kmx,imx,nmct))
   allocate  (mllim(kmx,kmx,imx,nmct), mplim(kmx,imx,nmct),mclim(kmx,imx,nmct),mnlim(kmx,imx,nmct))
-  ALLOCATE  (GAMMAj(kmx,KMX,IMX))	
+  ALLOCATE  (GAMMAj(kmx,KMX,IMX))
   allocate (por(kmx,imx),VOLKTi(imx),VOLi(Kmx,Imx),vstem(kmx,imx,nmct),vstemkt(imx,nmct),sarea(nmct))
   ALLOCATE (IWIND(NWB))
   allocate (cbodp(kmx,imx,nbod), cbodn(kmx,imx,nbod))
@@ -1116,7 +1116,7 @@ end if
   ALLOCATE (KFE_OXID(NWB), KFE_RED(NWB), KFEOOH_HalfSat(NWB), FeSetVel(NWB))
   ALLOCATE (KMN_OXID(NWB), KMN_RED(NWB), KMNO2_HalfSat(NWB), MnSetVel(NWB))
 
-  
+
 ! State variable pointers
 
   TDS  => C2(:,:,1);     CG   => C2(:,:,NGCS:NGCE); SS   => C2(:,:,NSSS:NSSE); PO4  => C2(:,:,NPO4);        NH4  => C2(:,:,NNH4)
@@ -1124,7 +1124,7 @@ end if
   RDOM => C2(:,:,NRDOM); LPOM => C2(:,:,NLPOM);     RPOM => C2(:,:,NRPOM);  ALG  => C2(:,:,NAS:NAE)
   O2   => C2(:,:,NDO);   TIC  => C2(:,:,NTIC);      ALK  => C2(:,:,NALK);      zoo => C2(:,:,NZOOS:NZOOE)  ; LDOMP=> C2(:,:,NLDOMP)
   RDOMP=> C2(:,:,NRDOMP); LPOMP=> C2(:,:,NLPOMP); RPOMP=> C2(:,:,NRPOMP); LDOMN=> C2(:,:,NLDOMN);RDOMN=> C2(:,:,NRDOMN); LPOMN=> C2(:,:,NLPOMN); RPOMN=> C2(:,:,NRPOMN)
-  CBOD => C2(:,:,nbodcs:nbodce); CBODp => C2(:,:,nbodps:nbodpe)  ; CBODn => C2(:,:,nbodns:nbodne)	
+  CBOD => C2(:,:,nbodcs:nbodce); CBODp => C2(:,:,nbodps:nbodpe)  ; CBODn => C2(:,:,nbodns:nbodne)
 
 ! Derived variable pointers
 
@@ -1139,13 +1139,13 @@ end if
 
   DOC   => CD(:,:,DOC_DER);  POC  => CD(:,:,POC_DER);  TOC  => CD(:,:,TOC_DER);  DON  => CD(:,:,DON_DER)
   PON   => CD(:,:,PON_DER);  TON  => CD(:,:,TON_DER)
-  TKN   => CD(:,:,TKN_DER);  TN   => CD(:,:,TN_DER);  NH3  => CD(:,:,NH3_DER)     
+  TKN   => CD(:,:,TKN_DER);  TN   => CD(:,:,TN_DER);  NH3  => CD(:,:,NH3_DER)
   DOP  => CD(:,:,DOP_DER);  POP  => CD(:,:,POP_DER); TOP   => CD(:,:,TOP_DER); TP   => CD(:,:,TP_DER)
-  APR   => CD(:,:,APR_DER); CHLA => CD(:,:,CHLA_DER); ATOT => CD(:,:,ATOT_DER); O2DG => CD(:,:,O2DG_DER); 
+  APR   => CD(:,:,APR_DER); CHLA => CD(:,:,CHLA_DER); ATOT => CD(:,:,ATOT_DER); O2DG => CD(:,:,O2DG_DER);
   TDG   => CD(:,:,TDG_DER); TURB  => CD(:,:,TURB_DER)
   TOTSS => CD(:,:,TOTSS_DER); TISS => CD(:,:,TISS_DER)
   CBODU => CD(:,:,CBODU_DER); PH   => CD(:,:,PH_DER); CO2  => CD(:,:,CO2_DER)
-  HCO3 => CD(:,:,HCO3_DER); CO3  => CD(:,:,CO3_DER); ; SECCHID => CD(:,:,SECCHI_DER)  
+  HCO3 => CD(:,:,HCO3_DER); CO3  => CD(:,:,CO3_DER); ; SECCHID => CD(:,:,SECCHI_DER)
 
 
 ! Variable initializations
@@ -1276,16 +1276,16 @@ IF(CONFN=='w2_con.npt')THEN
   READ (CON,'(/A8/(:8X,A8,I8,3F8.0))', ERR=400)  AID, (GASGTC(J), EQGT(J),  AGASGT(J), BGASGT(J), CGASGT(J), J=1,NGT)
   IF (AID /= 'GATE GAS')                        GO TO 400
   READ (CON,'(/A8/(:8X,2I8,6F8.0,2a8))',   ERR=400)  AID, (IUPU(J),   IDPU(J),  EPU(J),    STRTPU(J), ENDPU(J),  EONPU(J),  EOFFPU(J),  &
-                                                      QPU(J),  latpuc(j), DYNPUMP(J),  J=1,NPU)    
-  
+                                                      QPU(J),  latpuc(j), DYNPUMP(J),  J=1,NPU)
+
   !PUMP_DOWNSTREAM=.FALSE.
   !  DO J=1,NPU
   !    IF(IDPU(J) < 0)THEN
   !        PUMP_DOWNSTREAM(J)=.TRUE.
   !        IDPU(J)=ABS(IDPU(J))
   !    ENDIF
-  !  ENDDO     
-  
+  !  ENDDO
+
   ! RA 8/14/07
   IF (AID /= 'PUMPS 1')                         GO TO 400
   READ (CON,'(/A8/(:8X,A8,2F8.0,2I8))',ERR=400)  AID, (PPUC(J),   ETPU(J),  EBPU(J),   KTPU(J),   KBPU(J),  J=1,NPU)
@@ -1318,7 +1318,7 @@ IF(CONFN=='w2_con.npt')THEN
   IF (AID /= 'TRIB BOT')                        GO TO 400
   READ (CON,'(/A8/(8X,A8))',          ERR=400)  AID, (DTRC(JB), JB=1,NBR)
   IF (AID /= 'DST TRIB')                        GO TO 400
-  
+
 ELSE
   WRITE (WIN,*) '  time control TMSTR'
   READ (CON,*,ERR=400)
@@ -1326,7 +1326,7 @@ ELSE
     IF (AID /= 'TMSTRT  ') THEN
      AID1='TMSTRT  ';  ICST=3;GO TO 400
     ENDIF
-    
+
   !READ (CON, *, ERR=400) HEADER(1)
   !   DO J=1,15   ! CHECK FIRST 12 CHARACTERS TO SEE IF ':'
   !       IF(HEADER(1)(J:J)==':')THEN
@@ -1335,14 +1335,14 @@ ELSE
   !       ENDIF
   !   ENDDO
   !   BACKSPACE(1010)
-      
-  READ (CON,*,ERR=400)  TMSTRT,   TMEND,    YEAR    
+
+  READ (CON,*,ERR=400)  TMSTRT,   TMEND,    YEAR
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400) AID
     IF (AID /= 'NDLT    ') THEN
     AID1='NDLT    '; ICST=3;GO TO 400
     ENDIF
-    
+
   READ (CON,*,ERR=400)  NDLT,     DLTMIN, DLTINTR; DLTD=0.0; DLTINTR=ADJUSTR(DLTINTR)
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
@@ -1355,7 +1355,7 @@ ELSE
     IF (AID /= 'DLTF    ') THEN
     AID1='DLTF    ';  ICST=3;GO TO 400
     ENDIF
-    
+
   READ (CON,*,ERR=400)  (DLTF(J),   J =1,NDLT)
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
@@ -1414,7 +1414,7 @@ ELSE
 
   READ (CON,*,ERR=400)            (VBC(JW),              JW=1,NWB); VBC=ADJUSTR(VBC)
   READ (CON,*,ERR=400)            (EBC(JW),              JW=1,NWB); EBC=ADJUSTR(EBC)
-  READ (CON,*,ERR=400)            (MBC(JW),              JW=1,NWB); MBC=ADJUSTR(MBC)   
+  READ (CON,*,ERR=400)            (MBC(JW),              JW=1,NWB); MBC=ADJUSTR(MBC)
   READ (CON,*,ERR=400)            (PQC(JW),              JW=1,NWB); PQC=ADJUSTR(PQC)
   READ (CON,*,ERR=400)            (EVC(JW),              JW=1,NWB); EVC=ADJUSTR(EVC)
   READ (CON,*,ERR=400)            (PRC(JW),              JW=1,NWB); PRC=ADJUSTR(PRC)
@@ -1480,14 +1480,14 @@ ELSE
   READ (CON,*,ERR=400)
 
     WRITE (WIN,*) '  turbulence closure AZC'
-  READ (CON,*,ERR=400)      (AZC(JW),    JW=1,NWB);AZC=ADJUSTR(AZC)          
-  READ (CON,*,ERR=400)      (AZSLC(JW),  JW=1,NWB);AZSLC=ADJUSTR(AZSLC)          
-  READ (CON,*,ERR=400)      (AZMAX(JW),  JW=1,NWB)          
-  READ (CON,*,ERR=400)      (FBC(JW),  JW=1,NWB)          
-  READ (CON,*,ERR=400)      (AZE(JW), JW=1,NWB)          
-  READ (CON,*,ERR=400)      (ARODI(JW),  JW=1,NWB)          
-  READ (CON,*,ERR=400)      (STRCKLR(JW), JW=1,NWB)          
-  READ (CON,*,ERR=400)      (BOUNDFR(JW),JW=1,NWB)   
+  READ (CON,*,ERR=400)      (AZC(JW),    JW=1,NWB);AZC=ADJUSTR(AZC)
+  READ (CON,*,ERR=400)      (AZSLC(JW),  JW=1,NWB);AZSLC=ADJUSTR(AZSLC)
+  READ (CON,*,ERR=400)      (AZMAX(JW),  JW=1,NWB)
+  READ (CON,*,ERR=400)      (FBC(JW),  JW=1,NWB)
+  READ (CON,*,ERR=400)      (AZE(JW), JW=1,NWB)
+  READ (CON,*,ERR=400)      (ARODI(JW),  JW=1,NWB)
+  READ (CON,*,ERR=400)      (STRCKLR(JW), JW=1,NWB)
+  READ (CON,*,ERR=400)      (BOUNDFR(JW),JW=1,NWB)
   READ (CON,*,ERR=400)      (TKECAL(JW),JW=1,NWB);TKECAL=ADJUSTR(TKECAL)          !FBC(JW),AZE(JW),ARODI(JW),STRCKLR(JW),BOUNDFR(JW),TKECAL(JW)
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
@@ -1495,7 +1495,7 @@ ELSE
 
   READ (CON,*,ERR=400)            (NSTR(JB),      JB=1,NBR)
   READ (CON,*,ERR=400)            (DYNSTRUC(JB),  JB=1,NBR); DYNSTRUC=adjustr(DYNSTRUC)
-  
+
   DO JS=1,NSTT
     READ (CON,*,ERR=400)        (STRIC(JS,JB),  JB=1,NBR)
   END DO
@@ -1533,20 +1533,20 @@ ELSE
   READ (CON,*,ERR=400)  (FPI(JP),   JP=1,NPI)
   READ (CON,*,ERR=400)  (FMINPI(JP),JP=1,NPI)
   READ (CON,*,ERR=400)  (LATPIC(JP),JP=1,NPI);LATPIC=adjustr(LATPIC)
-  READ (CON,*,ERR=400)  (DYNPIPE(JP),JP=1,NPI);DYNPIPE=adjustr(DYNPIPE) 
-  
+  READ (CON,*,ERR=400)  (DYNPIPE(JP),JP=1,NPI);DYNPIPE=adjustr(DYNPIPE)
+
   READ (CON,*,ERR=400)  (PUPIC(JP),  JP=1,NPI);PUPIC=adjustr(PUPIC)
   READ (CON,*,ERR=400)  (ETUPI(JP),  JP=1,NPI)
   READ (CON,*,ERR=400)  (EBUPI(JP),  JP=1,NPI)
   READ (CON,*,ERR=400)  (KTUPI(JP),  JP=1,NPI)
   READ (CON,*,ERR=400)  (KBUPI(JP),  JP=1,NPI)
-  
+
   READ (CON,*,ERR=400)  (PDPIC(JP),  JP=1,NPI);PDPIC=adjustr(PDPIC)
   READ (CON,*,ERR=400)  (ETDPI(JP),  JP=1,NPI)
   READ (CON,*,ERR=400)  (EBDPI(JP),  JP=1,NPI)
   READ (CON,*,ERR=400)  (KTDPI(JP),  JP=1,NPI)
   READ (CON,*,ERR=400)  (KBDPI(JP),  JP=1,NPI)
-  
+
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
     WRITE (WIN,*) '  spillways IUSP'
@@ -1559,25 +1559,25 @@ ELSE
   READ (CON,*,ERR=400) (A2SP(JS),    JS=1,NSP)
   READ (CON,*,ERR=400) (B2SP(JS),    JS=1,NSP)
   READ (CON,*,ERR=400) (LATSPC(JS),  JS=1,NSP);LATSPC=ADJUSTR(LATSPC)
-  
+
   READ (CON,*,ERR=400) (PUSPC(JS),   JS=1,NSP);PUSPC=adjustr(PUSPC)
   READ (CON,*,ERR=400) (ETUSP(JS),   JS=1,NSP)
   READ (CON,*,ERR=400) (EBUSP(JS),   JS=1,NSP)
   READ (CON,*,ERR=400) (KTUSP(JS),   JS=1,NSP)
   READ (CON,*,ERR=400) (KBUSP(JS),   JS=1,NSP)
-  
-  READ (CON,*,ERR=400) (PDSPC(JS),   JS=1,NSP) ;PDSPC=ADJUSTR(PDSPC) 
+
+  READ (CON,*,ERR=400) (PDSPC(JS),   JS=1,NSP) ;PDSPC=ADJUSTR(PDSPC)
   READ (CON,*,ERR=400) (ETDSP(JS),   JS=1,NSP)
   READ (CON,*,ERR=400) (EBDSP(JS),   JS=1,NSP)
   READ (CON,*,ERR=400) (KTDSP(JS),   JS=1,NSP)
   READ (CON,*,ERR=400) (KBDSP(JS),   JS=1,NSP)
-  
+
   READ (CON,*,ERR=400) (GASSPC(JS),  JS=1,NSP);GASSPC=ADJUSTR(GASSPC)
   READ (CON,*,ERR=400) (EQSP(JS),    JS=1,NSP)
   READ (CON,*,ERR=400) (AGASSP(JS),  JS=1,NSP)
   READ (CON,*,ERR=400) (BGASSP(JS),  JS=1,NSP)
   READ (CON,*,ERR=400) (CGASSP(JS),  JS=1,NSP)
-  
+
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
     WRITE (WIN,*) '  gates IUGT'
@@ -1592,16 +1592,16 @@ ELSE
   READ (CON,*,ERR=400) (B2GT(JG),   JG=1,NGT)
   READ (CON,*,ERR=400) (G2GT(JG),   JG=1,NGT)
   READ (CON,*,ERR=400) (LATGTC(JG), JG=1,NGT);LATGTC=ADJUSTR(LATGTC)
-  
-  READ (CON,*,ERR=400) (GTA1(JG),   JG=1,NGT)  
-  READ (CON,*,ERR=400) (GTB1(JG),   JG=1,NGT)  
-  READ (CON,*,ERR=400) (GTA2(JG),   JG=1,NGT)  
-  READ (CON,*,ERR=400) (GTB2(JG),   JG=1,NGT)  
-  READ (CON,*,ERR=400) (DYNGTC(JG), JG=1,NGT);DYNGTC=ADJUSTR(DYNGTC)  
-  READ (CON,*,ERR=400) (GTIC(JG),   JG=1,NGT);GTIC=ADJUSTR(GTIC)  
-  
+
+  READ (CON,*,ERR=400) (GTA1(JG),   JG=1,NGT)
+  READ (CON,*,ERR=400) (GTB1(JG),   JG=1,NGT)
+  READ (CON,*,ERR=400) (GTA2(JG),   JG=1,NGT)
+  READ (CON,*,ERR=400) (GTB2(JG),   JG=1,NGT)
+  READ (CON,*,ERR=400) (DYNGTC(JG), JG=1,NGT);DYNGTC=ADJUSTR(DYNGTC)
+  READ (CON,*,ERR=400) (GTIC(JG),   JG=1,NGT);GTIC=ADJUSTR(GTIC)
+
   ETUGT=0.0;EBUGT=0.0;ETDGT=0.0;EBDGT=0.0
-  
+
   READ (CON,*,ERR=400) (PUGTC(JG),  JG=1,NGT);PUGTC=ADJUSTR(PUGTC)
   READ (CON,*,ERR=400) (ETUGT(JG),  JG=1,NGT)
   READ (CON,*,ERR=400) (EBUGT(JG),  JG=1,NGT)
@@ -1612,13 +1612,13 @@ ELSE
   READ (CON,*,ERR=400) (EBDGT(JG),  JG=1,NGT)
   READ (CON,*,ERR=400) (KTDGT(JG),  JG=1,NGT)
   READ (CON,*,ERR=400) (KBDGT(JG),  JG=1,NGT)
-  
-  READ (CON,*,ERR=400) (GASGTC(JG), JG=1,NGT);GASGTC=ADJUSTR(GASGTC)  
-  READ (CON,*,ERR=400) (EQGT(JG),   JG=1,NGT)  
-  READ (CON,*,ERR=400) (AGASGT(JG), JG=1,NGT)  
-  READ (CON,*,ERR=400) (BGASGT(JG), JG=1,NGT)  
-  READ (CON,*,ERR=400) (CGASGT(JG), JG=1,NGT)  
-  
+
+  READ (CON,*,ERR=400) (GASGTC(JG), JG=1,NGT);GASGTC=ADJUSTR(GASGTC)
+  READ (CON,*,ERR=400) (EQGT(JG),   JG=1,NGT)
+  READ (CON,*,ERR=400) (AGASGT(JG), JG=1,NGT)
+  READ (CON,*,ERR=400) (BGASGT(JG), JG=1,NGT)
+  READ (CON,*,ERR=400) (CGASGT(JG), JG=1,NGT)
+
   READ (CON,*,ERR=400)
     WRITE (WIN,*) '  pumps IUPU'
   READ (CON,*,ERR=400)AID
@@ -1626,7 +1626,7 @@ ELSE
           AID1='Pump1   '
           ICST=3;GO TO 400
       ENDIF
-  
+
   READ (CON,*,ERR=400) (IUPU(JP),   JP=1,NPU)
   READ (CON,*,ERR=400) (IDPU(JP),   JP=1,NPU)
   READ (CON,*,ERR=400) (EPU(JP),    JP=1,NPU)
@@ -1647,8 +1647,8 @@ ELSE
   WRITE (WIN,*) '  internal weirs IWR'
 
   READ (CON,*,ERR=400)         (IWR(JW),    JW=1,NIW)
-  READ (CON,*,ERR=400)        (EKTWR(JW),   JW=1,NIW)               
-  READ (CON,*,ERR=400)        (EKBWR(JW),   JW=1,NIW)   
+  READ (CON,*,ERR=400)        (EKTWR(JW),   JW=1,NIW)
+  READ (CON,*,ERR=400)        (EKBWR(JW),   JW=1,NIW)
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
 
@@ -1671,7 +1671,7 @@ ELSE
   READ (CON,*,ERR=400)        (EBTR(JT),  JT=1,NTR)
   READ (CON,*,ERR=400)        (QTRFN(JT),  JT=1,NTR)
   READ (CON,*,ERR=400)        (TTRFN(JT),  JT=1,NTR)
-  READ (CON,*,ERR=400)        (CTRFN(JT),  JT=1,NTR)  
+  READ (CON,*,ERR=400)        (CTRFN(JT),  JT=1,NTR)
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
   WRITE (WIN,*) '  distributed tributaries'
@@ -1691,8 +1691,8 @@ ENDIF
           PUMP_DOWNSTREAM(J)=.TRUE.
           IDPU(J)=ABS(IDPU(J))
       ENDIF
-    ENDDO     
-    
+    ENDDO
+
 ! Bathymetry definition CHECKS BEFORE PROCEEDING FURTHER
   WRITE (WIN,*) '  grid check: US, DS, BE, BS'
   AID='GridChek'
@@ -1706,7 +1706,7 @@ ENDIF
   WRITE (ERR,'(A)') 'There is an error in BS and BE (or in NWB): The sum of BS-BE+1 for all waterbodies does not equal NBR. Check branch geometry and waterbody branch definition.'
   GO TO 405
   endif
-  
+
   IF(NWB>1)THEN
       DO JW=1,NWB-1
       IF(BE(JW)>BE(JW+1))THEN
@@ -1799,7 +1799,7 @@ IF(CONFN=='w2_con.npt')THEN
     READ (CON,'(:8X,9F8.0)',          ERR=400) (SCRF(J,JW),     J=1,NSCR(JW))
   END DO
   READ (CON,'(/A8/(8X,A8,2I8))',      ERR=400)  AID, (PRFC(JW), NPRF(JW), NIPRF(JW), JW=1,NWB)
-  
+
   !do j=1,nwb
   !if(nprf(j) > nod)then
   !     CALL ERRORS
@@ -1814,11 +1814,11 @@ IF(CONFN=='w2_con.npt')THEN
   !     stop
   !endif
   !enddo
-  
-  
-  
-  
-  
+
+
+
+
+
   IF (AID /= 'PRF PLOT')                        GO TO 400
   READ (CON,'(/A8/(:8X,9F8.0))',      ERR=400)  AID, (PRFD(J,1),J=1,NPRF(1))
   IF (AID /= 'PRF DATE')                        GO TO 400
@@ -1835,8 +1835,8 @@ IF(CONFN=='w2_con.npt')THEN
   DO JW=2,NWB
     READ (CON,'(:8X,9I8)',            ERR=400) (IPRF(J,JW),     J=1,NIPRF(JW))
   END DO
-  READ (CON,'(/A8/(8X,A8,2I8))',      ERR=400)  AID, (SPRC(JW), NSPR(JW), NISPR(JW), JW=1,NWB)  
-  
+  READ (CON,'(/A8/(8X,A8,2I8))',      ERR=400)  AID, (SPRC(JW), NSPR(JW), NISPR(JW), JW=1,NWB)
+
   IF (AID /= 'SPR PLOT')                        GO TO 400
   READ (CON,'(/A8/(:8X,9F8.0))',      ERR=400)  AID, (SPRD(J,1),J=1,NSPR(1))
   IF (AID /= 'SPR DATE')                        GO TO 400
@@ -1890,7 +1890,7 @@ IF(CONFN=='w2_con.npt')THEN
     READ (CON,'(:8X,9F8.0)',          ERR=400) (FLXF(J,JW),     J=1,NFLX(JW))
   END DO
   READ (CON,'(/A8/(8X,A8,2I8))',      ERR=400)  AID, TSRC, NTSR, NIKTSR
-  
+
   IF (AID /= 'TSR PLOT')                        GO TO 400
   READ (CON,'(/A8/(:8X,9F8.0))',      ERR=400)  AID, (TSRD(J),  J=1,NTSR)
   IF (AID /= 'TSR DATE')                        GO TO 400
@@ -1906,8 +1906,8 @@ IF(CONFN=='w2_con.npt')THEN
   READ (CON,'(/A8/(:8X,A8,9F8.0))',      ERR=400)  AID, FLOWBALC,FLOWBALF
   IF (AID /= 'FLOWBAL ')GO TO 400
   READ (CON,'(/A8/(:8X,A8,9F8.0))',      ERR=400)  AID, NPBALC,NPBALF
-  IF (AID /= 'NPBAL   ')GO TO 400  
-  
+  IF (AID /= 'NPBAL   ')GO TO 400
+
   READ (CON,'(/A8/8X,A8,2I8)',        ERR=400)  AID, WDOC, NWDO, NIWDO
   IF (AID /= 'WITH OUT')                        GO TO 400
   READ (CON,'(/A8/(:8X,9F8.0))',      ERR=400)  AID, (WDOD(J),  J=1,NWDO)
@@ -1935,7 +1935,7 @@ ELSE
   READ (CON,*,ERR=400)        NSNP(1)
       SNPC(2:NWB)=SNPC(1);SNPC=ADJUSTR(SNPC)
       NSNP(2:NWB)=NSNP(1)
-      
+
   NISNP=0     ! SW 3/31/2020
   DO JW=1,NWB
       DO JB=BS(JW),BE(JW)
@@ -1953,14 +1953,14 @@ ELSE
     ENDDO
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
-  READ (CON,*,ERR=400)         SCRC(1);  SCRC(1)=ADJUSTR(SCRC(1))    
+  READ (CON,*,ERR=400)
+  READ (CON,*,ERR=400)         SCRC(1);  SCRC(1)=ADJUSTR(SCRC(1))
   READ (CON,*,ERR=400)         NSCR(1)
   READ (CON,*,ERR=400)          (SCRD(J,1),J=1,NSCR(1))
   READ (CON,*,ERR=400)          (SCRF(J,1),J=1,NSCR(1))
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
-  
+  READ (CON,*,ERR=400)
+
   IF(NWB > 1)THEN
       SCRC(2:NWB)=SCRC(1)
       NSCR(2:NWB)=NSCR(1)
@@ -1969,30 +1969,30 @@ ELSE
       SCRF(J,2:NWB)=SCRF(J,1)
   ENDDO
   ENDIF
-   
+
   CDUM='     OFF'
-  READ (CON,*,ERR=400)      CDUM;CDUM=ADJUSTR(CDUM)         
-  READ (CON,*,ERR=400)      NDUM          
-  READ (CON,*,ERR=400)      NIDUM          
-  
-  READ (CON,*,ERR=400)      (DDUM(J),J=1,NDUM)    
-  READ (CON,*,ERR=400)      (FDUM(J),J=1,NDUM)    
-  READ (CON,*,ERR=400)      (IDUM(J),J=1,NIDUM)   
+  READ (CON,*,ERR=400)      CDUM;CDUM=ADJUSTR(CDUM)
+  READ (CON,*,ERR=400)      NDUM
+  READ (CON,*,ERR=400)      NIDUM
+
+  READ (CON,*,ERR=400)      (DDUM(J),J=1,NDUM)
+  READ (CON,*,ERR=400)      (FDUM(J),J=1,NDUM)
+  READ (CON,*,ERR=400)      (IDUM(J),J=1,NIDUM)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
-  
+  READ (CON,*,ERR=400)
+
   PRFC='     OFF'
   NPRF=0
   NIPRF=0
-  IF(CDUM == '      ON')THEN                      
+  IF(CDUM == '      ON')THEN
   DO J=1,NDUM
   PRFD(J,1:NWB)=DDUM(J)
   PRFF(J,1:NWB)=FDUM(J)
   ENDDO
-  NPRF(1:NWB)=NDUM   
-      DO JW=1,NWB 
+  NPRF(1:NWB)=NDUM
+      DO JW=1,NWB
           JJ=0
-          DO J=1,NIDUM  
+          DO J=1,NIDUM
               IF(IDUM(J) >= US(BS(JW)) .AND. IDUM(J) <= DS(BE(JW)))THEN
                   JJ=JJ+1
                   IPRF(JJ,JW)=IDUM(J)
@@ -2000,31 +2000,31 @@ ELSE
                   PRFC(JW)='      ON'
               ENDIF
           ENDDO
-      ENDDO     
+      ENDDO
   ENDIF
-   
+
   CDUM='     OFF'
-  READ (CON,*,ERR=400)      CDUM;CDUM=ADJUSTR(CDUM)         
-  READ (CON,*,ERR=400)      NDUM         
-  READ (CON,*,ERR=400)      NIDUM          
-  READ (CON,*,ERR=400)      (DDUM(J),J=1,NDUM)    
-  READ (CON,*,ERR=400)      (FDUM(J),J=1,NDUM)    
-  READ (CON,*,ERR=400)      (IDUM(J),J=1,NIDUM)   
+  READ (CON,*,ERR=400)      CDUM;CDUM=ADJUSTR(CDUM)
+  READ (CON,*,ERR=400)      NDUM
+  READ (CON,*,ERR=400)      NIDUM
+  READ (CON,*,ERR=400)      (DDUM(J),J=1,NDUM)
+  READ (CON,*,ERR=400)      (FDUM(J),J=1,NDUM)
+  READ (CON,*,ERR=400)      (IDUM(J),J=1,NIDUM)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
-  
+  READ (CON,*,ERR=400)
+
   SPRC='     OFF'
   NSPR=0
   NISPR=0
-  IF(CDUM == '      ON'.OR. CDUM=='     ONV')THEN               
+  IF(CDUM == '      ON'.OR. CDUM=='     ONV')THEN
   DO J=1,NDUM
   SPRD(J,1:NWB)=DDUM(J)
   SPRF(J,1:NWB)=FDUM(J)
   ENDDO
-  NSPR(1:NWB)=NDUM  
-      DO JW=1,NWB 
+  NSPR(1:NWB)=NDUM
+      DO JW=1,NWB
           JJ=0
-          DO J=1,NIDUM 
+          DO J=1,NIDUM
               IF(IDUM(J) >= US(BS(JW)) .AND. IDUM(J) <= DS(BE(JW)))THEN
                   JJ=JJ+1
                   ISPR(JJ,JW)=IDUM(J)
@@ -2032,7 +2032,7 @@ ELSE
                   SPRC(JW)=CDUM
               ENDIF
           ENDDO
-      ENDDO     
+      ENDDO
   ENDIF
 
   VPLC='     OFF'
@@ -2042,25 +2042,25 @@ ELSE
   READ (CON,*,ERR=400)   (VPLD(J,1), J=1,NVPL(1))
   READ (CON,*,ERR=400)   (VPLF(J,1), J=1,NVPL(1))
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  CPL output CPLC'
 
   READ (CON,*,ERR=400)      CPLC(1);CPLC(1)=ADJUSTR(CPLC(1))
   READ (CON,*,ERR=400)      NCPL(1)
   READ (CON,*,ERR=400)      TCPL(1);TCPL(1)=ADJUSTR(TCPL(1))
-  
+
   CPLC(2:NWB)=CPLC(1)
   NCPL(2:NWB)=NCPL(1)
   TCPL(2:NWB)=TCPL(1)
   READ (CON,*,ERR=400)    (CPLD(J,1), J=1,NCPL(1))
   READ (CON,*,ERR=400)    (CPLF(J,1), J=1,NCPL(1))
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+  READ (CON,*,ERR=400)
   DO J=1,NCPL(1)
     CPLD(J,2:NWB)=CPLD(J,1)
     CPLF(J,2:NWB)=CPLF(J,1)
-  ENDDO    
-    
+  ENDDO
+
   READ (CON,*,ERR=400)        FLXC(1);FLXC(1)=ADJUSTR(FLXC(1))
   READ (CON,*,ERR=400)        NFLX(1)
   FLXC(2:NWB)=FLXC(1)
@@ -2069,10 +2069,10 @@ ELSE
   READ (CON,*,ERR=400)       (FLXD(J,1), J=1,NFLX(1))
   READ (CON,*,ERR=400)       (FLXF(J,1), J=1,NFLX(1))
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+  READ (CON,*,ERR=400)
   DO J=1,NFLX(1)
   FLXD(J,2:NWB)=FLXD(J,1)
-  FLXF(J,2:NWB)=FLXF(J,1) 
+  FLXF(J,2:NWB)=FLXF(J,1)
   ENDDO
     WRITE (WIN,*) '  time series output'
 
@@ -2080,7 +2080,7 @@ ELSE
   READ (CON,*,ERR=400)           NTSR
   READ (CON,*,ERR=400)          NIKTSR
   READ (CON,*,ERR=400)          TSRFN
-  
+
   READ (CON,*,ERR=400)        (TSRD(J), J=1,NTSR)
   READ (CON,*,ERR=400)        (TSRF(J), J=1,NTSR)
   READ (CON,*,ERR=400)        (ITSR(J), J=1,NIKTSR)
@@ -2090,7 +2090,7 @@ ELSE
           IF (AID /= 'WLEVEL') THEN
           AID1='WLEVEL'
           ICST=3;GO TO 400
-          ENDIF  
+          ENDIF
   READ (CON,*,ERR=400)        WLC;WLC=ADJUSTR(WLC)
   READ (CON,*,ERR=400)        WLF
   READ (CON,*,ERR=400)
@@ -2098,7 +2098,7 @@ ELSE
           IF (AID /= 'FLOWBAL') THEN
           AID1='FLOWBAL'
           ICST=3;GO TO 400
-          ENDIF  
+          ENDIF
   READ (CON,*,ERR=400)        FLOWBALC;FLOWBALC=ADJUSTR(FLOWBALC)
   READ (CON,*,ERR=400)        FLOWBALF
     READ (CON,*,ERR=400)
@@ -2106,16 +2106,16 @@ ELSE
           IF (AID /= 'NPBAL') THEN
           AID1='NPBAL'
           ICST=3;GO TO 400
-          ENDIF  
+          ENDIF
   READ (CON,*,ERR=400)        NPBALC;NPBALC=ADJUSTR(NPBALC)
   READ (CON,*,ERR=400)        NPBALF
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+  READ (CON,*,ERR=400)
      WRITE (WIN,*) '  withdrawal output'
 
-  READ (CON,*,ERR=400)           WDOC; WDOC=ADJUSTR(WDOC)   
-  READ (CON,*,ERR=400)           NWDO 
+  READ (CON,*,ERR=400)           WDOC; WDOC=ADJUSTR(WDOC)
+  READ (CON,*,ERR=400)           NWDO
   READ (CON,*,ERR=400)           NIWDO
   READ (CON,*,ERR=400)           WDOFN
 
@@ -2128,7 +2128,7 @@ ELSE
           IF (AID /= 'RESTART') THEN
           AID1='RESTART'
           ICST=3;GO TO 400
-          ENDIF  
+          ENDIF
   WRITE (WIN,*) '  restart RSOC'
 
   READ (CON,*,ERR=400)         RSOC;RSOC=ADJUSTR(RSOC)
@@ -2144,7 +2144,7 @@ ELSE
           IF (AID /= 'CCC     ') THEN
           AID1='CCC     '
           ICST=3;GO TO 400
-          ENDIF    
+          ENDIF
 ENDIF
     do j=1,nwb
   if(nsnp(j) > nod)then
@@ -2273,7 +2273,7 @@ IF(CONFN=='w2_con.npt')THEN
   READ (CON,'(/A8/(:8X,F8.0,A8,F8.0))',   ERR=400)  AID, (SSS(JS),    SEDRC(JS),   TAUCR(JS), SSCS(JS), JS=1,NSS)                  ! SW 1/16/04
   IF (AID /= 'S SOLIDS')                          GO TO 400
       WRITE (WIN,*) '      iss cards'
-      
+
   AID='BACTERIA'
     WRITE (WIN,*) '  bacteria'
   READ (CON,'(//(8X,4F8.0))',         ERR=400)         (BACTQ10(JW), BACT1DK(JW),BACTS(JW),BACTLDK(JW),       JW=1,NWB)
@@ -2289,7 +2289,7 @@ IF(CONFN=='w2_con.npt')THEN
   AID='MN'
     WRITE (WIN,*) '  Mn'
   READ (CON,'(//(8X,5F8.0))',         ERR=400)         (MNIIR(JW), KMN_OXID(JW), KMN_RED(JW), KMNO2_HalfSat(JW),  MnSetVel(JW), JW=1,NWB)
-      
+
   READ (CON,'(/A8/(8X,9F8.0))',         ERR=400)  AID, (AG(JA),     AR(JA),     AE(JA),     AM(JA),     AS(JA),     AHSP(JA),      &
                                                         AHSN(JA),   AHSSI(JA),  ASAT(JA),   JA=1,NAL)                  !TC 09/01/01
   IF (AID /= 'ALGAL RA')                          GO TO 400
@@ -2468,7 +2468,7 @@ IF(CONFN=='w2_con.npt')THEN
   IF (AID /= 'EXT FILE')              GO TO 400
   READ (CON,'(/A8/(8X,A72))',ERR=400) AID, (ATMDEPFN(JW), JW=1,NWB)                                                       !SW 12/12/01
   IF (AID /= 'ATD FILE')              GO TO 400
-  
+
   READ (CON,'(/A8/(8X,A72))',ERR=400) AID, (VPRFN(JW),JW=1,NWB)
   IF (AID /= 'VPR FILE')              GO TO 400
   READ (CON,'(/A8/(8X,A72))',ERR=400) AID, (LPRFN(JW),JW=1,NWB)
@@ -2533,21 +2533,21 @@ IF(CONFN=='w2_con.npt')THEN
   IF (AID /= 'WDO FILE')              GO TO 400
   CLOSE (CON)
 ELSE
-    
+
     ! Constituent control cards
   WRITE (WIN,*) '  constituent control CCC'
 
-  READ (CON,*,ERR=400)           CCC, LIMC, CUF,CO2ATMPPM,CO2ATM_REGRESSION;CCC=ADJUSTR(CCC);LIMC=ADJUSTR(LIMC);CO2ATM_REGRESSION=ADJUSTR(CO2ATM_REGRESSION) 
+  READ (CON,*,ERR=400)           CCC, LIMC, CUF,CO2ATMPPM,CO2ATM_REGRESSION;CCC=ADJUSTR(CCC);LIMC=ADJUSTR(LIMC);CO2ATM_REGRESSION=ADJUSTR(CO2ATM_REGRESSION)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
-  
+  READ (CON,*,ERR=400)
+
   READ (CON,*,ERR=400)           (ATM_DEPOSITIONC(JW), JW=1,NWB);ATM_DEPOSITIONC=ADJUSTR(ATM_DEPOSITIONC)
   READ (CON,*,ERR=400)           (ATM_DEPOSITION_INTERPOLATION(JW), JW=1,NWB);ATM_DEPOSITION_INTERPOLATION=ADJUSTR(ATM_DEPOSITION_INTERPOLATION)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
-  
+  READ (CON,*,ERR=400)
+
   DO JC=1,NCT
-  READ (CON,*,ERR=400)CNAME2(JC),CNAME(JC),CAC(JC), FMTC(JC), CMULT(JC), (C2IWB(JC,JW), JW=1,NWB),(CPRWBC(JC,JW), JW=1,NWB),(C_ATM_DEPOSITION(JC,JW), JW=1,NWB), (CINBRC(JC,JB), JB=1,NBR),(CINTRC(JC,JT), JT=1,NTR1), (CDTBRC(JC,JB), JB=1,NBR), (CPRBRC(JC,JB), JB=1,NBR)  
+  READ (CON,*,ERR=400)CNAME2(JC),CNAME(JC),CAC(JC), FMTC(JC), CMULT(JC), (C2IWB(JC,JW), JW=1,NWB),(CPRWBC(JC,JW), JW=1,NWB),(C_ATM_DEPOSITION(JC,JW), JW=1,NWB), (CINBRC(JC,JB), JB=1,NBR),(CINTRC(JC,JT), JT=1,NTR1), (CDTBRC(JC,JB), JB=1,NBR), (CPRBRC(JC,JB), JB=1,NBR)
   ENDDO
   CAC=ADJUSTR(CAC);CPRWBC=ADJUSTR(CPRWBC);CINBRC=ADJUSTR(CINBRC);CINTRC=ADJUSTR(CINTRC);CDTBRC=ADJUSTR(CDTBRC);CPRBRC=ADJUSTR(CPRBRC);C_ATM_DEPOSITION=ADJUSTR(C_ATM_DEPOSITION)
   READ (CON,*,ERR=400)
@@ -2563,7 +2563,7 @@ ELSE
   ENDDO
   CDWBC=ADJUSTR(CDWBC)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+  READ (CON,*,ERR=400)
 
  WRITE (WIN,*) '  constituent fluxes'
 
@@ -2575,7 +2575,7 @@ ELSE
 
 ! Kinetics coefficients
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+  READ (CON,*,ERR=400)
   WRITE (WIN,*) '  extinction EXH2O'
 
   READ (CON,*,ERR=400)     (EXH2O(JW),  JW=1,NWB)
@@ -2584,34 +2584,34 @@ ELSE
   READ (CON,*,ERR=400)     (BETA(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)     (EXC(JW),    JW=1,NWB);EXC=ADJUSTR(EXC)
   READ (CON,*,ERR=400)     (EXIC(JW),   JW=1,NWB);EXIC=ADJUSTR(EXIC)
- 
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+  READ (CON,*,ERR=400)
 
   READ (CON,*,ERR=400)         (EXA(JA),  JA=1,NAL)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+  READ (CON,*,ERR=400)
 
-  READ (CON,*,ERR=400)         (EXZ(JZ),  JZ=1,NZPT)  
+  READ (CON,*,ERR=400)         (EXZ(JZ),  JZ=1,NZPT)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
-  
-  READ (CON,*,ERR=400)         (EXM(JM),   JM=1,NMCT)  
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400) 
+
+  READ (CON,*,ERR=400)         (EXM(JM),   JM=1,NMCT)
+  READ (CON,*,ERR=400)
+  READ (CON,*,ERR=400)
   WRITE (WIN,*) '  generic constituents'
 
   READ (CON,*,ERR=400)         (CGQ10(JG),  JG=1,NGC)
   READ (CON,*,ERR=400)         (CG0DK(JG),  JG=1,NGC)
-  READ (CON,*,ERR=400)         (CG1DK(JG),  JG=1,NGC) 
-  READ (CON,*,ERR=400)         (CGS(JG),    JG=1,NGC) 
-  READ (CON,*,ERR=400)         (CGLDK(JG),  JG=1,NGC) 
-  READ (CON,*,ERR=400)         (CGKLF(JG),  JG=1,NGC) 
-  READ (CON,*,ERR=400)         (CGCS(JG),   JG=1,NGC) 
+  READ (CON,*,ERR=400)         (CG1DK(JG),  JG=1,NGC)
+  READ (CON,*,ERR=400)         (CGS(JG),    JG=1,NGC)
+  READ (CON,*,ERR=400)         (CGLDK(JG),  JG=1,NGC)
+  READ (CON,*,ERR=400)         (CGKLF(JG),  JG=1,NGC)
+  READ (CON,*,ERR=400)         (CGCS(JG),   JG=1,NGC)
   READ (CON,*,ERR=400)         (CGR(JG),    JG=1,NGC)
- 
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  suspended solids'
 
   READ (CON,*,ERR=400)   (SSS(JS),    JS=1,NSS)     ! READ (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
@@ -2620,7 +2620,7 @@ ELSE
   READ (CON,*,ERR=400)   (SSCS(JS),   JS=1,NSS)     ! READ (CON,'(//(8X,F8.0,A8,2F8.0,I8))') (SSS(JS), SEDRC(JS),  TAUCR(JS),  SSFLOC(JS), FLOCEQN(JS),            JS=1,NSS) !SR 04/21/13
   SEDRC=ADJUSTR(SEDRC)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
+  READ (CON,*,ERR=400)
       WRITE (WIN,*) '  bacteria'
 
 AID='BACTERIA'
@@ -2630,7 +2630,7 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)     (BACTS(JW),    JW=1,NWB)
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)
-  
+
   !READ (CON,*)     (A_DISG(JW),  JW=1,NWB)
   !READ (CON,*)     (B_DISG(JW),  JW=1,NWB)
   !READ (CON,*)     (C_DISG(JW),  JW=1,NWB)
@@ -2668,10 +2668,10 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)     (KMN_OXID(JW),  JW=1,NWB)
   READ (CON,*,ERR=400)     (KMN_RED(JW),  JW=1,NWB)
   READ (CON,*,ERR=400)     (KMNO2_HalfSat(JW),    JW=1,NWB)
-  READ (CON,*,ERR=400)     (MNSetVel(JW),  JW=1,NWB)  
-  
+  READ (CON,*,ERR=400)     (MNSetVel(JW),  JW=1,NWB)
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  algae'
 
   READ (CON,*,ERR=400) (AG(JA),          JA=1,NAL)
@@ -2706,7 +2706,7 @@ AID='BACTERIA'
   READ (CON,*,ERR=400) (O2AG(JA),        JA=1,NAL)
   READ (CON,*,ERR=400) (AVERTM(JA),      JA=1,NAL)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
+  READ (CON,*,ERR=400)
       WRITE (WIN,*) '  periphyton'
 
   DO JE=1,NEPTT
@@ -2717,8 +2717,8 @@ AID='BACTERIA'
   EPIC=ADJUSTR(EPIC);EPIPRC=ADJUSTR(EPIPRC)
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
-  
+  READ (CON,*,ERR=400)
+
   READ (CON,*,ERR=400) (EG(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (ER(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EE(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -2726,13 +2726,13 @@ AID='BACTERIA'
   READ (CON,*,ERR=400) (EB(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EHSP(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EHSN(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  READ (CON,*,ERR=400) (EHSSI(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13  
-  
+  READ (CON,*,ERR=400) (EHSSI(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
+
   READ (CON,*,ERR=400) (ESAT(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EHS(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (ENEQN(JE),        JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  READ (CON,*,ERR=400) (ENPR(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13  
-  
+  READ (CON,*,ERR=400) (ENPR(JE),         JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
+
   READ (CON,*,ERR=400) (ET1(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (ET2(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (ET3(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -2741,7 +2741,7 @@ AID='BACTERIA'
   READ (CON,*,ERR=400) (EK2(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EK3(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EK4(JE),          JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
-  
+
   READ (CON,*,ERR=400) (EP(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EN(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
   READ (CON,*,ERR=400) (EC(JE),           JE=1,NEPT)        !JE=1,NEP)  SW 9/27/13
@@ -2752,9 +2752,9 @@ AID='BACTERIA'
   READ (CON,*,ERR=400) (O2EG(JE),         JE=1,NEPT)
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)  
+  READ (CON,*,ERR=400)
   WRITE (WIN,*) '  zooplankton'
-   
+
   READ (CON,*,ERR=400)         (ZG(JZ),    JZ=1,NZPT)
   READ (CON,*,ERR=400)         (ZR(JZ),    JZ=1,NZPT)
   READ (CON,*,ERR=400)         (ZM(JZ),    JZ=1,NZPT)
@@ -2770,9 +2770,9 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (ZK1(JZ),   JZ=1,NZPT)
   READ (CON,*,ERR=400)         (ZK2(JZ),   JZ=1,NZPT)
   READ (CON,*,ERR=400)         (ZK3(JZ),   JZ=1,NZPT)
-  READ (CON,*,ERR=400)         (ZK4(JZ),   JZ=1,NZPT) 
-  
-  READ (CON,*,ERR=400)         (ZP(JZ),    JZ=1,NZPT)  
+  READ (CON,*,ERR=400)         (ZK4(JZ),   JZ=1,NZPT)
+
+  READ (CON,*,ERR=400)         (ZP(JZ),    JZ=1,NZPT)
   READ (CON,*,ERR=400)         (ZN(JZ),    JZ=1,NZPT)
   READ (CON,*,ERR=400)         (ZC(JZ),    JZ=1,NZPT)
 
@@ -2783,11 +2783,11 @@ AID='BACTERIA'
   END DO
 
   DO JZ=1,NZPTT
-    READ (CON,*,ERR=400)    (PREFZ(JZ,JJZ),   JJZ=1,NZPT)       
+    READ (CON,*,ERR=400)    (PREFZ(JZ,JJZ),   JJZ=1,NZPT)
   END DO
-  
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  macrophytes'
 
   DO JM=1,NMCTT
@@ -2800,7 +2800,7 @@ AID='BACTERIA'
     READ (CON,*,ERR=400)   (MACWBCI(JW,JM),  JW=1,NWB)
   END DO
   MACWBC=ADJUSTR(MACWBC);MPRWBC=ADJUSTR(MPRWBC)
-    
+
   READ (CON,*,ERR=400)
   READ (CON,*,ERR=400)AID
       IF (AID /= 'MacGroup') THEN
@@ -2808,7 +2808,7 @@ AID='BACTERIA'
           ICST=3;GO TO 400
       ENDIF
 
-  
+
   READ (CON,*,ERR=400)         (MG(JM),     JM=1,NMCT)
   READ (CON,*,ERR=400)         (MR(JM),     JM=1,NMCT)
   READ (CON,*,ERR=400)         (MM(JM),     JM=1,NMCT)
@@ -2818,8 +2818,8 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (MHSC(JM),   JM=1,NMCT)
   READ (CON,*,ERR=400)         (MPOM(JM),   JM=1,NMCT)
   READ (CON,*,ERR=400)         (LRPMAC(JM), JM=1,NMCT)
-  
-  READ (CON,*,ERR=400)         (PSED(JM),   JM=1,NMCT)  
+
+  READ (CON,*,ERR=400)         (PSED(JM),   JM=1,NMCT)
   READ (CON,*,ERR=400)         (NSED(JM),   JM=1,NMCT)
 
   READ (CON,*,ERR=400)         (MBMP(JM),   JM=1,NMCT)
@@ -2827,8 +2827,8 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (CDSTEM(JM), JM=1,NMCT)  !CB 6/29/06
   READ (CON,*,ERR=400)         (DMV(JM),    JM=1,NMCT)  !CB 6/29/06
   READ (CON,*,ERR=400)         (DWSA(JM),   JM=1,NMCT)  !CB 6/29/06
-  READ (CON,*,ERR=400)         (ANORM(JM),  JM=1,NMCT)  !CB 6/29/06  
-  
+  READ (CON,*,ERR=400)         (ANORM(JM),  JM=1,NMCT)  !CB 6/29/06
+
   READ (CON,*,ERR=400)         (MT1(JM),    JM=1,NMCT)
   READ (CON,*,ERR=400)         (MT2(JM),    JM=1,NMCT)
   READ (CON,*,ERR=400)         (MT3(JM),    JM=1,NMCT)
@@ -2837,32 +2837,32 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (MK2(JM),    JM=1,NMCT)
   READ (CON,*,ERR=400)         (MK3(JM),    JM=1,NMCT)
   READ (CON,*,ERR=400)         (MK4(JM),    JM=1,NMCT)
-  
+
   READ (CON,*,ERR=400)         (MP(JM),     JM=1,NMCT)
   READ (CON,*,ERR=400)         (MN(JM),     JM=1,NMCT)
   READ (CON,*,ERR=400)         (MC(JM),     JM=1,NMCT)
- 
+
   READ (CON,*,ERR=400)         (O2MR(JM),   JM=1,NMCT)
   READ (CON,*,ERR=400)         (O2MG(JM),   JM=1,NMCT)
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  organic matter LDOMDK'
 
   READ (CON,*,ERR=400)         (LDOMDK(JW),  JW=1,NWB)
   READ (CON,*,ERR=400)         (RDOMDK(JW),  JW=1,NWB)
-  READ (CON,*,ERR=400)         (LRDDK(JW),   JW=1,NWB) 
+  READ (CON,*,ERR=400)         (LRDDK(JW),   JW=1,NWB)
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
-   
+  READ (CON,*,ERR=400)
+
   READ (CON,*,ERR=400)         (LPOMDK(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)         (RPOMDK(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)         (LRPDK(JW),    JW=1,NWB)
   READ (CON,*,ERR=400)         (POMS(JW),     JW=1,NWB)
-  
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
   AID='ORGP'
   WRITE (WIN,*) '  organic matter stoich'
 
@@ -2876,9 +2876,9 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (OMT2(JW),     JW=1,NWB)
   READ (CON,*,ERR=400)         (OMK1(JW),     JW=1,NWB)
   READ (CON,*,ERR=400)         (OMK2(JW),     JW=1,NWB)
-  
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
   AID='Turbidity'
   WRITE (WIN,*) '  turbidity'
   READ (CON,*,ERR=400)         (CoeffA_Turb(JW),    JW=1,NWB)
@@ -2886,7 +2886,7 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (SECC_PAR(JW),    JW=1,NWB)
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  BOD'
   AID='BOD'
 
@@ -2897,9 +2897,9 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (BODP(JB),     JB=1,NBOD)
   READ (CON,*,ERR=400)         (BODN(JB),     JB=1,NBOD)
   READ (CON,*,ERR=400)         (BODC(JB),     JB=1,NBOD)
-  
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
   WRITE (WIN,*) '  P, N, and Si'
   AID='P,N,AND Si'
   READ (CON,*,ERR=400)         (PO4R(JW),     JW=1,NWB)
@@ -2923,44 +2923,44 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)         (PSIS(JW),     JW=1,NWB)
   READ (CON,*,ERR=400)         (PSIDK(JW),    JW=1,NWB)
   READ (CON,*,ERR=400)         (PARTSI(JW),   JW=1,NWB)
-     
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  CO2R'
   AID='CO2R'
   READ (CON,*,ERR=400)          (CO2R(JW),     JW=1,NWB)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
       WRITE (WIN,*) '  O2LIM'
   AID='O2LIM'
 
   READ (CON,*,ERR=400)           O2LIM
 
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
   WRITE (WIN,*) '   sediment O2 demand first order model'
 
-  READ (CON,*,ERR=400)     (SEDC(JW),   JW=1,NWB); SEDC=adjustr(SEDC)  
-  READ (CON,*,ERR=400)     (PRNSC(JW),  JW=1,NWB); PRNSC=adjustr(PRNSC) 
-  READ (CON,*,ERR=400)     (SEDCI(JW),   JW=1,NWB)  
-  READ (CON,*,ERR=400)     (SEDDK(JW),   JW=1,NWB)     
-  READ (CON,*,ERR=400)     (SEDS(JW),    JW=1,NWB)  
-  READ (CON,*,ERR=400)     (FSOD(JW),    JW=1,NWB)  
-  READ (CON,*,ERR=400)     (FSED(JW),    JW=1,NWB) 
-  READ (CON,*,ERR=400)     (SEDBR(JW),   JW=1,NWB)  
+  READ (CON,*,ERR=400)     (SEDC(JW),   JW=1,NWB); SEDC=adjustr(SEDC)
+  READ (CON,*,ERR=400)     (PRNSC(JW),  JW=1,NWB); PRNSC=adjustr(PRNSC)
+  READ (CON,*,ERR=400)     (SEDCI(JW),   JW=1,NWB)
+  READ (CON,*,ERR=400)     (SEDDK(JW),   JW=1,NWB)
+  READ (CON,*,ERR=400)     (SEDS(JW),    JW=1,NWB)
+  READ (CON,*,ERR=400)     (FSOD(JW),    JW=1,NWB)
+  READ (CON,*,ERR=400)     (FSED(JW),    JW=1,NWB)
+  READ (CON,*,ERR=400)     (SEDBR(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)     (DYNSEDK(JW), JW=1,NWB); DYNSEDK=adjustr(DYNSEDK)
   READ (CON,*,ERR=400)     (SODT1(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)     (SODT2(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)     (SODK1(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)     (SODK2(JW),   JW=1,NWB)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)   
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  sediment O2 demand zero order'
 
   READ (CON,*,ERR=400)  (SOD(I),  I=1,IMX)
-  
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)    
+  READ (CON,*,ERR=400)
     WRITE (WIN,*) '  reaeration'
 
   READ (CON,*,ERR=400)   (REAERC(JW), JW=1,NWB); REAERC=adjustr(REAERC)
@@ -2972,8 +2972,8 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)   (DGPO2(JW), JW=1,NWB)
   READ (CON,*,ERR=400)   (MINKL(JW), JW=1,NWB)
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)    
-  
+  READ (CON,*,ERR=400)
+
 ! Input filenames
   WRITE (WIN,*) '  file names'
 
@@ -2983,10 +2983,10 @@ AID='BACTERIA'
   READ (CON,*,ERR=400)  SHDFN
   READ (CON,*,ERR=400)  VPLFN(1)
   VPLFN(2:NWB)=VPLFN(1)
-  
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)    
- 
+  READ (CON,*,ERR=400)
+
   READ (CON,*,ERR=400) (BTHFN(JW), JW=1,NWB)
   READ (CON,*,ERR=400) (METFN(JW), JW=1,NWB)
   READ (CON,*,ERR=400) (EXTFN(JW), JW=1,NWB)
@@ -3001,10 +3001,10 @@ AID='BACTERIA'
   READ (CON,*,ERR=400) (CPLFN(JW), JW=1,NWB)
   READ (CON,*,ERR=400) (SPRFN(JW), JW=1,NWB)
   READ (CON,*,ERR=400) (FLXFN(JW), JW=1,NWB)
-  
+
   READ (CON,*,ERR=400)
-  READ (CON,*,ERR=400)    
- 
+  READ (CON,*,ERR=400)
+
   READ (CON,*,ERR=400) (QINFN(JB), JB=1,NBR)
   READ (CON,*,ERR=400) (TINFN(JB), JB=1,NBR)
   READ (CON,*,ERR=400) (CINFN(JB), JB=1,NBR)
@@ -3021,8 +3021,8 @@ AID='BACTERIA'
   READ (CON,*,ERR=400) (EDHFN(JB), JB=1,NBR)
   READ (CON,*,ERR=400) (TDHFN(JB), JB=1,NBR)
   READ (CON,*,ERR=400) (CDHFN(JB), JB=1,NBR)
- 
-  CLOSE (CON) 
+
+  CLOSE (CON)
 ENDIF
 
 
@@ -3089,7 +3089,7 @@ IF(CONFN=='w2_con.npt')THEN
   READ  (NPT,'(// (A43,1X,A9,3F8.0,A8))',ERR=400) (CNAME(J),  FMTC(J),  CMULT(J),  CMIN(J),  CMAX(J),  CPLTC(J), J=1,NCT)
   READ  (NPT,'(// (A43,1X,A9,3F8.0,A8))',END=400,ERR=400) (CDNAME(J), FMTCD(J), CDMULT(J), CDMIN(J), CDMAX(J), CDPLTC(J),J=1,NDC)
       ICST=0
-  !CLOSE (NPT) 
+  !CLOSE (NPT)
   !DO JC=1,NCT
   !  L1         = SCAN (CNAME(JC),',')+2
   !  L2         = SCAN (CNAME(JC)(L1:43),'  ')+L1
@@ -3111,7 +3111,7 @@ IF(CONFN=='w2_con.npt')THEN
   END IF
   CLOSE(NPT)
 ENDIF
-  
+
   DO JC=1,NCT
     L1         = SCAN (CNAME(JC),',')+2
     L2         = SCAN (CNAME(JC)(L1:43),'  ')+L1
@@ -3126,7 +3126,7 @@ ENDIF
     IF (CUNIT(JC)(1:2) /= 'g/' .AND. CUNIT(JC)(1:2) /= 'mg') CUNIT1(JC) = '  '
   END DO
   FMTH(1:NHY) = ADJUSTL (FMTH(1:NHY))
-  
+
   ! WSC FILE
 
   WRITE (WIN,*) 'Wind sheltering file:', adjustl(trim(wscfn))
@@ -3432,12 +3432,12 @@ ENDIF
       END DO
       IF(ATM_DEPOSITIONC(JW)=='      ON')THEN
         DO JC=1,NCT
-        IF(C_ATM_DEPOSITION(JC,JW)=='      ON')THEN  
+        IF(C_ATM_DEPOSITION(JC,JW)=='      ON')THEN
         NACATD(JW)          = NACATD(JW)+1
-        ATMDCN(NACATD(JW),JW) = JC         
+        ATMDCN(NACATD(JW),JW) = JC
         ENDIF
         ENDDO
-        ENDIF   
+        ENDIF
     END DO
     DO JS=1,NSS
       IF (CAC(NSSS) == '      ON') THEN
@@ -3465,8 +3465,8 @@ ENDIF
             EXIT
         ENDIF
     ENDDO
-    
-    
+
+
   END IF
 
   ALLOCATE (CUH(KMX,NAC),CDH(KMX,NAC),CUHMIN(NAC,NBR),CUHMAX(NAC,NBR),CUHAVG(NAC,NBR),CDHMIN(NAC,NBR),CDHMAX(NAC,NBR),CDHAVG(NAC,NBR))
@@ -3532,7 +3532,7 @@ ENDIF
 !***********************************************************************************************************************************
 
   ! DHS and UHS checks
-  
+
   DO JB=1,NBR
       IF(DHS(JB) > 0 .and. .NOT.DH_EXTERNAL(JB))THEN
           DO JJB=1,NBR
@@ -3561,9 +3561,9 @@ ENDDO
 2346  CONTINUE
     ENDIF
 ENDDO
-  
-  
-  
+
+
+
 ! Layer elevations
 
   DO JW=1,NWB                                                                                                          !SW 10/17/02
@@ -3711,7 +3711,7 @@ ENDDO
       END DO
   ENDDO
   ENDDO
-   
+
 ! CORRECTED SLOPE CHECK
 
 DO JB=1,NBR
@@ -3822,7 +3822,7 @@ unit=1010
       if(char1=='$')then
       read(1010,*,err=400)I,tcntr(j),tcjb(j),tcjs(j),tcyearly,tctsrt,tctend,tctemp,tcnelev,(tcelev(n),n=1,tcnelev)
       tcntr(j)=ADJUSTR(TCNTR(J))
-      tcyearly=ADJUSTR(tcyearly) 
+      tcyearly=ADJUSTR(tcyearly)
       else
       read(1010,'(a8,a8,i8,i8,a8,f8.0,f8.0,f8.0,i8,10(f8.0))',err=400)aid1,tcntr(j),tcjb(j),tcjs(j),tcyearly,tctsrt,tctend,tctemp,tcnelev,(tcelev(n),n=1,tcnelev)
       endif
@@ -3902,7 +3902,7 @@ unit=1010
       do j=1,numtempc
         if(char1=='$')then
         read(1010,*,err=400)I,tciseg,tcklay,dynsel
-        dynsel=ADJUSTR(dynsel) 
+        dynsel=ADJUSTR(dynsel)
       else
         read(1010,'(a8,i8,f8.0,a8,f8.0,2i8)',err=400)aid1,tciseg,tcklay,dynsel   !aid1 is ignored - skips 8 spaces
       endif
@@ -3987,7 +3987,7 @@ unit=1010
       tcyearly=ADJUSTR(tcyearly)
       elcont=ADJUSTR(elcont)
       dynsel=ADJUSTR(dynsel)
-      else        
+      else
       read(1010,'(a8,a8,i8,a8,f8.0,f8.0,f8.0,i8,2i8,a8,a8)',err=400)aid1,tspltcntr,tspltjb,tcyearly,tctsrt,tctend,tspltt,nouts,(jstsplt(n),n=1,nouts),elcont,dynsel
       endif
         if(tcyearly /='      ON' .and. tctsrt > 366. )then
@@ -4194,7 +4194,7 @@ if(tspltc == '      ON')then
                   ELSE
   read (1010,'(8x,10i8)',err=400) (jstsplt(n),n=1,nouts)
                   ENDIF
-                  
+
 
     do n=1,nouts
        if(n <= nouts-1)then
@@ -4213,7 +4213,7 @@ if(tspltc == '      ON')then
                   ELSE
   read (1010,'(8x,10f8.0)',err=400) (depth(n),n=1,nouts)
                   ENDIF
-                  
+
     end do
   read (1010,'(/)',err=400)
     do j=1,numtsplt
@@ -4221,7 +4221,7 @@ if(tspltc == '      ON')then
                                 read (1010,*,err=400) AID1,(minfrac(n),n=1,nouts)
                           ELSE
                                 read (1010,'(8x,10f8.0)',err=400) (minfrac(n),n=1,nouts)
-                          ENDIF    
+                          ENDIF
     end do
   read (1010,'(/)',err=400)
     do j=1,numtsplt
@@ -4229,7 +4229,7 @@ if(tspltc == '      ON')then
                                 read (1010,*,err=400) (priority(n),n=1,nouts)
                           ELSE
                                 read (1010,'(8x,10i8)',err=400) (priority(n),n=1,nouts)
-                          ENDIF    
+                          ENDIF
   do n=1,nouts
   if (priority(n) < -1) then
     call errors
@@ -4244,7 +4244,7 @@ if(tspltc == '      ON')then
                                   read (1010,*,err=400) AID1,(minhead(n),n=1,nouts)
                           ELSE
                                   read (1010,'(8x,10f8.0)',err=400) (minhead(n),n=1,nouts)
-                          ENDIF    
+                          ENDIF
     end do
   read (1010,'(/)',err=400)
     do j=1,numtsplt
@@ -4252,7 +4252,7 @@ if(tspltc == '      ON')then
                                   read (1010,*,err=400) AID1,(maxhead(n),n=1,nouts)
                           ELSE
                                   read (1010,'(8x,10f8.0)',err=400) (maxhead(n),n=1,nouts)
-                          ENDIF          
+                          ENDIF
     end do
   read (1010,'(/)',err=400)
     do j=1,numtsplt
@@ -4260,7 +4260,7 @@ if(tspltc == '      ON')then
                                   read (1010,*,err=400) AID1,(maxflow(n),n=1,nouts)
                           ELSE
                                   read (1010,'(8x,10f8.0)',err=400) (maxflow(n),n=1,nouts)
-                          ENDIF          
+                          ENDIF
     end do
 
 ! NOTE: These other checks can only be implemented once we make the arrays above 2D rather than 1D SW 3.72 3/2015
@@ -4334,7 +4334,7 @@ ENDIF
 
 IF(HABTATC == '      ON')THEN      ! CHECK FILE HABTATC
     unit=5000
-    WRITE (WIN,*) 'Reading W2 Habitat File: w2_habitat.npt'       
+    WRITE (WIN,*) 'Reading W2 Habitat File: w2_habitat.npt'
    OPEN (5000,FILE='w2_habitat.npt',STATUS='UNKNOWN',IOSTAT=IERR)
   IF (IERR /= 0) THEN
     WRITE (WIN,*) 'Could not open w2_habitat.npt input file'
@@ -4409,7 +4409,7 @@ IF(ENVIRPC /= '     OFF' .AND. ENVIRPC /= '      ON')THEN
 ENDIF
 
 IF(ENVIRPC == '      ON')THEN      ! CHECK FILE ENVIRPC
-     WRITE (WIN,*) 'Reading W2 Environmental Performance File: w2_envirprf.npt'  
+     WRITE (WIN,*) 'Reading W2 Environmental Performance File: w2_envirprf.npt'
 unit=5000
    OPEN (5000,FILE='w2_envirprf.npt',STATUS='UNKNOWN',IOSTAT=IERR)
   IF (IERR /= 0) THEN
@@ -4429,7 +4429,7 @@ unit=5000
          ENDIF
      ENDDO
      REWIND(UNIT)
-      
+
       IF(CSVFORMAT)THEN
           READ(UNIT,*)
           READ(UNIT,*)
@@ -4506,7 +4506,7 @@ unit=5000
             READ (unit,*,ERR=400,END=5001) AID1,CD_E(JD),CD_INT(JD), CD_TOP(JD)
             CD_E(JD)=ADJUSTR(CD_E(JD))
           ENDDO
-          
+
       ELSE
 
       READ (unit,1050,ERR=400,END=5001) (CC_E(JC), C_INT(JC), C_TOP(JC), JC=1,NCT)
@@ -4514,17 +4514,17 @@ unit=5000
       READ (unit,1050,ERR=400,END=5001) (CD_E(JD),CD_INT(JD), CD_TOP(JD), JD=1,NDC)
       ENDIF
       CLOSE(unit)
-      
+
  1050 FORMAT(//(8X,(5X,A3,F8.0,F8.0)))
  1200 FORMAT(//i1,7X,I8,5x,a3,f8.0,f8.0,i8,i8)
  1201 format(//3(5x,a3,f8.3,f8.3))
       GO TO 5002
 5001 CALL ERRORS
     WRITE(ERR,'(A125,I4)')'ENVIRPC: w2_envirprf.npt is not complete. End of file on reading. Of the 4 sections in the file, the last valid section was #',N
-5002 CONTINUE      
-      
+5002 CONTINUE
+
   END IF
-  
+
 ENDIF
 ! CHECK ON/OFF FOR WL, FLOWBAL AND NPBAL
 IF(WLC /= '     OFF' .AND. WLC /= '      ON')THEN
@@ -4579,7 +4579,7 @@ IF(AERATEC /= '     OFF' .AND. AERATEC /= '      ON')THEN
 ENDIF
 CSVFORMAT=.FALSE.
 IF(AERATEC == '      ON')THEN      ! CHECK FILE AERATEC
-     WRITE (WIN,*) 'Reading W2 Aeration File: w2_aerate.npt'  
+     WRITE (WIN,*) 'Reading W2 Aeration File: w2_aerate.npt'
     unit=5000
        OPEN (5000,FILE='w2_aerate.npt',STATUS='UNKNOWN',IOSTAT=IERR)
   IF (IERR /= 0) THEN
@@ -4597,17 +4597,17 @@ IF(AERATEC == '      ON')THEN      ! CHECK FILE AERATEC
          ENDIF
      ENDDO
     REWIND(5000)
-    
+
      IF(CSVFORMAT)THEN
             READ (5000,*)
             READ (5000,*)
             READ (5000,*,err=400)NAER,conaer
-         
+
          ELSE
-     
+
            READ (5000,'(//i8,a16)',err=400)NAER,conaer
          ENDIF
-         
+
      if(naer.eq.0)naer=1
      read(5000,1013)
 1013 FORMAT(/)
@@ -4617,7 +4617,7 @@ IF(AERATEC == '      ON')THEN      ! CHECK FILE AERATEC
                ELSE
                Read(5000,'(i8,i8,i8,f8.0,f8.0,f8.0,3f8.0,2i8)',err=400)iaseg,ktopa,kbota,smass,atimon,atimoff,dzmult,dooff,doon,iprb,kprb
                ENDIF
-               
+
         if(ktopa >= kmx  .or. ktopa <= 1)then
         CALL ERRORS
         WRITE(ERR,'(A,I4)')'w2_aerate: KTOPA >= KMX or <= 1. KTOPA is not in the active grid area for aerator #',I
@@ -4690,17 +4690,17 @@ ENDIF
 IF(SED_DIAG=='      ON')THEN
 
  INQUIRE(FILE="W2_CEMA_Input.npt", EXIST=DIAG_EXISTS)   ! file_exists will be TRUE if the file
-    
- If(DIAG_EXISTS) Then	
+
+ If(DIAG_EXISTS) Then
      CALL ERRORS
      WRITE(ERR,*)'W2_CEMA_Input.npt file name must be changed to w2_diagenesis.npt for Version 4.2 and higher'
  endif
- 
+
  INQUIRE(FILE="W2_diagenesis.npt", EXIST=DIAG_EXISTS)   ! file_exists will be TRUE if the file
-  If(DIAG_EXISTS) Then	
-    WRITE (WIN,*) 'Reading W2 Sediment Diagenesis File: w2_diagenesis.npt'  
+  If(DIAG_EXISTS) Then
+    WRITE (WIN,*) 'Reading W2 Sediment Diagenesis File: w2_diagenesis.npt'
     Open(5000, File = "W2_diagenesis.npt")
-	
+
 	!Read Header
 	SkipLoop = .FALSE.
 	Do While(.NOT. SkipLoop)
@@ -4710,7 +4710,7 @@ IF(SED_DIAG=='      ON')THEN
 
     BackSpace(5000)
     CEMAFilN=5000
-    
+
     Read(CEMAFilN,*,err=6500)MessageTemp, SD_global
     IF(.NOT.SD_GLOBAL)GO TO 6501
     ! GROUP 2: FFT Layer
@@ -4719,12 +4719,12 @@ IF(SED_DIAG=='      ON')THEN
         FirstTimeInFFTCode = .TRUE.
         Read(CEMAFilN,*,err=6500)MessageTemp, NumFFTActivePrds
         Allocate(FFTActPrdSt(NumFFTActivePrds), FFTActPrdEn(NumFFTActivePrds))
-        Read(CEMAFilN,*,err=6500)MessageTemp, (FFTActPrdSt(i), i = 1, NumFFTActivePrds) 
+        Read(CEMAFilN,*,err=6500)MessageTemp, (FFTActPrdSt(i), i = 1, NumFFTActivePrds)
         Read(CEMAFilN,*,err=6500)MessageTemp, (FFTActPrdEn(i), i = 1, NumFFTActivePrds)
         Read(CEMAFilN,*,err=6500)MessageTemp, InitFFTLayerConc
         Read(CEMAFilN,*,err=6500)MessageTemp, FFTLayerSettVel
         Read(CEMAFilN,*,err=6500)MessageTemp, MoveFFTLayerDown
-        
+
     IF (IncludeFFTLayer .and. NumFFTActivePrds <= 0) THEN
       CALL ERRORS
       WRITE (ERR,FMTI) 'Sediment Diagenesis:Fine Fluids Tailing (FFT) Layer is ON but number of time periods ',        NumFFTActivePrds,' <= 0 '
@@ -4733,7 +4733,7 @@ IF(SED_DIAG=='      ON')THEN
     do i=1,NumFFTActivePrds
       if(FFTActPrdEn(i) < FFTActPrdSt(i))then
         CALL ERRORS
-        WRITE (ERR,FMTI) 'Sediment Diagenesis:Fine Fluids Tailing (FFT) Layer period end time ',        FFTActPrdEn(i),' < start time ',FFTActPrdSt(i)        
+        WRITE (ERR,FMTI) 'Sediment Diagenesis:Fine Fluids Tailing (FFT) Layer period end time ',        FFTActPrdEn(i),' < start time ',FFTActPrdSt(i)
       end if
     end do
 
@@ -4741,7 +4741,7 @@ IF(SED_DIAG=='      ON')THEN
       CALL ERRORS
       WRITE (ERR,FMTF) 'Sediment Diagenesis:Initial tailings concentration in FFT (gm/m^3) ',        InitFFTLayerConc,' < 0.0 '
     END IF
-    
+
     IF (InitFFTLayerConc == 0.0) THEN
       CALL WARNINGS
       WRITE (WRN,FMTF) 'Sediment Diagenesis:Initial tailings concentration in FFT (gm/m^3) ',        InitFFTLayerConc,' = 0.0 '
@@ -4752,7 +4752,7 @@ IF(SED_DIAG=='      ON')THEN
       CALL ERRORS
       WRITE (ERR,FMTF) 'Sediment Diagenesis:Settling velocity of FFT to MFT (m/d) ',        FFTLayerSettVel,' < 0.0 '
     END IF
-    
+
     IF (FFTLayerSettVel == 0.0) THEN
       CALL WARNINGS
       WRITE (WRN,FMTF) 'Sediment Diagenesis:Settling velocity of FFT to MFT (m/d) ',        FFTLayerSettVel,' = 0.0 '
@@ -4767,7 +4767,7 @@ IF(SED_DIAG=='      ON')THEN
     !
     ! GROUP 3: Bed Consolidation
     Read(CEMAFilN,*,err=6500)MessageTemp, IncludeBedConsolidation
-    IF(IncludeBedConsolidation) THEN 
+    IF(IncludeBedConsolidation) THEN
 	    Read(CEMAFilN,*,err=6500)MessageTemp, LayerAddThkFrac
 	    Read(CEMAFilN,*,err=6500)MessageTemp, NumConsolidRegns
 	    Allocate(ConsolidationType(NumConsolidRegns),ConstConsolidRate(NumConsolidRegns))
@@ -4790,7 +4790,7 @@ IF(SED_DIAG=='      ON')THEN
           CALL ERRORS
           WRITE(ERR,FMTI)'Sediment Diagenesis:Starting segment in bed consolidation region outside model grid: I=',ConsRegSegSt(i),' is less than 1 or greater than IMX=',imx
       endif
-    
+
       if(ConsRegSegEn(i) < 1 .or. ConsRegSegEn(i) > IMX)then
           CALL ERRORS
           WRITE(ERR,FMTI)'Sediment Diagenesis:Ending segment in bed consolidation region outside model grid: I=',ConsRegSegEn(i),' is less than 1 or greater than IMX=',imx
@@ -4812,7 +4812,7 @@ IF(SED_DIAG=='      ON')THEN
           CALL WARNINGS
           WRITE (WRN,FMTFI) 'Sediment Diagenesis:Bed Consolidation Rate ',        ConstConsolidRate(i),' > 1.0 m/d for region ',    i
         END IF
-    end do 
+    end do
     ELSE
         DO JSKIP=1,9
             READ(CEMAFilN,*,err=6500)
@@ -4830,7 +4830,7 @@ IF(SED_DIAG=='      ON')THEN
 	Read(CEMAFilN,*,err=6500)MessageTemp, CEMASedimentDensity
 	Read(CEMAFilN,*,err=6500)MessageTemp, CEMASedimentSVelocity
     Read(CEMAFilN,*,err=6500)MessageTemp, CEMASedimentProcessesInc
-    
+
         IF (BedElevationInit <= 0.0) THEN
           CALL ERRORS
           WRITE (ERR,FMTFI) 'Sediment Diagenesis:Initial sediment diagenesis bed thickness',bedelevationinit,' <= 0'
@@ -4842,7 +4842,7 @@ IF(SED_DIAG=='      ON')THEN
     ELSE IF (BedPorosityInit > 1.0) THEN
       CALL ERRORS
       WRITE (ERR,FMTFI) 'Sediment Diagenesis:Initial sediment bed porosity ',        BedPorosityInit,' > 1.0  '
-    END IF    
+    END IF
 
     IF (CEMAParticleSize <= 0.0) THEN
       CALL ERRORS
@@ -4863,7 +4863,7 @@ IF(SED_DIAG=='      ON')THEN
       CALL ERRORS
       WRITE (ERR,FMTFI) 'Sediment Diagenesis:Sediment particle settling velocity ',        CEMASedimentSVelocity,' < 0.0 '
     END IF
-    
+
       !
       Allocate(BedElevation(IMX), BedElevationLayer(IMX), BedPorosity(IMX))
       Allocate(ConsolidRegnNum(IMX), BedConsolidRate(IMX), PorewaterRelRate(IMX))
@@ -4873,16 +4873,16 @@ IF(SED_DIAG=='      ON')THEN
       Allocate(NumCEMAPWInst(IMX))
       Allocate(ApplyCEMAPWRelease(IMX))
       Allocate(CEMACumPWReleaseRate(IMX))
-      Allocate(EndBedConsolidation(IMX),BedConsolidationSeg(IMX))  
+      Allocate(EndBedConsolidation(IMX),BedConsolidationSeg(IMX))
     !
     !
     IF(IncludeCEMASedDiagenesis) THEN
         sediment_diagenesis=.true.
         Read(CEMAFilN,*,err=6500)MessageTemp, Bubbles_Calculation
-        
+
             ! GROUP 5: Bubbles
     !IF (.NOT. IncludeCEMASedDiagenesis) Bubbles_Calculation = .FALSE.
-    IF(Bubbles_Calculation) THEN    
+    IF(Bubbles_Calculation) THEN
         Read(CEMAFilN,*,err=6500)MessageTemp, GasDiff_Sed    ! in m^2/s
         Read(CEMAFilN,*,err=6500)MessageTemp, CalibParam_R1
         Read(CEMAFilN,*,err=6500)MessageTemp, YoungModulus
@@ -4899,11 +4899,11 @@ IF(SED_DIAG=='      ON')THEN
         Read(CEMAFilN,*,err=6500)MessageTemp, BubbWatGasExchRate
         Read(CEMAFilN,*,err=6500)MessageTemp, ApplyBubbTurb
         Read(CEMAFilN,*,err=6500)MessageTemp, CEMATurbulenceScaling
-        
+
       IF (  GasDiff_Sed <= 0.0) THEN
       CALL ERRORS
       WRITE (ERR,FMTF) 'Sediment Diagenesis:Gas diffusion coefficient in sediment in m�/s is',  GasDiff_Sed,', which is <= 0.0'
-      end if  
+      end if
 
      IF ( CalibParam_R1 <= 0.0) THEN
       CALL ERRORS
@@ -4965,23 +4965,23 @@ IF(SED_DIAG=='      ON')THEN
       WRITE (ERR,FMTF) 'Sediment Diagenesis:Turbulence scaling factor for bubbles release (1/s) is',CEMATurbulenceScaling,', which is <= 0.0'
     end if
 
-        
-        
+
+
     ELSE
         DO JSKIP=1,16
             READ(CEMAFilN,*,err=6500)
         ENDDO
-    END IF   
-       
+    END IF
+
         Read(CEMAFilN,*,err=6500)MessageTemp, CEMA_POM_Resuspension
-        
+
         IF(CEMA_POM_Resuspension) THEN
           Read(CEMAFilN,*,err=6500)MessageTemp, TAUCRPOM
           Read(CEMAFilN,*,err=6500)MessageTemp, crshields
           Read(CEMAFilN,*,err=6500)MessageTemp, cao_method
           Read(CEMAFilN,*,err=6500)MessageTemp, spgrav_POM
           Read(CEMAFilN,*,err=6500)MessageTemp, dia_POM
-          
+
               IF (TAUCRPOM <= 0.0) THEN
       CALL ERRORS
       WRITE (ERR,FMTF) 'Sediment Diagenesis:Critical shear stress for particulate organic matter resuspension dynes/cm^2 is',TAUCRPOM,', which is <= 0.0'
@@ -5003,10 +5003,10 @@ IF(SED_DIAG=='      ON')THEN
             DO JSKIP=1,5
             READ(CEMAFilN,*,err=6500)
             ENDDO
-        END IF        
-        
+        END IF
+
         Read(CEMAFilN,*,err=6500)MessageTemp, IncludeAlkalinity
-        Read(CEMAFilN,*,err=6500)MessageTemp, IncludeIron        
+        Read(CEMAFilN,*,err=6500)MessageTemp, IncludeIron
         Read(CEMAFilN,*,err=6500)MessageTemp, IncludeManganese
         !
         IF(IncludeAlkalinity) IncludeDynamicpH = .TRUE.
@@ -5027,7 +5027,7 @@ IF(SED_DIAG=='      ON')THEN
         Read(CEMAFilN,*,err=6500)MessageTemp, (SedBedInitRegSegEn(i), i = 1, NumRegnsSedimentBedComposition)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnT_T(i),   i = 1, NumRegnsSedimentBedComposition)
         IF(.NOT. IncludeDynamicpH) THEN
-            Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnpH(i), i = 1, NumRegnsSedimentBedComposition) 
+            Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnpH(i), i = 1, NumRegnsSedimentBedComposition)
         ELSE
             Read(CEMAFilN,*,err=6500)
         ENDIF
@@ -5041,13 +5041,13 @@ IF(SED_DIAG=='      ON')THEN
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnH2S_T(i), i = 1, NumRegnsSedimentBedComposition)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnCH4_T(i), i = 1, NumRegnsSedimentBedComposition)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnTIC_T(i), i = 1, NumRegnsSedimentBedComposition)
-        
+
             do i=1,NumRegnsSedimentBedComposition
       if(SedBedInitRegSegSt(i) < 1 .or. SedBedInitRegSegSt(i) > IMX)then
           CALL ERRORS
           WRITE(ERR,FMTI)'Sediment Diagenesis:Starting segment for sediment diagenesis region outside model grid: I=',SedBedInitRegSegSt(i),' is less than 1 or greater than IMX=',imx
       endif
- 
+
       if(SedBedInitRegSegEn(i) < 1 .or. SedBedInitRegSegEn(i) > IMX)then
           CALL ERRORS
           WRITE(ERR,FMTI)'Sediment Diagenesis:Ending segment for sediment diagenesis region outside model grid: I=',SedBedInitRegSegEn(i),' is less than 1 or greater than IMX=',imx
@@ -5135,8 +5135,8 @@ IF(SED_DIAG=='      ON')THEN
       end if
     end do
 
-        
-        
+
+
         IF(IncludeAlkalinity)THEN
             Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnALK_T(i), i = 1, NumRegnsSedimentBedComposition)
               do i=1,NumRegnsSedimentBedComposition
@@ -5171,11 +5171,11 @@ IF(SED_DIAG=='      ON')THEN
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Initial iron oxyhyroxide concentration of sediment region ',i, ' is 0'
       end if
     end do
-          
+
         ELSE
             DO JSKIP=1,2
             READ(CEMAFilN,*,err=6500)
-            ENDDO            
+            ENDDO
         END IF
         IF(IncludeManganese) THEN
           Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnMn2_T(i),  i = 1, NumRegnsSedimentBedComposition)
@@ -5197,11 +5197,11 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Initial manganese dioxide concentration of sediment region ',i, ' is 0'
       end if
-    end do          
+    end do
         ELSE
             DO JSKIP=1,2
             READ(CEMAFilN,*,err=6500)
-            ENDDO            
+            ENDDO
         END IF
         !
         Read(CEMAFilN,*,err=6500)MessageTemp, NumRegnsSedimentDiagenesis
@@ -5222,7 +5222,7 @@ IF(SED_DIAG=='      ON')THEN
         Allocate(SDRegn_Theta_POP_Lab(NumRegnsSedimentDiagenesis),     SDRegn_Theta_POP_Ref(NumRegnsSedimentDiagenesis),   SDRegn_Theta_POP_Ine(NumRegnsSedimentDiagenesis))
         Allocate(SDRegn_MinRate_POP_Lab(NumRegnsSedimentDiagenesis),   SDRegn_MinRate_POP_Ref(NumRegnsSedimentDiagenesis), SDRegn_MinRate_POP_Ine(NumRegnsSedimentDiagenesis))
         Allocate(SedBedDiaRCRegSegSt(NumRegnsSedimentDiagenesis),      SedBedDiaRCRegSegEn(NumRegnsSedimentDiagenesis))
-        Allocate(Kdp2(NumRegnsSedimentDiagenesis),KdNH31(NumRegnsSedimentDiagenesis), KdNH32(NumRegnsSedimentDiagenesis)) 
+        Allocate(Kdp2(NumRegnsSedimentDiagenesis),KdNH31(NumRegnsSedimentDiagenesis), KdNH32(NumRegnsSedimentDiagenesis))
         Allocate(delta_kpo41(NumRegnsSedimentDiagenesis),DOcr(NumRegnsSedimentDiagenesis))
         Allocate(KsOxch(NumRegnsSedimentDiagenesis))
         Allocate(KdH2S1(NumRegnsSedimentDiagenesis),KdH2S2(NumRegnsSedimentDiagenesis))
@@ -5254,8 +5254,8 @@ IF(SED_DIAG=='      ON')THEN
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnAe_HS_O2_Nit(i),      i = 1, NumRegnsSedimentDiagenesis)   !Eq. 3.3
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_PW(i),         i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_PM(i),         i = 1, NumRegnsSedimentDiagenesis)
-        Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_NH3_NO3(i),    i = 1, NumRegnsSedimentDiagenesis)   
-        Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_NO3_N2(i),     i = 1, NumRegnsSedimentDiagenesis)  
+        Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_NH3_NO3(i),    i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_NO3_N2(i),     i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_CH4_CO2(i),    i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Sulfate_CH4_H2S(i),  i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegnAe_H2S_SO4(i),        i = 1, NumRegnsSedimentDiagenesis)
@@ -5278,26 +5278,26 @@ IF(SED_DIAG=='      ON')THEN
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_PON_Ine(i),    i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_POP_Lab(i),    i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_POP_Ref(i),    i = 1, NumRegnsSedimentDiagenesis)
-        Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_POP_Ine(i),    i = 1, NumRegnsSedimentDiagenesis)    
-        Read(CEMAFilN,*,err=6500)MessageTemp, (Kdp2(i),                    i = 1, NumRegnsSedimentDiagenesis) 
-        Read(CEMAFilN,*,err=6500)MessageTemp, (delta_kpo41(i),             i = 1, NumRegnsSedimentDiagenesis) 
-        Read(CEMAFilN,*,err=6500)MessageTemp, (DOcr(i),                    i = 1, NumRegnsSedimentDiagenesis) 
-        Read(CEMAFilN,*,err=6500)MessageTemp, (KdNH31(i),                  i = 1, NumRegnsSedimentDiagenesis)    
-        Read(CEMAFilN,*,err=6500)MessageTemp, (KdNH32(i),                  i = 1, NumRegnsSedimentDiagenesis) 
-        Read(CEMAFilN,*,err=6500)MessageTemp, (KdH2S1(i),                  i = 1, NumRegnsSedimentDiagenesis) 
-        Read(CEMAFilN,*,err=6500)MessageTemp, (KdH2S2(i),                  i = 1, NumRegnsSedimentDiagenesis) 
+        Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_Theta_POP_Ine(i),    i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (Kdp2(i),                    i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (delta_kpo41(i),             i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (DOcr(i),                    i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (KdNH31(i),                  i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (KdNH32(i),                  i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (KdH2S1(i),                  i = 1, NumRegnsSedimentDiagenesis)
+        Read(CEMAFilN,*,err=6500)MessageTemp, (KdH2S2(i),                  i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (SDRegn_POMResuspMethod(i),  i = 1, NumRegnsSedimentDiagenesis)
 
         Read(CEMAFilN,*,err=6500)MessageTemp, (KdFe1(i),               i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (KdFe2(i),               i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (KdMn1(i),               i = 1, NumRegnsSedimentDiagenesis)
         Read(CEMAFilN,*,err=6500)MessageTemp, (KdMn2(i),               i = 1, NumRegnsSedimentDiagenesis)
-        
+
     IF (IncludeCEMASedDiagenesis .and. NumRegnsSedimentBedComposition <= 0) THEN
       CALL ERRORS
       WRITE (ERR,FMTI) 'Sediment Diagenesis:Sediment diagenesis processes are turned on but the number of regions for different initial sediment concentrations ',        NumRegnsSedimentBedComposition,' <= 0 '
     END IF
-    
+
     IF (IncludeCEMASedDiagenesis .and. NumRegnsSedimentDiagenesis <= 0) THEN
       CALL ERRORS
       WRITE (ERR,FMTI) 'Sediment Diagenesis:Sediment diagenesis processes are turned on but the number of regions for for different diagenesis related rates ',        NumRegnsSedimentBedComposition,' <= 0 '
@@ -5320,7 +5320,7 @@ IF(SED_DIAG=='      ON')THEN
           SDRegnPOC_L_Fr(1)=ABS(SDRegnPOC_L_Fr(1))
           DYNAMIC_SD=.TRUE.   ! DYNAMIC NUTRIENT ACCUMULATION BASED ON STOICHIOMETRY
       ENDIF
-      
+
       IF (SDRegnPOC_L_Fr(i) >1.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Fraction of labile poc for diagenesis region ',i, ' is ',SDRegnPOC_L_Fr(i),' ,which is > 1.0'
@@ -5360,7 +5360,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Fraction of labile pop for diagenesis region ',i, ' is 0'
       end if
- 
+
       IF (SDRegnPOP_R_Fr(i) < 0.0 .or. SDRegnPOP_R_Fr(i) >1.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Fraction of refractory pop for diagenesis region ',i, ' is ',SDRegnPOP_R_Fr(i),', which is < 0.0 or > 1.0'
@@ -5371,7 +5371,7 @@ IF(SED_DIAG=='      ON')THEN
 
       IF (SDRegnPW_DiffCoeff(i) <= 0.0) THEN
         CALL ERRORS
-        WRITE (ERR,FMTIF) 'Sediment Diagenesis:Pore water diffusion coefficient for diagenesis region ',i, ' is ',SDRegnPW_DiffCoeff(i),', which is <= 0.0'     
+        WRITE (ERR,FMTIF) 'Sediment Diagenesis:Pore water diffusion coefficient for diagenesis region ',i, ' is ',SDRegnPW_DiffCoeff(i),', which is <= 0.0'
       end if
 
       IF (SDRegnOx_Threshold(i) < 0.0) THEN
@@ -5405,7 +5405,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Denitrification rate in aerobic layer (NO3->N2) at DO below threshold for region ',i, ' is greater than 0.5'
       end if
-  
+
       IF (SDRegnAe_NO3_N2_H(i) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Denitrification rate in aerobic layer (NO3->N2) at DO above threshold for region ',i, ' is ',SDRegnAe_NO3_N2_H(i),', which is <= 0.00'
@@ -5413,7 +5413,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Denitrification rate in aerobic layer (NO3->N2) at DO above threshold for region ',i, ' is greater than 0.5'
       end if
- 
+
       IF (SDRegnAn_NO3_N2(i) < 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Denitrification rate in anerobic layer (NO3->N2) for region ',i, ' is ',SDRegnAn_NO3_N2(i),', which is < 0.00'
@@ -5421,7 +5421,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Denitrification rate in anerobic layer (NO3->N2) for region ',i, ' is greater than 0.5'
       end if
-   
+
       IF (SDRegnAe_CH4_CO2(i) < 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Methane oxidation rate in aerobic layer for region ',i, ' is ',SDRegnAe_CH4_CO2(i),', which is < 0.0'
@@ -5437,7 +5437,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Nitrification half-saturation constant for NH4N in aerobic layer mgN/l for region ',i, ' is greater than 3.0'
       end if
- 
+
       IF (SDRegnAe_HS_O2_Nit(i) < 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Nitrification half-saturation constant for O2 in aerobic layer mgO2/l for region ',i, ' is ',SDRegnAe_HS_O2_Nit(i),', which is < 0.0'
@@ -5466,7 +5466,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Mineralization rate for labile PON 1/d for region ',i, ' is greater than 0.3 or equal to zero'
       end if
- 
+
       IF (SDRegn_MinRate_PON_Ref(i) < 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Mineralization rate for refractory PON 1/d for region ',i, ' is ',SDRegn_MinRate_PON_Ref(i),', which is < 0.0'
@@ -5474,7 +5474,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Mineralization rate for refractory PON 1/d for region ',i, ' is greater than 0.01 or equal to zero'
       end if
-  
+
       IF (SDRegn_MinRate_PON_Ine(i) < 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Mineralization rate for inert/slow refractory PON 1/d for region ',i, ' is ',SDRegn_MinRate_PON_Ine(i),', which is < 0.0'
@@ -5482,7 +5482,7 @@ IF(SED_DIAG=='      ON')THEN
         CALL warnings
         WRITE (wrn,FMTIF) 'Sediment Diagenesis:Mineralization rate for inert/slow refractory PON 1/d for region ',i, ' is greater than 0.001 or equal to zero'
       end if
-   
+
       IF (SDRegn_MinRate_POC_Lab(i) < 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Mineralization rate for labile POC 1/d for region ',i, ' is ',SDRegn_MinRate_POC_Lab(i),', which is < 0.0'
@@ -5540,17 +5540,17 @@ IF(SED_DIAG=='      ON')THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Temperature coefficient refractory PON for region ',i, ' is ',SDRegn_Theta_PON_Ref(i),', which is <= 0.0'
       end if
- 
+
       IF (SDRegn_Theta_PON_Ine(i) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Temperature coefficient inert PON for region ',i, ' is ',SDRegn_Theta_PON_Ine(i),', which is <= 0.0'
       end if
- 
+
       IF (SDRegn_Theta_POC_Lab(i) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Temperature coefficient labile POC for region ',i, ' is ',SDRegn_Theta_POC_Lab(i),', which is <= 0.0'
       end if
- 
+
       IF (SDRegn_Theta_POC_Ref(i) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Temperature coefficient refractory POC for region ',i, ' is ',SDRegn_Theta_POC_Ref(i),', which is <= 0.0'
@@ -5560,12 +5560,12 @@ IF(SED_DIAG=='      ON')THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Temperature coefficient inert POC for region ',i, ' is ',SDRegn_Theta_POC_Ine(i),', which is <= 0.0'
       end if
- 
+
       IF (SDRegn_Theta_POP_Lab(i) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Temperature coefficient labile POP for region ',i, ' is ',SDRegn_Theta_POP_Lab(i),', which is <= 0.0'
       end if
-   
+
       IF (SDRegn_Theta_POP_Ref(i) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTIF) 'Sediment Diagenesis:Temperature coefficient refractory POP for region ',i, ' is ',SDRegn_Theta_POP_Ref(i),', which is <= 0.0'
@@ -5579,8 +5579,8 @@ IF(SED_DIAG=='      ON')THEN
       IF (Kdp2(i) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,'(a,f12.6,a,i3)') 'Sediment Diagenesis:Phosphorus Sorption Coefficient in Anaerobic Layer m^3/g is ',Kdp2(i),', which is <= 0.0 for region:', i
-      end if   
- 
+      end if
+
       if(SDRegn_CH4CompMethod(i) /= 0 .and. SDRegn_CH4CompMethod(i) /= 1)then
           CALL ERRORS
           WRITE(ERR,FMTI)'Sediment Diagenesis:Methane production calculation method must be O or 1 for region ',i
@@ -5594,7 +5594,7 @@ IF(SED_DIAG=='      ON')THEN
       CALL ERRORS
       WRITE (ERR,'(a,f12.6,a,i3)') 'Sediment Diagenesis:Sediment Diagenesis burial Velocity m/d is',BurialVel(i),', which is <= 0.0 or > 5.0 m/d for region:',i
      end if
- 
+
       if(SDRegn_POMResuspMethod(i) /= 0 .and. SDRegn_POMResuspMethod(i) /= 1)then
           CALL ERRORS
           WRITE(ERR,FMTI)'Sediment Diagenesis:Algorithm for resuspension of particulate organic matter must be O or 1 for region ',i
@@ -5619,18 +5619,18 @@ IF(SED_DIAG=='      ON')THEN
        write(err,'(A80)')title80
        Read(CEMAFilN,'(a80)')title80
        write(err,'(A80)')title80
-6501    close(CEMAFilN) 
- 
+6501    close(CEMAFilN)
+
   End If
 ELSE
   INQUIRE(FILE="W2_diagenesis.npt", EXIST=DIAG_EXISTS)   ! file_exists will be TRUE if the file
-  IF(DIAG_EXISTS) THEN	
+  IF(DIAG_EXISTS) THEN
       CALL WARNINGS
       WRITE(WRN,'(A)')'File w2_diagenesis.npt exists but SED_DIAG in control file is OFF, hence there will be no sediment diagenesis processes modeled.'
   ENDIF
 ENDIF
 
- 
+
 ! Grid geometry
 
   WRITE (WIN,*) 'Bathymetry file checks'
@@ -5676,13 +5676,13 @@ ENDIF
   ! Constrictions                       ! SW 8/5/2018
 
    WRITE (WIN,*) 'Constriction File Check'
-    INQUIRE(FILE='constriction.csv',EXIST=Constriction)    
+    INQUIRE(FILE='constriction.csv',EXIST=Constriction)
     IF(CONSTRICTION)THEN
         CALL ERRORS
         WRITE (ERR,'(A,i4,A)') 'CONSTRICTION: File name must be changed to w2_constriction.csv(new file name for V4.3 and later) from constriction.csv(old file name)'
         CONSTRICTION=.FALSE.
     ENDIF
-    INQUIRE(FILE='w2_constriction.csv',EXIST=Constriction)    
+    INQUIRE(FILE='w2_constriction.csv',EXIST=Constriction)
 
     IF(CONSTRICTION)THEN
         WRITE (WIN,*) '  Constriction ON: Reading constriction.csv'
@@ -5693,8 +5693,8 @@ ENDIF
         CALL ERRORS
         WRITE (ERR,'(A,A,A)') 'CONSTRICTION: Reading file w2_constriction.csv: ON/OFF switch[',INFORMAT2,'] is not equal to ON of OFF'
         ENDIF
-        
-        
+
+
         IF (ICON >= IMX) THEN
         CALL ERRORS
         WRITE (ERR,'(A,i4,A)') 'CONSTRICTION: Reading file w2_constriction.csv: # of constrictions[',ICON,'] >= IMX '
@@ -5721,14 +5721,14 @@ ENDIF
                     END IF
         ENDDO
     ENDIF
-    
+
 
     CLOSE(NPT)
-    
+
 ! SysTDG input file 4.2
    WRITE (WIN,*) 'SYSTDG input file checks'
   SYSTDG=.FALSE.
-  INQUIRE(FILE='w2_systdg.npt',EXIST=SYSTDG)   
+  INQUIRE(FILE='w2_systdg.npt',EXIST=SYSTDG)
   IF(SYSTDG)THEN
       POWNO = 0
       FLNO  = 0
@@ -5738,10 +5738,10 @@ ENDIF
 
     OPEN (NPT, FILE='w2_systdg.npt', STATUS='OLD')
     ! Check for csv file or old format
-     CSVFORMAT=.FALSE.   
+     CSVFORMAT=.FALSE.
      READ (NPT,'(A)')HEADER(1)
      IF(HEADER(1)(1:1)=='$')CSVFORMAT=.TRUE.
-     
+
      IF(.NOT.CSVFORMAT)THEN
      READ (NPT,'(A)')HEADER(1)    ! READ NEXT LINE - IF COMMAS IN FIRST FEW FIELDS IT IS IN CSV FORMAT
      DO J=1,7
@@ -5752,7 +5752,7 @@ ENDIF
      ENDDO
      REWIND(NPT)
      ENDIF
-      
+
       IF(CSVFORMAT)THEN
       AID = 'STDG:LN1'
       READ (NPT,*,ERR=400)
@@ -5765,7 +5765,7 @@ ENDIF
       READ (NPT,*,ERR=400)
       READ (NPT,*,ERR=400)
       READ (NPT,*,ERR=400)AID1,SYSTDGC, N2BNDC, DOBNDC, TDGTAC;SYSTDGC=ADJUSTR(SYSTDGC); N2BNDC=ADJUSTR(N2BNDC); DOBNDC=ADJUSTR(DOBNDC); TDGTAC=ADJUSTR(TDGTAC)
-              
+
       AID = 'STDG:LN3'
       READ (NPT,*,ERR=400)
       READ (NPT,*,ERR=400)
@@ -5779,7 +5779,7 @@ ENDIF
          IF (GTTYP(IG)=='     FLD') FLNO  = FLNO  + 1
          IF (GTTYP(IG)=='      RO')  NRO   = NRO  + 1
          IF (GTTYP(IG)=='     SPB') NBAY  = NBAY  + 1
-      END DO       
+      END DO
       AID = 'STDG:LN4'
       READ (NPT,*,ERR=400)
       READ (NPT,*,ERR=400)
@@ -5788,47 +5788,47 @@ ENDIF
       AID = 'STDG:LN5'
       READ (NPT,*,ERR=400)
       READ (NPT,*,ERR=400)
-      READ (NPT,*,ERR=400) AID1,TDGEQ, TDGP1, TDGP2, TDGP3, TDGP4, TDGP12, TDGP22, TDGP32, TDGP42   
+      READ (NPT,*,ERR=400) AID1,TDGEQ, TDGP1, TDGP2, TDGP3, TDGP4, TDGP12, TDGP22, TDGP32, TDGP42
       AID = 'STDG:LN6'
-      IF (NRO>0) READ (NPT,*,ERR=400) AID1,TDGROEQ, ROP1, ROP2, ROP3, ROP4     
+      IF (NRO>0) READ (NPT,*,ERR=400) AID1,TDGROEQ, ROP1, ROP2, ROP3, ROP4
       AID = 'STDG:LN7'
       READ (NPT,*,ERR=400)
       READ (NPT,*,ERR=400)
 
-      READ (NPT,*,ERR=400) AID1,TDGENTEQ, TDGE1, TDGE2, TDGE12, TDGE22   
+      READ (NPT,*,ERR=400) AID1,TDGENTEQ, TDGE1, TDGE2, TDGE12, TDGE22
       AID = 'STDG:LN8'
       READ (NPT,*,ERR=400)
       READ (NPT,*,ERR=400)
 
-      READ (NPT,*,ERR=400) AID1, TWEFN                                                             
-      CLOSE(NPT)       
-    
+      READ (NPT,*,ERR=400) AID1, TWEFN
+      CLOSE(NPT)
+
     ELSE
       AID = 'STDG:LN1'
       READ (NPT, '(///(8X,A72))',ERR=400) (TITLESYSTDG(i), i=1,10)
       AID = 'STDG:LN2'
       READ (NPT, '(//8x,4A8)',ERR=400)SYSTDGC, N2BNDC, DOBNDC, TDGTAC
       AID = 'STDG:LN3'
-      READ (NPT,'(//(:8X,A8,F8.2))',ERR=400) (GTTYP(IG), GTPC(IG), IG=1,NGT)   
+      READ (NPT,'(//(:8X,A8,F8.2))',ERR=400) (GTTYP(IG), GTPC(IG), IG=1,NGT)
 
       DO IG = 1, NGT
          IF (GTTYP(IG)=='     POW') POWNO = POWNO + 1
          IF (GTTYP(IG)=='     FLD') FLNO  = FLNO  + 1
          IF (GTTYP(IG)=='      RO')  NRO   = NRO  + 1
          IF (GTTYP(IG)=='     SPB') NBAY  = NBAY  + 1
-      END DO                                                                                             
+      END DO
 
       AID = 'STDG:LN4'
-      READ (NPT,'(//8X,2F8.3,I8,F8.3,2A8,2F8.3)',ERR=400) FBE, TWCE, TWEMOD, TWE, TWETSC, TDGLOC, QSPILL, TDGSPMN  
+      READ (NPT,'(//8X,2F8.3,I8,F8.3,2A8,2F8.3)',ERR=400) FBE, TWCE, TWEMOD, TWE, TWETSC, TDGLOC, QSPILL, TDGSPMN
       AID = 'STDG:LN5'
-      READ (NPT,'(//8X,I8,8F8.3)',ERR=400) TDGEQ, TDGP1, TDGP2, TDGP3, TDGP4, TDGP12, TDGP22, TDGP32, TDGP42   
+      READ (NPT,'(//8X,I8,8F8.3)',ERR=400) TDGEQ, TDGP1, TDGP2, TDGP3, TDGP4, TDGP12, TDGP22, TDGP32, TDGP42
       AID = 'STDG:LN6'
-      IF (NRO>0) READ (NPT,'(8X,I8,4F8.5)',ERR=400) TDGROEQ, ROP1, ROP2, ROP3, ROP4     
+      IF (NRO>0) READ (NPT,'(8X,I8,4F8.5)',ERR=400) TDGROEQ, ROP1, ROP2, ROP3, ROP4
       AID = 'STDG:LN7'
-      READ (NPT,'(//8X,I8,4F8.3)',ERR=400) TDGENTEQ, TDGE1, TDGE2, TDGE12, TDGE22   
+      READ (NPT,'(//8X,I8,4F8.3)',ERR=400) TDGENTEQ, TDGE1, TDGE2, TDGE12, TDGE22
       AID = 'STDG:LN8'
-      READ (NPT,'(//(8X,A72))',ERR=400)  TWEFN                                                             
-      CLOSE(NPT)       
+      READ (NPT,'(//(8X,A72))',ERR=400)  TWEFN
+      CLOSE(NPT)
     ENDIF
         IF(SYSTDGC /= '     OFF' .AND. SYSTDGC /= '      ON')THEN
         CALL ERRORS
@@ -5848,18 +5848,18 @@ ENDIF
         ENDIF
 
   ENDIF
-  
+
   ! MULTIPLE WATERBODY input file 4.2
    WRITE (WIN,*) 'Multiple Waterbody Parallel simulation input file checks'
-  MULTIPLEWB=.FALSE.    
-  INQUIRE(FILE='multiple_WB.npt',EXIST=MULTIPLEWB)   
+  MULTIPLEWB=.FALSE.
+  INQUIRE(FILE='multiple_WB.npt',EXIST=MULTIPLEWB)
   IF(MULTIPLEWB)THEN
       CALL ERRORS
         WRITE (ERR,'(A,A2)') 'Rename multiple_WB.npt-->w2_multiple_WB.npt. File name convention was changed in Version 4.3. Add prefix: w2_.'
         SYSTDG=.FALSE.
   ENDIF
-  
-  INQUIRE(FILE='w2_multiple_WB.npt',EXIST=MULTIPLEWB)    
+
+  INQUIRE(FILE='w2_multiple_WB.npt',EXIST=MULTIPLEWB)
   IF(MULTIPLEWB)THEN
    WRITE (WIN,*) '  Multiple Waterbody Parallel simulation ON: Reading w2_multiple_WB.npt'
 
@@ -5871,9 +5871,9 @@ ENDIF
         IF(MWB /= 'OF' .AND. MWB /= 'ON')THEN
         CALL ERRORS
         WRITE (ERR,'(A,A2)') 'w2_multiple_WB.npt file: Multiple WB Wait must be either OFF or ON. Multiple WB wait=',MWB
-        ENDIF    
-     
-     AID = 'MuWB:LN3'     
+        ENDIF
+
+     AID = 'MuWB:LN3'
      READ(NPT,*,ERR=400)
      AID = 'MuWB:LN4'
      READ(NPT,*,ERR=400)IMWB
@@ -5881,9 +5881,9 @@ ENDIF
       IF(IMWB <= 0)THEN
         CALL ERRORS
         WRITE (ERR,'(A,A2)') 'w2_multiple_WB.npt file: Number of input types must be at least 1. Number of input types=',IMWB
-      ENDIF   
-     
-     AID = 'MuWB:LN6'     
+      ENDIF
+
+     AID = 'MuWB:LN6'
      READ(NPT,*,ERR=400)
      IF(IMWB <= 0)IMWB=1
      DO J=1,IMWB
@@ -5891,7 +5891,7 @@ ENDIF
       IF(MWB2(J) /= 'TR' .AND. MWB2(J) /= 'BR')THEN
         CALL ERRORS
         WRITE (ERR,'(A,I2,A,A2)') 'w2_multiple_WB.npt file: Branch inflow or Trib inflow must use either TR or BR. Number of input:',J,' Input designator:',MWB2(J)
-      ENDIF   
+      ENDIF
 
      ENDDO
      AID = 'MuWB:LN7'
@@ -5901,19 +5901,19 @@ ENDIF
         IF(TIME_BUFFER>10.)THEN
         CALL WARNINGS
         WRITE (WRN,'(A,A8)') 'w2_multiple_WB.npt file: Time buffer > 10 days. This may be too long a buffer. Time_Buffer(days)=',time_buffer
-        ENDIF    
-     
+        ENDIF
+
           AID = 'MuWB:LN8'
      READ(NPT,*,ERR=400)
           AID = 'MuWB:LN9'
-     READ(NPT,*,ERR=400)WAIT_TIME         
-     
+     READ(NPT,*,ERR=400)WAIT_TIME
+
         IF(WAIT_TIME>120.)THEN
         CALL WARNINGS
         WRITE (WRN,'(A,A8)') 'w2_multiple_WB.npt file: Wait time between runs > 120 s. This may be too long to wait. Wait_time(s)=',wait_time
-        ENDIF    
+        ENDIF
 
-     CLOSE(NPT)                                                    
+     CLOSE(NPT)
   ENDIF
 ! ATMOSPHERIC DEPOSITION CHECKS
      UNIT=NPT
@@ -5932,21 +5932,21 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,'(A,I4,A,A)') 'ATM DEP:ATM_DEPOSITION_INTERPOLATION must be ON or OFF in control file FOR WB:',JW,'. ATM_DEPOSITION_INTERPOLATION(JW)=',ATM_DEPOSITION_INTERPOLATION(JW)
          ENDIF
-         
+
           OPEN (NPT,FILE=ATMDEPFN(JW),STATUS='OLD')
-          
+
           READ( NPT,'(A1)')INFORMAT1
           READ (NPT,'(/)')
-          
+
           DO JAC=1,NACATD(JW)
           ATM_DEP_MIN(ATMDCN(JAC,JW),JW)=100000.
           ENDDO
 
           DO J=1,5000
          IF(INFORMAT1=='$')THEN
-            READ (NPT,*,END=4509,ERR=400)  JDAY,(ATM_DEP_LOADING(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))         
+            READ (NPT,*,END=4509,ERR=400)  JDAY,(ATM_DEP_LOADING(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
           ELSE
-            READ (NPT,'(100F8.0)',END=4509,ERR=400) JDAY,(ATM_DEP_LOADING(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW)) 
+            READ (NPT,'(100F8.0)',END=4509,ERR=400) JDAY,(ATM_DEP_LOADING(ATMDCN(JAC,JW),JW),JAC=1,NACATD(JW))
           ENDIF
 ! ATM DEP CHECKS
         IF (J == 1 .AND. JDAY > TMSTRT) THEN
@@ -5967,56 +5967,56 @@ ENDIF
         ATM_DEP_MIN(ATMDCN(JAC,JW),JW)=MIN(ATM_DEP_MIN(ATMDCN(JAC,JW),JW),ATM_DEP_LOADING(ATMDCN(JAC,JW),JW))
         ATM_DEP_MAX(ATMDCN(JAC,JW),JW)=MAX(ATM_DEP_MAX(ATMDCN(JAC,JW),JW),ATM_DEP_LOADING(ATMDCN(JAC,JW),JW))
         ENDDO
-          
-          
+
+
           JDAYO=JDAY
           ENDDO
-          
+
 4509      CLOSE(NPT)
         ATM_DEP_AVG(:,JW)=ATM_DEP_AVG(:,JW)/REAL(NN)
-        
+
             !DO JB=BS(JW),BE(JW)
             !    DO I=CUS(JB),DS(JB)
             !        DO JAC=1,NACATD(JW)
-            !                IF(ATMDCN(JAC,JW)==NPO4.OR.ATMDCN(JAC,JW)==NLPOMP.OR.ATMDCN(JAC,JW)==NRPOMP)THEN 
+            !                IF(ATMDCN(JAC,JW)==NPO4.OR.ATMDCN(JAC,JW)==NLPOMP.OR.ATMDCN(JAC,JW)==NRPOMP)THEN
             !                ATMDEP_P(JW)=ATMDEP_P(JW)+ATM_DEP_LOADING(ATMDCN(JAC,JW),JW)*BI(KT,I)*DLX(I)*3.17098E-11*DLT/1000.    ! P MASS BALANCE IN KG - CUMULATIVE
-            !                ELSEIF(ATMDCN(JAC,JW)==NNO3.OR.ATMDCN(JAC,JW)==NLPOMN.OR.ATMDCN(JAC,JW)==NRPOMN.OR.ATMDCN(JAC,JW)==NNH4)THEN 
+            !                ELSEIF(ATMDCN(JAC,JW)==NNO3.OR.ATMDCN(JAC,JW)==NLPOMN.OR.ATMDCN(JAC,JW)==NRPOMN.OR.ATMDCN(JAC,JW)==NNH4)THEN
             !                ATMDEP_N(JW)=ATMDEP_N(JW)+ATM_DEP_LOADING(ATMDCN(JAC,JW),JW)*BI(KT,I)*DLX(I)*3.17098E-11*DLT/1000.    ! N MASS BALANCE IN KG - CUMULATIVE
             !                ENDIF
             !        ENDDO
             !    ENDDO
-            !ENDDO  
-          
+            !ENDDO
+
         END IF
         ENDDO
     ENDIF
-  
-  
-!Particle tracking Version 4.1 
+
+
+!Particle tracking Version 4.1
   FISH_PARTICLE_EXIST=.FALSE.
-  INQUIRE(FILE='particle.csv',EXIST=FISH_PARTICLE_EXIST)   
-  IF(FISH_PARTICLE_EXIST)THEN  
+  INQUIRE(FILE='particle.csv',EXIST=FISH_PARTICLE_EXIST)
+  IF(FISH_PARTICLE_EXIST)THEN
     CALL ERRORS
     WRITE (ERR,'(A)') 'Rename particle.csv-->w2_particle.csv. File name convention was changed in Version 4.3. Add prefix: w2_.'
     FISH_PARTICLE_EXIST=.FALSE.
   ENDIF
-  
-  INQUIRE(FILE='w2_particle.csv',EXIST=FISH_PARTICLE_EXIST)    
+
+  INQUIRE(FILE='w2_particle.csv',EXIST=FISH_PARTICLE_EXIST)
   IF(FISH_PARTICLE_EXIST)THEN
    UNIT=NPT
    WRITE (WIN,*) 'Particle Tracking file checks'
    WRITE (WIN,*) '  Particle Tracking ON: Reading w2_particle.csv'
- 
+
     open(NPT,file='w2_particle.csv',status='old')
     READ(NPT,*,END=4510,ERR=400)
     READ(NPT,*,END=4510,ERR=400)
     READ(NPT,*,END=4510,ERR=400)PARTON,NFISHSEG,NFISHPCEL,ALINE,DXTHEORYC,OUTFREQP,ILINEAR,HTSTBOT,HTSTSIDE,IDEBUG   !,ALPHAX,ALPHAZ     !'(/10x,7x,a3,i10,i10,f10.0,(7x,a3),1f10.0,7X,A3)
-    
+
     IF(PARTON /= 'OF' .AND. PARTON /= 'ON')THEN
     CALL ERRORS
     WRITE (ERR,*) 'w2_particle.csv file: PART CONTROL must be either OFF or ON. PARTON=',PARTON
     ENDIF
-    
+
     IF(PARTON=='ON')THEN
         IF(NFISHSEG <= 0.0)THEN
         CALL ERRORS
@@ -6096,9 +6096,9 @@ ENDIF
        ENDIF
 
         ENDDO
-        READ(NPT,*,END=4510,ERR=400)  
+        READ(NPT,*,END=4510,ERR=400)
         READ(NPT,*,END=4510,ERR=400)NUMCLASS
-        
+
         IF(NUMCLASS == 0)THEN
         CALL WARNINGS
         WRITE(WRN,'(A)')'Particle.csv file: NUMCLASS = 0. Hence, there will be no histogram output for each particle.'
@@ -6106,10 +6106,10 @@ ENDIF
              CALL ERRORS
              WRITE(ERR,'(A,F10.3,A,F10.3,A,I4)')'Particle.csv file: NUMCLASS is < 0. NUMCLASS must be >= 0.'
        ENDIF
-        
+
         READ(NPT,*,END=4510,ERR=400)
         READ(NPT,*,END=4510,ERR=400)VEL_INT,VEL_TOP,TEMP_INT,TEMP_TOP,D_INT,D_TOP
-        
+
         IF(NUMCLASS > 0 .AND. VEL_INT <= 0.0)THEN
         CALL WARNINGS
         WRITE(WRN,'(A)')'Particle.csv file: Velocity Interval (VEL_INT) <= 0.0. This must be > 0.0 to define velocity histogram bins.'
@@ -6123,24 +6123,24 @@ ENDIF
         WRITE(WRN,'(A)')'Particle.csv file: Depth Interval (D_INT) <= 0.0. This must be > 0.0 to define depth histogram bins.'
        ENDIF
 
-        
-    ENDIF 
+
+    ENDIF
     CLOSE(NPT)
- 
+
   ELSE
   WRITE (WIN,*) 'Particle Tracking file checks'
   WRITE (WIN,*) '  Particle Tracking OFF'
     ENDIF
     GO TO 4520
-4510 CONTINUE 
+4510 CONTINUE
      CALL ERRORS
      WRITE (ERR,*) 'Particle.csv file read error'
 4520 CONTINUE
 ! CONVERT LAT/LONG TO UTM PROJECTION NAD83
  ! CALL UTMS
 ! CONVERT UTM POINT AT DOWNSTREAM POINT TO SEGMENT POLYGONS AND SEGMENT CENTERS IN UTM COORDINATES
- ! CALL POLYGONS 
-  
+ ! CALL POLYGONS
+
 ! Boundary cells
 
   WRITE (WIN,*) '  widths'
@@ -6240,7 +6240,7 @@ ENDIF
   phiav=0.0
   cloudav=0.0
   tdewav=0.0
-  
+
   WRITE (WIN,*) 'Input files'
   WRITE (WIN,*) '  meteorology'
   DO JW=1,NWB
@@ -6252,7 +6252,7 @@ ENDIF
          IF(ICHAR1=='$')WRITE(WIN,*) '      met file in csv format'
         READ (NPT,'(/)',END=401)
    !   READ (NPT,'(//)')
-        
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -6265,11 +6265,11 @@ ENDIF
             ENDDO
         BACKSPACE(NPT)
         ENDIF
-        
+
       J     = 1
       JDAYO = 0.0
       nmet=0
-      
+
       DO WHILE (.TRUE.)
         IF(SROC(JW) == '      ON')then
         IF(ICHAR1=='$')THEN
@@ -6295,8 +6295,8 @@ ENDIF
         windav(jw)=windav(jw)+wind
         tdewmax(jw)=max(tdew,tdewmax(jw))
         tdewmin(jw)=min(tdew,tdewmin(jw))
-        tdewav(jw)=tdewav(jw)+tdew         
-        
+        tdewav(jw)=tdewav(jw)+tdew
+
         IF (SRO < 0.0) THEN
           CALL ERRORS
           WRITE (ERR,FMTF) 'Solar Radiation [SRO=',SRO,'] < 0 W/m2 on day ',JDAY,' in '//METFN(JW)
@@ -6358,7 +6358,7 @@ ENDIF
         IF(IEEE_IS_NAN(WIND))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'WIND is NaN on Julian date ',JDAY,' in '//METFN(JW)
-        ENDIF        
+        ENDIF
         IF(IEEE_IS_NAN(PHI))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'PHI is NaN on Julian date ',JDAY,' in '//METFN(JW)
@@ -6366,8 +6366,8 @@ ENDIF
         IF(IEEE_IS_NAN(CLOUD))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'CLOUD is NaN on Julian date ',JDAY,' in '//METFN(JW)
-        ENDIF        
-        
+        ENDIF
+
         IF (TAIR > 50.0) THEN
           CALL WARNINGS
           WRITE (WRN,FMTF) 'Air temperature [TAIR=',TAIR,'] > 50 deg on day ',JDAY,' in '//METFN(JW)
@@ -6410,13 +6410,13 @@ ENDIF
            sromin(jw)=0.0
            sromax(jw)=0.0
        endif
-       
+
        tairav(jw)=tairav(jw)/nmet
        tdewav(jw)=tdewav(jw)/nmet
        windav(jw)=windav(jw)/nmet
        phiav(jw)=phiav(jw)/nmet
-       cloudav(jw)=cloudav(jw)/nmet   
-       
+       cloudav(jw)=cloudav(jw)/nmet
+
         if(cloudav(jw) < 1.0)then
             CALL ERRORS
             WRITE (ERR,'(a,f7.3,a,i3,a,a)') 'MET Error: Possible inappropriate cloud cover since average [CloudCoverAverage:',cloudav(jw),'] < 1.0 [Note that CLOUD should be between 0-10] for WB:',JW,' in '//METFN(JW)
@@ -6424,13 +6424,13 @@ ENDIF
             CALL WARNINGS
             WRITE (WRN,'(a,f7.3,a,i3,a,a)') 'MET Warning: Check cloud cover since average [CloudCoverAverage:',cloudav(jw),'] < 3.0 [Note that CLOUD should be between 0-10] for WB:',JW,' in '//METFN(JW)
         END IF
-        
+
         if(tairav(jw) < tdewav(jw))then
             CALL ERRORS
             WRITE (ERR,'(a,f7.2,a,f7.2,a,i3,a,a)') 'MET Error: Tair-average is less than Tdew-average. [Tair-av(C):',tairav(jw),'< Tdew-av(C):',tdewav(jw),'] for WB:',JW,' in '//METFN(JW)
-        endif 
-       
-      
+        endif
+
+
       IF (JDAY < TMEND) THEN
         CALL ERRORS
         WRITE (ERR,FMTF) 'Ending time ',JDAY,' < ending simulation time [TMEND=',TMEND,'] in '//METFN(JW)
@@ -6538,7 +6538,7 @@ ENDIF
         READ(NPT,'(A1)')ICHAR1
         IF(ICHAR1=='$')WRITE(WIN,*) '      QIN file in csv format'
         READ (NPT,'(/)',END=401)
-        
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -6550,15 +6550,15 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-        
+        ENDIF
+
           DO WHILE (.TRUE.)
                 IF(ICHAR1=='$')THEN
             READ (NPT,*,END=135,ERR=400) JDQIN(J,JB), QIN(J,JB)
                   ELSE
             READ (NPT,'(10F8.0/8X,9F8.0)',END=135,ERR=400) JDQIN(J,JB), QIN(J,JB)
                   ENDIF
-                  
+
         IF(IEEE_IS_NAN(JDQIN(J,JB)))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY is NaN on line of data  ',J,' in '//QINFN(JB)
@@ -6567,7 +6567,7 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'QIN is NaN on Julian date ',JDQIN(J,JB),' in '//QINFN(JB)
         ENDIF
-             
+
 
             IF (QIN(J,JB)<0.0) THEN
               CALL ERRORS
@@ -6653,11 +6653,11 @@ ENDIF
                   ENDIF
               ENDIF
           ENDDO
-          IF(IOK==0)THEN  
+          IF(IOK==0)THEN
           CALL ERRORS
           WRITE (ERR,FMTI) 'Could not open branch ',JB,' inflow file '//QINFN(JB)
           ELSE
-             CALL WARNINGS 
+             CALL WARNINGS
               WRITE (WRN,FMTI) 'Multiple Waterbodies: Note the following FLOW inflow file for branch ',JB,' is not yet available: '//QINFN(JB)
            ENDIF
           IOK=0
@@ -6676,7 +6676,7 @@ ENDIF
           READ(NPT,'(A1)')ICHAR1
           IF(ICHAR1=='$')WRITE(WIN,*) '      TIN file in csv format'
           READ (NPT,'(/)',END=401,ERR=401)
-          
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -6688,7 +6688,7 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
+        ENDIF
 
           DO WHILE (.TRUE.)
             IF(ICHAR1=='$')THEN
@@ -6696,7 +6696,7 @@ ENDIF
                   ELSE
             READ (NPT,'(10F8.0/8X,9F8.0)',END=140,ERR=400) JDAY, TIN
                   ENDIF
-                  
+
         IF(IEEE_IS_NAN(JDAY))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY is NaN on line of data ',J,' in '//TINFN(JB)
@@ -6705,9 +6705,9 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'TIN is NaN on Julian date ',JDAY,' in '//TINFN(JB)
         ENDIF
-                  
-                  
-                  
+
+
+
             IF (J == 1 .AND. JDAY > TMSTRT) THEN
               CALL ERRORS
               WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in ' //TINFN(JB)
@@ -6749,7 +6749,7 @@ ENDIF
           END IF
           CLOSE (NPT)
         ELSE
-            
+
            DO J=1,IMWB   ! CHECK FOR MULTIPLE WATER BODIES AND INPUT FILE IS NOT READY YET
               IF(MWB2(J) == 'BR')THEN
                   IF(INUMMWB(J)==JB)THEN
@@ -6758,11 +6758,11 @@ ENDIF
                   ENDIF
               ENDIF
           ENDDO
-          IF(IOK==0)THEN  
+          IF(IOK==0)THEN
           CALL ERRORS
           WRITE (ERR,FMTI) 'Could not open branch ',JB,' inflow temperature file '//TINFN(JB)
           ELSE
-             CALL WARNINGS 
+             CALL WARNINGS
               WRITE (WRN,FMTI) 'Multiple Waterbodies: Note the following TEMPERATURE inflow file for branch ',JB,' is not yet available: '//TINFN(JB)
            ENDIF
           IOK=0
@@ -6783,7 +6783,7 @@ ENDIF
               WRITE(WIN,*) '   cin file in csv format'
               ENDIF
               READ (NPT,'(/)',END=401)
-              
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -6795,8 +6795,8 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF            
-              
+        ENDIF
+
             ! READ (NPT,'(//)')
             J                               = 1
             JDAYO                           = 0.0
@@ -6807,7 +6807,7 @@ ENDIF
               ELSE
               READ (NPT,'(F8.0,1000(F8.0))',END=150,ERR=400) JDAY, (CIN(INCN(JC,JB)),JC=1,NACIN(JB))
               ENDIF
-              
+
          IF(IEEE_IS_NAN(JDAY))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY is NaN on line of data ',J,' in '//CINFN(JB)
@@ -6818,10 +6818,10 @@ ENDIF
           WRITE (ERR,FMTF)'CIN is NaN on Julian date ',JDAY,' in '//CINFN(JB)
         ENDIF
         ENDDO
-                  
-              
-              
-              
+
+
+
+
               IF (J == 1) TSTART = JDAY
               CINMIN(INCN(1:NACIN(JB),JB),JB) = MIN(CIN(INCN(1:NACIN(JB),JB)),CINMIN(INCN(1:NACIN(JB),JB),JB))
               CINMAX(INCN(1:NACIN(JB),JB),JB) = MAX(CIN(INCN(1:NACIN(JB),JB)),CINMAX(INCN(1:NACIN(JB),JB),JB))
@@ -6908,11 +6908,11 @@ ENDIF
                   ENDIF
               ENDIF
           ENDDO
-          IF(IOK==0)THEN  
+          IF(IOK==0)THEN
           CALL ERRORS
             WRITE (ERR,FMTI) 'Could not open branch ',JB,' inflow concentration file '//CINFN(JB)
           ELSE
-             CALL WARNINGS 
+             CALL WARNINGS
               WRITE (WRN,FMTI) 'Multiple Waterbodies: Note the following CONCENTRATION inflow file for branch ',JB,' is not yet available: '//CINFN(JB)
            ENDIF
           IOK=0
@@ -6938,7 +6938,7 @@ ENDIF
         READ(NPT,'(A1)')ICHAR1
         IF(ICHAR1=='$')WRITE(WIN,*) '      QDTR file in csv format'
         READ (NPT,'(/)',END=401)
-        
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -6950,15 +6950,15 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF               
-        
+        ENDIF
+
           DO WHILE (.TRUE.)
               IF(ICHAR1=='$')THEN
                READ (NPT,*,END=160,ERR=400) JDQDT(J,JB), QDT(J,JB)
                ELSE
                READ (NPT,'(10F8.0/8X,9F8.0)',END=160,ERR=400) JDQDT(J,JB), QDT(J,JB)
                ENDIF
-               
+
         IF(J>1)THEN
         IF(IEEE_IS_NAN(JDQDT(J,JB)))THEN
           CALL ERRORS
@@ -6970,15 +6970,15 @@ ENDIF
           WRITE (ERR,FMTF)'JDAY for Distributed Tributary is NaN on first line of data, data line:',J,' in '//QDTFN(JB)
         ENDIF
         ENDIF
-        
+
         IF(IEEE_IS_NAN(QDT(J,JB)))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'QDT for Distributed Tributary is NaN on Julian date ',JDQDT(J,JB),' in '//QDTFN(JB)
         ENDIF
-               
-               
-               
-               
+
+
+
+
             IF (JDAYO >= TMSTRT .AND. JDQDT(J,JB) <= TMEND) THEN
               QDTMX(JB) = MAX(QDT(J,JB),QDTMX(JB))
               IF (JDQDT(J,JB) > TMEND) THEN
@@ -7026,7 +7026,7 @@ ENDIF
           READ(NPT,'(A1)')ICHAR1
           IF(ICHAR1=='$')WRITE(WIN,*) '      QDTR file in csv format'
           READ (NPT,'(/)',END=401)
-          
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -7038,8 +7038,8 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF        
-          
+        ENDIF
+
           DO WHILE (.TRUE.)
               IF(ICHAR1=='$')THEN
                 READ (NPT,*,END=170,ERR=400) JDAY, TDT
@@ -7055,10 +7055,10 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'TDT for Distributed Tributary is NaN on Julian date ',JDAY,' in '//TDTFN(JB)
         ENDIF
-                
-                
-                
-                
+
+
+
+
                 IF (J == 1 .AND. JDAY > TMSTRT) THEN
               CALL ERRORS
               WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in '//TDTFN(JB)
@@ -7100,7 +7100,7 @@ ENDIF
               WRITE(WIN,*) '      cdt file in csv format'
               ENDIF
               READ (NPT,'(/)',END=401)
-              
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -7112,8 +7112,8 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-              
+        ENDIF
+
             !READ (NPT,'(//)')
             J     = 1
             JDAYO = 0.0
@@ -7123,7 +7123,7 @@ ENDIF
                     ELSE
               READ (NPT,'(F8.0,100(F8.0))',END=180,ERR=400) JDAY, (CIN(incdt(jc,jb)),JC=1,NACDT(JB))
                     ENDIF
-                    
+
         IF(IEEE_IS_NAN(JDAY))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY for Distributed Tributary is NaN on line of data  ',J,' in '//CDTFN(JB)
@@ -7133,9 +7133,9 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'CIN for Distributed Tributary is NaN on Julian date ',JDAY,' in '//CDTFN(JB)
         ENDIF
-        ENDDO             
-                    
-                    
+        ENDDO
+
+
                     IF (J == 1) TSTART = JDAY
               CDTMIN(INCDT(1:NACDT(JB),JB),JB) = MIN(CIN(INCDT(1:NACDT(JB),JB)),CDTMIN(INCDT(1:NACDT(JB),JB),JB))
               CDTMAX(INCDT(1:NACDT(JB),JB),JB) = MAX(CIN(INCDT(1:NACDT(JB),JB)),CDTMAX(INCDT(1:NACDT(JB),JB),JB))
@@ -7143,7 +7143,7 @@ ENDIF
                                                             +CIN2(INCDT(1:NACDT(JB),JB)))*0.5*(JDAY-TDAY2)
               !CIN2(INCDT(1:NACDT(JB),JB)) = CIN(INCDT(1:NACDT(JB),JB))
               !TDAY2                      = JDAY
-              
+
               IF (J == 1 .AND. JDAY > TMSTRT) THEN
                 CALL ERRORS
                 WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in '//CDTFN(JB)
@@ -7225,13 +7225,13 @@ ENDIF
         IF (IERR == 0) THEN
             AID=PREFN(JB)
           !READ (NPT,'(//)')
-          
+
           J     = 1
           JDAYO = 0.0
           READ(NPT,'(A1)')ICHAR1
           IF(ICHAR1=='$')WRITE(WIN,*) '      PREQ file in csv format'
           READ (NPT,'(/)',END=401)
-          
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -7243,17 +7243,17 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-          
-          
+        ENDIF
+
+
           DO WHILE (.TRUE.)
-              
+
             IF(ICHAR1=='$')THEN
             READ (NPT,*,END=190,ERR=400) JDQPR(J,JB), QPR(J,JB)
              ELSE
             READ (NPT,'(10F8.0/8X,9F8.0)',END=190,ERR=400) JDQPR(J,JB), QPR(J,JB)
              ENDIF
-             
+
         IF(J>1)THEN
         IF(IEEE_IS_NAN(JDQPR(J,JB)))THEN
           CALL ERRORS
@@ -7265,12 +7265,12 @@ ENDIF
           WRITE (ERR,FMTF)'JDAY for Precipitation is NaN on first line of data, data line:',J,' in '//PREFN(JB)
         ENDIF
         ENDIF
-        
+
         IF(IEEE_IS_NAN(QPR(J,JB)))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'QPR for Precipitation is NaN on Julian date ',JDQPR(J,JB),' in '//PREFN(JB)
         ENDIF
-              
+
             !READ (NPT,'(10F8.0/8X,9F8.0)',END=190,ERR=400) JDQPR(J,JB), QPR(J,JB)
             IF (JDAYO >= TMSTRT .AND. JDQPR(J,JB) <= TMEND) THEN
               QPRMX(JB) = MAX(QPR(J,JB),QPRMX(JB))
@@ -7311,7 +7311,7 @@ ENDIF
           READ(NPT,'(A1)')ICHAR1
           IF(ICHAR1=='$')WRITE(WIN,*) '      PRET file in csv format'
           READ (NPT,'(/)',END=401)
-            
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -7323,9 +7323,9 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-          
-          
+        ENDIF
+
+
           J     = 1
           JDAYO = 0.0
           DO WHILE (.TRUE.)
@@ -7334,7 +7334,7 @@ ENDIF
                   else
             READ (NPT,'(10F8.0/8X,9F8.0)',END=200,ERR=400) JDAY, TPR
             endif
-                  
+
          IF(IEEE_IS_NAN(JDAY))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY for Precipitation is NaN on line of data  ',J,' in '//TPRFN(JB)
@@ -7342,9 +7342,9 @@ ENDIF
         IF(IEEE_IS_NAN(TPR))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'TPR for Precipitation is NaN on Julian date ',JDAY,' in '//TPRFN(JB)
-        ENDIF      
-                  
-                  
+        ENDIF
+
+
             IF (J == 1 .AND. JDAY > TMSTRT) THEN
               CALL ERRORS
               WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in '//TPRFN(JB)
@@ -7378,7 +7378,7 @@ ENDIF
               WRITE(WIN,*) '  cpr file in csv format'
               ENDIF
               READ (NPT,'(/)',END=401)
-              
+
          ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -7390,9 +7390,9 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-              
-              
+        ENDIF
+
+
             !READ (NPT,'(//)')
             J     = 1
             JDAYO = 0.0
@@ -7402,7 +7402,7 @@ ENDIF
                     ELSE
               READ (NPT,'(F8.0,1000(F8.0))',END=210,ERR=400) JDAY, (CPR(JC),JC=1,NACPR(JW))
                     ENDIF
-                    
+
          IF(IEEE_IS_NAN(JDAY))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY for Precipitation is NaN on LINE of data ',J,' in '//CPRFN(JB)
@@ -7412,9 +7412,9 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'CPR for Precipitation is NaN on Julian date ',JDAY,' in '//CPRFN(JB)
         ENDIF
-        ENDDO       
-                    
-                    
+        ENDDO
+
+
               IF (J == 1 .AND. JDAY > TMSTRT) THEN
                 CALL ERRORS
                 WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in '//CPRFN(JB)
@@ -7485,10 +7485,10 @@ ENDIF
                 !    WRITE (ERR,FMTF) 'Upstream Head BC: Water level change > 20 m/day on Julian date ',JDAY,' compared to previous date ',JDAYO,' in '//EDHFN(JB)
                 IF(ABS(EDHO-EDH)/(JDAY-JDAYO) > 15.)THEN
                     CALL WARNINGS
-                    WRITE (WRN,FMTF) 'Upstream Head BC: Water level change > 15 m/day on Julian date ',JDAY,' compared to previous date ',JDAYO,' in '//EDHFN(JB) 
+                    WRITE (WRN,FMTF) 'Upstream Head BC: Water level change > 15 m/day on Julian date ',JDAY,' compared to previous date ',JDAYO,' in '//EDHFN(JB)
                 ENDIF
             ENDIF
-            
+
             EUHO=EUH
             JDAYO = JDAY
             J     = J+1
@@ -7531,11 +7531,11 @@ ENDIF
           READ (NPT,*,END=230,ERR=400)  JDAY, (TUH(K),K=2,KB(US(JB)))
           ELSE
           READ (NPT,'(10F8.0:/(8X,9F8.0))',END=230,ERR=400) JDAY, (TUH(K),K=2,KB(US(JB)))
-          ENDIF      
-          
+          ENDIF
+
           TUHMAX(JB)=MAX(TUH(2),TUHMAX(JB))
           TUHMIN(JB)=MIN(TUH(2),TUHMIN(JB))
-          
+
             IF (J == 1 .AND. JDAY > TMSTRT) THEN
               CALL ERRORS
               WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in '//TUHFN(JB)
@@ -7570,7 +7570,7 @@ ENDIF
           OPEN (UNIT=NPT,FILE=CUHFN(JB),STATUS='OLD',IOSTAT=IERR)
           IF (IERR == 0) THEN
               AID=CUHFN(JB)
- 
+
           READ( NPT,'(A2)')INFORMAT2
           IF(INFORMAT2=='$T')THEN
               CUHF=1
@@ -7578,7 +7578,7 @@ ENDIF
               CUHF=2
           ENDIF
           READ (NPT,'(/)')
-          
+
             J     = 1
             JDAYO = 0.0
             CUHMIN(:,JB)=100000.0
@@ -7588,10 +7588,10 @@ ENDIF
                 IF(CUHF==1)THEN
                 READ (NPT,*,END=240,ERR=400)  JDAY,(CUH(2,JAC),JAC=1,NAC)
                     !DO JAC=1,NAC
-                    !CUH=XX(CN(JAC)) 
+                    !CUH=XX(CN(JAC))
                     !ENDDO
                 ELSE
-                    DO JAC=1,NAC          
+                    DO JAC=1,NAC
                     IF(CUHF==2)THEN
                     READ (NPT,*,END=240,ERR=400)  JDAY,(CUH(K,JAC),K=2,KB(US(JB)))
                     ELSE
@@ -7599,14 +7599,14 @@ ENDIF
                     ENDIF
                     END DO
                 END IF
-          
+
             DO JAC=1,NAC
                 CUHMIN(JAC,JB)=MIN(CUH(2,JAC),CUHMIN(JAC,JB))
                 CUHMAX(JAC,JB)=MAX(CUH(2,JAC),CUHMAX(JAC,JB))
                 CUHAVG(JAC,JB)=CUHAVG(JAC,JB)+CUH(2,JAC)
             ENDDO
-            
-                
+
+
             !READ (NPT,'(//)')
             !J     = 1
             !JDAYO = 0.0
@@ -7687,10 +7687,10 @@ ENDIF
                 !    WRITE (ERR,FMTF) 'Downstream Head BC: Water level change > 20 m/day on Julian date ',JDAY,' compared to previous date ',JDAYO,' in '//EDHFN(JB)
                 IF(ABS(EDHO-EDH)/(JDAY-JDAYO) > 15.)THEN
                     CALL WARNINGS
-                    WRITE (WRN,FMTF) 'Downstream Head BC: Water level change > 15 m/day on Julian date ',JDAY,' compared to previous date ',JDAYO,' in '//EDHFN(JB) 
+                    WRITE (WRN,FMTF) 'Downstream Head BC: Water level change > 15 m/day on Julian date ',JDAY,' compared to previous date ',JDAYO,' in '//EDHFN(JB)
                 ENDIF
             ENDIF
-            
+
             EDHO=EDH
             JDAYO = JDAY
             J     = J+1
@@ -7733,11 +7733,11 @@ ENDIF
           READ (NPT,*,END=260,ERR=400)  JDAY, (TDH(K),K=2,KB(DS(JB)))
           ELSE
           READ (NPT,'(10F8.0:/(8X,9F8.0))',END=260,ERR=400) JDAY, (TDH(K),K=2,KB(DS(JB)))
-          ENDIF    
-          
+          ENDIF
+
           TDHMAX(JB)=MAX(TDH(2),TDHMAX(JB))
           TDHMIN(JB)=MIN(TDH(2),TDHMIN(JB))
-          
+
             IF (J == 1 .AND. JDAY > TMSTRT) THEN
               CALL ERRORS
               WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in '//TDHFN(JB)
@@ -7751,7 +7751,7 @@ ENDIF
                     WRITE (WRN,'(A,F8.3,A,I3,A,A)') 'Downstream head temperature: On Julian date ',JDAY,' temperature inversion at K=',K,' in '//TDHFN(JB)
                 ENDIF
             ENDDO
-            
+
             J     = J+1
             JDAYO = JDAY
           END DO
@@ -7781,7 +7781,7 @@ ENDIF
               CDHF=2
           ENDIF
           READ (NPT,'(/)')
-          
+
             J     = 1
             JDAYO = 0.0
             CDHMIN(:,JB)=100000.0
@@ -7789,7 +7789,7 @@ ENDIF
             CDHAVG(:,JB)=0.0
             DO WHILE (.TRUE.)
                 IF(CDHF==1)THEN
-                
+
                 READ(NPT,'(A10)',END=270)TITLE(1)      ! CHECK FOR JUST BLANK SPACES INTERPRETED AS DATA
                 IF(TITLE(1)(1:10) == ',,,,,,,,,,')THEN
                     call errors
@@ -7798,13 +7798,13 @@ ENDIF
                 ELSE
                     BACKSPACE(NPT)
                 ENDIF
-                
+
                 READ (NPT,*,END=270,ERR=400)  JDAY,(CDH(2,JAC),JAC=1,NAC)
                     !DO JAC=1,NAC
-                    !CDH=XX(CN(JAC)) 
+                    !CDH=XX(CN(JAC))
                     !ENDDO
                 ELSE
-                    DO JAC=1,NAC          
+                    DO JAC=1,NAC
                     IF(CDHF==2)THEN
                     READ (NPT,*,END=270,ERR=400)  JDAY,(CDH(K,JAC),K=2,KB(DS(JB)))
                     ELSE
@@ -7868,7 +7868,7 @@ ENDIF
         READ(NPT,'(A1)')ICHAR1
         IF(ICHAR1=='$')WRITE(WIN,*) '      QTR file in csv format'
         READ (NPT,'(/)')
-        
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -7880,8 +7880,8 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-        
+        ENDIF
+
         J       =  1
         JDAYO   =  0.0
         DO WHILE (.TRUE.)
@@ -7890,7 +7890,7 @@ ENDIF
           ELSE
           READ (NPT,'(10F8.0/8X,9F8.0)',END=280,ERR=400) JDQTR(J,JT), QTR(J,JT)
           ENDIF
-          
+
         IF(IEEE_IS_NAN(JDQTR(J,JT)))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY for Tributary is NaN on line of data ',J,' in '//QTRFN(JT)
@@ -7899,8 +7899,8 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'QTR for Tributary is NaN on Julian date ',JDQTR(J,JT),' in '//QTRFN(JT)
         ENDIF
-          
-          
+
+
           IF (JDAYO >= TMSTRT .AND. JDQTR(J,JT) <= TMEND) THEN
             IF (JBTR(JT) /= 0) QTRMX(JT,JBTR(JT)) = MAX(QTR(J,JT),QTRMX(JT,JBTR(JT)))
             IF (JDQTR(J,JT) > TMEND) THEN
@@ -7934,11 +7934,11 @@ ENDIF
                   ENDIF
               ENDIF
           ENDDO
-          IF(IOK==0)THEN  
+          IF(IOK==0)THEN
           CALL ERRORS
           WRITE (ERR,FMTI) 'Could not open tributary ',JT,' inflow file '//QTRFN(JT)
           ELSE
-             CALL WARNINGS 
+             CALL WARNINGS
               WRITE (WRN,FMTI) 'Multiple Waterbodies: Note the following FLOW inflow file for TRIBUTARY ',JT,' is not yet available: '//QTRFN(JT)
            ENDIF
           IOK=0
@@ -7957,7 +7957,7 @@ ENDIF
         READ(NPT,'(A1)')ICHAR1
         IF(ICHAR1=='$')WRITE(WIN,*) '      TTR file in csv format'
         READ (NPT,'(/)')
-        
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -7969,7 +7969,7 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
+        ENDIF
 
         DO WHILE (.TRUE.)
            IF(ICHAR1=='$')THEN
@@ -7977,7 +7977,7 @@ ENDIF
                  ELSE
            READ (NPT,'(10F8.0/8X,9F8.0)',END=290,ERR=400) JDAY, TTR
                  ENDIF
-                 
+
             IF(IEEE_IS_NAN(JDAY))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY for Tributary is NaN on line of data ',J,' in '//TTRFN(JT)
@@ -7986,9 +7986,9 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'TTR for Tributary is NaN on Julian date ',JDAY,' in '//TTRFN(JT)
         ENDIF
-                 
-                 
-                 
+
+
+
           IF (J == 1 .AND. JDAY > TMSTRT) THEN
             CALL ERRORS
             WRITE (ERR,FMTF) 'Starting date [',JDAY,' > simulation start date [TMSTRT=',TMSTRT,'] in '//TTRFN(JT)
@@ -8029,11 +8029,11 @@ ENDIF
                   ENDIF
               ENDIF
           ENDDO
-          IF(IOK==0)THEN  
+          IF(IOK==0)THEN
           CALL ERRORS
         WRITE (ERR,FMTI) 'Could not open tributary ',JT,' inflow temperature file '//TTRFN(JT)
           ELSE
-             CALL WARNINGS 
+             CALL WARNINGS
               WRITE (WRN,FMTI) 'Multiple Waterbodies: Note the following TEMPERATURE inflow file for TRIBUTARY ',JT,' is not yet available: '//TTRFN(JT)
            ENDIF
           IOK=0
@@ -8056,7 +8056,7 @@ ENDIF
               WRITE(WIN,*) '       ctr file in csv format'
               ENDIF
               READ (NPT,'(/)')
-              
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -8068,20 +8068,20 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-              
-              
+        ENDIF
+
+
          ! READ (NPT,'(//)')
           J     = 1
           JDAYO = 0.0
           DO WHILE (.TRUE.)
             IF(ICHAR1=='$')THEN
-                                
+
             READ (NPT,*,END=300,ERR=400) JDAY, (CIN(TRCN(JC,JT)),JC=1,NACTR(JT))
                 ELSE
             READ (NPT,'(F8.0,1000(F8.0))',END=300,ERR=400) JDAY, (CIN(TRCN(JC,JT)),JC=1,NACTR(JT))
             ENDIF
-                
+
          IF(IEEE_IS_NAN(JDAY))THEN
           CALL ERRORS
           WRITE (ERR,FMTF)'JDAY for Tributary is NaN on line of data ',J,' in '//CTRFN(JT)
@@ -8091,9 +8091,9 @@ ENDIF
           CALL ERRORS
           WRITE (ERR,FMTF)'CTR for Tributary is NaN on Julian date ',JDAY,' in '//CTRFN(JT)
         ENDIF
-        ENDDO                    
-                
-                
+        ENDDO
+
+
             IF (J == 1) TSTART = JDAY
             CTRMIN(TRCN(1:NACTR(JT),JT),JT) = MIN(CIN(TRCN(1:NACTR(JT),JT)),CTRMIN(TRCN(1:NACTR(JT),JT),JT))
             CTRMAX(TRCN(1:NACTR(JT),JT),JT) = MAX(CIN(TRCN(1:NACTR(JT),JT)),CTRMAX(TRCN(1:NACTR(JT),JT),JT))
@@ -8164,14 +8164,14 @@ ENDIF
                   ENDIF
               ENDIF
           ENDDO
-          IF(IOK==0)THEN  
+          IF(IOK==0)THEN
           CALL ERRORS
           WRITE (ERR,FMTI) 'Could not open tributary ',JT, ' inflow concentration file '//CTRFN(JT)
           ELSE
-             CALL WARNINGS 
+             CALL WARNINGS
               WRITE (WRN,FMTI) 'Multiple Waterbodies: Note the following CONCENTRATION inflow file for TRIBUTARY ',JT,' is not yet available: '//CTRFN(JT)
            ENDIF
-          IOK=0 
+          IOK=0
         END IF
       END IF
     END DO
@@ -8193,7 +8193,7 @@ ENDIF
              WRITE(WIN,*) '     for branch:',JB,'  file:', adjustl(trim(qotfn(jb)))
              IF(ICHAR1=='$')WRITE(WIN,*)'     csv format'
              READ(NPT,'(/)')
-             
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -8205,8 +8205,8 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-             
+        ENDIF
+
             J       = 1
             JDAYO   = 0.0
             QSTRO   = 0.0
@@ -8376,7 +8376,7 @@ ENDIF
       READ(NPT,'(A1)')ICHAR1
       IF(ICHAR1=='$')WRITE(WIN,*) '     csv format for withdrawals'
       READ (NPT,'(/)')
-      
+
         ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -8388,8 +8388,8 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-      
+        ENDIF
+
       J     = 1
       JDAYO = 0.0
       DO WHILE (.TRUE.)
@@ -8442,19 +8442,19 @@ ENDIF
     WRITE(WIN,*) '       reading gate file:'//qgtfn
     IF (IERR == 0) THEN
         AID=QGTFN
-        
+
     READ(NPT,'(A1)')ICHAR1
       IF(ICHAR1=='$')WRITE(WIN,*) '     csv format for gate file'
-             
+
     !READ(NPT,*)
 
     READ(NPT,'(A8)',ERR=400)GT2CHAR
       IF(GT2CHAR == 'EGT2ELEV')THEN
       BACKSPACE(NPT)
        IF(ICHAR1=='$')THEN
-        READ(NPT,*,ERR=121)GT2CHAR,(EGT2(JG),JG=1,NGT)   
+        READ(NPT,*,ERR=121)GT2CHAR,(EGT2(JG),JG=1,NGT)
         ELSE
-        READ(NPT,'(8X,1000F8.0)',ERR=121)(EGT2(JG),JG=1,NGT)   
+        READ(NPT,'(8X,1000F8.0)',ERR=121)(EGT2(JG),JG=1,NGT)
       ENDIF
 
       DO JG=1,NGT
@@ -8473,7 +8473,7 @@ ENDIF
       122 CONTINUE
       ENDIF
       READ(NPT,*)
-      
+
      ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -8485,8 +8485,8 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF              
-      
+        ENDIF
+
 !      READ (NPT,'(//)')
       J     = 1
       JDAYO = 0.0
@@ -8496,7 +8496,7 @@ ENDIF
           ELSE
                 READ (NPT,'(1000F8.0)',END=120,ERR=400) JDAY, (BGATE(JG),JG=1,NGT)
           ENDIF
-          
+
         IF (J == 1 .AND. JDAY > TMSTRT) THEN
           CALL ERRORS
           WRITE (ERR,FMTF) 'Starting date [',JDAY,'] > simulation start date [TMSTRT=',TMSTRT,'] in '//QGTFN
@@ -8530,7 +8530,7 @@ ENDIF
       READ(NPT,'(A1)',ERR=400)ICHAR1
       IF(ICHAR1=='$')WRITE(WIN,*) '     csv format for SHADE file'
       READ (NPT,'(/)')
-      
+
      ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -8542,9 +8542,9 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-      
-      
+        ENDIF
+
+
   !  READ  (NPT,'(//)')
     SHADEIN=1.0   ! SW 7/15/14 FOR CSV FILE BLANKS ARE NOT REGISTERED AS A NUMBER, HENCE NEED TO SET ARRAY
     DO I=1,IMX
@@ -8629,9 +8629,9 @@ ENDIF
             WRITE (ERR,'(a,a8,a)') 'Flux Output Control: [FLXC=',FLXC(JW),'] /= " ON" or "OFF"  '
          ENDIF
      ENDDO
-     
+
    ! HMULT, CMULT, CDMULT
-     
+
   DO J=1,NHY
       IF(HMULT(J) <= 0.0)THEN
           CALL ERRORS
@@ -8648,7 +8648,7 @@ ENDIF
           WRITE (WRN,'(a,F12.5,a,I3)') 'Concentration Multiplier:CMULT is > 1.0. All output concentrations are multiplied by CMULT. CMULT=',CMULT(J),' for constituent #:',J
       ENDIF
    ENDDO
-   
+
     DO J=1,NDC
       IF(CDMULT(J) <= 0.0)THEN
           CALL ERRORS
@@ -8657,14 +8657,14 @@ ENDIF
           CALL WARNINGS
           WRITE (WRN,'(a,F12.5,a,I3)') 'Concentration Derived Multiplier: CDMULT is > 1.0. All output derived concentrations are multiplied by CDMULT. CDMULT=',CDMULT(J),' for derived constituent #:',J
       ENDIF
-   ENDDO 
-     
+   ENDDO
+
 ! Restart file
 
   WRITE (WIN,*) '  restart'
   IF (RESTART_IN) THEN
     INQUIRE(FILE=rsifn, EXIST=file_exists)   ! file_exists will be TRUE if the file
-    
+
 	If(.NOT. file_exists) Then
       CALL ERRORS
       WRITE (ERR,'(a,a,a)') 'Restart control RSIC=ON but restart file [RSIFN=',trim(rsifn),'] does not exist'
@@ -8677,15 +8677,15 @@ ENDIF
     !END IF
   END IF
 
- 
-   
-  
+
+
+
 ! Water balance
 
   JTR = 0; JWD = 0                                                                                                     !TC 07/10/03
   DO JW=1,NWB
     DO JB=BS(JW),BE(JW)
-      JTR = 0; JWD = 0                                                                                                  
+      JTR = 0; JWD = 0
       DO JT=1,NTBR(JB)
         JTR           = JTR+1                                                                                          !TC 07/10/03
         QTRMXB(JB)    = MAX(QTRMXB(JB),QTRMX(JTR,JB))
@@ -9111,31 +9111,31 @@ ENDIF
 
   WRITE (WIN,*) '  hydraulic coefficients'
   DO JW=1,NWB
-      
+
     IF (AX(JW) < -10.0) THEN
       CALL WARNINGS
       WRITE (WRN,FMTFI) 'Longitudinal eddy viscosity [AX=',AX(JW),'] < -10.0 for waterbody ',JW
     ENDIF
-    
+
     IF(AX(JW) > 0.0)THEN
     IF (AX(JW) < 0.01 .OR. AX(JW) > 100.0) THEN
       CALL WARNINGS
       WRITE (WRN,FMTFI) 'Longitudinal eddy viscosity [AX=',AX(JW),'] < 0.01 or > 100 for waterbody ',JW
     END IF
     ENDIF
-    
+
     IF (DX(JW) < -10.0) THEN
       CALL WARNINGS
       WRITE (WRN,FMTFI) 'Longitudinal eddy diffusivity [DX=',DX(JW),'] < -10.0 for waterbody ',JW
     ENDIF
-    
+
     IF(DX(JW) > 0.0)THEN
     IF (DX(JW) < 0.01 .OR. DX(JW) > 100.0) THEN
       CALL WARNINGS
       WRITE (WRN,FMTFI) 'Longitudinal eddy diffusivity [DX=',DX(JW),'] < 0.01 or > 100 for waterbody ',JW
     END IF
     ENDIF
-    
+
       DXMIN=1.E6
       DO JB=BS(JW),BE(JW)
       DO I=US(JB),DS(JB)
@@ -9788,16 +9788,16 @@ ENDIF
           CALL ERRORS
           WRITE (WRN,FMTI) 'Spillway gas coefficient c [CGASSP] must be 1 or 0 for EQN 4 for spillway ',JS
         END IF
-        
+
         IF(BGASSP(JS)==1)THEN
          WRITE (SEGNUM,'(I0)') JS
-         SEGNUM = ADJUSTL(SEGNUM)  
-         L = LEN_TRIM(SEGNUM) 
+         SEGNUM = ADJUSTL(SEGNUM)
+         L = LEN_TRIM(SEGNUM)
          TITLE240='w2_sp'//SEGNUM(1:L)//'DO.csv'
          UNIT=2450
          OPEN (UNIT, FILE=TRIM(TITLE240),STATUS='OLD')
          READ(UNIT,*,END=1350,ERR=400);READ(UNIT,*,END=1350,ERR=400);READ(UNIT,*,END=1350,ERR=400)   ! SKIP 3 LINES
-         
+
          DO J=1,10000
          READ(UNIT,*,END=1350,ERR=400)JDAY,AGASSP(JS)
               IF (J == 1 .AND. JDAY > TMSTRT) THEN
@@ -9813,13 +9813,13 @@ ENDIF
                   WRITE (ERR,'(A,F10.3,A)') 'Spillway gas coefficient AGASSP < 0.5 or > 1.5 for JDAY:',JDAY,' in '//TRIM(TITLE240)
               ENDIF
          ENDDO
- 1350    CONTINUE   
+ 1350    CONTINUE
                 IF (JDAY < TMEND) THEN
                 CALL ERRORS
                 WRITE (ERR,FMTF) 'Ending date [',JDAY,'] < simulation ending date [TMSTRT=',TMEND,'] in '//TRIM(TITLE240)
                 ENDIF
                 CLOSE(2450)
-        ENDIF        
+        ENDIF
       ELSE
         CALL ERRORS
         WRITE (ERR,FMTI) 'Spillway gas equation number [EQSP]=',EQSP(JS),'] must be between 1 and 4 for spillway ',JS
@@ -10112,16 +10112,16 @@ ENDIF
           CALL ERRORS
           WRITE (WRN,FMTI) 'Gate gas coefficient c [CGASGT] must be 1 or 0 for EQN 4 for gate ',JT
         END IF
-        
+
         IF(BGASGT(JT)==1)THEN
          WRITE (SEGNUM,'(I0)') JT
-         SEGNUM = ADJUSTL(SEGNUM)  
-         L = LEN_TRIM(SEGNUM) 
+         SEGNUM = ADJUSTL(SEGNUM)
+         L = LEN_TRIM(SEGNUM)
          TITLE240='w2_gt'//SEGNUM(1:L)//'DO.csv'
          UNIT=2450
          OPEN (UNIT, FILE=TRIM(TITLE240),STATUS='OLD')
          READ(UNIT,*,END=1360,ERR=400);READ(UNIT,*,END=1360,ERR=400);READ(UNIT,*,END=1360,ERR=400)   ! SKIP 3 LINES
-         
+
          DO J=1,10000
          READ(UNIT,*,END=1360,ERR=400)JDAY,AGASGT(JT)
               IF (J == 1 .AND. JDAY > TMSTRT) THEN
@@ -10137,20 +10137,20 @@ ENDIF
                   WRITE (ERR,'(A,F10.3,A)') 'Gate gas coefficient AGASGT for EQN=4 < 0.5 or > 1.5 for JDAY:',JDAY,' in '//TRIM(TITLE240)
               ENDIF
          ENDDO
- 1360    CONTINUE   
+ 1360    CONTINUE
                 IF (JDAY < TMEND) THEN
                 CALL ERRORS
                 WRITE (ERR,FMTF) 'Ending date [',JDAY,'] < simulation ending date [TMSTRT=',TMEND,'] in '//TRIM(TITLE240)
                 ENDIF
         CLOSE(2450)
         ENDIF
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
       ELSE
         CALL ERRORS
         WRITE (ERR,FMTI) 'Gate gas equation number [EQGT]=',EQGT(JT),'] must be between 1 and 4 for gate ',JT
@@ -10196,7 +10196,7 @@ ENDIF
              READ(NPT,*,END=7200)JDAY,EPU1,EON,EOFF,QP
              ELSE
              READ(NPT,'(4F8.0)',END=7200)JDAY,EPU1,EON,EOFF,QP
-             ENDIF 
+             ENDIF
 
 
       IF (J == 1 .AND. JDAY > TMSTRT) THEN
@@ -10384,12 +10384,12 @@ ENDIF
       END DO
       IF (IFLAG == 1) EXIT
     END DO
-    
+
     IF(EKTWR(JWR) > 0.1)THEN     ! FOR OLDER VERSIONS WHERE ktwr /= 0 IF KTWR = 0 THEN IT IS A FLOATING WEIR
-        
+
         KTWR(JWR)=INT(EKTWR(JWR))
         KBWR(JWR)=INT(EKBWR(JWR))
-        
+
     IF (KTWR(JWR) <= KT) THEN
       CALL ERRORS
       WRITE (ERR,FMTI) 'Internal weir surface layer [KTWR=',KTWR(JWR),'] < water surface layer [KT=',KT,'] for weir ',JWR
@@ -10402,7 +10402,7 @@ ENDIF
       CALL ERRORS
       WRITE (ERR,FMTI) 'Internal weir bottom layer [KBWR=',KBWR(JWR),'] > bottom active layer [KB=',KB(IWR(JWR)),'] for weir ',JWR
     END IF
-    
+
     ELSE
         IF (EKTWR(JWR) /= 0.0) THEN
         CALL ERRORS
@@ -10416,10 +10416,10 @@ ENDIF
         CALL warnings
         WRITE (WRN,'(A,F8.2,A,I3,A,I3)') 'Internal weir bottom layer [EKBWR=',EKBWR(JWR),'] is less than 1 m in depth for this floating curtain weir #:',JWR
        END IF
-        
+
     ENDIF
-    
-    
+
+
     DO JB=1,NBR
       IF (IWR(JWR) == US(JB)-1) THEN
         CALL ERRORS
@@ -10432,7 +10432,7 @@ ENDIF
         WRITE (ERR,FMTI) 'Internal weir segment [IWR=',IWR(JWR),'] is a downstream segment in branch ',JB
       END IF
     END DO
-    
+
   END DO
 
 ! Lateral withdrawals
@@ -10735,7 +10735,7 @@ ENDIF
           WRITE (ERR,FMTI) 'Profile output: Profile segment [IPRF=',IPRF(J,JW),'] is a boundary segment or not in the active grid in waterbody ',JW
         END IF
     ENDIF
-    
+
       END DO
     END IF
   END DO
@@ -10799,14 +10799,14 @@ ENDIF
       END DO
     END IF
   END DO
-  
+
   TECPLOTBR=.FALSE.
   DO JW=1,NWB
   IF(TCPL(JW)=='      ON')THEN         ! CHECK FOR W2_TECPLOTBR.CSV FILE
-    INQUIRE(FILE='w2_tecplotbr.csv',EXIST=TECPLOTBR) 
+    INQUIRE(FILE='w2_tecplotbr.csv',EXIST=TECPLOTBR)
     WRITE (WIN,*) '  tecplot contour plots'
       IF(TECPLOTBR)THEN
-      WRITE (WIN,*) '   reading w2_tecplotbr.csv'    
+      WRITE (WIN,*) '   reading w2_tecplotbr.csv'
       OPEN(CON,FILE='w2_tecplotbr.csv',STATUS='OLD')
         READ(CON,*)
         READ(CON,*)JTEC    ! NUMBER OF BRANCHES TO PLOT, MUST BE LESS THAN NBR
@@ -10822,7 +10822,7 @@ ENDIF
       ENDIF
   ENDIF
   ENDDO
-  
+
 
 ! Withdrawal output
 
@@ -10933,8 +10933,8 @@ ENDIF
         END IF
       END IF
     END DO
-    
-    
+
+
  !** TURBIDITY calculations
 
     DO JW=1,NWB
@@ -11153,7 +11153,7 @@ ENDIF
       READ(NPT,'(A1)',ERR=400)ICHAR1
       IF(ICHAR1=='$')WRITE(WIN,*) '     csv format for EXT file'
       READ (NPT,'(/)')
-      
+
      ! CHECK IF ERROR -CSV FORMAT CHECK
         IF(ICHAR1 /= '$')THEN
         READ(NPT,'(A72)')TITLE(1)
@@ -11165,11 +11165,11 @@ ENDIF
                 ENDIF
             ENDDO
         BACKSPACE(NPT)
-        ENDIF       
-        
+        ENDIF
+
         J       = 1
         JDAYO   = 0.0
-        
+
           DO WHILE (.TRUE.)
             IF(ICHAR1=='$')THEN
             READ (NPT,*,END=335,ERR=400) JDAY,EXH2O(JW)
@@ -11195,10 +11195,10 @@ ENDIF
               WRITE (ERR,FMTF) 'EXH2O(JW) cannot usually be less than 0.15 m-1:',EXH2O(JW),' at date [JDAY=',JDAY,'] in '//EXTFN(JW)
             ELSEIF(EXH2O(JW) < 0.25) THEN
               CALL WARNINGS
-              WRITE (WRN,FMTF) 'EXH2O(JW) is less than 0.25 m-1:',EXH2O(JW),' at date [JDAY=',JDAY,'] in '//EXTFN(JW) 
+              WRITE (WRN,FMTF) 'EXH2O(JW) is less than 0.25 m-1:',EXH2O(JW),' at date [JDAY=',JDAY,'] in '//EXTFN(JW)
             END IF
 
-            
+
             JDAYO = JDAY
             J     = J+1
           END DO
@@ -11207,14 +11207,14 @@ ENDIF
             CALL ERRORS
             WRITE (ERR,FMTF) 'Ending time ',JDAY,' < ending simulation time [TMEND=',TMEND,'] in '//EXTFN(JW)
           END IF
-      
+
   ELSE                                                                                                                 !TC 10/22/02
     CALL ERRORS                                                                                                        !TC 10/22/02
     WRITE (ERR,FMTA) 'Could not open light extinction filename '//EXTFN(JW)                                                         !TC 10/22/02
   END IF                                                                                                               !TC 10/22/02
   CLOSE (NPT)                                                                                                          !SW 04/03/02
-        
-        
+
+
     ENDIF
   END DO
   IF (ALGAE) THEN
@@ -11259,14 +11259,14 @@ ENDIF
           CALL WARNINGS
           WRITE (WRN,FMTFI) 'Settling rate [CGS]=',           CGS(JG),'] > 10.0 for generic constituent ',  JG
         END IF
-        IF (CGLDK(JG) < 0.0) THEN   
+        IF (CGLDK(JG) < 0.0) THEN
           CALL ERRORS
           WRITE (ERR,FMTFI) 'Photodegradation parameter [CGLDK]=',           CGLDK(JG),'] < 0.0 for generic constituent ',   JG
         ELSE IF (CGLDK(JG) > 1.0E-4) THEN
           CALL WARNINGS
           WRITE (WRN,FMTFI) 'Photodegradation parameter [CGLDK]=',           CGLDK(JG),'] > 1.0E-4 m2/J for generic constituent ',  JG
         END IF
-        IF (CGKLF(JG) < 0.0) THEN   
+        IF (CGKLF(JG) < 0.0) THEN
           CALL ERRORS
           WRITE (ERR,FMTFI) 'Volatilization reaeration rate fraction of O2 rate [CGKLF]=',           CGKLF(JG),'] < 0.0 for generic constituent ',   JG
         ELSE IF (CGKLF(JG) > 2.5) THEN
@@ -11496,7 +11496,7 @@ ENDIF
 
         WRITE (WIN,*) '    algae toxins'
         IF(ALGAE_TOXINS)THEN
-            INQUIRE(FILE='w2_Algae_Toxin.csv',EXIST=ALGAE_TOXIN_FILE)    
+            INQUIRE(FILE='w2_Algae_Toxin.csv',EXIST=ALGAE_TOXIN_FILE)
             IF(ALGAE_TOXIN_FILE)THEN
                  UNIT=2450
                  OPEN(2450,FILE='w2_Algae_Toxin.csv',STATUS='OLD')
@@ -11507,17 +11507,17 @@ ENDIF
                       CALL WARNINGS
                       WRITE(WRN,'(a,a2)')'Algae Toxins are active and w2_Algae_Toxins.csv exists, but global ON/OFF switch is not ON. ATOX=',atox
                   ENDIF
-                  
-                  
+
+
                   IF(ATOX == 'ON')THEN
                   ALLOCATE(CTP(NUMATOXINS,NAL),CTB(NUMATOXINS,NAL))
                   READ(2450,*,ERR=400)
                   READ(2450,*,ERR=400)(CTP(1,JA),JA=1,NAL)
-                  READ(2450,*,ERR=400)(CTB(1,JA),JA=1,NAL)              
-                  
+                  READ(2450,*,ERR=400)(CTB(1,JA),JA=1,NAL)
+
                   READ(2450,*,ERR=400) CTREL(1)      !(CTL(1,JA),JA=1,NAL)
                   READ(2450,*,ERR=400) CTD(1)     !(CTDE(1,JA),JA=1,NAL)
-                  
+
                   IF(CAC(NATS)=='      ON')THEN
                       DO JA=1,NAL
                           IF(CTP(1,JA) > 1.0 .OR. CTP(1,JA) < 0.0)THEN
@@ -11536,7 +11536,7 @@ ENDIF
                   READ(2450,*,ERR=400)(CTB(2,JA),JA=1,NAL)
                   READ(2450,*,ERR=400) CTREL(2)     !(CTL(2,JA),JA=1,NAL)
                   READ(2450,*,ERR=400) CTD(2)    !(CTDE(2,JA),JA=1,NAL)
-                  
+
                   IF(CAC(NATS+1)=='      ON')THEN
                       DO JA=1,NAL
                           IF(CTP(2,JA) > 1.0 .OR. CTP(2,JA) < 0.0)THEN
@@ -11549,7 +11549,7 @@ ENDIF
                           ENDIF
                       ENDDO
                   ENDIF
-                  
+
                   READ(2450,*,ERR=400)
                   READ(2450,*,ERR=400)(CTP(3,JA),JA=1,NAL)
                   READ(2450,*,ERR=400)(CTB(3,JA),JA=1,NAL)
@@ -11567,7 +11567,7 @@ ENDIF
                           ENDIF
                       ENDDO
                   ENDIF
-                  
+
                   READ(2450,*,ERR=400)
                   READ(2450,*,ERR=400)(CTP(4,JA),JA=1,NAL)
                   READ(2450,*,ERR=400)(CTB(4,JA),JA=1,NAL)
@@ -11584,7 +11584,7 @@ ENDIF
                               WRITE(ERR,'(A,F8.2,A,I2)')'Algae Toxins: In file w2_Algae_Toxin.csv for STX, CTB(4,JA)=',ctb(4,ja),' is >= 1.0 or < 0.0 for algae group:',ja
                           ENDIF
                       ENDDO
-                  ENDIF       
+                  ENDIF
                   CLOSE(2450)
             ELSE
                 CALL ERRORS
@@ -11594,7 +11594,7 @@ ENDIF
         ENDIF
         WRITE (WIN,*) '    algae vertical migration'
         IF(ALGAE_MIGRATION)THEN
-            INQUIRE(FILE='w2_AlgaeMigration.csv',EXIST=ALGAE_MIGRATION_FILE)    
+            INQUIRE(FILE='w2_AlgaeMigration.csv',EXIST=ALGAE_MIGRATION_FILE)
             IF(.NOT.ALGAE_MIGRATION_FILE)THEN
                  CALL ERRORS
                  WRITE (ERR,'(A)') 'AVERTM is ON for an algae group, but the file, w2_AlgaeMigration.csv, does not exist.'
@@ -11605,16 +11605,16 @@ ENDIF
       READ(2450,*,ERR=400)MIGRATION     ! '(A2)'
       IF(MIGRATION /= 'ON' .OR. MIGRATION /='OF')THEN
                 CALL ERRORS
-                WRITE (ERR,'(A,A2)') 'w2_AlgaeMigration.csv: MIGRATION must be ON or OF[F]. [MIGRATION]=',MIGRATION    
+                WRITE (ERR,'(A,A2)') 'w2_AlgaeMigration.csv: MIGRATION must be ON or OF[F]. [MIGRATION]=',MIGRATION
       ENDIF
       IF(MIGRATION /= 'ON')GO TO 1001
       READ(2450,*,ERR=400)
       READ(2450,*,ERR=400)NMIG,ALGMIGRATION_DEBUG
       IF(ALGMIGRATION_DEBUG /= 1 .OR. ALGMIGRATION_DEBUG/=0)THEN
                 CALL ERRORS
-                WRITE (ERR,'(A,I3)') 'w2_AlgaeMigration.csv: ALGMIGRATION_DEBUG must be 1 or 1. [ALGMIGRATION_DEBUG]=',ALGMIGRATION_DEBUG    
+                WRITE (ERR,'(A,I3)') 'w2_AlgaeMigration.csv: ALGMIGRATION_DEBUG must be 1 or 1. [ALGMIGRATION_DEBUG]=',ALGMIGRATION_DEBUG
       ENDIF
-      
+
       READ(2450,*,ERR=400)
       ALLOCATE(MIGRATE_GROUP(NMIG),MIGRATE_MODEL(NMIG),AMP(NMIG),PHASE(NMIG),C_COEFF_EXT(NMIG),RAD(NMIG),MIND(NMIG),MAXD(NMIG),DENSI(NMIG),DENBI(NMIG),T_DEC(NMIG),TS_DEC(NMIG),C_DENINC(NMIG),C_DENDEC(NMIG),&
           DEPTH_LIM_ONOFF(NMIG),DEPTH_LIM(NMIG),LOSS_FRAC(NMIG),I_C(NMIG),C_DENINC_1(NMIG),C_DENINC_2(NMIG),C_DENDEC_1(NMIG),C_DENDEC_2(NMIG),DENP_MINS(NMIG),DENP_MINB(NMIG),DEN_COR(MIGI),&
@@ -11623,7 +11623,7 @@ ENDIF
         READ(2450,*,ERR=400)MIGRATE_GROUP(I)
         IF(MIGRATE_GROUP(I)==0 .OR. MIGRATE_GROUP(I)>NAL)THEN
                 CALL ERRORS
-                WRITE (ERR,'(A,I2,a,i2)') 'w2_AlgaeMigration.csv: MIGRATE_GROUP(I) must be >0 AND <# of algal groups. [MIGRATE_GROUP(I)]=',MIGRATE_GROUP(I),' for group I=',I    
+                WRITE (ERR,'(A,I2,a,i2)') 'w2_AlgaeMigration.csv: MIGRATE_GROUP(I) must be >0 AND <# of algal groups. [MIGRATE_GROUP(I)]=',MIGRATE_GROUP(I),' for group I=',I
         ENDIF
 
         READ(2450,*,ERR=400)
@@ -11636,7 +11636,7 @@ ENDIF
         READ(2450,*,ERR=400)MIGRATE_MODEL(I)
         IF(MIGRATE_MODEL(I) <=0 .OR. MIGRATE_MODEL(I)>4)THEN
                 CALL ERRORS
-                WRITE (ERR,'(A,I2,a,i2)') 'w2_AlgaeMigration.csv: MIGRATE_MODEL(I) must be between 1 AND 4. [MIGRATE_MODEL(I)]=',MIGRATE_MODEL(I),' for group I=',I    
+                WRITE (ERR,'(A,I2,a,i2)') 'w2_AlgaeMigration.csv: MIGRATE_MODEL(I) must be between 1 AND 4. [MIGRATE_MODEL(I)]=',MIGRATE_MODEL(I),' for group I=',I
         ENDIF
         READ(2450,*,ERR=400)
         IF(MIGRATE_MODEL(I)==1 .OR. MIGRATE_MODEL(I)==2)THEN
@@ -11655,27 +11655,27 @@ ENDIF
             READ(2450,*,ERR=400)
         ELSE
             READ(2450,*,ERR=400)
-            READ(2450,*,ERR=400)            
             READ(2450,*,ERR=400)
-            READ(2450,*,ERR=400)            
+            READ(2450,*,ERR=400)
+            READ(2450,*,ERR=400)
             READ(2450,*,ERR=400)RAD(I),MIND(I),MAXD(I),DENSI(I),DENBI(I),I_C(I),C_DENINC_1(I),C_DENINC_2(I),C_DENDEC_1(I),C_DENDEC_2(I),DENP_MINS(I),DENP_MINB(I),DEN_COR(I),DEPTH_LIM_ONOFF(I),&
                 DEPTH_LIM(I),LOSS_FRAC(I)
-            READ(2450,*,ERR=400)            
+            READ(2450,*,ERR=400)
         ENDIF
       ENDDO
 
 1001   CLOSE(2450)
 
             ENDIF
-                    
+
         ELSE
-             INQUIRE(FILE='w2_AlgaeMigration.csv',EXIST=ALGAE_MIGRATION_FILE) 
+             INQUIRE(FILE='w2_AlgaeMigration.csv',EXIST=ALGAE_MIGRATION_FILE)
              IF(ALGAE_MIGRATION)THEN
                  CALL WARNINGS
                  WRITE (WRN,'(A)') 'AVERTM is OFF for all algae groups, but the file, w2_AlgaeMigration.csv, exists but is not implemented in the model.'
              ENDIF
         ENDIF
-        
+
 
 
 !** Epiphyton
@@ -12084,33 +12084,33 @@ ENDIF
     END DO
 
 !**Zooplankton **************
-   IF(NZP>0)THEN 
+   IF(NZP>0)THEN
     do jz=1,nzp
     IF(ZG(JZ) <= 0.0)THEN
       CALL ERRORS
-        WRITE (ERR,FMTFI) 'Zooplankton growth rate [ZG=', ZG(JZ),'] <= 0.0 for zooplankton group ',   JZ  
+        WRITE (ERR,FMTFI) 'Zooplankton growth rate [ZG=', ZG(JZ),'] <= 0.0 for zooplankton group ',   JZ
     ENDIF
     IF(ZG(JZ) > 3.0)THEN
       CALL WARNINGS
-        WRITE (WRN,FMTFI) 'Zooplankton growth rate [ZG=', ZG(JZ),'] > 3.0 for zooplankton group ',   JZ  
+        WRITE (WRN,FMTFI) 'Zooplankton growth rate [ZG=', ZG(JZ),'] > 3.0 for zooplankton group ',   JZ
     ENDIF
     IF(ZR(JZ) <= 0.0)THEN
       CALL ERRORS
-        WRITE (ERR,FMTFI) 'Zooplankton respiration rate [ZR=', ZR(JZ),'] <= 0.0 for zooplankton group ',   JZ  
+        WRITE (ERR,FMTFI) 'Zooplankton respiration rate [ZR=', ZR(JZ),'] <= 0.0 for zooplankton group ',   JZ
     ENDIF
     IF(ZR(JZ) > 1.0)THEN
       CALL WARNINGS
-        WRITE (WRN,FMTFI) 'Zooplankton respiration rate [ZR=', ZR(JZ),'] > 1.0 for zooplankton group ',   JZ  
+        WRITE (WRN,FMTFI) 'Zooplankton respiration rate [ZR=', ZR(JZ),'] > 1.0 for zooplankton group ',   JZ
     ENDIF
     IF(ZM(JZ) <= 0.0)THEN
       CALL ERRORS
-        WRITE (ERR,FMTFI) 'Zooplankton mortality rate [ZM=', ZM(JZ),'] <= 0.0 for zooplankton group ',   JZ  
+        WRITE (ERR,FMTFI) 'Zooplankton mortality rate [ZM=', ZM(JZ),'] <= 0.0 for zooplankton group ',   JZ
     ENDIF
     IF(ZM(JZ) > 0.5)THEN
       CALL WARNINGS
-        WRITE (WRN,FMTFI) 'Zooplankton mortality rate [ZM=', ZM(JZ),'] > 0.5 for zooplankton group ',   JZ  
+        WRITE (WRN,FMTFI) 'Zooplankton mortality rate [ZM=', ZM(JZ),'] > 0.5 for zooplankton group ',   JZ
     ENDIF
-    
+
     IF (ZP(JZ) > 0.1) THEN
         CALL WARNINGS
         WRITE (WRN,FMTFI) 'Phosphorus to zooplankton stoichiometry [ZP=', ZP(JZ),'] > 0.1 for zooplankton group ',     JZ
@@ -12131,8 +12131,8 @@ ENDIF
       ELSE IF (ZC(JZ) <= 0.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTFI) 'Carbon to zooplankton stoichiometry [ZC=',     ZC(JZ),'] <= 0.0 for zooplankton group ',     JZ
-      END IF    
-      
+      END IF
+
       ! zooplankton temperature rates
         IF (ZT1(JZ) < 0.0) THEN
         CALL ERRORS
@@ -12192,10 +12192,10 @@ ENDIF
       IF (ZT3(JZ) >= ZT4(JZ)) THEN
         CALL ERRORS
         WRITE (ERR,FMT2FI) 'Zooplankton temperature rate multiplier [ZT3=',ZT3(JZ),'] > [ZT4=',ZT4(JZ),'] for zooplankton group ',JZ
-      END IF     
+      END IF
     enddo
    ENDIF
-   
+
 
 !** Dissolved organic matter
 
@@ -12370,9 +12370,9 @@ ENDIF
         !        ENDDO
         !    ENDDO
         !ENDIF
-        
+
     END DO
-    
+
 
 !** Carbonaceous biochemical oxygen demand
 
@@ -12620,7 +12620,7 @@ ENDIF
         CALL WARNINGS
         WRITE (WRN,FMTFI) 'Carbon/organic matter stoichiometry [ORGC=',      ORGC(JW),'] /= 0.45 for waterbody ', JW
       END IF
-      
+
       IF (O2NH4(JW) < 1.0) THEN
         CALL ERRORS
         WRITE (ERR,FMTFI) 'Oxygen to ammonium stoichiometry [O2NH4=',       O2NH4(JW),'] < 1.0 [DEFAULT=4.2-4.57] for waterbody ', JW
@@ -12769,12 +12769,12 @@ ENDIF
            CALL WARNINGS
            WRITE (WRN,FMTFI) 'Ratio of dissolved gas to O2 is  [DGPO2=',DGPO2(JW),'] < 1.01 for waterbody ',JW
         ENDIF
-    ENDIF 
-    
+    ENDIF
+
   END DO
-  
+
   ENDIF
-  
+
 
   ! Filenames
 
@@ -13023,7 +13023,7 @@ ENDIF
         DO J=1,NMC  ! MACROPHYTES
         IF(VERT_MACRO(JW,J))READ (VPR(JW),'(/A8/(8X,9F8.0))',ERR=400) AID, (MACRCVP(K,JW,J),K=KTWB(JW),KBMAX(JW))
         ENDDO
-        
+
       ENDIF
       ELSE
         CALL ERRORS
@@ -13041,7 +13041,7 @@ ENDIF
         READ (LPR(JW),'(A1)')ICHAR1
         IF(ICHAR1=='$')READ( LPR(JW),*)AID
 ! Read LPR File - later in code - see below
-        
+
       ELSE
         CALL ERRORS
         WRITE (ERR,FMTA) 'Longitudinal/vertical initial conditions for temperature or constituents or epihpyton or macrophytes, but could not open '//LPRFN(JW)
@@ -13188,7 +13188,7 @@ ENDIF
            END DO
         END IF
     END DO
-    
+
         DO JE=1,NMC
         IF (MACWBC(JW,JE) == '      ON') THEN
         IF (LONG_MACRO(JW,JE).AND.ICHAR1=='$')READ (LPR(JW),*,ERR=400)
@@ -13226,7 +13226,7 @@ ENDIF
       END DO
 
   END DO    ! JW
-  
+
   DO JW=1,NWB
         IF(CDWBC(PH_DER,JW)/='      ON')THEN
             IF(TOT_IC)THEN
@@ -13242,8 +13242,8 @@ ENDIF
         ENDIF
 
   ENDDO
-  
-INQUIRE(FILE='w2_lake_river_contour.csv',EXIST=LAKE_RIVER_CONTOURC)    
+
+INQUIRE(FILE='w2_lake_river_contour.csv',EXIST=LAKE_RIVER_CONTOURC)
 IF(LAKE_RIVER_CONTOURC)THEN
     UNIT=LAKE_RIVER_CONTOUR
     AID='w2_lake_river_contour.csv'
@@ -13271,7 +13271,7 @@ IF(LAKE_RIVER_CONTOURC)THEN
                  EXIT
              ENDIF
       ENDIF
-      
+
     ENDDO
 
   ENDDO
@@ -13323,7 +13323,7 @@ IF(LAKE_RIVER_CONTOURC)THEN
   DO JW=1,NWB
     WRITE (INI,11300)  JW, LAT(JW), LONG(JW)
   END DO
-  
+
   WRITE(INI,'(//"Meteorological Data Input Summary",/,"    Parameter   Waterbody   Average Value    Maximum     Minimum",/)')
   DO JW=1,NWB
       write(INI,'(4x,"TAIR(C)",8X,I3,7X,F10.3,3X,F10.3,2X,F10.3)')JW,tairav(jw),tairmax(jw),tairmin(jw)
@@ -13334,7 +13334,7 @@ IF(LAKE_RIVER_CONTOURC)THEN
       write(INI,'(4x,"SRO(W/m2)",6X,I3,7X,F10.3,3X,F10.3,2X,F10.3,/)')JW,sroav(jw),sromax(jw),sromin(jw)
   ENDDO
   WRITE(INI,'(/)')
-  
+
   IEGR = 1
   WRITE (INI,11330)
   DO WHILE (IEGR < IMX-1)
@@ -13355,18 +13355,18 @@ IF(LAKE_RIVER_CONTOURC)THEN
     WRITE (INI,11380) JW,ICEC(JW)(6:8),SLICEC(JW),ALBEDO(JW),HWI(JW),BETAI(JW),GAMMAI(JW)
   END DO
   WRITE (INI,11385)
-  
+
   IF(WLC=='      ON')WRITE(INI,'(2X,"Water Level Output File: ON",T40,"Output file: wl.csv",T65,"Output frequency(days):",f10.4)')WLF
-  
+
   IF(FLOWBALC == '      ON' .AND. VBC(1) == '      ON')WRITE(INI,'(2X,"Flow Balance Output File: ON",T40,"Output file: flowbal.csv",T65,"Output frequency(days):",f10.4)')FLOWBALF
-  IF(FLOWBALC==  '      ON' .AND. VBC(1) /= '      ON')WRITE(INI,'(2X,"Flow Balance Output File is ON but VBC=OFF. No output file will be produced unless Volume Balance is ON.")') 
+  IF(FLOWBALC==  '      ON' .AND. VBC(1) /= '      ON')WRITE(INI,'(2X,"Flow Balance Output File is ON but VBC=OFF. No output file will be produced unless Volume Balance is ON.")')
   IF(NPBALC=='      ON')WRITE(INI,'(2X,"N & P Mass Balance Output File: ON",T40,"Output file: massbal.csv",T65,"Output frequency(days):",f10.4)')NPBALF
   IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN
       WRITE(INI,'(2x,"Lake River Contouor Output is ON and w2_lake_river_contour.csv has been read in."/)')
   ELSE
       WRITE(INI,'(2x,"Lake River Contouor Output is NOT ON but w2_lake_river_contour.csv has been read in."/)')
   ENDIF
-  
+
   DO JW=1,NWB
     WRITE (INI,11390) JW,(HNAME(J),HPRWBC(J,JW)(6:8),J=1,NHY)
   END DO
@@ -13449,8 +13449,8 @@ IF(LAKE_RIVER_CONTOURC)THEN
     DO JS=1,NSP
     IF(GASSPC(JS) =='      ON' .AND. EQSP(JS)==4 .AND. BGASSP(JS)==1.0)THEN
          WRITE (SEGNUM,'(I0)') JS
-         SEGNUM = ADJUSTL(SEGNUM)  
-         L = LEN_TRIM(SEGNUM) 
+         SEGNUM = ADJUSTL(SEGNUM)
+         L = LEN_TRIM(SEGNUM)
          TITLE240='w2_sp'//SEGNUM(1:L)//'DO.csv'
         WRITE(INI,'(5X,A,I2,A,A)')'For spillway [',JS,'], since EQSP=4, an external file is read in for spillway gas fraction:',trim(title240)
     ENDIF
@@ -13472,13 +13472,13 @@ IF(LAKE_RIVER_CONTOURC)THEN
     DO JT=1,NGT
     IF(GASGTC(JT)=='      ON' .AND. EQGT(JT)==4 .AND. BGASGT(JT)==1.0)THEN
          WRITE (SEGNUM,'(I0)') JT
-         SEGNUM = ADJUSTL(SEGNUM)  
-         L = LEN_TRIM(SEGNUM) 
+         SEGNUM = ADJUSTL(SEGNUM)
+         L = LEN_TRIM(SEGNUM)
          TITLE240='w2_gt'//SEGNUM(1:L)//'DO.csv'
         WRITE(INI,'(5X,A,I2,A,A)')'For gate [',JT,'], since EQGT=4, an external file is read in for gate gas fraction:',trim(title240)
     ENDIF
     ENDDO
-    
+
   END IF
   IF (PIPES) THEN
     WRITE (INI,11831)  NPI,(EUPI(JP),JP=1,NPI)
@@ -13529,7 +13529,7 @@ IF(LAKE_RIVER_CONTOURC)THEN
           WRITE(INI,'(T12,"Multiple WB input #:",i3,T40,"Type of input:",a2,t65," Directory:",a)')J,MWB2(J),FILEDIRMWB(J)
       ENDDO
   ENDIF
-  
+
   IF(SYSTDG .and. SYSTDGC=='      ON')WRITE(INI,'(A)')'   w2_systdg.npt read in for gate TDG impacts and the model is used for TDG calculations.'
   IF(SYSTDG .and. SYSTDGC=='     OFF')WRITE(INI,'(A)')'   w2_systdg.npt read in for gate TDG impacts BUT NOT used for TDG calculations since SYSTDGC=OFF.'
   IF(TECPLOTBR)WRITE(INI,'(A,T65,A,<JTEC>(I3,","))')'   w2_tecplotbr.csv file is read in and TECPLOT output is ON.','ACTIVE BRANCHES:',(IBR(I),I=1,JTEC)
@@ -13563,7 +13563,7 @@ IF(LAKE_RIVER_CONTOURC)THEN
         if(.not.IncludeManganese)WRITE(INI,'(T20,A)')'Sediment Mn processes are OFF'
         if(DYNAMIC_SD)WRITE(INI,'(T20,A)')'Sediment dynamic accumulation of labile to refractory organics is ON since SDRegnPOC_L_Fr<0. Hence, the ratio is not fixed over time.'
   endif
-  
+
 
   WRITE(INI,*)
   DO JW=1,NWB
@@ -13585,7 +13585,7 @@ IF(LAKE_RIVER_CONTOURC)THEN
     WRITE (INI,12000) CCC(6:8), LIMC(6:8), CUF
     IF(CO2ATM_REGRESSION=='      ON')THEN
         IF(YEAR<1980)THEN
-          CO2ATM  = 0.000041392*YEAR**3 - 0.231409975*YEAR**2 + 430.804190829*YEAR - 266735.857433224  
+          CO2ATM  = 0.000041392*YEAR**3 - 0.231409975*YEAR**2 + 430.804190829*YEAR - 266735.857433224
         ELSE
           CO2ATM  = 0.015903*YEAR**2 - 61.799598*YEAR + 60357.055057
         ENDIF
@@ -13593,7 +13593,7 @@ IF(LAKE_RIVER_CONTOURC)THEN
             CALL ERRORS
             WRITE (ERR,'(A)') 'CO2 atmospheric concentrations outside range of regression. YEAR must be > 1920. Suggest entering a specific value of CO2ATM in ppm rather than use the regression.'
         ENDIF
-        
+
         WRITE (INI,'(A,I4,A,F10.2,A)')'   CO2 atmospheric concentration is computed internally. For the start year of simulation [YEAR=',YEAR,'], CO2 atmosphere:',CO2ATM,' ppm CO2'
     ELSE
         WRITE (INI,'(A,F10.2,A)') '   CO2 atmospheric concentration was specified by the user as',CO2ATMPPM,' ppm CO2'
@@ -13601,22 +13601,22 @@ IF(LAKE_RIVER_CONTOURC)THEN
             CALL WARNINGS
             WRITE(WRN,'(A,F10.2)') 'CO2 atmospheric value entered by the user is either > 450 ppm or < 300 ppm. The CO2 atm concentration in ppm is ',CO2ATMPPM
         ENDIF
-        
+
     ENDIF
-        
+
     DO JW=1,NWB
       WRITE (INI,12030) JW
       IF(CDWBC(NH3_DER,JW)=='      ON')THEN
         WRITE(INI,'(A,I3,T65,A,F10.2)')'     NH3 derived constituent active and gas loss modeled.'       !JW=',JW,'KG_H2O_CONSTANT=',KG_H2O_CONSTANT(JW)
         IF(KG_H2O_CONSTANT(JW) /= 168.)THEN
             CALL WARNINGS
-            WRITE (WRN,'(A,f10.2,A,I4)')'NH3 gas loss: KG_H2O_CONSTANT is not equal to recommended value of 168. The value used is',kg_h2o_constant(jw),' for WB:',jw  
+            WRITE (WRN,'(A,f10.2,A,I4)')'NH3 gas loss: KG_H2O_CONSTANT is not equal to recommended value of 168. The value used is',kg_h2o_constant(jw),' for WB:',jw
         ENDIF
         IF(CDWBC(PH_DER,JW)/='      ON')THEN
             CALL ERRORS
             WRITE(ERR,'(A,I4)')'NH3 derived variable is ON but pH is not ON. pH must be on to compute NH3 for waterbody #:',JW
         ENDIF
-        
+
       ENDIF
       WRITE (INI,12020)
       WRITE (INI,12040) (CNAME1(JC),CAC(JC)(6:8),C2IWB(JC,JW),CPRWBC(JC,JW)(6:8),JC=1,NCT),'Sediments          ',& ! (CNAME1(JC),CAC(JC)(6:8),C2IWB(JC,JW),CFWBC(JC,JW)(6:8),CPRWBC(JC,JW)(6:8),JC=1,NCT),'Sediments          ',&
@@ -13680,12 +13680,12 @@ IF(LAKE_RIVER_CONTOURC)THEN
       WRITE (INI,12340) JA, AT3(JA), AT4(JA)
     END DO
       WRITE (INI,12355) 'Algae Oxygen',(JA,O2AR(JA),O2AG(JA),JA=1,NAL)
-      WRITE (INI,12356) 'Periphyton Oxygen',(JA,O2ER(JA),O2EG(JA),JA=1,NEPT) 
+      WRITE (INI,12356) 'Periphyton Oxygen',(JA,O2ER(JA),O2EG(JA),JA=1,NEPT)
       WRITE (INI,12380) 'Half Saturation', (JA,AHSP(JA), AHSN(JA),  AHSSI(JA),JA=1,NAL)
       WRITE (INI,12400) 'Attentuation', (JA,EXA(JA), JA=1,NAL)
       WRITE (INI,12410) 'Light Saturation',(JA,ASAT(JA),JA=1,NAL)
       WRITE (INI,12420) 'Diffusion',                DMO2,      DMCO2
-      
+
       DO JW=1,NWB
       WRITE (INI,'(A,I2)')'   Waterbody #',JW
       WRITE (INI,12350) 'Stoichiometric Equivalence', O2NH4(JW), O2OM(JW)
@@ -13731,27 +13731,27 @@ IF(LAKE_RIVER_CONTOURC)THEN
       END DO
       endif
     END DO
-    
-    !** External Head constituent statistics          
+
+    !** External Head constituent statistics
 
     DO JB=1,NBR
       if(uh_external(jb))then
       WRITE (INI,FMTI) '    External Head Upstream ',JB
       WRITE (INI,FMTA)    '       Constituent name             Average            Maximum        Minimum '
       DO JC=1,NAC
-        WRITE (INI,'(7X,A,3(2X,F16.3),2x,e12.5)') CNAME1(CN(JC))(1:19),CUHAVG(JC,JB), CUHMAX(JC,JB),  CUHMIN(JC,JB)            
+        WRITE (INI,'(7X,A,3(2X,F16.3),2x,e12.5)') CNAME1(CN(JC))(1:19),CUHAVG(JC,JB), CUHMAX(JC,JB),  CUHMIN(JC,JB)
       END DO
       endif
     END DO
-    
-    !** External Head constituent statistics          
+
+    !** External Head constituent statistics
 
     DO JB=1,NBR
       if(DH_external(jb))then
       WRITE (INI,FMTI) '    External Head Downstream ',JB
       WRITE (INI,FMTA)    '       Constituent name             Average            Maximum        Minimum '
       DO JC=1,NAC
-        WRITE (INI,'(7X,A,3(2X,F16.3),2x,e12.5)') CNAME1(CN(JC))(1:19),CDHAVG(JC,JB), CDHMAX(JC,JB),  CDHMIN(JC,JB)            
+        WRITE (INI,'(7X,A,3(2X,F16.3),2x,e12.5)') CNAME1(CN(JC))(1:19),CDHAVG(JC,JB), CDHMAX(JC,JB),  CDHMIN(JC,JB)
       END DO
       endif
     END DO
@@ -13824,7 +13824,7 @@ DO J=1,NCT
    ENDDO
 ENDDO
   ENDIF
-  
+
   WRITE (INI,'(/1X,A)') 'Water Balance Summary'
   DO JW=1,NWB
     WRITE (INI,12460) JW, QINAVW(JW), QINMXW(JW), QOTAVW(JW), QOTMXW(JW)
@@ -13854,7 +13854,7 @@ ENDDO
           WRITE (INI,FMTA)    '  Tributary(JT)    Maximum Temp(C)     Minimum Temp(C) '
           WRITE (INI,'(7X,I4,6X,F10.3,9x,F10.3)') JT,TRTMAX(JT),TRTMIN(JT)
     END DO
-    
+
        !** EXTERNAL HEAD TEMPERATURE STATS                                                                                      !SW 01/07/01
 
    DO JB=1,NBR
@@ -14032,17 +14032,17 @@ ENDDO
   GO TO 99999
 
 ! Error message for input cards
-  
+
 405 CONTINUE
     WRITE(ERR,'(A)')'Severe error in branch geometry or waterbody-branch specification. Pre-processing stopped.'
     WRITE(WIN,'(A)')'Severe error in branch geometry or waterbody-branch specification. Pre-processing stopped. See pre.err for information.'
     CLOSE(ERR);STOP
-  
+
 402 CONTINUE
     CALL INPUT_ERROR (UNIT,ERR,AID,'Either illegal value or incorrect card somewhere in the following cards')
     CLOSE(ERR);STOP
-    
-  
+
+
 401 CONTINUE
     WRITE(ERR,'(A,A)')'Read Error in file:',AID
     WRITE(ERR,'(A)')'Check to make sure that the file is in Windows file format <CR><LF> and not Unix file format <CR>.'
@@ -14054,7 +14054,7 @@ ENDDO
     IF(ICST==2)THEN
     CALL INPUT_ERROR (UNIT,ERR,'GRAPH.NPT','Either illegal value or incorrect card somewhere in the following cards in GRAPH.NPT')
     ELSEIF(ICST==3)THEN
-    CALL INPUT_ERROR2 (UNIT,ERR,AID,AID1,'Header value was not expected-error in file row order or the header value was incorrect   ')   
+    CALL INPUT_ERROR2 (UNIT,ERR,AID,AID1,'Header value was not expected-error in file row order or the header value was incorrect   ')
     ELSE
     CALL INPUT_ERROR (UNIT,ERR,AID,'Either illegal value or incorrect card somewhere in the following cards')
     ENDIF
@@ -14230,7 +14230,7 @@ ENDDO
 11830 FORMAT (5X,'Spillway/external weir coefficients'/                                                                            &
               7X,'[A1SP]',4X,'[B1SP]',4X,'[A2SP]',4X,'[B2SP]'/                                                                     &
               :(2X,4(2X,F8.2)))
-             
+
 11831 FORMAT (3X,'Number of pipes [NPI] = ',I0:/                                                                                   &
               5X,'upstream centerline elevation   [EUPI] = ',7F8.2,                                                                &
              (:/T26,7F8.2))
@@ -14293,7 +14293,7 @@ ENDDO
 11860 FORMAT (3X,'Number of tributaries [NTR] = ',I0:/                                                                             &
               5X,'segment number     [ITR] = ',7I8,                                                                                &
              (:/T33,7I8))
-             
+
 11865 FORMAT (5X,'Spillway/external gas coefficients'/                                                                            &
               8X,'[GASSPC]',2X,'[EQSP]',3x,'[AGASSP]',2X,'[BGASSP]',3X,'[CGASSP]'/                                                                     &
               :(2X,5X,A8,5x,i2,2x,3(2X,F8.2)))
@@ -14415,15 +14415,15 @@ ENDDO
               T27,'Org-C                 [ALGC] =',F6.3/                                                                           &
               T27,'Org-Si               [ALGSI] =',F6.3/                                                                           &
               T27,'Algae/chl a ratio    [ACHLA] =',F6.2,' mg/ug'/                                                                  &
-              T27,'Fraction algae to POM [APOM] =',F6.2/                                                                           &       
-              T27,'Vertical Migration  [AVERTM] =',A8) 
+              T27,'Fraction algae to POM [APOM] =',F6.2/                                                                           &
+              T27,'Vertical Migration  [AVERTM] =',A8)
 12161         FORMAT (7X,'Zooplankton group',I0,T27,'Growth',T51,'[ZG] =',F6.3,' /day'/                                                    &
               T27,'Mortality               [ZM] =',F6.3,' /day'/                                                                   &
               T27,'Respiration             [ZR] =',F6.3,' /day'/                                                                   &
               T27,'Settling                [ZS] =',F6.3,' m/day'/                                                                  &
               T27,'Org-P                   [ZP] =',F6.3/                                                                           &
               T27,'Org-N                   [ZN] =',F6.3/                                                                           &
-              T27,'Org-C                   [ZC] =',F6.3)    
+              T27,'Org-C                   [ZC] =',F6.3)
 12162 FORMAT (7X,'Periphyton group',I0,T27,'Growth',T51,'[EG] =',F6.3,' /day'/                                                          &
               T27,'Mortality               [EM] =',F6.3,' /day'/                                                                   &
               T27,'Excretion               [EE] =',F6.3,' /day'/                                                                   &
@@ -14488,38 +14488,38 @@ ENDDO
               9X,'Water             [EXH2O] =',F5.2,' /m'/                                                                         &
               9X,'Inorganic solids   [EXSS] =',F5.2,' /m'/                                                                         &
               9X,'Organic solids     [EXOM] =',F5.2,' /m')
-12391 FORMAT (5X,A/                                                                                                                &        
+12391 FORMAT (5X,A/                                                                                                                &
               (9X,'Bacteria decay            [BACT1DK] =',F5.3 ' /day'/                                                                               &
               9X,'Theta Temp Rate Arrhenius [BACTQ10] =',F5.3/                                                                         &
               9X,'Photo degradation         [BACTLDK] =',F5.3,' m^2/J'/                                                                         &
               9X,'Settling rate               [BACTS] =',F5.3,' m/day'))
-12392 FORMAT (5X,A/                                                                                                                &        
+12392 FORMAT (5X,A/                                                                                                                &
               (9X,'H2S sediment release         [H2SR] =',F5.3 '[-]'/                                                                               &
               9X,'Theta Temp Rate Arrhenius  [H2SQ10] =',F5.3/                                                                         &
               9X,'H2S decay rate             [H2S1DK] =',F5.3,' /day'/                                                                         &
               9X,'SO4 sediment release         [SO4R] =',F5.3,'[-]'))
-12393 FORMAT (5X,A/                                                                                                                &        
+12393 FORMAT (5X,A/                                                                                                                &
               (9X,'CH4 sediment release         [CH4R] =',F5.3 '[-]'/                                                                               &
               9X,'Theta Temp Rate Arrhenius  [CH4Q10] =',F5.3/                                                                         &
               9X,'CH4 decay rate             [CH41DK] =',F5.3,' /day'))
-12394 FORMAT (5X,A/                                                                                                                &        
+12394 FORMAT (5X,A/                                                                                                                &
               (9X,'FE2 sediment release        [FEIIR] =',F5.3 '[-]'/                                                                               &
               9X,'Rate oxidation           [KFE_OXID] =',F5.3,' /day'/                                                                         &
               9X,'Rate reduction            [KFE_RED] =',F5.3,' /day'/                                                                         &
               9X,'Half-saturation Fe3[KFEOOH_HALFSAT] =',F5.3,/                                                                         &
               9X,'FE Settling velocity     [FESETVEL] =',F5.3,' m/day'))
-12395 FORMAT (5X,A/                                                                                                                &        
+12395 FORMAT (5X,A/                                                                                                                &
               (9X,'MN2 sediment release        [MNIIR] =',F5.3 '[-]'/                                                                               &
               9X,'Rate oxidation           [KMN_OXID] =',F5.3,' /day'/                                                                         &
               9X,'Rate reduction            [KMN_RED] =',F5.3,' /day'/                                                                         &
               9X,'Half-saturation Mn  [KMNO2_HALFSAT] =',F5.3,/                                                                         &
               9X,'MN Settling velocity     [MNSETVEL] =',F5.3,' m/day'))
-12396 FORMAT (5X,A/                                                                                                           &        
+12396 FORMAT (5X,A/                                                                                                           &
               (9X,'Reaeration water body      [REAERC] =',A /                                                                               &
               9X,'Equation #                   [NEQN] =',I2/                                                                         &
               9X,'Dissolved gas pressure/O2   [DGPO2] =',F5.3,/                                                                         &
-              9X,'Minimum reaeration          [MINKL] =',F5.3, ' m/day or 1/day'/))             
-               
+              9X,'Minimum reaeration          [MINKL] =',F5.3, ' m/day or 1/day'/))
+
 12400 FORMAT (5X,A/(9X,'Algal group ',I0,'       [EXA] =',F5.2,' /m'))
 12410 FORMAT (5X,A/7X,'Saturation Intensity'/                                                                                           &
              (9X,'Algal group ',I0,' [ASAT] =',F6.1,' W/m^2'))
@@ -14583,28 +14583,28 @@ ENDDO
       IF(NERR>0)THEN
           WINFO%TYPE = QWIN$SIZECURR
           RESULT     = SETWSIZEQQ   (WIN,WINFO)
-          
-           STAT = ABOUTBOXQQ ('CE-QUAL-W2 Preprocessor V4.3 - PSU Dept. Civil & Environmental Engineering S. Wells'C)   
-         !  WRITE (WINTITLE,'(A29,A360)') 'CE-QUAL-W2 4.3 preprocessor. ',moddir 
-           ! STAT = ABOUTBOXQQ ('CE-QUAL-W2 Preprocessor V4.3: PRE.ERR'C)   
+
+           STAT = ABOUTBOXQQ ('CE-QUAL-W2 Preprocessor V4.3 - PSU Dept. Civil & Environmental Engineering S. Wells'C)
+         !  WRITE (WINTITLE,'(A29,A360)') 'CE-QUAL-W2 4.3 preprocessor. ',moddir
+           ! STAT = ABOUTBOXQQ ('CE-QUAL-W2 Preprocessor V4.3: PRE.ERR'C)
             WRITE (WINTITLE,'(A14,a360)') 'PRE.ERR file: ',moddir
             WINTITLE=TRIM(WINTITLE)
      OPEN  (10,FILE='user',TITLE=WINTITLE)
- 
+
   STATUS     = FLOODFILL    (X,Y,ONE)
   I          = SETBKCOLOR   (15)
   I          = SETTEXTCOLOR (ONE)
-  I          = SETEXITQQ    (QWIN$EXITPERSIST)    
+  I          = SETEXITQQ    (QWIN$EXITPERSIST)
      OPEN(20,FILE='PRE.ERR',STATUS='OLD')
      DO J=1,1000
      READ(20,'(A)',END=9977)TITLE240
      WRITE(10,'(A)')TRIM(ADJUSTL(TITLE240))
      ENDDO
-9977 CONTINUE 
+9977 CONTINUE
      RESULT = CLICKMENUQQ (QWIN$TILE)    ! TILE THE MULTIPLE WINDOWS ONCE DONE
      CLOSE(20)
       ENDIF
-          
+
 END PROGRAM W2_PRE
 
 !***********************************************************************************************************************************
@@ -14659,7 +14659,7 @@ SUBROUTINE PRINT_INITIAL_GRID (KT)
       END DO
     END IF
   END DO
-  
+
   ! EPIPHYTON/PERIPHYTON concentrations
 
   DO J=1,NEP
@@ -14676,7 +14676,7 @@ SUBROUTINE PRINT_INITIAL_GRID (KT)
       END DO
     END IF
   END DO
-  
+
    ! MACROPHYTE concentrations
 
   DO J=1,NMC
@@ -14773,7 +14773,7 @@ SUBROUTINE DERIVED_CONSTITUENTS
           TPALG=TPALG+ALG(K,I,JA)*ALGP(JA)
           TNALG=TNALG+ALG(K,I,JA)*ALGN(JA)
       ENDDO
-      
+
       TP(K,I)   =  TOP(K,I)+PO4(K,I)+TPSS+TPALG
       TN(K,I)   =  TON(K,I)+NH4(K,I)+NO3(K,I)+TNALG
       SATO      =  EXP(7.7117-1.31403*(LOG(T2(K,I)+45.93)))*PALT

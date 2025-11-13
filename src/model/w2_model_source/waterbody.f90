@@ -12,7 +12,7 @@ SUBROUTINE WATERBODY
 
 ! Type declarations
   IMPLICIT NONE
-  
+
   REAL, SAVE, ALLOCATABLE, DIMENSION(:)   :: ELL,    ELR,    CL
   REAL, SAVE, ALLOCATABLE, DIMENSION(:,:) :: QU,     QD
   REAL(R8)                                :: C(KMX,IMX), SS(KMX,IMX)

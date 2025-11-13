@@ -6,17 +6,17 @@ Module MetFileRegion    ! SW 12/13/2023
     Character*2 :: MetRegOn
     Logical :: Met_Regions
 
-    
+
     Contains
-    
+
     Subroutine ReadMetRegions
-    Use MAIN, ONLY: CON    
-    Implicit None   
+    Use MAIN, ONLY: CON
+    Implicit None
     Integer :: J
 
-        
+
       Met_Regions=.FALSE.
-      INQUIRE(FILE='w2_MetRegions.csv',EXIST=Met_Regions)    
+      INQUIRE(FILE='w2_MetRegions.csv',EXIST=Met_Regions)
      if(Met_regions)then
               FNMetRegion=CON
               OPEN(FNMetRegion,FILE='W2_MetRegions.csv',status='old')
@@ -31,18 +31,18 @@ Module MetFileRegion    ! SW 12/13/2023
                   READ(FNMetRegion,*)IJUNK,MetRegStart(J),MetRegEnd(J),FNMetFileReg(J)
               ENDDO
           else
-                  Met_Regions=.FALSE.            
+                  Met_Regions=.FALSE.
           endif
           CLOSE(CON)
      endif
 
     RETURN
-    
+
     End Subroutine ReadMetRegions
-    
+
     Subroutine MetRegionsWB
     Use GLOBAL
-    Implicit None    
+    Implicit None
     integer :: NMet
 
     Allocate(WB_MetRegions(NWB),I_MetRegions(IMX))
@@ -50,7 +50,7 @@ Module MetFileRegion    ! SW 12/13/2023
     WB_MetRegions=0
     I_MetRegions=0
     DO NMet=1,NMetFileRegions
-    
+
     DO JW=1,NWB
             IF(MetRegStart(NMet) >= US(BS(JW))-1 .AND. MetRegEnd(NMet) <=  DS(BE(JW))+1)THEN
                  MetRegWB(NMet)=JW
@@ -67,7 +67,7 @@ Module MetFileRegion    ! SW 12/13/2023
         ENDDO
     endif
     ENDDO
-    
+
     DO JW=1,NWB
         if(WB_MetRegions(JW)==0)then
         DO NMet=1,NMetFileRegions
@@ -78,27 +78,26 @@ Module MetFileRegion    ! SW 12/13/2023
         ENDDO
         endif
     ENDDO
-    
+
     DO JW=1,NWB
     DO I=US(BS(JW))-1,DS(BE(JW))+1
         DO NMet=1,NMetFileRegions
         IF(MetRegStart(NMet) <= I .and. MetRegEnd(NMet) >= I)then
             I_MetRegions(I)=NMet
             exit
-        ENDIF   
+        ENDIF
     ENDDO
     ENDDO
     ENDDO
-    
+
     RETURN
-    
+
     End Subroutine MetRegionsWB
-    
+
     Subroutine EndMetRegion
     DEALLOCATE(MetRegWB,MetRegStart,MetRegEnd,FNMetFileReg,WB_MetRegions,I_MetRegions)
     RETURN
-    
+
     End Subroutine EndMetRegion
-    
+
 End Module MetFileRegion
-    

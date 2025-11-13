@@ -30,7 +30,7 @@ subroutine W2_DIALOG
   TYPE (DIALOG) :: DLG
   EXTERNAL RUN_W2
 
-  RESTARTED = .FALSE.                                                                               
+  RESTARTED = .FALSE.
   OPEN (1,FILE='rso.opt',STATUS='OLD',IOSTAT=RESULT); CLOSE (1)                                   !Does restart file exist?
   RSO_EXISTS = RESULT == 0                                                                        !Restart file exists
   RESULTLOG = DLGINIT   (OUTPUT_DIALOG,DLG)                                                          !Initialize dialog box
@@ -82,7 +82,7 @@ SUBROUTINE RUN_W2 (DLG,CONTROL_NAME,ACTION)
       CALL DATE_AND_TIME (CDATE,CCTIME)
       RESTART_PUSHED = .FALSE.
       STOP_PUSHED    = .FALSE.
-      HTHREAD        =  CREATETHREAD (0,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread    CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))   
+      HTHREAD        =  CREATETHREAD (0,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread    CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))
       TIME           =  CCTIME(1:2)//':'//CCTIME(3:4)//':'//CCTIME(5:6)
       RESULT         =  DLGSET (DLG,RUN,           .FALSE.,DLG_ENABLE)                             !Disable 'Run'     button
       RESULT         =  DLGSET (DLG,CLOSE,         .FALSE.,DLG_ENABLE)                             !Disable 'Run'     button
@@ -113,7 +113,7 @@ SUBROUTINE RUN_W2 (DLG,CONTROL_NAME,ACTION)
       STOP_PUSHED    = .FALSE.
       RESTART_PUSHED = .TRUE.
       END_RUN        = .FALSE.
-      HTHREAD        =  CREATETHREAD (0,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread    CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))    
+      HTHREAD        =  CREATETHREAD (0,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))          !Start W2 in a new thread    CREATETHREAD (NULL_SA,0,LOC(CE_QUAL_W2),LOC(DLG),0,LOC(IDTHREAD))
       RESULT         =  DLGSET       (DLG,ENDING_TIME,   ' ')
       RESULT         =  DLGSET       (DLG,RUN,           .FALSE.,DLG_ENABLE)                       !Disable 'Run'     button
       RESULT         =  DLGSET       (DLG,CLOSE,         .FALSE.,DLG_ENABLE)                       !Disable 'Run'     button
@@ -218,7 +218,7 @@ SUBROUTINE SCREEN_UPDATE (DLG)
   WRITE (TEXT1,'(I0)')                NIT;                        RESULT = DLGSET (DLG,ITERATIONS,                       TEXT1)
   WRITE (TEXT1,'(I0)')                NV;                         RESULT = DLGSET (DLG,TIMESTEP_VIOLATIONS,              TEXT1)
   WRITE (TEXT1,'(F0.2)')              FLOAT(NV)/FLOAT(NIT)*100.0; RESULT = DLGSET (DLG,PERCENT,                          TEXT1)
-  
+
   if(.Not.Met_Regions)then
   WRITE (TEXT1,'(F0.2)')              TAIR(JW);                   RESULT = DLGSET (DLG,AIR_TEMPERATURE,                  TEXT1)
   WRITE (TEXT1,'(F0.2)')              TDEW(JW);                   RESULT = DLGSET (DLG,DEW_POINT_TEMPERATURE,            TEXT1)
@@ -230,10 +230,10 @@ SUBROUTINE SCREEN_UPDATE (DLG)
   WRITE (TEXT1,'(F0.2)')              TDEW(1);                   RESULT = DLGSET (DLG,DEW_POINT_TEMPERATURE,            TEXT1)
   WRITE (TEXT1,'(F0.2)')              WIND(1);                   RESULT = DLGSET (DLG,WIND_SPEED,                       TEXT1)
   WRITE (TEXT1,'(F0.2)')              PHI(1);                    RESULT = DLGSET (DLG,WIND_DIRECTION,                   TEXT1)
-  WRITE (TEXT1,'(F0.2)')              CLOUD(1);                  RESULT = DLGSET (DLG,CLOUD_COVER,                      TEXT1)    
+  WRITE (TEXT1,'(F0.2)')              CLOUD(1);                  RESULT = DLGSET (DLG,CLOUD_COVER,                      TEXT1)
   endif
-  
-  
+
+
   WRITE (TEXT1,'(F0.1)')              ET(DS(JBDN(JW)));           RESULT = DLGSET (DLG,EQUILIBRIUM_TEMP,                 TEXT1)
   WRITE (TEXT1,'(F0.1)')              CSHE(DS(JBDN(JW)))*RHOWCP;  RESULT = DLGSET (DLG,SURFACE_HEAT_EXCHANGE,            TEXT1)
     if(.Not.Met_Regions)then
@@ -241,7 +241,7 @@ SUBROUTINE SCREEN_UPDATE (DLG)
     else
   WRITE (TEXT1,'(F0.1)')              SRON(1);                    RESULT = DLGSET (DLG,SOLAR_RADIATION,                  TEXT1)
     endif
-    
+
   WRITE (TEXT1,'(A)')                 TIME;                       RESULT = DLGSET (DLG,CURRENT_TIME,                     TEXT1)
   WRITE (TEXT1,'(I0)')                KTWB(JW);                   RESULT = DLGSET (DLG,SURFACE_LAYER,                    TEXT1)
   WRITE (TEXT1,'(F0.2)')              ELKT(JW);                   RESULT = DLGSET (DLG,SURFACE_ELEVATION,                TEXT1)
@@ -259,12 +259,12 @@ SUBROUTINE SCREEN_UPDATE (DLG)
   WRITE (TEXT1,'(*(F0.2,2X))')        QSP;                        RESULT = DLGSET (DLG,SPILLWAYFLOW,                     TEXT1)
   WRITE (TEXT1,'(*(F0.2,2X))')        QPI;                        RESULT = DLGSET (DLG,PIPEFLOW,                         TEXT1)
   WRITE (TEXT1,'(*(F0.2,2X))')        QGT;                        RESULT = DLGSET (DLG,GATEFLOW,                         TEXT1)
-  WRITE (TEXT1,'(A180)')           MODDIR;                        RESULT = DLGSET (DLG,MODELDIRECTORY,                 TEXT1) 
+  WRITE (TEXT1,'(A180)')           MODDIR;                        RESULT = DLGSET (DLG,MODELDIRECTORY,                 TEXT1)
 
   WRITE (TEXT1,'(F0.2)')             (CURRENT)/60.0;              RESULT = DLGSET (DLG,CPU_TIMES,                        TEXT1)
   IF (MINDLT >= 1.0) WRITE (TEXT1,'(I0)') INT(MINDLT);            IF (MINDLT < 1.0) WRITE (TEXT1,'(F0.3)') MINDLT
   RESULT = DLGSET (DLG,MIN_TIMESTEP,                     TEXT1)
-  
+
   IPROG=INT(((JDAY-TMSTRT)/(TMEND-TMSTRT))*100)   ! range is 0 to 100
   RESULT = DLGSET (DLG,PROGRESSBAR,IPROG,DLG_POSITION)
 RETURN
@@ -293,4 +293,3 @@ ENTRY BLANK_DIALOG (DLG)
   RESULT = DLGSET (DLG,PUMPFLOW,             ' ');                RESULT = DLGSET (DLG,MODELDIRECTORY,             ' ')
   RESULT = DLGSET (DLG,PROGRESSBAR,0,DLG_POSITION)
 END SUBROUTINE SCREEN_UPDATE
-

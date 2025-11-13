@@ -1,6 +1,6 @@
 # estimated precipitation temp
 # data from OCS; avg of daily max/min
-#   JDAY     T,C                   
+#   JDAY     T,C
     1.00    6.11
     2.00    7.50
     3.00    6.39

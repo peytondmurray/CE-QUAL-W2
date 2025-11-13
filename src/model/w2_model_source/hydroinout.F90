@@ -20,7 +20,7 @@ use GLOBAL
    USE RSTART
   use MACROPHYTEC
  use POROSITYC
- USE ZOOPLANKTONC  
+ USE ZOOPLANKTONC
   USE modSYSTDG, ONLY: GTNAME, SYSTDG_TDG, UPDATE_TDGC, TDG_TDG, TDG_ROSP, POWNO, POWGTNO, FLNO, FLGTNO, TDGLOC, ip, ifl          ! systdg
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
@@ -40,7 +40,7 @@ use GLOBAL
         IF(BR_INACTIVE(JB))CYCLE
         IU   = CUS(JB)
         ID   = DS(JB)
-        TSUM = 0.0; CSUM = 0.0; QSUM(JB) = 0.0; QOUT(:,JB) = 0.0; TOUT(JB)=0.0; COUT(:,JB)=0.0    
+        TSUM = 0.0; CSUM = 0.0; QSUM(JB) = 0.0; QOUT(:,JB) = 0.0; TOUT(JB)=0.0; COUT(:,JB)=0.0
 
 !****** Densities
 
@@ -148,13 +148,13 @@ use GLOBAL
               END IF
               IF (CN(JC) == NDGP .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN      !8/2020 TDGP
                 TDG_SPILLWAY(JWW,JS) = .TRUE.
-                CALL TOTAL_DISSOLVED_GAS (2,PALT(I),0,JS,TTR(JTT),CTR(CN(JC),JTT))   
+                CALL TOTAL_DISSOLVED_GAS (2,PALT(I),0,JS,TTR(JTT),CTR(CN(JC),JTT))
               END IF
             END DO
           ELSE IF (CAC(NDO) == '      ON' .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN
             TDG_SPILLWAY(JWW,JS) = .TRUE.
           END IF
-            
+
           ELSE
             JSS(JBU)                 =  JSS(JBU)+1
             KTSW(JSS(JBU),JBU)       =  KTUSP(JS)
@@ -166,7 +166,7 @@ use GLOBAL
             ESTR(JSS(JBU),JBU)       =  ESP(JS)
             KT                       =  KTWB(JWUSP(JS))
             JW                       =  JWUSP(JS)
-            CALL DOWNSTREAM_WITHDRAWAL(JSS(JBU))           
+            CALL DOWNSTREAM_WITHDRAWAL(JSS(JBU))
               QSUM(JB) = 0.0; TSUM = 0.0; CSUM = 0.0
             DO K=KT,KB(ID)
               QSUM(JB) = QSUM(JB)+QOUT(K,JB)
@@ -181,17 +181,17 @@ use GLOBAL
                 ELSEIF (CN(JC)==NN2 .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN     ! SW 10/27/15
                   if(CAC(NN2) == '      ON')then                                                                                ! cb 1/13/16
                     T2R4=T2(K,ID)
-                    CGAS=C2(K,ID,CN(JC))                                                                                      ! 
+                    CGAS=C2(K,ID,CN(JC))                                                                                      !
                     CALL TOTAL_DISSOLVED_GAS (1,PALT(ID),0,JS,T2R4,CGAS)   ! N2
                     CSUM(CN(JC)) = CSUM(CN(JC))+QOUT(K,JB)*CGAS
                   end if
                 ELSEIF (CN(JC)==NDGP .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN     !8/2020 TDGP
-                  if(CAC(NDGP) == '      ON')then                                                                                
+                  if(CAC(NDGP) == '      ON')then
                     T2R4=T2(K,ID)
-                    CGAS=C2(K,ID,CN(JC))                                                                                      
-                    CALL TOTAL_DISSOLVED_GAS (2,PALT(ID),0,JS,T2R4,CGAS)   
+                    CGAS=C2(K,ID,CN(JC))
+                    CALL TOTAL_DISSOLVED_GAS (2,PALT(ID),0,JS,T2R4,CGAS)
                     CSUM(CN(JC)) = CSUM(CN(JC))+QOUT(K,JB)*CGAS
-                  end if  
+                  end if
                 ELSE
                   CSUM(CN(JC)) = CSUM(CN(JC))+QOUT(K,JB)*C2(K,ID,CN(JC))
                 END IF
@@ -216,17 +216,17 @@ use GLOBAL
                   ELSEIF (CN(JC)==NN2 .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN             ! SW 10/27/15
                     if(CAC(NN2) == '      ON')then                                                                                ! cb 1/13/16
                       T2R4=T2(K,ID)
-                      CGAS=C2(K,ID,CN(JC))                                                                                            ! 
+                      CGAS=C2(K,ID,CN(JC))                                                                                            !
                       CALL TOTAL_DISSOLVED_GAS (1,PALT(ID),0,JS,T2R4,CGAS)
                       CSUM(CN(JC)) = CSUM(CN(JC))+QNEW(K)*CGAS
                     end if
-                  ELSEIF (CN(JC)==NDGP .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN    !8/2020 TDGP        
-                    if(CAC(NDGP) == '      ON')then                                                                       
+                  ELSEIF (CN(JC)==NDGP .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN    !8/2020 TDGP
+                    if(CAC(NDGP) == '      ON')then
                       T2R4=T2(K,ID)
-                      CGAS=C2(K,ID,CN(JC))                                                                                            
+                      CGAS=C2(K,ID,CN(JC))
                       CALL TOTAL_DISSOLVED_GAS (2,PALT(ID),0,JS,T2R4,CGAS)
                       CSUM(CN(JC)) = CSUM(CN(JC))+QNEW(K)*CGAS
-                    end if  
+                    end if
                   ELSE
                     CSUM(CN(JC)) = CSUM(CN(JC))+QNEW(K)*C2(K,ID,CN(JC))
                   END IF
@@ -257,7 +257,7 @@ use GLOBAL
                   IF (CN(JC) == NN2 .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN     ! SW 10/27/15
                     CALL TOTAL_DISSOLVED_GAS (1,PALT(ITR(JTT)),0,JS,TTR(JTT),CTR(CN(JC),JTT))
                   END IF
-                  IF (CN(JC) == NDGP .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN     
+                  IF (CN(JC) == NDGP .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN
                     CALL TOTAL_DISSOLVED_GAS (2,PALT(ITR(JTT)),0,JS,TTR(JTT),CTR(CN(JC),JTT))
                   END IF
                 END DO
@@ -310,7 +310,7 @@ use GLOBAL
               END IF
               IF (CN(JC) == NDGP .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN     !8/2020 TDGP
                 TDG_SPILLWAY(JWW,JS) = .TRUE.
-                CALL TOTAL_DISSOLVED_GAS (2,PALT(I),0,JS,TTR(JTT),CTR(CN(JC),JTT))    
+                CALL TOTAL_DISSOLVED_GAS (2,PALT(I),0,JS,TTR(JTT),CTR(CN(JC),JTT))
               END IF
             END DO
           ELSE IF (CAC(NDO) == '      ON' .AND. GASSPC(JS) == '      ON' .AND. QSP(JS) > 0.0) THEN
@@ -330,12 +330,12 @@ use GLOBAL
             IF(PUMP_DOWNSTREAM(JP))THEN
                 ELW = EL(KTWB(JWDPU(JP)),IDPU(JP))-Z(IDPU(JP))*COSA(JBD)
                 JWW       = JWW+1      ! SW 10/30/2017
-                JBWD(JWW) = JBU  
+                JBWD(JWW) = JBU
                 IWD(JWW)  = IUPU(JP)
             ELSE
             ELW = EL(KTWB(JWU),IUPU(JP))-Z(IUPU(JP))*COSA(JBU)
             JWW       = JWW+1      ! SW 10/30/2017
-            JBWD(JWW) = JBU  
+            JBWD(JWW) = JBU
             IWD(JWW)  = IUPU(JP)
             ENDIF
                 ELSE
@@ -347,7 +347,7 @@ use GLOBAL
             JSS(JBU)                 =  JSS(JBU)+1     ! SW 10/30/2017
                    ENDIF
           END IF
-          
+
         IF (JDAY >= ENDPU(JP)) PUMPON(JP) = .FALSE.                                                        !  CB 1/13/06
         IF (JDAY >= STRTPU(JP) .AND. JDAY < ENDPU(JP)) THEN
             IF(PUMP_DOWNSTREAM(JP))THEN    ! IF BASED ON DOWNSTREAM WATER LEVEL AND NOT UPSTREAM
@@ -366,11 +366,11 @@ use GLOBAL
                 JW        = JWU
                 KT        = KTWB(JW)
                 jwd=jww
-                CALL LATERAL_WITHDRAWAL         
+                CALL LATERAL_WITHDRAWAL
                 DO K=KTW(JWW),KBW(JWW)
                   QSS(K,I) = QSS(K,I)-QSW(K,JWW)
                 END DO
-                IF (IDPU(JP) /= 0) THEN           
+                IF (IDPU(JP) /= 0) THEN
                   JTT              = JTT+1
                   QTR(JTT)         = QPU(JP)
                   ITR(JTT)         = IDPU(JP)
@@ -391,7 +391,7 @@ use GLOBAL
                     TTR(JTT)           = TSUM           /QSUMM
                     CTR(CN(1:NAC),JTT) = CSUM(CN(1:NAC))/QSUMM
                     ENDIF
-                 ENDIF        
+                 ENDIF
               ELSE
                 !JSS(JBU)                 =  JSS(JBU)+1     ! SW 9/25/13
                 KTSW(JSS(JBU),JBU)       =  KTPU(JP)
@@ -442,13 +442,13 @@ use GLOBAL
                     TTR(JTT)          = TOUT(JB)
                     CTR(CN(1:NAC),JTT)= COUT(CN(1:NAC),JB)
                   END IF
-                ENDIF                     
+                ENDIF
               END IF
             END IF
             ENDIF
-            
-                
-                
+
+
+
                 ELSE
           IF (ELW <= EOFFPU(JP)) PUMPON(JP) = .FALSE.                                                       ! CB 1/13/06
           IF (ELW > EOFFPU(JP) .AND. QPU(JP) > 0.0) THEN
@@ -457,7 +457,7 @@ use GLOBAL
               IF (LATERAL_PUMP(JP)) THEN
                 JLAT      = 1
                 !JWW       = JWW+1               ! SW 9/25/13
-                !JBWD(JWW) = JBU  
+                !JBWD(JWW) = JBU
                 !IWD(JWW)  = IUPU(JP)
                 QWD(JWW)  = QPU(JP)
                 KTWD(JWW) = KTPU(JP)
@@ -559,15 +559,15 @@ use GLOBAL
       YSTS  = YST
       DTPS  = DTP
       QOLDS = QOLD
-      
-      CALL PIPE_FLOW        
+
+      CALL PIPE_FLOW
       DO JP=1,NPI
           !if(qpi(jp) /= qpi(jp))then
           !    write(WRN,*)'QPI NAN and set to zero on JDAY:',jday,' qold=',qold,' ys(2,1)=',ys(2,1),' vs(1,1)=',vs(1,1),' dtp(1)=',dtp(1)
           !    qpi(jp)=0.0;ys=0.0;vs=0.0;vst=0.0;yst=0.0;qold=0.0;dtp=0.0;yss=0.0;vss=0.0;vsts=0.0;ysts=0.0;qolds=0.0;dtps=0.0
           !endif
-          
-       
+
+
         if(dynpipe(jp) == '      ON')then                     ! SW 5/10/10
         qpi(jp)=qpi(jp)*bp(jp)
         endif
@@ -717,7 +717,7 @@ use GLOBAL
     END IF
     IF (GATES) THEN
       CALL GATE_FLOW
-      IF(TDGTA) CALL TDGtarget                   ! tdgtarget 
+      IF(TDGTA) CALL TDGtarget                   ! tdgtarget
       IF (SYSTDG) CALL SYSTDG_TDG  ! SYSTDG - CALCULATE TDG_TDG (%)
       DO JG=1,NGT
 
@@ -781,10 +781,10 @@ use GLOBAL
                 IF (CN(JC) == NDO .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN
                   TDG_GATE(JWW,JG) = .TRUE.
                   !
-                  ! systdg 
-                  IF (SYSTDG) THEN 
-                    IF(GTNAME(JG)) THEN                       
-                      CALL  UPDATE_TDGC(0,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))   ! O2        
+                  ! systdg
+                  IF (SYSTDG) THEN
+                    IF(GTNAME(JG)) THEN
+                      CALL  UPDATE_TDGC(0,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))   ! O2
                     ELSE
                   CALL TOTAL_DISSOLVED_GAS(0,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))   ! O2
                 END IF
@@ -796,14 +796,14 @@ use GLOBAL
                 IF (CN(JC) == NN2 .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN
                   TDG_GATE(JWW,JG) = .TRUE.
                   !
-                  ! systdg 
-                  IF (SYSTDG) THEN                                 
-                    IF (GTNAME(JG)) THEN                       
-                      CALL  UPDATE_TDGC(1,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))   ! N2         
+                  ! systdg
+                  IF (SYSTDG) THEN
+                    IF (GTNAME(JG)) THEN
+                      CALL  UPDATE_TDGC(1,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))   ! N2
                     ELSE
                       CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))   ! N2
                     END IF
-                  ELSE 
+                  ELSE
                   CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))   ! N2
                 END IF
                   !
@@ -811,20 +811,20 @@ use GLOBAL
                 IF (CN(JC) == NDGP .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN   !8/2020 TDGP
                   TDG_GATE(JWW,JG) = .TRUE.
                   !
-                  IF (SYSTDG) THEN                                 
-                    IF (GTNAME(JG)) THEN                       
-                      CALL  UPDATE_TDGC(2,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))          
+                  IF (SYSTDG) THEN
+                    IF (GTNAME(JG)) THEN
+                      CALL  UPDATE_TDGC(2,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))
                     ELSE
-                      CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))   
+                      CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))
                     END IF
-                  ELSE 
-                  CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))   
+                  ELSE
+                  CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))
                 END IF
                   !
                 END IF
               END DO
               ENDIF
-            ELSE IF (CAC(NDO) == '      ON' .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN    
+            ELSE IF (CAC(NDO) == '      ON' .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN
               TDG_GATE(JWW,JG) = .TRUE.
             END IF
           ELSE
@@ -851,16 +851,16 @@ use GLOBAL
               DO JC=1,NAC
                 IF (CN(JC) == NDO .AND. CAC(NDO) == '      ON' .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN   ! MM 5/21/2009
                   T2R4=T2(K,ID)
-                  CGAS=C2(K,ID,CN(JC))                                                                                    ! MM 5/21/2009                  
+                  CGAS=C2(K,ID,CN(JC))                                                                                    ! MM 5/21/2009
                   !
-                  ! systdg 
-                  IF (SYSTDG) THEN                      
-                    IF(GTNAME(JG)) THEN                
-                      CALL  UPDATE_TDGC(0,PALT(ID),JG,T2R4,CGAS)                       
+                  ! systdg
+                  IF (SYSTDG) THEN
+                    IF(GTNAME(JG)) THEN
+                      CALL  UPDATE_TDGC(0,PALT(ID),JG,T2R4,CGAS)
                     ELSE
                       CALL TOTAL_DISSOLVED_GAS(0,PALT(ID),1,JG,T2R4,CGAS)
                     END IF
-                  ELSE                                                                                    ! MM 5/21/2009                  
+                  ELSE                                                                                    ! MM 5/21/2009
                   CALL TOTAL_DISSOLVED_GAS(0,PALT(ID),1,JG,T2R4,CGAS)
                   END IF
                   !
@@ -869,38 +869,38 @@ use GLOBAL
                 ELSEIF (CN(JC) == NN2 .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN   ! SW 10/27/15
                   if(CAC(NN2) == '      ON')then                                                                                ! cb 1/13/16
                       T2R4=T2(K,ID)
-                      CGAS=C2(K,ID,CN(JC))   
+                      CGAS=C2(K,ID,CN(JC))
                       !
-                      ! systdg 
-                      IF (SYSTDG) THEN                    
-                        IF(GTNAME(JG)) THEN              
-                          CALL  UPDATE_TDGC(1,PALT(ID),JG,T2R4,CGAS)               
+                      ! systdg
+                      IF (SYSTDG) THEN
+                        IF(GTNAME(JG)) THEN
+                          CALL  UPDATE_TDGC(1,PALT(ID),JG,T2R4,CGAS)
                         ELSE
                           CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),1,JG,T2R4,CGAS)
                         END IF
-                      ELSE                                                                                                   
+                      ELSE
                       CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),1,JG,T2R4,CGAS)
                       END IF
                       !
                       CSUM(CN(JC)) = CSUM(CN(JC))+QOUT(K,JB)*CGAS
                     end if
                 ELSEIF (CN(JC)==NDGP .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN   !8/2020 TDGP
-                  if(CAC(NDGP) == '      ON')then                                                                              
+                  if(CAC(NDGP) == '      ON')then
                       T2R4=T2(K,ID)
-                      CGAS=C2(K,ID,CN(JC))   
-                      !               
-                      IF (SYSTDG) THEN                    
-                        IF(GTNAME(JG)) THEN              
-                          CALL  UPDATE_TDGC(2,PALT(ID),JG,T2R4,CGAS)               
+                      CGAS=C2(K,ID,CN(JC))
+                      !
+                      IF (SYSTDG) THEN
+                        IF(GTNAME(JG)) THEN
+                          CALL  UPDATE_TDGC(2,PALT(ID),JG,T2R4,CGAS)
                         ELSE
                           CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,T2R4,CGAS)
                         END IF
-                      ELSE                                                                                                   
+                      ELSE
                       CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,T2R4,CGAS)
                       END IF
                       !
                       CSUM(CN(JC)) = CSUM(CN(JC))+QOUT(K,JB)*CGAS
-                    end if  
+                    end if
                 ELSE
                   CSUM(CN(JC)) = CSUM(CN(JC))+QOUT(K,JB)*C2(K,ID,CN(JC))
                 END IF
@@ -922,10 +922,10 @@ use GLOBAL
                     T2R4=T2(K,ID)
                     CGAS=C2(K,ID,CN(JC))                                                                                    ! MM 5/21/2009
                     !
-                    ! systdg 
-                    IF (SYSTDG) THEN                    
-                        IF (GTNAME(JG)) THEN          
-                          CALL  UPDATE_TDGC(0,PALT(ID),JG,T2R4,CGAS)   ! O2       
+                    ! systdg
+                    IF (SYSTDG) THEN
+                        IF (GTNAME(JG)) THEN
+                          CALL  UPDATE_TDGC(0,PALT(ID),JG,T2R4,CGAS)   ! O2
                         ELSE
                     CALL TOTAL_DISSOLVED_GAS(0,PALT(ID),1,JG,T2R4,CGAS)   ! O2
                         END IF
@@ -938,16 +938,16 @@ use GLOBAL
                   ELSEIF (CN(JC) == NN2 .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN   ! SW 10/27/15
                     if(CAC(NN2) == '      ON')then
                       T2R4=T2(K,ID)
-                      CGAS=C2(K,ID,CN(JC)) 
+                      CGAS=C2(K,ID,CN(JC))
                       !
-                      ! systdg 
-                       IF (SYSTDG) THEN                 
-                        IF(GTNAME(JG)) THEN           
-                          CALL  UPDATE_TDGC(1,PALT(ID),JG,T2R4,CGAS)   ! N2           
+                      ! systdg
+                       IF (SYSTDG) THEN
+                        IF(GTNAME(JG)) THEN
+                          CALL  UPDATE_TDGC(1,PALT(ID),JG,T2R4,CGAS)   ! N2
                         ELSE
                           CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),1,JG,T2R4,CGAS)   ! N2
                         END IF
-                      ELSE                                                                               
+                      ELSE
                       CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),1,JG,T2R4,CGAS)   ! N2
                       END IF
                       !
@@ -956,16 +956,16 @@ use GLOBAL
                   ELSEIF (CN(JC)==NDGP .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN   !8/2020 TDGP
                     if(CAC(NDGP) == '      ON')then
                       T2R4=T2(K,ID)
-                      CGAS=C2(K,ID,CN(JC)) 
+                      CGAS=C2(K,ID,CN(JC))
                       !
-                       IF (SYSTDG) THEN                 
-                        IF(GTNAME(JG)) THEN           
-                          CALL  UPDATE_TDGC(2,PALT(ID),JG,T2R4,CGAS)            
+                       IF (SYSTDG) THEN
+                        IF(GTNAME(JG)) THEN
+                          CALL  UPDATE_TDGC(2,PALT(ID),JG,T2R4,CGAS)
                         ELSE
-                          CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,T2R4,CGAS)   
+                          CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,T2R4,CGAS)
                         END IF
-                      ELSE                                                                               
-                      CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,T2R4,CGAS) 
+                      ELSE
+                      CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,T2R4,CGAS)
                       END IF
                       !
                       CSUM(CN(JC)) = CSUM(CN(JC))+QNEW(K)*CGAS
@@ -996,24 +996,24 @@ use GLOBAL
                   CTR(CN(JC),JTT) = COUT(CN(JC),JB)
                   IF (CN(JC) == NDO .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN
                     !
-                    ! systdg 
-                    IF (SYSTDG) THEN                    
-                        IF (GTNAME(JG)) THEN          
-                          CALL  UPDATE_TDGC (0,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))    ! O2          
+                    ! systdg
+                    IF (SYSTDG) THEN
+                        IF (GTNAME(JG)) THEN
+                          CALL  UPDATE_TDGC (0,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))    ! O2
                         ELSE
                           CALL TOTAL_DISSOLVED_GAS (0,PALT(ID),0,JS,TTR(JTT),CTR(CN(JC),JTT))    ! O2
                         END IF
-                      ELSE  
+                      ELSE
                     CALL TOTAL_DISSOLVED_GAS (0,PALT(ID),0,JS,TTR(JTT),CTR(CN(JC),JTT))    ! O2
                   END IF
                       !
                   END IF
                   IF (CN(JC) == NN2 .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN
-                    ! 
-                    ! systdg 
-                    IF (SYSTDG) THEN                     
-                        IF (GTNAME(JG)) THEN          
-                          CALL  UPDATE_TDGC(1,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))    ! N2       
+                    !
+                    ! systdg
+                    IF (SYSTDG) THEN
+                        IF (GTNAME(JG)) THEN
+                          CALL  UPDATE_TDGC(1,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))    ! N2
                         ELSE
                     CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),0,JS,TTR(JTT),CTR(CN(JC),JTT))    ! N2
                   END IF
@@ -1023,15 +1023,15 @@ use GLOBAL
                       !
                   END IF
                   IF (CN(JC)==NDGP .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN    !8/2020 TDGP
-                    ! 
-                    IF (SYSTDG) THEN                     
-                      IF (GTNAME(JG)) THEN          
-                        CALL  UPDATE_TDGC(2,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))        
+                    !
+                    IF (SYSTDG) THEN
+                      IF (GTNAME(JG)) THEN
+                        CALL  UPDATE_TDGC(2,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))
                         ELSE
-                        CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),0,JS,TTR(JTT),CTR(CN(JC),JTT))    
+                        CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),0,JS,TTR(JTT),CTR(CN(JC),JTT))
                   END IF
                       ELSE
-                      CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),0,JS,TTR(JTT),CTR(CN(JC),JTT))    
+                      CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),0,JS,TTR(JTT),CTR(CN(JC),JTT))
                       END IF
                       !
                   END IF
@@ -1078,10 +1078,10 @@ use GLOBAL
               IF (CN(JC) == NDO .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN
                 TDG_GATE(JWW,JG) = .TRUE.
                 !
-                ! systdg 
-                 IF (SYSTDG) THEN                  
-                     IF (GTNAME(JG)) THEN         
-                     CALL  UPDATE_TDGC(0,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))            
+                ! systdg
+                 IF (SYSTDG) THEN
+                     IF (GTNAME(JG)) THEN
+                     CALL  UPDATE_TDGC(0,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))
                      ELSE
                 CALL TOTAL_DISSOLVED_GAS(0,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))
               END IF
@@ -1093,10 +1093,10 @@ use GLOBAL
               IF (CN(JC) == NN2 .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN
                 TDG_GATE(JWW,JG) = .TRUE.
                 !
-                ! systdg 
-                 IF (SYSTDG) THEN                
-                    IF (GTNAME(JG)) THEN         
-                     CALL  UPDATE_TDGC(1,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))           
+                ! systdg
+                 IF (SYSTDG) THEN
+                    IF (GTNAME(JG)) THEN
+                     CALL  UPDATE_TDGC(1,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))
                     ELSE
                      CALL TOTAL_DISSOLVED_GAS(1,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))
                     END IF
@@ -1108,9 +1108,9 @@ use GLOBAL
               IF (CN(JC)==NDGP .AND. GASGTC(JG) == '      ON' .AND. QGT(JG) > 0.0) THEN      !8/2020 TDGP
                 TDG_GATE(JWW,JG) = .TRUE.
                 !
-                IF (SYSTDG) THEN                
-                  IF (GTNAME(JG)) THEN         
-                    CALL UPDATE_TDGC(2,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))           
+                IF (SYSTDG) THEN
+                  IF (GTNAME(JG)) THEN
+                    CALL UPDATE_TDGC(2,PALT(ID),JG,TTR(JTT),CTR(CN(JC),JTT))
                   ELSE
                     CALL TOTAL_DISSOLVED_GAS(2,PALT(ID),1,JG,TTR(JTT),CTR(CN(JC),JTT))
                   END IF
@@ -1175,7 +1175,7 @@ use GLOBAL
                   IF(DERIVED_CALC) THEN
                      CDAVG(FLGTNO(ifl),JBUGT(FLGTNO(ifl)),O2DG_DER)=tdg_tdg
                      CDAVG(FLGTNO(ifl),JBUGT(FLGTNO(ifl)),TDG_DER)=tdg_tdg
-                  END IF 
+                  END IF
             ELSE IF (QGT(FLGTNO(ifl))<0.0 .AND. TDG_ROSP>0.0) THEN
                  IF(CONSTITUENTS) THEN
                      CALL UPDATE_TDGC(0, palt(IUGT(FLGTNO(ifl))), FLGTNO(ifl), tavgw(FLGTNO(ifl)), CAVGW(FLGTNO(ifl),NDO))
@@ -1192,12 +1192,12 @@ use GLOBAL
       END IF
       ! systdg - Add power house release tdg update
     END IF
-    
+
     tdgon=.false.                         ! cb 1/17/13
     tributaries = jtt > 0
     withdrawals = jww > 0
-    
-    
+
+
     DO JW=1,NWB
         DO JB=BS(JW),BE(JW)
             IF(BR_INACTIVE(JB))THEN
@@ -1213,12 +1213,12 @@ use GLOBAL
                !  PLACE_QTR(JTT)   =  '   DISTR'
                   PLACE_QTR(JTT)   =  .FALSE.         !SR 01/22/2018
                   JBTR(JTT) = 1
-            ENDIF        
+            ENDIF
         ENDDO
     ENDDO
-    
-    
-    
+
+
+
     DO JW=1,NWB
       KT = KTWB(JW)
       DO JB=BS(JW),BE(JW)
@@ -1401,9 +1401,9 @@ use GLOBAL
 
             IF (JB == JBTR(JT)) THEN
               I = cus(jbdn(jw))        ! placing tributary flows in upstream end of main branch
-              QTRF(KT:KB(I),JT) = 0.0                
+              QTRF(KT:KB(I),JT) = 0.0
               KTTR(JT) = KT
-              KBTR(JT) = KB(I)                
+              KBTR(JT) = KB(I)
               KTTR(JT) = MAX(KT,KTTR(JT))
               KBTR(JT) = MIN(KB(I),KBTR(JT))
               IF (KBTR(JT) < KTTR(JT)) KBTR(JT) = KTTR(JT)

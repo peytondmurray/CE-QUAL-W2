@@ -1,4 +1,4 @@
-Selective input control file 
+Selective input control file
 Temperature outlet control - frequency of output for temperature
 OUT FREQ TFRQTMP
            0.125
@@ -11,7 +11,7 @@ DYNSTR2    ST/WD      JB   JS/NW  YEARLY    TSTR    TEND    TEMP   NELEV   ELEV1
 2             ST       1       1      ON   151.1   181.0    12.0       2    330.    320.    340
 3             ST       1       1      ON   181.1   273.0    16.0       2    330.    320.    340
 4             ST       1       1      ON   273.1   365.0    10.0       2    330.    320.    340
- 
+
 MONITOR LOC ISEG    ELEV  DYNSEL
 1              0    -185     OFF
 2              0    -185     OFF

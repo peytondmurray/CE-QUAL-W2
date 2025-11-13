@@ -3,7 +3,7 @@ README.txt                                                     11-December-2014
 Example Applications with Modified version 3.7/4.2 blending algorithm by USGS
 
 This package contains four example applications of CE-QUAL-W2 models, meant to
-illustrate the features of the modified blending algorithm.  
+illustrate the features of the modified blending algorithm.
 
 --------------------------------------------------------------------------------
 Example #1:  det_normal_uro-float_400fmin
@@ -12,7 +12,7 @@ This is a model of Detroit Lake, OR, USA, for a "normal" water year, using a com
 of hypothetical outlets, where one of them is a floating outlet with a 400 cfs
 minimum flow (float_400fmin).
 
-This scenario uses 4 outlets: 
+This scenario uses 4 outlets:
  1: floating weir, priority 1, 2.3 m depth, minimum 400 cfs, maximum 5600 cfs
  2: spillway, priority -1 (nonblended)
  3: lower power outlet, priority 1, maximum 5600 cfs
@@ -53,7 +53,7 @@ Branch 1 is Lookout Point Lake, and the dam is given 3 outlets:
 TSSHARE is set to OFF, which tells the model to decide which of the two
 priority-2 outlets to use in blending with the power outlet.  There are times
 when the RO (#3) is not available because of the maximum head constraint.  In
-that case, blending occurs between the power outlet and the floating outlet. 
+that case, blending occurs between the power outlet and the floating outlet.
 Late in the year, when we need cold-water releases and the lake level is lower,
 blending occurs between the power outlet and the RO. In this scenario, at least
 20% of the releases at Lookout Point Dam are constrained to go through the power
@@ -100,11 +100,11 @@ single priority 1 outlet.  The choice is made after fulfilling any other minimum
 flow constraints, and all of the priority 2 outlets are tested to see which one
 is best used for meeting the target release temperature.
 
-In this example, the priority 1 outlet is given a minimum flow constraint, 
+In this example, the priority 1 outlet is given a minimum flow constraint,
 specifying that at least 20% of the total release should go through that outlet.
 No other outlets have minimum or maximum flow constraints.  However, the lowest
 two outlets have maximum head constraints, such that they cannot be used if they
-are deeper than 60 meters.  All outlets were given a minimum head constraint, 
+are deeper than 60 meters.  All outlets were given a minimum head constraint,
 such that they cannot be used unless there is at least 2 meters of depth at the
 centerline elevation of the outlet.
 

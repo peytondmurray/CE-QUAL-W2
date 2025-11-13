@@ -1,5 +1,5 @@
 FISH HABITAT AND WQ AVEREAGES INPUT FILE
-#FISH CRITERIA, OUTPUTFILENAME  
+#FISH CRITERIA, OUTPUTFILENAME
 9,'habitat3.opt'
 NAMES OF FISH, TEMP, DO limits [DO limits are ignored if no water quality constituents]
 RainbowTrout,18.0,5.0

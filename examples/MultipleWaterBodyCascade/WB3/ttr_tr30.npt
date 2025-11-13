@@ -1,6 +1,6 @@
-$GW temp from station DW03 (closest to river) segs97-113,                                           
-29-Oct-2017  28-Oct-2017 30-Jan-2017  08-Dec-2016  06-Dec-2016  26-Oct-2016  see excel file GW_WQ,               
-jday,temp                                                                                                                                                                                                                                                                                                                       
+$GW temp from station DW03 (closest to river) segs97-113,
+29-Oct-2017  28-Oct-2017 30-Jan-2017  08-Dec-2016  06-Dec-2016  26-Oct-2016  see excel file GW_WQ,
+jday,temp
    1.0, 10.80
   75.0, 11.80
  150.0, 12.80

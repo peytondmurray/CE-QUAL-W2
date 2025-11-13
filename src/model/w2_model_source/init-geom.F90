@@ -165,15 +165,15 @@ use NAMESC
               exit
             end if
           END DO
-      
+
            Z(I)     = (EL(KTI(I),I)-ELWS(I))/COSA(JB)
 
-          
+
          ! ZMIN(JW) = DMAX1(ZMIN(JW),Z(I))
           KTMAX    =  MAX(2,KTI(I))
           KTWB(JW) =  MAX(KTMAX,KTWB(JW))
           IF (EL(KTI(I),I) /= ELWS(I)) KTI(I) = KTI(I)-1      !SR 1/2024 in case ELWS==EL(KTI,I)
-          KTI(I)   =  MAX(KTI(I),2)    
+          KTI(I)   =  MAX(KTI(I),2)
           !IF (Z(I) > ZMIN(JW)) IZMIN(JW) = I
         END IF
         K = 2
@@ -320,7 +320,7 @@ use NAMESC
     END DO
   END DO
 
-  
+
 ! Constrictions                       ! SW 6/26/2018
     CONSTRICTION=.FALSE.   ! INIITALIZE VARIABLES
     BCONSTRICTION=0.0
@@ -340,8 +340,8 @@ use NAMESC
         ENDIF
         CLOSE(CON)   ! SR 7/2024
     ENDIF
-    
-  
+
+
 ! Boundary widths
 
   DO JW=1,NWB
@@ -497,7 +497,7 @@ use NAMESC
 
       CUS(JB) = IUT
       IF(IUT>=DS(JB))BR_INACTIVE(JB)= .TRUE.    ! SW 6/12/2017
-          
+
 
 !**** Areas and bottom widths
 
@@ -564,7 +564,7 @@ use NAMESC
               IF(BHR(K,I) > BCONSTRICTION(I)*H(K,JW)) BHR(K,I) = BCONSTRICTION(I)*H(K,JW)
               IF(BHR2(K,I) > BCONSTRICTION(I)*H2(K,I))BHR2(K,I)= BCONSTRICTION(I)*H2(K,I)                              ! SR 1/2024
           ENDIF
-          
+
         END DO
       END DO
       DO K=1,KMX-1

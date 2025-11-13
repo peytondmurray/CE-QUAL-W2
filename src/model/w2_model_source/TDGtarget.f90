@@ -28,25 +28,25 @@ Subroutine InitTDGtarget
   INTEGER       :: it, n, ig
   CHARACTER(8)  :: AID1
   CHARACTER(72) :: TGAFN
-  
+
   targetfnno = 8888
   open (targetfnno+1, file='w2_TDGtarget.csv', status='old')
   !read (targetfnno+1, '(///(8X,A72))') (TITLETDGTARGET(it), it=1,10)
   !read (targetfnno+1,'(//8x,2f8.3)') tsfreq, tsconv
-  !read (targetfnno+1,'(//8x,a8,3f8.3,a8,i8,a8,i8)')tsyearly, tstsrt, tstend, tstarget, tsdynsel, tsiteration, dyupdate, dygroup   
-  read (targetfnno+1,*) 
-  read (targetfnno+1,*) 
+  !read (targetfnno+1,'(//8x,a8,3f8.3,a8,i8,a8,i8)')tsyearly, tstsrt, tstend, tstarget, tsdynsel, tsiteration, dyupdate, dygroup
+  read (targetfnno+1,*)
+  read (targetfnno+1,*)
   read (targetfnno+1,*)
   do it = 1,10
     read (targetfnno+1,*) TITLETDGTARGET(it)
   end do
-  read (targetfnno+1,*) 
   read (targetfnno+1,*)
-  read (targetfnno+1,*) AID1, tsfreq, tsconv     
-  read (targetfnno+1,*) 
   read (targetfnno+1,*)
-  read (targetfnno+1,*) AID1, tsyearly, tstsrt, tstend, tstarget, tsdynsel, tsiteration, dyupdate, dygroup 
-  
+  read (targetfnno+1,*) AID1, tsfreq, tsconv
+  read (targetfnno+1,*)
+  read (targetfnno+1,*)
+  read (targetfnno+1,*) AID1, tsyearly, tstsrt, tstend, tstarget, tsdynsel, tsiteration, dyupdate, dygroup
+
   tsyearly=ADJUSTR(tsyearly); tsdynsel=ADJUSTR(tsdynsel); dyupdate=ADJUSTR(dyupdate)
   if (tsyearly=='     OFF' .AND. tstsrt<TMSTRT) tstsrt = TMSTRT
   NXTSPLIT  = TMSTRT
@@ -63,7 +63,7 @@ Subroutine InitTDGtarget
   IF (tstsrt>TMSTRT)    NXTSPLIT2 = tstsrt
   NGSP  = NBAY+NRO
   NGPH  = POWNO
-  NGFL  = FLNO 
+  NGFL  = FLNO
   NOUTS = NGT
   NGSPPH = NGSP+NGPH
   allocate(SPGTNO(NGSP), SPPRIOR(NGSP), SPMINFRAC(NGSP))
@@ -75,7 +75,7 @@ Subroutine InitTDGtarget
       SPGTNO(it) = ig
     end if
   end do
-  
+
   if (NGPH>0) then
     it = 0
     do ig = 1,NGT
@@ -85,16 +85,16 @@ Subroutine InitTDGtarget
       end if
     end do
   end if
-  
-  !read (targetfnno+1,'(//8x,<NGSP>i8)') (SPPRIOR(n),n=1,NGSP)  
+
+  !read (targetfnno+1,'(//8x,<NGSP>i8)') (SPPRIOR(n),n=1,NGSP)
   !read (targetfnno+1,'(//8x,<NGSP>f8.3)') (SPMINFRAC(n),n=1,NGSP)
-  !if (NGPH>0) read (targetfnno+1,'(//8x,<NGPH>f8.3)') (PHMAXFLOW(n),n=1,NGPH) 
-  read (targetfnno+1,*) 
-  read (targetfnno+1,*)
-  read (targetfnno+1,*) AID1, (SPPRIOR(n),n=1,NGSP) 
+  !if (NGPH>0) read (targetfnno+1,'(//8x,<NGPH>f8.3)') (PHMAXFLOW(n),n=1,NGPH)
   read (targetfnno+1,*)
   read (targetfnno+1,*)
-  read (targetfnno+1,*) AID1, (SPMINFRAC(n),n=1,NGSP) 
+  read (targetfnno+1,*) AID1, (SPPRIOR(n),n=1,NGSP)
+  read (targetfnno+1,*)
+  read (targetfnno+1,*)
+  read (targetfnno+1,*) AID1, (SPMINFRAC(n),n=1,NGSP)
   if (NGPH>0) then
     read (targetfnno+1,*)
     read (targetfnno+1,*)
@@ -104,13 +104,13 @@ Subroutine InitTDGtarget
   do n=1,NGSP
     if (SPMINFRAC(n)>1.0) SPMINFRAC(n) = 1.0    ! remove unrealistic input value
   end do
-  do n=1,NGPH    
+  do n=1,NGPH
     if (PHMAXFLOW(n)<0.0) PHMAXFLOW(n) = 0.0    ! remove unrealistic input value
   end do
   if (tsconv<0.001) tsconv = 0.001  ! constrain the convergence criterion to be >= 0.001 and <= 5.0
   if (tsconv> 5.0)  tsconv = 5.0
-  
-  ! OPEN DYNAMIC TDG TARGET FILES    
+
+  ! OPEN DYNAMIC TDG TARGET FILES
   if (tsdynsel=='      ON') then
     !read (targetfnno+1,'(//(8X,A72))') TGAFN
     read (targetfnno+1,*)
@@ -120,13 +120,13 @@ Subroutine InitTDGtarget
     read (targetfnno+3,*)
     read (targetfnno+3,*)
     read (targetfnno+3,*)
-    read (targetfnno+3,*) nxtjday, tstarget2         
-    tstarget = tstarget2                                         
-    read (targetfnno+3,*) nxtjday, tstarget2              
+    read (targetfnno+3,*) nxtjday, tstarget2
+    tstarget = tstarget2
+    read (targetfnno+3,*) nxtjday, tstarget2
   end if
   close(targetfnno+1)
-  
-  !!  Initial output file  
+
+  !!  Initial output file
   open (targetfnno, FILE='TDGTarget_output.csv', status='unknown')
   !if (NGT>0) write (targetfnno,'(3A,<NGT>(A,i2))')'     JDAY','         TDG' ,'      SUM Q   ',('      Q',n, n=1,NGT)
   if (NGT>0) write (targetfnno,'("     JDAY,", " C,", "       TDG,", "    SUM Q,", <NGT>(A,i2,","))') ('      Q',n, n=1,NGT)
@@ -157,8 +157,8 @@ Subroutine TDGtarget
  use SCREENC
  use TDGAS
    use RSTART
- 
-  ! 
+
+  !
   IMPLICIT NONE
   !
   REAL,    ALLOCATABLE, DIMENSION(:)  :: QGTSAVE
@@ -175,14 +175,14 @@ Subroutine TDGtarget
 
   ALLOCATE(QGTSAVE(NGT), SP_ACTIVE(NGSP))
   IF (NGPH>0) ALLOCATE(PH_ACTIVE(NGPH))
-  QGTSAVE = QGT   
+  QGTSAVE = QGT
   SUM_QGT = 0.0
   DO ig = 1,NGT
     SUM_QGT = SUM_QGT + QGT(ig)
   END DO
   SP_ACTIVE =.FALSE.
   PH_ACTIVE =.FALSE.
-  !  
+  !
   SUM_SP_FRAC = 0.0
   DO ig = 1,NGSP
     IF (QGT(SPGTNO(ig))>0.0) SUM_SP_FRAC = SUM_SP_FRAC + SPMINFRAC(ig)
@@ -193,33 +193,33 @@ Subroutine TDGtarget
     END DO
     SUM_SP_FRAC = 1.0
   END IF
-  !  
+  !
   SUM_PH_MAXFLOW = 0.0
   DO ig = 1,NGPH
     IF (QGT(PHGTNO(ig))>0.0) SUM_PH_MAXFLOW = SUM_PH_MAXFLOW + PHMAXFLOW(ig)
-  END DO  
-  !  
+  END DO
+  !
   Q_SP = 0.0
   DO ig = 1,NGSP
     Q_SP = Q_SP + QGT(SPGTNO(ig))
   END DO
-  
-  IF (Q_SP>0.0) THEN     
+
+  IF (Q_SP>0.0) THEN
     IF (tsyearly=='     OFF') THEN
       DAYTEST = JDAY
     ELSE
       DAYTEST = real(JDAYG) + JDAY - int(JDAY)
     END IF
-    
+
     CALL SYSTDG_TDG           ! CALCULATE CURRENT TDG
     IF (tsdynsel=='      ON') THEN
-      IF (DAYTEST>tstsrt) tstarget = tstarget2 
+      IF (DAYTEST>tstsrt) tstarget = tstarget2
       DO WHILE (JDAY>=nxtjday)
-        READ (targetfnno+3,*) nxtjday, tstarget2 
-        tstarget = tstarget2 
+        READ (targetfnno+3,*) nxtjday, tstarget2
+        tstarget = tstarget2
       END DO
     END IF
-    
+
     CO = ' '
     IF (DAYTEST>=tstsrt .AND. DAYTEST<=tstend .AND. TDG_TDG>tstarget+tsconv) THEN
       ! INITIAL VARIABLES FOR ITERATIONS
@@ -238,20 +238,20 @@ Subroutine TDGtarget
         Q_PH = Q_PH + QGT(PHGTNO(ig))
         IF (QGT(PHGTNO(ig))>0.0 .AND. (QGT(SPGTNO(ig))+MINV<PHMAXFLOW(ig))) PH_ACTIVE(ig) = .TRUE.
       END DO
-          
+
       QSP_AVL = Q_SP - Q_ALL*SUM_SP_FRAC
       IF (SUM_PH_MAXFLOW>0.0) QPH_AVL = SUM_PH_MAXFLOW - Q_PH
       IF (QPH_AVL<0.0) QPH_AVL = 0.0
       Q_MAX = Q_SP
       IF (TDGLOC=='     REL' .AND. SUM_PH_MAXFLOW/=0.0 .AND. QPH_AVL>0.0) Q_MAX = MIN(Q_SP, QPH_AVL)   ! IF RELEASE TDG, FLOW CUT TO POWERHOUSE MUST LESS THAN MAX FLOW
       Q_MIN = MAX(0.0, Q_ALL*SUM_SP_FRAC)
-      IF (TDGLOC=='     REL' .AND. SUM_PH_MAXFLOW/=0.0 ) Q_MIN = MAX(Q_ALL*SUM_SP_FRAC, Q_SP-QPH_AVL, 0.0) 
+      IF (TDGLOC=='     REL' .AND. SUM_PH_MAXFLOW/=0.0 ) Q_MIN = MAX(Q_ALL*SUM_SP_FRAC, Q_SP-QPH_AVL, 0.0)
       Q_CUT = 0.5*(Q_MAX+Q_MIN)
       ITERATION = 1
       IF (JDAY>=NXTSPLIT2 .and. dyupdate=='      ON') CALL Dy_Priority            ! DYNAMIC PRIORITY UPDATE
-      
+
       DO WHILE (ABS(TDG_TDG-tstarget)>tsconv .AND. ITERATION<=tsiteration .AND. Q_CUT>0.0)
-        Q_CUTTED = 0.0 
+        Q_CUTTED = 0.0
         Q_LEFT = Q_SP-Q_CUTTED
         DO ig = 1, NGSP
           IF (QGT(SPGTNO(ig))>0.0 .AND. (QGT(SPGTNO(ig))>Q_ALL*SPMINFRAC(SPGTNO(ig))+MINV)) SP_ACTIVE(ig) = .TRUE.
@@ -260,7 +260,7 @@ Subroutine TDGtarget
           IF (QGT(PHGTNO(ig))>0.0 .AND. (QGT(SPGTNO(ig))+MINV<PHMAXFLOW(ig))) PH_ACTIVE(ig) = .TRUE.
         END DO
         Q_TEMP = 0.0
-        
+
         DO WHILE (Q_CUTTED+MINV<Q_CUT .AND. (Q_LEFT>Q_ALL*SUM_SP_FRAC+MINV))  ! CUT FLOW TO SP UNTILL Q_CUTTED = Q_CUT
           ! UPDATE PRIOR TOP
           prior_top = -999                  ! highest prior
@@ -285,7 +285,7 @@ Subroutine TDGtarget
               SUM_TOP_MINFRAC = SUM_TOP_MINFRAC + SPMINFRAC(ig)
             END IF
           END DO
-          
+
           IF ((SUM_TOP_FLOW-Q_ALL*SUM_TOP_MINFRAC)<=Q_CUT-Q_CUTTED) THEN  ! top prior flow is not enough to cut all Q_CUT
             DO ig = 1,priortop_n
               Q_CUTTED = Q_CUTTED + QGT(SPGTNO(priortop_spno(ig))) - Q_ALL*SPMINFRAC(priortop_spno(ig))
@@ -293,7 +293,7 @@ Subroutine TDGtarget
               SP_ACTIVE(priortop_spno(ig)) = .FALSE.
             END DO
             Q_LEFT = Q_SP-Q_CUTTED
-          ELSE 
+          ELSE
             Q_TEMP = Q_CUT-Q_CUTTED       ! top prior available flow if more than Q_CUT-Q_CUTTED, so cut it by flow percentage
             DO ig = 1,priortop_n
               Q_CUTTED = Q_CUTTED + Q_TEMP*(QGT(SPGTNO(priortop_spno(ig))) - Q_ALL*SPMINFRAC(priortop_spno(ig)))/(SUM_TOP_FLOW-Q_ALL*SUM_TOP_MINFRAC)
@@ -302,14 +302,14 @@ Subroutine TDGtarget
             END DO
             Q_LEFT = Q_SP-Q_CUTTED
           END IF
-          
+
           DO ig = 1,priortop_n
             IF (QGT(SPGTNO(priortop_spno(ig)))>(Q_ALL*SPMINFRAC(priortop_spno(ig))+MINV)) SP_ACTIVE(priortop_spno(ig)) = .TRUE.
           END DO
           IF (priortop_n>0) DEALLOCATE(priortop_spno)
           ! THIS PRIOR TOP ENDED
         END DO  ! END DO WHILE LOOP FOR Q_CUT
-        
+
         IF (Q_LEFT>Q_SP-Q_CUT) THEN       ! KEEP FLOW BALANCE
           DO ig = 1,NGSP
             IF (QGT(SPGTNO(ig))>(Q_ALL*SPMINFRAC(ig)+(Q_LEFT+Q_CUT-Q_SP)) .AND. SP_ACTIVE(ig)) THEN
@@ -319,29 +319,29 @@ Subroutine TDGtarget
               EXIT
             END IF
           END DO
-        END IF 
-        
+        END IF
+
         ! CUT FLOW TO POWERHOUSE
         QPH_ADDED = 0.0
-        IF (SUM_PH_MAXFLOW==0.0 .AND. Q_CUTTED>=Q_CUT) THEN   ! NO MAX FLOW LIMIT FOR ALL POWERHOUSE, FLOW ADDED BY PERCENTAGE        
+        IF (SUM_PH_MAXFLOW==0.0 .AND. Q_CUTTED>=Q_CUT) THEN   ! NO MAX FLOW LIMIT FOR ALL POWERHOUSE, FLOW ADDED BY PERCENTAGE
           DO ig = 1,NGPH
             IF (QGT(PHGTNO(ig))>0.0) THEN
               QPH_ADDED = QPH_ADDED + Q_CUTTED*QGT(PHGTNO(ig))/Q_PH
               QGT(PHGTNO(ig)) = QGT(PHGTNO(ig)) + Q_CUTTED*QGT(PHGTNO(ig))/Q_PH
             END IF
-          END DO    
+          END DO
         ELSE IF (SUM_PH_MAXFLOW/=0.0 .AND. Q_CUTTED>=Q_CUT) THEN
           DO ig =1, NGPH
             IF (PHMAXFLOW(ig)/=0.0 .AND. QGT(PHGTNO(ig))>0.0) THEN
               QPH_ADDED = QPH_ADDED + Q_CUTTED*(PHMAXFLOW(ig)-QGT(PHGTNO(ig)))/QPH_AVL
-              QGT(PHGTNO(ig)) = QGT(PHGTNO(ig)) + Q_CUTTED*(PHMAXFLOW(ig)-QGT(PHGTNO(ig)))/QPH_AVL                         
+              QGT(PHGTNO(ig)) = QGT(PHGTNO(ig)) + Q_CUTTED*(PHMAXFLOW(ig)-QGT(PHGTNO(ig)))/QPH_AVL
             ELSE IF (QGT(PHGTNO(ig))>0.0) THEN
               QGT(PHGTNO(ig)) = QGT(PHGTNO(ig))+Q_CUTTED
               QPH_ADDED = Q_CUTTED
             END IF
           END DO
         END IF
-        
+
         IF (QPH_ADDED<Q_CUTTED) THEN      ! FLOW BALANCE
           DO ig = 1,NGPH
             IF (QGT(PHGTNO(ig))>0.0 .AND. (QGT(PHGTNO(ig))+Q_CUTTED-QPH_ADDED<PHMAXFLOW(ig))) THEN
@@ -351,7 +351,7 @@ Subroutine TDGtarget
             END IF
           END DO
         END IF
-        
+
         CALL SYSTDG_TDG
         IF (ABS(TDG_TDG-tstarget)<=tsconv) THEN
           EXIT
@@ -369,7 +369,7 @@ Subroutine TDGtarget
         ITERATION = ITERATION + 1
         !
       END DO                            ! END DO WHILE FOR DICHONOMY FLOW CUT
-      
+
       IF (ITERATION==1 .AND. Q_SP==0.0) WRITE (targetfnno+2, '(A,F12.3)') 'SPILL FLOW IS ZERO ON JDAY', JDAY
       IF (ITERATION==1 .AND. TDG_TDG < tstarget+tsconv) WRITE (targetfnno+2,'(A,F12.3)') 'TDG IS LOWER THAN TARGET, NO ITERATION CALCULATION NEEDED ON JDAY', JDAY
       IF (TDG_TDG-tstarget>tsconv .AND. ITERATION>tsiteration .AND. Q_SP>0.0) THEN
@@ -380,7 +380,7 @@ Subroutine TDGtarget
       END IF
       !
     END IF
-    
+
     IF (JDAY>=NXTSPLIT) THEN
       IF ((TDG_TDG-tstarget)>tsconv) THEN
         CO = 'U'
@@ -399,7 +399,7 @@ Subroutine TDGtarget
     !
   END IF
   DEALLOCATE(QGTSAVE, SP_ACTIVE)
-  IF (NGPH>0) DEALLOCATE(PH_ACTIVE)  
+  IF (NGPH>0) DEALLOCATE(PH_ACTIVE)
 End Subroutine TDGtarget
 
 Subroutine DEALLOCATE_TDGtarget
@@ -407,7 +407,7 @@ Subroutine DEALLOCATE_TDGtarget
  USE MAIN, ONLY: targetfnno
   IMPLICIT NONE
   !
-  close(targetfnno)  
+  close(targetfnno)
   close(targetfnno+2)
   close(targetfnno+3)
   IF (tsdynsel=='      ON') close(targetfnno+3)
@@ -419,7 +419,7 @@ Subroutine Dy_Priority
   use Selective1TDGtarget
  USE STRUCTURES, ONLY: QGT
   IMPLICIT NONE
-  !  
+  !
   INTEGER                  :: ib, IBB, ig, TOP_SPNO, TOP_PRIOR, COUNT, CONTU, NGROUP, NLEFT
   INTEGER, DIMENSION(NGSP) :: PRIOR_SP
   LOGICAL, DIMENSION(NGSP) :: PRIOR_UPDATED
@@ -428,13 +428,13 @@ Subroutine Dy_Priority
   TOP_PRIOR = 1
   PRIOR_SP = NGSP+1
   PRIOR_UPDATED = .FALSE.
-  
+
   COUNT = 0
   DO ib = 1,NGSP
     IF (QGT(SPGTNO(ib))>0.0) THEN
       COUNT = COUNT + 1
     ELSE
-      PRIOR_UPDATED(ib) = .TRUE.   
+      PRIOR_UPDATED(ib) = .TRUE.
     END IF
   END DO
   IF (COUNT>0) ALLOCATE (GTNO(COUNT))
@@ -461,7 +461,7 @@ Subroutine Dy_Priority
       END IF
     END DO
   END IF
-  
+
   IF (dygroup>1) THEN         ! GROUP THE PRIORITY BY DYGROUP
     NGROUP = INT(COUNT/dygroup)
     NLEFT = MOD(COUNT, dygroup)
@@ -478,7 +478,7 @@ Subroutine Dy_Priority
   END IF
   IF (COUNT>0) DEALLOCATE(GTNO,QSP_TEMP)
   SPPRIOR = PRIOR_SP
-  RETURN  
+  RETURN
 End Subroutine Dy_Priority
 
 Subroutine BUBBLE_SORT (QSP_TEMP, GTNO, COUNT)
@@ -488,14 +488,14 @@ Subroutine BUBBLE_SORT (QSP_TEMP, GTNO, COUNT)
   INTEGER, DIMENSION(COUNT) :: GTNO
   INTEGER                   :: I, J
   REAL                      :: TEMP, TEMP_NO
-  
+
   DO I = COUNT-1, 1, -1
     DO J = 1,I
       IF (QSP_TEMP(J)<QSP_TEMP(J+1)) THEN
         TEMP = QSP_TEMP(J)
         QSP_TEMP(J) = QSP_TEMP(J+1)
         QSP_TEMP(J+1) = TEMP
-            
+
         TEMP_NO   = GTNO(J)
         GTNO(J)   = GTNO(J+1)
         GTNO(J+1) = TEMP_NO

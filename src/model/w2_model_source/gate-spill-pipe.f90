@@ -13,7 +13,7 @@ SUBROUTINE GATE_FLOW
 
 
   DO JG=1,NGT
-   IF(DYNGTC(JG) == '    FLOW'  .or. DYNGTC(JG) == 'FLOW_ZGT' )THEN    
+   IF(DYNGTC(JG) == '    FLOW'  .or. DYNGTC(JG) == 'FLOW_ZGT' )THEN
     QGT(JG) = BGT(JG)
    ELSE
 
@@ -29,7 +29,7 @@ SUBROUTINE GATE_FLOW
         ELID = ELWS(IDGT(JG))     !EL(KTWB(JWDGT(JG)),IDGT(JG))-Z(IDGT(JG))*COSA(BS(JWDGT(JG)))
       ELSE
         !ELID = ELWS(IDGT(JG))+SINA(JBDGT(JG))*DLX(IDGT(JG))*0.5          !EL(KTWB(JWDGT(JG)),IDGT(JG))-Z(IDGT(JG))*COSA(BS(JWDGT(JG)))+SINA(JBDGT(JG))*DLX(IDGT(JG))*0.5
-        ELID = ELWS(IDGT(JG)) - (ELWS(IDGT(JG)+1) - ELWS(IDGT(JG)))/(0.5*(DLX(IDGT(JG))+DLX(IDGT(JG)+1)))*DLX(IDGT(JG))*0.5  
+        ELID = ELWS(IDGT(JG)) - (ELWS(IDGT(JG)+1) - ELWS(IDGT(JG)))/(0.5*(DLX(IDGT(JG))+DLX(IDGT(JG)+1)))*DLX(IDGT(JG))*0.5
       END IF
     ELSE
       ELID = -100.0
@@ -59,9 +59,9 @@ SUBROUTINE GATE_FLOW
               ENDIF
             ELSE
                IF(G1GT(JG)/=0.0)THEN
-              QGT(JG) =  A1GT(JG)*(DLEL**B1GT(JG))*BGT(JG)**G1GT(JG)  
+              QGT(JG) =  A1GT(JG)*(DLEL**B1GT(JG))*BGT(JG)**G1GT(JG)
                ELSE
-                QGT(JG) =  A1GT(JG)*(DLEL**B1GT(JG))  
+                QGT(JG) =  A1GT(JG)*(DLEL**B1GT(JG))
                ENDIF
             END IF
           ELSE IF (ELID > ELIU) THEN
@@ -69,14 +69,14 @@ SUBROUTINE GATE_FLOW
             IF(G2GT(JG)/=0.0)THEN
             QGT(JG) = -A2GT(JG)*DLEL**B2GT(JG)*BGT(JG)**G2GT(JG)
           ELSE
-            QGT(JG) = -A2GT(JG)*DLEL**B2GT(JG)  
+            QGT(JG) = -A2GT(JG)*DLEL**B2GT(JG)
             ENDIF
           ELSE
             DLEL    =  ELIU-ELID
             IF(G2GT(JG)/=0.0)THEN
             QGT(JG) =  A2GT(JG)*DLEL**B2GT(JG)*BGT(JG)**G2GT(JG)
             ELSE
-            QGT(JG) =  A2GT(JG)*DLEL**B2GT(JG) 
+            QGT(JG) =  A2GT(JG)*DLEL**B2GT(JG)
             ENDIF
           END IF
         ELSE IF (ISUB == 0) THEN
@@ -103,7 +103,7 @@ SUBROUTINE GATE_FLOW
     END IF
    endif
   END DO
-  
+
 END SUBROUTINE GATE_FLOW
 
 !***********************************************************************************************************************************
@@ -130,7 +130,7 @@ SUBROUTINE SPILLWAY_FLOW
          ELID = ELWS(IDSP(JS))                                       !EL(KTWB(JWDSP(JS)),IDSP(JS))-Z(IDSP(JS))*COSA(BS(JWDSP(JS)))
       ELSE
       !   ELID = ELWS(IDSP(JS))+SINA(JBDSP(JS))*DLX(IDSP(JS))*0.5     !EL(KTWB(JWDSP(JS)),IDSP(JS))-Z(IDSP(JS))*COSA(BS(JWDSP(JS)))+SINA(JBDSP(JS))*DLX(IDSP(JS))*0.5
-          ELID = ELWS(IDSP(JS)) - (ELWS(IDSP(JS)+1) - ELWS(IDSP(JS)))/(0.5*(DLX(IDSP(JS))+DLX(IDSP(JS)+1)))*DLX(IDSP(JS))*0.5  
+          ELID = ELWS(IDSP(JS)) - (ELWS(IDSP(JS)+1) - ELWS(IDSP(JS)))/(0.5*(DLX(IDSP(JS))+DLX(IDSP(JS)+1)))*DLX(IDSP(JS))*0.5
       END IF
     ELSE
       ELID = -1.0
@@ -174,12 +174,12 @@ SUBROUTINE PIPE_FLOW_INITIALIZE
  use GEOMC
  use STRUCTURES
  USE SCREENC, ONLY: NIT, JDAY; USE ENVIRPMOD, ONLY: CONE
-  IMPLICIT NONE  
+  IMPLICIT NONE
   REAL(R8) :: DTQ,DLTX,EL1,EL2,HIE,EPS,DCHECK,D1,D2,DTEST,VTOT,TOTT,DCRIT,DEPTHCRIT
   real(R8) :: upcl,dncl,d1sum,d2sum,EC                     ! cb 07/17/19
   integer  :: kup,kdn                      ! cb 07/17/19
 
-  INTEGER  :: JP,K,niter     
+  INTEGER  :: JP,K,niter
   CHARACTER*2 :: SSP,ADEBUG
   LOGICAL :: SteadyStatePipe
   SAVE
@@ -187,10 +187,10 @@ SUBROUTINE PIPE_FLOW_INITIALIZE
 
   ALLOCATE (BEGIN(NPI), WLFLAG(NPI), VMAX(NPI))
   QOLD   =  0.01;  VMAX   =  0.01
-  BEGIN  = .TRUE.; WLFLAG = .TRUE. 
-  
+  BEGIN  = .TRUE.; WLFLAG = .TRUE.
+
   ! pipe-steady-state.npt
-  SteadyStatePipe=.FALSE. 
+  SteadyStatePipe=.FALSE.
   SSP='0F'
   INQUIRE(FILE='steady-state-pipe.npt', EXIST=SteadyStatePipe)   ! file_exists will be TRUE if the file
   	IF(SteadyStatePipe) THEN
@@ -209,7 +209,7 @@ SUBROUTINE PIPE_FLOW_INITIALIZE
 
 RETURN
 
-ENTRY PIPE_FLOW      
+ENTRY PIPE_FLOW
   DTQ = DLT/10.0
   DO JP=1,NPI
     DIA   = WPI(JP)
@@ -230,7 +230,7 @@ ENTRY PIPE_FLOW
         EL2   = ELWS(IDPI(JP))                                                               !EL(KTWB(JWDPI(JP)),IDPI(JP))-Z(IDPI(JP))*COSA(JBDPI(JP))
       ELSE
         EL2   = ELWS(IDPI(JP))+SINA(JBDPI(JP))*DLX(IDPI(JP))*0.5                             !EL(KTWB(JWDPI(JP)),IDPI(JP))-Z(IDPI(JP))*COSA(JBDPI(JP))+SINA(JBDPI(JP))*DLX(IDPI(JP))*0.5
-       !  EL2 = ELWS(IDPI(JP)) - (ELWS(IDPI(JP)+1) - ELWS(IDPI(JP)))/(0.5*(DLX(IDPI(JP))+DLX(IDPI(JP)+1)))*DLX(IDPI(JP))*0.5  
+       !  EL2 = ELWS(IDPI(JP)) - (ELWS(IDPI(JP)+1) - ELWS(IDPI(JP)))/(0.5*(DLX(IDPI(JP))+DLX(IDPI(JP)+1)))*DLX(IDPI(JP))*0.5
       END IF
     ELSE
       EL2 = -1.0
@@ -316,7 +316,7 @@ ENTRY PIPE_FLOW
     !if(d1 /= d1)then
     !    write(wrn,'(a,f10.3,a,f10.3,a,f10.3,a,i5,a,i5,a,i5,A,E12.4)')'Pipe errorB: D1 or EL1 is NAN.,el1=',el1,' el2=',el2,' ELWS(IUPI(JP))=',ELWS(IUPI(JP)),' IUPI(JP)=',IUPI(JP),' JBDPI(JP)=',JBDPI(JP),' JP=',jp,' DLX(IUPI(JP)',DLX(IUPI(JP))
     !endif
-    
+
 130 CONTINUE
         IF(SteadyStatePipe)THEN
 
@@ -327,13 +327,13 @@ ENTRY PIPE_FLOW
       dncl=dnie+dia/2.0
 
       ! calculating upstream downstream heads while considering density
-      kt        = ktwb(jwupi(jp))           
+      kt        = ktwb(jwupi(jp))
       do k=kt,kb(iupi(jp))
        if (el(k,iupi(jp)) < upcl) exit
       end do
       kup = max(k-1,kt)
       kup = min(kup,kb(iupi(jp)))
-      
+
       if(kup>=kti(iupi(jp)) .and. kup<=kt)then
         d1sum=rho(kt,iupi(jp))*(elws(iupi(jp))-upcl)
       else
@@ -347,15 +347,15 @@ ENTRY PIPE_FLOW
         end if
       end do
       d1=d1sum/rhow+upcl
-      
-      
-      kt = ktwb(jwdpi(jp))      
+
+
+      kt = ktwb(jwdpi(jp))
       do k=kt,kb(idpi(jp))
        if (el(k,idpi(jp)) < dncl) exit
       end do
       kdn = max(k-1,kt)
       kdn = min(kdn,kb(idpi(jp)))
-      
+
       if(kdn>=kti(idpi(jp)) .and. kdn<=kt)then
         d2sum=rho(kt,idpi(jp))*(elws(idpi(jp))-dncl)
       else
@@ -369,7 +369,7 @@ ENTRY PIPE_FLOW
         end if
       end do
       d2=d2sum/rhow+dncl
-      CALL PIPE_STEADY (D1,D2,QPI(JP))    
+      CALL PIPE_STEADY (D1,D2,QPI(JP))
     !ELSEIF(SteadyStatePipe)THEN
     !
     !    CALL SteadyStatePipeFlow(EL1,EL2)
@@ -452,8 +452,8 @@ ENTRY PIPE_FLOW
 !           QPI(JP)=type7(HEAD)
 !        else
 !           QPI(JP)=type7(HEAD)
-!        end if       
-!499 CONTINUE        
+!        end if
+!499 CONTINUE
     else
     IF (NIT /= 0) THEN
       IF(VMAX(JP)==0.0)THEN
@@ -461,14 +461,14 @@ ENTRY PIPE_FLOW
       ELSE
           DTQ = OMEGA*DLTX/VMAX(JP)
       ENDIF
-      
+
       IF (DTQ > (DLT-TOTT)) THEN
         DTQ = DLT-TOTT
       ELSE IF ((2.0*DTQ) > (DLT-TOTT)) THEN
         DTQ = (DLT-TOTT)*0.5
       END IF
     END IF
-    CALL OPEN_CHANNEL (D1,D2,QPI(JP),JP,DTQ)  
+    CALL OPEN_CHANNEL (D1,D2,QPI(JP),JP,DTQ)
     VTOT = VTOT+DTQ*QPI(JP)
     TOTT = DTQ+TOTT
     niter=niter+1
@@ -479,7 +479,7 @@ ENTRY PIPE_FLOW
     QOLD(JP) = QPI(JP)
     IF (QPI(JP) == 0.0) WLFLAG(JP) = .TRUE.
   END DO
-    
+
 RETURN
 ENTRY DEALLOCATE_PIPE_FLOW
   DEALLOCATE (BEGIN, WLFLAG, VMAX)
@@ -750,9 +750,9 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
   !    continue
   !else
   !   qout=qold(ic)
-  !endif  
-  
-  IF(DT < DTMIN)THEN      ! SW 10/17/2019 
+  !endif
+
+  IF(DT < DTMIN)THEN      ! SW 10/17/2019
       ! SMOOTH WATER LEVEL AND RESET VELOCITY TO OLD VALUE
       DT=DTMIN*2.
       DO J=2,NC-1,2
@@ -764,8 +764,8 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
               BAR1 = BAREA(Y(I+2),DIA)
               BAR2 = BAREA(Y(I-2),DIA)
               IF(PHI >= 0.0 .AND. RT(I-1) >= 0.0)THEN                                            !WLSLOPE >= 0.0 .AND. RT(I-1) >= 0.0)THEN
-              !QAVGNEW=(BAR1+BAR2)*0.5D0*(1./FMAN)*SQRT(WLSLOPE)*RT(I-1)**0.6667   ! Manning's Eqn 
-              QAVGNEW=(BAR1+BAR2)*0.5D0*(1./FMAN)*SQRT(PHI)*RT(I-1)**0.6667 
+              !QAVGNEW=(BAR1+BAR2)*0.5D0*(1./FMAN)*SQRT(WLSLOPE)*RT(I-1)**0.6667   ! Manning's Eqn
+              QAVGNEW=(BAR1+BAR2)*0.5D0*(1./FMAN)*SQRT(PHI)*RT(I-1)**0.6667
               ELSE
                   IF(QOLD(IC) < 0.0)THEN
                       QAVGNEW=0.0
@@ -773,16 +773,16 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
                       QAVGNEW=QOLD(IC)
                   ENDIF
               ENDIF
-              
+
               write(WRN,'(A,f15.5,A,F15.5,A,F10.4,1X,I5,8(F12.4,1X))')'RECOMPUTE Pipe flow. Qold=',qavg,' New flow rate=',qavgnew, ' Debug:JDAY,I,Y(I-2),Y(I+2),BAR1,BAR2,WLSLOPE,RT(I-1),FMAN,PHI:',JDAY,I,Y(I+2),Y(I-2),BAR1,BAR2,WLSLOPE,RT(I-1),FMAN,PHI
               QAVG=QAVGNEW
   ENDIF
-  
+
   DTP(IC)    =  DT
   QOUT       =  QAVG
   QOLD(IC)   =  QOUT
-  WLFLAG(IC) = .FALSE.    
-    
+  WLFLAG(IC) = .FALSE.
+
 !10010 FORMAT ('water levels for culvert ',I3,' on Julian Day ',F10.3,' are <= 0 - predictions have been smoothed')
 RETURN
 ENTRY DEALLOCATE_OPEN_CHANNEL
@@ -803,25 +803,25 @@ SUBROUTINE pipe_steady (D1,D2,qout)     ! cb 07/18/19
 !        cm   - Manning's unit coefficient (cm=1.486, English; cm=1.0, metric)
 
   use GLOBAL
- USE STRUCTURES    
+ USE STRUCTURES
   IMPLICIT NONE     ! SW 10/18/2019
 
   REAL(R8)    :: qout,hdif,bao,ro,CM,D1,D2,FL
- 
+
   cm=1.0
-  
+
   hdif=abs(d1-d2)
   bao = pi*dia**2/4.
   ro = bao/(pi*dia)
   fl = (2.*g*clen*fman**2)/(cm**2*ro**(4./3.))
   qout= bao * sqrt(2*g*hdif/(1.+closs+fl))
   if(d2 > d1)qout=-qout
-  
-  
+
+
 RETURN
 END SUBROUTINE pipe_steady
 
-    
+
 !***********************************************************************************************************************************
 !**                                             S U B R O U T I N E   G R I D  A R E A 1                                          **
 !***********************************************************************************************************************************
@@ -1190,9 +1190,9 @@ IMPLICIT NONE
     !**********************************************************
   Module Pipe
   USE PREC
-  REAL(R8)  :: PHI,SLOPE,DIST   !,BAREA,ZBRENT1,ZBRENT2  
+  REAL(R8)  :: PHI,SLOPE,DIST   !,BAREA,ZBRENT1,ZBRENT2
   REAL(R8)  :: TWIDTH,VAVG,QSUM,QAVG,BAR2,DCRIT !,TYPE1,TYPE2,TYPE3,TYPE4,TYPE5,TYPE6,TYPE7,WETPER,
-  
+
   REAL(R8)  :: DTQ,HIE,EPS,DCHECK,D1,D2,DTEST,TOTT,DLTX,VTOT  !,EL1,EL2
   REAL(R8)  :: FLOSS,THETA      !,DEPTHCRIT
 
@@ -1200,7 +1200,7 @@ IMPLICIT NONE
   REAL(R8) :: QT5,SF,CL,TQOUT,AQOUT   !,FLOW!   ,DEPTH    !HEAD,
   REAL(R8) :: factor,CD,bao,fl,ro,bac
   REAL(R8) :: X1,X2,TOL
- 
+
   INTEGER, Parameter :: ntry=50,itmax=100
   REAL :: cm=1.0
   INTEGER :: J, NUM
@@ -1317,8 +1317,8 @@ use Pipe
         else
            QOUT=type7(HEAD)
            AID='Type7d'
-        end if       
-        
+        end if
+
 499     CONTINUE
         IF(DEBUGP=='ON')write(9977,'(A,A,F10.2,A,F10.4,A,F10.4,A,F10.4)')AID,', FLOW:,',QOUT,', JDAY:,',JDAY,', HEAD:,',HEAD,', HDIF:,',HDIF
         RETURN
@@ -1330,9 +1330,9 @@ END SUBROUTINE SteadyStatePipeFLow
  use PIPE
  USE GLOBAL, ONLY: G
       IMPLICIT NONE
-      !EXTERNAL BAREA 
+      !EXTERNAL BAREA
       REAL(R8)::HEAD,DEPTH,BAREA
-      
+
       depth=head
       bac = barea(depth,dia)
       type7 = ec *bac * sqrt((2.*g)*(hdif))
@@ -1401,7 +1401,7 @@ REAL (R8)  function t2func(FLOW,HEAD)               ! (FLOW,HEAD)
       IMPLICIT NONE
      ! EXTERNAL DEPTHCRIT,BAREA,WETPER
       REAL(R8)::DEPTHCRIT,BAREA,DEPTH,WETPER,HEAD,FLOW
-      
+
       cd = depthcrit(flow)
       DEPTH=CD
       bac = barea(cd,dia)
@@ -1444,7 +1444,7 @@ REAL (R8) function t3func(FLOW,HEAD)   !(FLOW,HEAD)
  USE GLOBAL, ONLY: G
       IMPLICIT NONE
       REAL (R8) :: BA3,WP,BAREA,WETPER,DEPTH,FLOW,HEAD
- 
+
       ba3 = barea(hdn,dia)
       depth=hdn
       WP=wetper(DEPTH,DIA)
@@ -1464,12 +1464,12 @@ REAL (R8) function type4(HEAD)    !(HEAD)
       use STRUCTURES
  use PIPE
 USE GLOBAL, ONLY: G, PI
-      IMPLICIT NONE      
+      IMPLICIT NONE
       REAL(R8) :: HEAD
       bao = pi*dia**2/4.
       ro = bao/(pi*dia)
       fl = (2.*g*dist*fman**2)/(cm**2*ro**(4./3.))
-      
+
 !     type4=ec * bao * sqrt(2*g*(head+fall-hdn)/(1.+closs+fl))
       type4=ec * bao * sqrt(2*g*hdif/(1.+closs+fl))
 
@@ -1485,7 +1485,7 @@ REAL (R8) function type5(HEAD)    !(HEAD)
  USE GLOBAL
       IMPLICIT NONE
       REAL(R8)::HEAD
-      
+
       bao = pi*dia**2/4.
       ro = bao/(pi*dia)
       fl = (2.*g*dist*fman**2)/(cm**2*ro**(4./3.))
@@ -1503,12 +1503,12 @@ REAL (R8) function type6(HEAD)                 !HEAD
 USE GLOBAL, ONLY: G,PI
       IMPLICIT NONE
       REAL(R8)::HEAD
-      
+
       !bao = pi*dia**2/4.
       type6 = (pi*(dia**2)/4.)*ec*sqrt(2.*g*head)
 
     end
-    
+
     ! this function calculates the friction head loss in the culvert
 
       !REAL (R8) function floss()
@@ -1522,11 +1522,11 @@ IMPLICIT NONE
       !floss = (flow * fman)**2 * wetper(DEPTH,DIA)**(4./3.) * dist/(cm**2 * barea(DEPTH,DIA)**(10./3.))
       !
       !end
-    ! ZBRENT2 
+    ! ZBRENT2
 REAL (R8) function zbrent2(func,BARG)     !(func,x1,x2,tol,barg,num)
       use STRUCTURES
 use Pipe
-USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN  
+USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN
       IMPLICIT NONE
       REAL(R8) :: F1,F2,FUNC,BA,B,FA,FB,FC,C,D,E,TOL1,XM,S,P,Q,R,BARG
       INTEGER :: I,ITER
@@ -1540,9 +1540,9 @@ USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN
 
       if(x1.eq.x2)THEN
           WRITE(W2ERR,*) 'PIPE STEADY STATE ZBRENT2: X1=X2 you have to guess an initial range'
-          ERROR_OPEN=.TRUE. 
+          ERROR_OPEN=.TRUE.
       ENDIF
-      
+
       f1 = func(x1,barg)
       f2 = func(x2,barg)
 
@@ -1555,7 +1555,7 @@ USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN
            if(f1.lt.0.)go to 69
 25        continue
           WRITE(W2ERR,*) 'PIPE STEADY STATE: ZBRENT2: could not make t#func(x1) less than zero'
-          ERROR_OPEN=.TRUE. 
+          ERROR_OPEN=.TRUE.
       end if
 69        continue
 
@@ -1569,7 +1569,7 @@ USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN
            if(f2.gt.0.)go to 89
 45        continue
           WRITE(W2ERR,*) 'PIPE STEADY STATE: ZBRENT2:could not make typef(x2) greater than zero'
-          ERROR_OPEN=.TRUE. 
+          ERROR_OPEN=.TRUE.
       end if
 89        continue
 
@@ -1582,9 +1582,9 @@ USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN
 
       if(fb*fa.gt.0.)THEN
           WRITE(W2ERR,*) 'PIPE STEADY STATE: ZBRENT2: root must be bracketed for zbrent2'
-          ERROR_OPEN=.TRUE. 
+          ERROR_OPEN=.TRUE.
       ENDIF
-      
+
       fc=fb
       do 11 iter=1,itmax
         if(fb*fc.gt.0.)then
@@ -1642,7 +1642,7 @@ USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN
         fb= func(b,barg)
 11    continue
       WRITE(W2ERR,*) 'PIPE STEADY STATE: zbrent2 exceeding maximum number of iterations'
-      ERROR_OPEN=.TRUE. 
+      ERROR_OPEN=.TRUE.
       zbrent2=b
 22    continue
 
