@@ -62,4 +62,10 @@ contains
 
         err = c_chdir(path//c_null_char)
     end function f_chdir
+
+    ! Make a directory using mkdir.
+    integer function f_mkdir(path) result(stat)
+        character(*), intent(in) :: path
+        call execute_command_line("mkdir -p " // path, wait=.true., exitstat=stat)
+    end function f_mkdir
 end module path

@@ -130,7 +130,7 @@ REAL(R8):: W1,W2,W3, DUMMY
                 C2(K,I,CN(1:NAC)) = C1(K,DHS(JB),CN(1:NAC))                                   ! moved                 !SR 11/30/2021
                 H2(K,I)           = H1(K,I)                                                   ! might be needed       !SR 11/30/2021
                 BH2(K,I)          = BH1(K,I)                                                  ! might be needed       !SR 11/30/2021
-                RHO(K,I)          = DENSITY(T1(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))     ! can't hurt    !SR 11/30/2021
+                RHO(K,I)          = DENSITY(T1(K,I),MAX1(TDS(K,I),0.0),MAX1(TISS(K,I),0.0))     ! can't hurt    !SR 11/30/2021
               END DO                              ! didn't bother with sed vars, cssk, and a few others for now       !SR 11/30/2021
                         END DO
 
@@ -266,11 +266,7 @@ REAL(R8):: W1,W2,W3, DUMMY
         SUB_LAYER    = .FALSE.
       END IF
 
-      IF(ADD_LAYER == .TRUE. .OR. SUB_LAYER == .TRUE.)THEN
-      LAYERCHANGE(JW)=.TRUE.
-      ELSE
-      LAYERCHANGE(JW)=.FALSE.
-      ENDIF
+      LAYERCHANGE(JW) = ADD_LAYER .OR. SUB_LAYER
 
 !**** Add layers
 

@@ -4,9 +4,9 @@
 !***********************************************************************************************************************************
 
 SUBROUTINE GATE_FLOW
-  use STRUCTURES
- use GLOBAL
- USE GEOMC    !;use SCREENC, only:JDAY
+  USE STRUCTURES
+  USE GLOBAL
+  USE GEOMC    !;use SCREENC, only:JDAY
   IMPLICIT NONE
     INTEGER :: JG,ISUB,IGT
     REAL(R8)    :: ELIU,ELID,HTAIL,HENERGY,DLEL
@@ -543,7 +543,7 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
   IF (.NOT. BEGIN(IC)) THEN
     IF (WLFLAG(IC)) THEN
       DO J=2,NC-1,2
-        WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*DCOS(PHI)
+        WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*COS(PHI)
         DIST    = (REAL(J-1)*0.5*DLTX)+DLTX2
         Y(J)    =  BC1-WLSLOPE*DIST
         YT(J)   =  Y(J)
@@ -563,7 +563,7 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
   IF (BEGIN(IC)) THEN
     BEGIN(IC) = .FALSE.
     DO J=2,NC-1,2
-      WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*DCOS(PHI)
+      WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*COS(PHI)
       DIST    = (REAL(J-1)*0.5*DLTX)+DLTX2
       Y(J)    =  BC1-WLSLOPE*DIST
       YT(J)   =  Y(J)
@@ -642,44 +642,44 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
     DO N=1,NC,2
       IF (N /= 1) THEN
         DAA(N,N-2) = -THETA*(DT/DLTX)*VPR(N)
-        DAA(N,N-1) = -THETA*(DT/DLTX)*G*DCOS(PHI)
+        DAA(N,N-1) = -THETA*(DT/DLTX)*G*COS(PHI)
       END IF
-      DAA(N,N) = 1.0+THETA*DT*G*(FMAN**2)*DABS(VPR(N))/(RT(N)**(4.0/3.0))+THETA*(DT/DLTX)*VPR(N)+THETA*(CLOSS*0.5D0)*(DT/CLEN)        &
-                 *DABS(VPR(N))
-      IF (N /= NC) DAA(N,N+1) = THETA*(DT/DLTX)*G*DCOS(PHI)
+      DAA(N,N) = 1.0+THETA*DT*G*(FMAN**2)*ABS(VPR(N))/(RT(N)**(4.0/3.0))+THETA*(DT/DLTX)*VPR(N)+THETA*(CLOSS*0.5D0)*(DT/CLEN)        &
+                 *ABS(VPR(N))
+      IF (N /= NC) DAA(N,N+1) = THETA*(DT/DLTX)*G*COS(PHI)
       IF (N == 1) THEN
-        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(Y(N+1)-BC1)*DCOS(PHI)-(1.0D0-THETA)*V(N)*(DT/DLTX)*V(N)-(1.0D0-THETA)*DT*G*(FMAN**2)       &
-               /(RT(N)**(4.0/3.0))*V(N)*DABS(V(N))+DT*G*DSIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*DABS(V(N))+THETA*(DT/DLTX)   &
-               *G*DCOS(PHI)*BC1
+        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(Y(N+1)-BC1)*COS(PHI)-(1.0D0-THETA)*V(N)*(DT/DLTX)*V(N)-(1.0D0-THETA)*DT*G*(FMAN**2)       &
+               /(RT(N)**(4.0/3.0))*V(N)*ABS(V(N))+DT*G*SIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*ABS(V(N))+THETA*(DT/DLTX)   &
+               *G*COS(PHI)*BC1
       ELSE IF (N == NC) THEN
-        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(BC2-Y(N-1))*DCOS(PHI)-(1.0D0-THETA)*V(N)*(DT/DLTX)*(V(N)-V(N-2))-(1.0D0-THETA)             &
-               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*DABS(V(N))+DT*G*DSIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*DABS(V(N))    &
-               -THETA*(DT/DLTX)*G*DCOS(PHI)*BC2
+        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(BC2-Y(N-1))*COS(PHI)-(1.0D0-THETA)*V(N)*(DT/DLTX)*(V(N)-V(N-2))-(1.0D0-THETA)             &
+               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*ABS(V(N))+DT*G*SIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*ABS(V(N))    &
+               -THETA*(DT/DLTX)*G*COS(PHI)*BC2
       ELSE
         B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(Y(N+1)-Y(N-1))*COS(PHI)-(1.0D0-THETA)*V(N)*(DT/DLTX)*(V(N)-V(N-2))-(1.0D0-THETA)          &
-               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*DABS(V(N))+DT*G*DSIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*DABS(V(N))
+               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*ABS(V(N))+DT*G*SIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*ABS(V(N))
       END IF
     END DO
   ELSE
     DO N=1,NC,2
       IF (N /= NC) THEN
         DAA(N,N+2) = THETA*(DT/DLTX)*VPR(N)
-        DAA(N,N+1) = THETA*(DT/DLTX)*G*DCOS(PHI)
+        DAA(N,N+1) = THETA*(DT/DLTX)*G*COS(PHI)
       END IF
-      DAA(N,N) = 1.0+THETA*DT*G*(FMAN**2)*DABS(VPR(N))/(RT(N)**(4.0/3.0))-THETA*(DT/DLTX)*VPR(N)+THETA*(CLOSS*0.5D0)*(DT/CLEN)        &
-                 *DABS(VPR(N))
-      IF (N /= 1) DAA(N,N-1) = -THETA*(DT/DLTX)*G*DCOS(PHI)
+      DAA(N,N) = 1.0+THETA*DT*G*(FMAN**2)*ABS(VPR(N))/(RT(N)**(4.0/3.0))-THETA*(DT/DLTX)*VPR(N)+THETA*(CLOSS*0.5D0)*(DT/CLEN)        &
+                 *ABS(VPR(N))
+      IF (N /= 1) DAA(N,N-1) = -THETA*(DT/DLTX)*G*COS(PHI)
       IF (N == NC) THEN
-        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(BC2-Y(N-1))*DCOS(PHI)-(1.0-THETA)*V(N)*(DT/DLTX)*(-V(N))-(1.0D0-THETA)*DT*G*(FMAN**2)    &
-               /(RT(N)**(4.0/3.0))*V(N)*DABS(V(N))+DT*G*DSIN(PHI)-(1.0-THETA)*(DT/CLEN)*(CLOSS*0.5)*V(N)*DABS(V(N))-THETA*(DT/DLTX)   &
-               *G*DCOS(PHI)*BC2
+        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(BC2-Y(N-1))*COS(PHI)-(1.0-THETA)*V(N)*(DT/DLTX)*(-V(N))-(1.0D0-THETA)*DT*G*(FMAN**2)    &
+               /(RT(N)**(4.0/3.0))*V(N)*ABS(V(N))+DT*G*SIN(PHI)-(1.0-THETA)*(DT/CLEN)*(CLOSS*0.5)*V(N)*ABS(V(N))-THETA*(DT/DLTX)   &
+               *G*COS(PHI)*BC2
       ELSE IF (N == 1) THEN
-        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(Y(N+1)-BC1)*DCOS(PHI)-(1.0-THETA)*V(N)*(DT/DLTX)*(V(N+2)-V(N))-(1.0D0-THETA)             &
-               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*ABS(V(N))+DT*G*SIN(PHI)-(1.0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*DABS(V(N))    &
-               +THETA*(DT/DLTX)*G*DCOS(PHI)*BC1
+        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(Y(N+1)-BC1)*COS(PHI)-(1.0-THETA)*V(N)*(DT/DLTX)*(V(N+2)-V(N))-(1.0D0-THETA)             &
+               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*ABS(V(N))+DT*G*SIN(PHI)-(1.0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*ABS(V(N))    &
+               +THETA*(DT/DLTX)*G*COS(PHI)*BC1
       ELSE
-        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(Y(N+1)-Y(N-1))*DCOS(PHI)-(1.0D0-THETA)*V(N)*(DT/DLTX)*(V(N+2)-V(N))-(1.0D0-THETA)          &
-               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*DABS(V(N))+DT*G*DSIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*DABS(V(N))
+        B(N) = V(N)-(1.0D0-THETA)*(DT/DLTX)*G*(Y(N+1)-Y(N-1))*COS(PHI)-(1.0D0-THETA)*V(N)*(DT/DLTX)*(V(N+2)-V(N))-(1.0D0-THETA)          &
+               *DT*G*(FMAN**2)/(RT(N)**(4.0/3.0))*V(N)*ABS(V(N))+DT*G*SIN(PHI)-(1.0D0-THETA)*(DT/CLEN)*(CLOSS*0.5D0)*V(N)*ABS(V(N))
       END IF
     END DO
   END IF
@@ -707,7 +707,7 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
   END DO
   IF (SMOOTH_WATER_LEVELS) THEN
     DO J=2,NC-1,2
-      WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*DCOS(PHI)
+      WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*COS(PHI)
       DIST    = (REAL(J-1)*0.5D0*DLTX)+DLTX2
       Y(J)    =  BC1-WLSLOPE*DIST
     END DO
@@ -756,7 +756,7 @@ ENTRY OPEN_CHANNEL (EL1,EL2,QOUT,IC,DT)
       ! SMOOTH WATER LEVEL AND RESET VELOCITY TO OLD VALUE
       DT=DTMIN*2.
       DO J=2,NC-1,2
-      WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*DCOS(PHI)
+      WLSLOPE = ((BC1-BC2)/(CLEN+DLTX))*COS(PHI)
       DIST    = (REAL(J-1)*0.5D0*DLTX)+DLTX2
       Y(J)    =  BC1-WLSLOPE*DIST
       END DO
@@ -1028,7 +1028,7 @@ REAL (R8) FUNCTION BAREA (DEPTH,DIA)
   REAL(R8), PARAMETER ::PI=3.14159265359D0
   REAL(R8) :: DEPTH,DIA
   IF (DEPTH < DIA) THEN
-    BAREA = (DEPTH-DIA*0.5D0)*DSQRT(DEPTH*DIA-DEPTH**2)+(DIA**2*0.25D0)*DASIN((2.0D0/DIA)*(DEPTH-DIA*0.5D0))+(PI*DIA**2)/8.0D0
+    BAREA = (DEPTH-DIA*0.5D0)*SQRT(DEPTH*DIA-DEPTH**2)+(DIA**2*0.25D0)*DASIN((2.0D0/DIA)*(DEPTH-DIA*0.5D0))+(PI*DIA**2)/8.0D0
   ELSE
     BAREA = (PI*DIA**2)*0.25D0
   END IF
@@ -1044,7 +1044,7 @@ IMPLICIT NONE
 
 REAL(R8) :: DEPTH,DIA
   IF (DEPTH < DIA) THEN
-    TWIDTH = 2.0D0*DSQRT((DIA*DEPTH)-DEPTH**2)
+    TWIDTH = 2.0D0*SQRT((DIA*DEPTH)-DEPTH**2)
   ELSE
     TWIDTH = 0.005D0*DIA
   END IF
@@ -1103,8 +1103,9 @@ USE PREC
 IMPLICIT NONE
 
   EXTERNAL   CDFUNC
-  REAL, PARAMETER :: FACTOR=0.1,NTRY=50,ITMAX=100,EPS=3.E-8
-  INTEGER         :: I,J,ITER
+  REAL, PARAMETER     :: FACTOR=0.1,EPS=3.E-8
+  INTEGER             :: NTRY=50,ITMAX=100
+  INTEGER             :: I,J,ITER
   REAL(R8)            :: F1,F2,X1,X2,TOL,BARG,BA,B,FA,FB,FC,CDFUNC
   REAL(R8)            :: C,D,E,TOL1,XM,S,P,Q,R
 
@@ -1389,7 +1390,7 @@ REAL (R8)  function type2(HEAD)                 ! HEAD
       NUM=2
       type2 = zbrent2(t2func,HEAD)           !(t2func,x1,x2,tol,head,2)
 
-      end
+      end function type2
 
 !c     when the function T2FUNC equals zero, the flow in the culvert
 !c     is type2 flow
@@ -1411,7 +1412,7 @@ REAL (R8)  function t2func(FLOW,HEAD)               ! (FLOW,HEAD)
 !c      fl =fall
       t2func = flow**2. - (ec * bac)**2. * ((2.*g)*(head+fall-fl-cd))
 
-      end
+      end function t2func
 
 !c     this function computes the flow of a culvert that has a mild
 !c     slope and is outlet controlled with an unsubmerged entrance
@@ -1433,7 +1434,7 @@ REAL (R8)  function type3(HEAD)    !(HEAD)         !HEAD
       !TYPE3=ZBRENT2(XX,HEAD)
       type3 = zbrent2(t3func,HEAD)             !,x1,x2,tol,head,3)
 
-      end
+      end function type3
 
 !c     when the function T3FUNC equals zero, the flow in the culvert
 !c     is type 3 flow
@@ -1454,7 +1455,7 @@ REAL (R8) function t3func(FLOW,HEAD)   !(FLOW,HEAD)
       if(fl.gt.hdif)fl=hdif
 !      fl=fall
       t3func = flow**2 - (ec * ba3)**2 * ((2.*g)*(head+fall-fl-hdn))
-      end
+      end function t3func
 
 !     this function computes the flow of a culvert that has a
 !     submerged entrance and whose tailwater height is greater than
@@ -1473,7 +1474,7 @@ USE GLOBAL, ONLY: G, PI
 !     type4=ec * bao * sqrt(2*g*(head+fall-hdn)/(1.+closs+fl))
       type4=ec * bao * sqrt(2*g*hdif/(1.+closs+fl))
 
-      end
+      end function type4
 
 !    this function computes the flow of a culvert that flows full and
 !    has a submerged entrance and a tailwater height which is less
@@ -1491,7 +1492,7 @@ REAL (R8) function type5(HEAD)    !(HEAD)
       fl = (2.*g*dist*fman**2)/(cm**2*ro**(4./3.))
       type5=ec * bao * sqrt(2*g*(head+fall-dia)/(1.+closs+fl))
 
-      end
+      end function type5
 
 !c     this function computes the flow of a culvert that flows part full and
 !c     has a submerged entrance and a tailwater height which is less
@@ -1507,14 +1508,14 @@ USE GLOBAL, ONLY: G,PI
       !bao = pi*dia**2/4.
       type6 = (pi*(dia**2)/4.)*ec*sqrt(2.*g*head)
 
-    end
+    end function type6
 
     ! this function calculates the friction head loss in the culvert
 
       !REAL (R8) function floss()
       !use STRUCTURES
- use PIPE
-IMPLICIT NONE
+      !  use PIPE
+      ! IMPLICIT NONE
       !
       !if(num.eq.3)depth=hdn
       !if(num.eq.2)depth=depthcrit(FLOW)
@@ -1646,4 +1647,4 @@ USE GLOBAL, ONLY:W2ERR; USE MAIN, ONLY: ERROR_OPEN
       zbrent2=b
 22    continue
 
-      end
+    end function zbrent2

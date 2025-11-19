@@ -2,30 +2,31 @@ SUBROUTINE OUTPUTA
 
   USE MAIN
   use GLOBAL
-     use NAMESC
- use GEOMC
+  use BUILDVERSION
+  use NAMESC
+  use GEOMC
   use LOGICC
- use PREC
+  use PREC
   use SURFHE
   use KINETIC
- use SHADEC
- USE EDDY
+  use SHADEC
+  USE EDDY
   use STRUCTURES
- use TRANS
+  use TRANS
   use TVDC
-   use SELWC
+  use SELWC
   use GDAYC
- use SCREENC
- use TDGAS
-   USE RSTART
+  use SCREENC
+  use TDGAS
+  USE RSTART
   use MACROPHYTEC
- use POROSITYC
- use ZOOPLANKTONC
-   USE BIOENERGETICS
+  use POROSITYC
+  use ZOOPLANKTONC
+  USE BIOENERGETICS
   use CEMAVars
   use CEMAOutputRoutines
- use ALGAE_TOXINS
- USE MetFileRegion
+  use ALGAE_TOXINS
+  USE MetFileRegion
   IMPLICIT NONE
 
   EXTERNAL RESTART_OUTPUT
@@ -121,8 +122,8 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
           DO JC = NZOOS,NZOOE
             C2ZOO(K,I,JC) =  C2(K,I,JC)*CMULT(JC)
           END DO
-	WRITE(BIOEXPFN(J),'(F8.2,",",I8,",",3(F8.2,","),<NZOOE-NZOOS+1>(F8.3,","),I8,",",2(F8.2,","),A,",",I0,",",I0)') JDAY,IBIO(J),DEPTHM(K,I),T1(K,I),GAMMA(K,I),&          ! CB 1/6/17
-			     (C2ZOO(K,I,JC), JC = NZOOS,NZOOE),K,BH(K,I),EL(K,I),MONTH,GDAY,YEAR
+	    WRITE(BIOEXPFN(J), '(F8.2,",",I8,",",3(F8.2,","),*(F8.3,","))', advance='NO') JDAY, IBIO(J), DEPTHM(K,I), T1(K,I), GAMMA(K,I), (C2ZOO(K,I,JC), JC = NZOOS,NZOOE)
+        WRITE(BIOEXPFN(J), '(I8,",",2(F8.2,","),A,",",I0,",",I0)') K, BH(K,I), EL(K,I), MONTH, GDAY, YEAR
 
         END DO
            ! VOLUME WEIGHTING OF ACTIVE CONSTITUENTS     !MLM 18.07.06
@@ -139,7 +140,7 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
           C2W(I,JJC) = C2W(I,JJC)/VOLROOS(I)
         END DO
 
-        WRITE(WEIGHTNUM(J),'(F10.3,",",<NAC>(F9.3,","),2(F9.3,","))')JDAY,(C2W(I,JJC),JJC = 1,NAC+2)
+        WRITE(WEIGHTNUM(J),'(F10.3,",",*(F9.3,","))') JDAY, (C2W(I, JJC), JJC = 1, NAC+2)
         VOLROOS = 0.0
 
       END DO
@@ -339,7 +340,7 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
 
     IF(ALGAE_TOXIN)THEN
       IF(ATOX_DEBUG=='ON')THEN
-          WRITE(ATOXIN_DEBUG_FN,'(F10.3,",",I4,",",I4,",",<NUMATOXINS>(E12.4,","),<NUMATOXINS>(E12.4,","),<NUMATOXINS>(E12.4,","),<NAL>(E12.4,","))')JDAY,K,I,(EX_TOXIN(K,I,JA),JA=1,numatoxins),(IN_TOXIN(K,I,JA),JA=1,numatoxins),(CTESS(K,I,JA),JA=1,numatoxins),(ALG(K,I,JA),JA=1,NAL)
+          WRITE(ATOXIN_DEBUG_FN,'(F10.3,",",I4,",",I4,",",*(E12.4,","))') JDAY, K, I, (EX_TOXIN(K, I, JA), JA=1, numatoxins), (IN_TOXIN(K, I, JA), JA=1, numatoxins), (CTESS(K, I, JA), JA=1, numatoxins), (ALG(K, I, JA), JA=1, NAL)
       ENDIF
     ENDIF
 
@@ -380,7 +381,7 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
           NXTMSN(JW) = SNPD(SNPDP(JW),JW)
         END IF
         NXTMSN(JW) = NXTMSN(JW)+SNPF(SNPDP(JW),JW)
-        WRITE (SNP(JW),10490) W2VER,(TITLE(J),J=1,10)
+        WRITE (SNP(JW),10490) GIT_TAG, (TITLE(J),J=1,10)
         WRITE (SNP(JW),10500) 'Time Parameters',MONTH,GDAY,YEAR,INT(JDAY),(JDAY-INT(JDAY))*24.0,INT(ELTMJD),                     &
         (ELTMJD-INT(ELTMJD))*24.0,INT(DLTS1),KLOC,ILOC,INT(MINDLT),INT(JDMIN),(JDMIN-INT(JDMIN))*24.0,     &
         KMIN,IMIN
@@ -540,7 +541,7 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
         NXTMPR(JW) = NXTMPR(JW)+PRFF(PRFDP(JW),JW)
         NSPRF(JW)  = NSPRF(JW)+1
         if(iprf(1,1) /= -1)then     ! SW 4/1/2016
-        WRITE (PRF(JW),'(F8.3,1X,A3,I3,A,2I4,F8.4,I8)')JDAY,ADJUSTL(MONTH),GDAY,', ',YEAR,KTWB(JW),SNGL(Z(DS(BS(JW)))),NSPRF(JW)
+        WRITE (PRF(JW),'(F8.3,1X,A3,I3,A,2I4,F8.4,I8)')JDAY,ADJUSTL(MONTH),GDAY,', ',YEAR,KTWB(JW),REAL(Z(DS(BS(JW)))),NSPRF(JW)
         DO JP=1,NIPRF(JW)
           NRS = KB(IPRF(JP,JW))-KTWB(JW)+1
           WRITE (PRF(JW),'(A8,I4/(8F10.2))') 'TEMP    ',NRS,(T2(K,IPRF(JP,JW)),K=KTWB(JW),KB(IPRF(JP,JW)))
@@ -944,7 +945,7 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
           !END IF
           !NLINES   = NLINES+KMX-KTWB(JW)+11
           !NEW_PAGE = NLINES > 72
-          WRITE (FLX(JW),'(/A,F10.3,X,3(A,I0),A,F0.2,A)') 'New date ',JDAY,MONTH//' ',GDAY,', ',YEAR,'   Julian Date = ',       &
+          WRITE (FLX(JW),'(/A,F10.3,1X,3(A,I0),A,F0.2,A)') 'New date ',JDAY,MONTH//' ',GDAY,', ',YEAR,'   Julian Date = ',       &
           INT(JDAY),' days ',(JDAY-INT(JDAY))*24.0,                            &
           ' hours           '//KFNAME(KFCN(JAF,JW))
           WRITE (FLX(JW),'(3X,*(I10))')                  (ISNP(I,JW),I=1,NISNP(JW))
@@ -1457,7 +1458,7 @@ IF(LAKE_RIVER_CONTOUR_ON=='ON')THEN    ! SW 2/28/2020
 
   ! Snapshot formats
 
-10490 FORMAT ('CE-QUAL-W2 Version ',F4.2/                                                                                          &
+10490 FORMAT ('CE-QUAL-W2 ',A/                                                                                          &
               (1X,A72))
 10500 FORMAT (/1X,A/                                                                                                               &
               3X,'Gregorian date      [GDAY] =',A19,1X,I0,', ',I0/                                                                 &

@@ -29,17 +29,20 @@ Subroutine ReadBedConsolidationFiles(TempFilNum)
     Use CEMAVars
 
     Logical    :: SkipLoop
+    Integer :: ios
     Integer(4) :: TempFilNum
     Real(8) :: TimeJD1
     Real(8) :: TimeJD2
     Real(8) :: FactorInterp
 	Real(8) :: ConsolidRateTemp11(NumConsolidRegns),ConsolidRateTemp1(NumConsolidRegns),ConsolidRateTemp2(NumConsolidRegns)
+    character(:), allocatable :: fmt
 
     !Read Data
 	SkipLoop = .FALSE.
-	Do While(.NOT. SkipLoop .or. EOF(TempFilNum))
-	  Read(TempFilNum,'(F8.0,<NumConsolidRegns>F8.0)')TimeJD1, (ConsolidRateTemp1(i),i=1,NumConsolidRegns)
-	  Read(TempFilNum,'(F8.0,<NumConsolidRegns>F8.0)')TimeJD2, (ConsolidRateTemp2(i),i=1,NumConsolidRegns)
+    fmt = '(F8.0'//Repeat(',F8.0', NumConsolidRegns)//')'
+	Do While(.NOT. SkipLoop .or. IS_IOSTAT_END(ios))
+	  Read(TempFilNum, fmt=fmt, iostat=ios) TimeJD1, (ConsolidRateTemp1(i), i=1, NumConsolidRegns)
+	  Read(TempFilNum, fmt=fmt, iostat=ios) TimeJD2, (ConsolidRateTemp2(i), i=1, NumConsolidRegns)
 
 	    If(JDay >= TimeJD1 .and. JDay <= TimeJD2)then
 		    SkipLoop = .TRUE.

@@ -144,8 +144,8 @@ use NAMESC
 
   DO JW=1,NWB
     DO K=KMX-1,1,-1
-      HMIN = DMIN1(H(K,JW),HMIN)
-      HMAX = DMAX1(H(K,JW),HMAX)
+      HMIN = MIN(H(K,JW),HMIN)
+      HMAX = MAX(H(K,JW),HMAX)
     END DO
   END DO
   HMAX2 = HMAX**2
@@ -314,8 +314,8 @@ use NAMESC
 !**** Minimum/maximum segment lengths
 
       DO I=IU,ID
-        DLXMIN = DMIN1(DLXMIN,DLX(I))
-        DLXMAX = DMAX1(DLXMAX,DLX(I))
+        DLXMIN = MIN(DLXMIN,DLX(I))
+        DLXMAX = MAX(DLXMAX,DLX(I))
       END DO
     END DO
   END DO

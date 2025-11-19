@@ -92,9 +92,9 @@ DO JW=1,NWB
               TSS(KT,I) =  TSS(KT,I)+HEATEX
               TSSS(JB)  =  TSSS(JB) +HEATEX*DLT
               if(Met_Regions)then
-              SROOUT    = (1.0D0-BETA(JW))*(SRON(NMet)*SHADE(I)/RHOWCP)*BI(KT,I)*DLX(I)*DEXP(-GAMMA(KT,I)*DEPTHB(KT,I))
+              SROOUT    = (1.0D0-BETA(JW))*(SRON(NMet)*SHADE(I)/RHOWCP)*BI(KT,I)*DLX(I)*EXP(-GAMMA(KT,I)*DEPTHB(KT,I))
               else
-              SROOUT    = (1.0D0-BETA(JW))*(SRON(JW)*SHADE(I)/RHOWCP)*BI(KT,I)*DLX(I)*DEXP(-GAMMA(KT,I)*DEPTHB(KT,I))
+              SROOUT    = (1.0D0-BETA(JW))*(SRON(JW)*SHADE(I)/RHOWCP)*BI(KT,I)*DLX(I)*EXP(-GAMMA(KT,I)*DEPTHB(KT,I))
               endif
 
               TSS(KT,I) =  TSS(KT,I)-SROOUT
@@ -108,7 +108,7 @@ DO JW=1,NWB
               TSSS(JB)  =  TSSS(JB) +SROSED*DLT
               SROIN     =  SROOUT*B(KT+1,I)/BI(KT,I)
               DO K=KT+1,KB(I)
-                SROOUT   = SROIN*DEXP(-GAMMA(K,I)*(H1(K,I)))
+                SROOUT   = SROIN*EXP(-GAMMA(K,I)*(H1(K,I)))
                 SRONET   = SROIN-SROOUT
                 IF(K /= KB(I))THEN                                         ! SW 1/18/08
                 SROSED   = SROOUT*(1.0D0-BI(K+1,I)/BI(K,I))*TSEDF(JW)
@@ -212,10 +212,10 @@ DO JW=1,NWB
 !**************** Solar radiation attenuation
                   if(Met_Regions)then
                   TFLUX      = DLX(I)*SRON(WB_MetRegions(JW))/(RHOWCP*REFL)*SHADE(I)*(1.0D0-ALBEDO(JW))*(1.0D0-BETAI(JW))                             &   ! SW 4/21/10 Eliminate spurious divide by RHOCP
-                               *DEXP(-GAMMAI(JW)*ICETH(I))*BI(KT,I)
+                               *EXP(-GAMMAI(JW)*ICETH(I))*BI(KT,I)
                   else
                   TFLUX      = DLX(I)*SRON(JW)/(RHOWCP*REFL)*SHADE(I)*(1.0D0-ALBEDO(JW))*(1.0D0-BETAI(JW))                             &   ! SW 4/21/10 Eliminate spurious divide by RHOCP
-                               *DEXP(-GAMMAI(JW)*ICETH(I))*BI(KT,I)
+                               *EXP(-GAMMAI(JW)*ICETH(I))*BI(KT,I)
                   endif
 
                   TSS(KT,I)  = TSS(KT,I) +TFLUX
@@ -295,7 +295,7 @@ DO JW=1,NWB
                 IF(TERM_BY_TERM(JW))CALL EQUILIBRIUM_TEMPERATURE           ! SW 10/20/09 Must call this first otherwise ET and CSHE are 0
                 HIA      = 0.2367D0*CSHE(I)/5.65D-8                          ! JM 11/08 convert SI units of m/s to English (btu/ft2/d/F) and then back to SI W/m2/C
 !                ICETH(I) = MAX(0.0,ICETH(I)+DLT*((RIMT-ET(I))/(ICETH(I)/RK1+1.0/HIA)-(T2(KT,I)-RIMT))/RHOIRL1)
-                ICETH(I) = MAX(0.0,ICETH(I)+DLT*((RIMT-ET(I))/(ICETH(I)/RK1+1.0D0/HIA)-HWI(JW)*(T2(KT,I)-RIMT))/RHOIRL1)   ! SW 10/20/09 Revised missing HWI(JW)
+                ICETH(I) = MAX(0.0, ICETH(I)+DLT*((RIMT-ET(I))/(ICETH(I)/RK1+1.0/HIA)-HWI(JW)*(T2(KT,I)-RIMT))/RHOIRL1)   ! SW 10/20/09 Revised missing HWI(JW)
                 ICE(I)   = ICETH(I) > 0.0
                 ICESW(I) = 1.0
                 IF (ICE(I)) THEN

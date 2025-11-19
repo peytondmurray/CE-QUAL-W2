@@ -166,10 +166,10 @@ else
         write(FISHHABFN,*)
         IF(DOVOL=='ON')THEN
         write(FISHHABFN,101)(trim(fishname(i)),trim(fishname(i)),i=1,ifish)
-101     format('JDAY,',<ifish>('%VOL-',A,',','HAB-VOL(m3)-',A,','),'DO_VOL(m3)<=1mg/L',',')
+101     format('JDAY,',*('%VOL-',A,',','HAB-VOL(m3)-',A,','),'DO_VOL(m3)<=1mg/L',',')
         ELSE
         write(FISHHABFN,100)(trim(fishname(i)),trim(fishname(i)),i=1,ifish)
-100     format('JDAY,',<ifish>('%VOL-',A,',','HAB-VOL(m3)-',A,','))
+100     format('JDAY,',*('%VOL-',A,',','HAB-VOL(m3)-',A,','))
         ENDIF
 
         jbfile=jbfile1;jwfile=jwfile1
@@ -235,8 +235,8 @@ else
     !
     write(FISHHABFN+1,'(a,80(1x,i4))')'Volume weighted WQ parameters at segments:',(isegvol(i),i=1,nseg)
     write(FISHHABFN+1,103)(trim(cname2(NPO4)),isegvol(i),trim(cname2(NNH4)),isegvol(i),trim(cname2(NNO3)),isegvol(i),trim(cname2(NDO)),isegvol(i),trim(cdname2(12)),isegvol(i),trim(cdname2(14)),isegvol(i),i=1,nseg)   ! Chlor a and TP
-    103 format('JDAY,',<nseg>(6((A,'-',i3,','))))
-    102 format('JDAY,',<nseg>(7((A,'-',i3,','))))
+    103 format('JDAY,',*(6((A,'-',i3,','))))
+    102 format('JDAY,',*(7((A,'-',i3,','))))
     open(FISHHABFN+2,file=consurf,status='unknown')
     write(FISHHABFN+2,*)'Fish habitat analysis: CE-QUAL-W2 model results'
     write(FISHHABFN+2,'(" FOR SEGMENTS:",*(1x,i4))') (isegvol(i),i=1,nseg)
@@ -328,27 +328,29 @@ enddo
 
 ! write out results
 IF(DOVOL=='ON')THEN
-write(FISHHABFN,211)jday,(100.*phabvol(i),habvol(i),i=1,ifish),VOLDOALL
+write(FISHHABFN, 210, advance='NO') jday, (100.*phabvol(i), habvol(i), i=1, ifish)
+write(FISHHABFN, '(E12.4)')
 ELSE
-write(FISHHABFN,210)jday,(100.*phabvol(i),habvol(i),i=1,ifish)
+write(FISHHABFN, 210) jday, (100.*phabvol(i), habvol(i), i=1, ifish)
 ENDIF
 
-210 format(f10.3,',',<ifish>(f8.2,',',e12.4,','))
-211 format(f10.3,',',<ifish>(f8.2,',',e12.4,','),E12.4)
+210 format(f10.3,',',*(f8.2,',',e12.4,','))
 jbfile=jbfile1;jwfile=jwfile1
 do jw=1,nwb
     jwfile=jwfile+1
     IF(DOVOL=='ON')THEN
-    write(jwfile,211)jday,(100.*phabvolwb(jw,i),habvolwb(jw,i),i=1,ifish),VOLDOWB(JW)
+    write(jwfile, 210, advance='NO') jday, (100.*phabvolwb(jw, i), habvolwb(jw, i), i=1, ifish)
+    write(jwfile, '(E12.4)') VOLDOWB(JW)
         ELSE
-    write(jwfile,210)jday,(100.*phabvolwb(jw,i),habvolwb(jw,i),i=1,ifish)
+    write(jwfile, 210) jday, (100.*phabvolwb(jw, i), habvolwb(jw, i), i=1, ifish)
     ENDIF
     do jb=bs(jw),be(jw)
         jbfile=jbfile+1
         IF(DOVOL=='ON')THEN
-        write(jbfile,211)jday,(100.*phabvolbr(jb,i),habvolbr(jb,i),i=1,ifish),VOLDOBR(JB)
+        write(jbfile, 210, advance='NO') jday, (100.*phabvolbr(jb, i), habvolbr(jb, i), i=1, ifish)
+        write(jbfile, '(E12.4)') VOLDOBR(JB)
             ELSE
-        write(jbfile,210)jday,(100.*phabvolbr(jb,i),habvolbr(jb,i),i=1,ifish)
+        write(jbfile, 210) jday, (100.*phabvolbr(jb, i), habvolbr(jb, i), i=1, ifish)
         ENDIF
     enddo
 enddo
@@ -380,7 +382,7 @@ if(oxygen_demand)then
         cpo4(n)=cpo4(n)+po4(k,i)*vol(k,i)
         if(k <= ktwb(jjw)+kkmax)cgamma(n)=cgamma(n)+gamma(k,i)*vol(k,i)
         ! NOTE*********** No credit for superstauration - if DO > saturation, then set DO=100% saturation
-        DOSAT=SATO(t2(k,i),0.d0,palt(i),SALT_WATER(jjw))
+        DOSAT=SATO(t2(k,i),0.0,palt(i),SALT_WATER(jjw))
             if(o2(k,i) > DOSAT )then
             o2corr=DOSAT
             else
@@ -415,7 +417,7 @@ if(oxygen_demand)then
 
     write(FISHHABFN+2,212)jday,(cpo4s(n),cnh4s(n),cno3s(n),cdos(n),ctotps(n),cchlas(n),cgamma(n),n=1,nseg)
     write(FISHHABFN+1,212)jday,(cpo4(n),cnh4(n),cno3(n),cdo(n),ctotp(n),cchla(n),n=1,nseg)
-    212 format(f10.3,',',<nseg>(7(f10.4,',')))
+    212 format(f10.3,',',*(7(f10.4,',')))
 
 
 

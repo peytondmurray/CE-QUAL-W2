@@ -1,7 +1,7 @@
   !8/2020: Add LayerNum
   !
   Subroutine GasBubblesFormation(Radius,DeltaT, Volume)
-
+    Use iso_fortran_env, only: int32
     Use GLOBAL
     Use SCREENC
     Use CEMAVars
@@ -177,10 +177,10 @@
 
         End Do !nGas
 
-        temp = INT4(NbubbLost)
+        temp = INT(NbubbLost, kind=int32)
 
         FoundOpenArray = .FALSE.
-        MFTBubbReleased(SegNumI) = KIDINT(NbubbLost)
+        MFTBubbReleased(SegNumI) = Int(NbubbLost, kind=8)
         !nTry = 0
         Do nRelArr = 1, NumBubRelArr
             !nTry = nTry + 1
@@ -198,7 +198,7 @@
         End Do
         If(.NOT. FoundOpenArray)Then
             Write(CEMALogFilN,*)"Insufficient array size for bubbles release at JDAY = ", JDAY
-            Write(wrn,'(A,i10,a,f12.3,A)')"Sediment Diagenesis: Insufficient array size [NumBubRelArr=",NumBubRelArr,"] for bubbles release at JDAY = ", JDAY, " Run continued."
+            Write(wrn,'(A,i10,a,f12.3,A)') "Sediment Diagenesis: Insufficient array size [NumBubRelArr=",NumBubRelArr,"] for bubbles release at JDAY = ", JDAY, " Run continued."
             WARNING_OPEN=.TRUE.
             !Stop
         End if
@@ -286,7 +286,7 @@
 
     If(Radius*1000 <= 1)Then !<= 1 mm
         Nd = 4.*Rhow*(Rhow-Rhog)*9.8*Radius**3/(3.*DynVisc**2)
-        W = dlog10(Nd)
+        W = log10(Nd)
         If(Nd <= 73.)Then
             Reynolds = Nd/24. - 1.7569d-4*Nd**2 + 6.9252d-7*Nd**3 - 2.3027d-10*Nd**4
         End If

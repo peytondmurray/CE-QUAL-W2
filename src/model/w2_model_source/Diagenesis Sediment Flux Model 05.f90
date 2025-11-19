@@ -9,6 +9,7 @@
 ! Updated 9/2020
 !===========================================================================================================================
 Module CEMASedimentDiagenesis
+    Use ieee_arithmetic, only : ieee_is_nan
 	Use MAIN
   Use GLOBAL
   Use GEOMC
@@ -51,7 +52,8 @@ Module CEMASedimentDiagenesis
   Real(R8) :: SD_BEN_STRp, SD_BEN_STRp2
   Real(R8) :: SD_POCT2, SD_PONT2, SD_POPT2, SDPOCT1
   Real(R8) :: SD_H1, SD_H2, SD_JC, SD_JN, SD_JP, SD_JC1, SD_JN1, SD_JP1
-  Real(R8) :: maxit, SD_es, SD_SODold, SD_JSOD               !SD_KL12,
+  Real(R8) :: SD_es, SD_SODold, SD_JSOD               !SD_KL12,
+  integer :: maxit
   Real(R8) SD_CH4SAT, SD_NH3toNO3, SD_fd1, SD_fp1, SD_fd2, SD_fp2    !SD_s,
   Real(R8) SD_fdn1, SD_fpn1, SD_fdn2, SD_fpn2
   Real(R8) SD_Mn2toMnO2, SD_MnO2toMn2
@@ -731,9 +733,9 @@ Module CEMASedimentDiagenesis
                     (1. + SD_kdiaPON(iTemp) * SD_ThtaPON(iTemp) ** (SD_T2 - 20.) * SD_tc + SD_W2 * SD_tc / SD_H2)
 			SD_POP22(iTemp) = (SD_POP22(iTemp) + SD_JPOP(iTemp) * SD_tc / SD_H2 - SD_EPOP(iTemp) * SD_tc / SD_H2 ) /    &
                     (1. + SD_kdiaPOP(iTemp) * SD_ThtaPOP(iTemp) ** (SD_T2 - 20.) * SD_tc + SD_W2 * SD_tc / SD_H2)
-      if (isnan(SD_POC22(iTemp))) SD_POC22(iTemp) = 0.0
-      if (isnan(SD_PON22(iTemp))) SD_PON22(iTemp) = 0.0
-      if (isnan(SD_POP22(iTemp))) SD_POP22(iTemp) = 0.0
+      if (ieee_is_nan(SD_POC22(iTemp))) SD_POC22(iTemp) = 0.0
+      if (ieee_is_nan(SD_PON22(iTemp))) SD_PON22(iTemp) = 0.0
+      if (ieee_is_nan(SD_POP22(iTemp))) SD_POP22(iTemp) = 0.0
       SD_POC22(iTemp) = max(SD_POC22(iTemp), 0.0)
       SD_PON22(iTemp) = max(SD_PON22(iTemp), 0.0)
       SD_POP22(iTemp) = max(SD_POP22(iTemp), 0.0)
@@ -847,13 +849,13 @@ Module CEMASedimentDiagenesis
 		!Calculation of final benthic particle mixing velocity Equation 13.6 in DoToro (2001)
 		!See also Equation 2.56 and 4.48
 		SD_KL12 = SD_PW_DiffCoeff * (SD_Theta_PW ** (SD_T2-20.)) / (SD_H2/2.)
-    if (isnan(SD_KL12)) SD_KL12 = 0.0
+    if (ieee_is_nan(SD_KL12)) SD_KL12 = 0.0
     !
     SD_W12  = SD_PartMix * (SD_Theta_PM ** (SD_T2-20.)) / (SD_H2/2.) * SD_POC22(1) / (SD_POCr*SD_Rho*(1.0-SD_Porosity))
-		if (isnan(SD_W12)) SD_W12 = 0.0
+		if (ieee_is_nan(SD_W12)) SD_W12 = 0.0
     !
     SD_S   = SD_SOD / SD_O20
-    if (isnan(SD_S) .or. SD_S == 0.0) SD_S = 1.0E-8
+    if (ieee_is_nan(SD_S) .or. SD_S == 0.0) SD_S = 1.0E-8
     !
     SD_H1 = SD_KL12 * SD_H2 / SD_s
 		If(SD_H1 > SD_H2)Then
@@ -942,7 +944,7 @@ Module CEMASedimentDiagenesis
       SD_NH3T(1) = SD_NH31/sd_fdn1
       SD_NH3T(2) = SD_NH32/sd_fdn2
       FOxna    = SD_O20 / (SD_Ae_HS_O2_Nit * 2.0 + SD_O20)
-      if (isnan(FOxna)) FOxna = 0.0
+      if (ieee_is_nan(FOxna)) FOxna = 0.0
       con_nit  = ((SD_Ae_NH3_NO3*(SD_Theta_NH3_NO3**(SD_T1-20.)))**2.0)* FOxna * sd_fdn1
       !
       a12_TNH4 = SD_fdn2*SD_KL12 + SD_fpn2*SD_w12                                ! m/d
@@ -1002,7 +1004,7 @@ Module CEMASedimentDiagenesis
 				!gp freshwater methane production, no changes to original code
 				!CSODMAX Equations 10.28 and 10.30
 				!SD_CSODmax = DMin1((2.0D+00 * SD_KL12 * SD_CH4SAT * SD_JC_O2equiv)**2.0D+00, SD_JC_O2equiv)    ![gmO*/m2-d] = sqr([m/d] * [gmO*/m3] * [gmO*/m2-d])   ! SW 10/10/2017 MAJOR ERROR
-        SD_CSODmax = DMin1((2.0D+00 * SD_KL12 * SD_CH4SAT * SD_JC_O2equiv)**0.5D+00, SD_JC_O2equiv)    ![gmO*/m2-d] = sqr([m/d] * [gmO*/m3] * [gmO*/m2-d])   ! SW 10/10/2017
+        SD_CSODmax = MIN((2.0 * SD_KL12 * SD_CH4SAT * SD_JC_O2equiv)**0.5, SD_JC_O2equiv)    ![gmO*/m2-d] = sqr([m/d] * [gmO*/m3] * [gmO*/m2-d])   ! SW 10/10/2017
 				If(SD_CH4CompMethod == 0) Then
 					!***********************************************************************
 					!Analytical solution for methane
@@ -1025,7 +1027,7 @@ Module CEMASedimentDiagenesis
           ! CH41 and CH42
           !CH42_prev = SD_CH42
           FOxch = SD_O20 / (SD_O20 + SD_KsOxch * 2.0)
-          if (isnan(Foxch)) FOxch = 0.0
+          if (ieee_is_nan(Foxch)) FOxch = 0.0
           con_cox = ((SD_Ae_CH4_CO2 * (SD_Theta_CH4_CO2**(SD_T1-20.)))**2.0) * FOxch
           a12_CH4 = SD_KL12
           a21_CH4 = SD_KL12
@@ -1217,7 +1219,7 @@ Module CEMASedimentDiagenesis
 			SD_ea = Abs((SD_SOD - SD_SODold)/SD_SOD)*100.0D+00
 			If (SD_ea <= SD_es) Exit
       SD_s = SD_SOD/SD_O20
-      if (isnan(SD_S) .or. SD_S == 0.0) SD_S = 1.0E-8
+      if (ieee_is_nan(SD_S) .or. SD_S == 0.0) SD_S = 1.0E-8
 
       If (it >= maxit-1) THEN
           IF(IT==MAXIT-1)THEN
@@ -1837,7 +1839,7 @@ Module CEMASedimentDiagenesis
     shields = SD_taubot / (g*(spgrav_POM-1.0) * dia_POM)
 
     Vscour = 0.00033*(shields/crshields - 1.0)*(spgrav_POM-1.0)**0.6 * g**0.6 * dia_POM**0.8/molvisc_h2o
-    c_bottom = (c2(LayerNum,SegNumI,NLPOM) + c2(LayerNum,SegNumI,NRPOM)) * dexp( poms(jw) * h(LayerNum,jw) / DZ(LayerNum -1, SegNumI))
+    c_bottom = (c2(LayerNum,SegNumI,NLPOM) + c2(LayerNum,SegNumI,NRPOM)) * exp( poms(jw) * h(LayerNum,jw) / DZ(LayerNum -1, SegNumI))
 
     if(spgrav_POM < 1.2)then
       c_bottom2=1.0
@@ -1849,7 +1851,7 @@ Module CEMASedimentDiagenesis
       c_bottom2=5.0
     end if
 
-    c_bottom=dmin1(c_bottom,c_bottom2)
+    c_bottom=min(c_bottom,c_bottom2)
 
     if(Vscour > 0.0)then
     SD_E = c_bottom*Vscour

@@ -1,27 +1,27 @@
 SUBROUTINE UPDATE
 
-USE MAIN
-use GLOBAL
-     use NAMESC
- use GEOMC
+  USE MAIN
+  use GLOBAL
+  use NAMESC
+  use GEOMC
   use LOGICC
- use PREC
+  use PREC
   use SURFHE
   use KINETIC
- use SHADEC
- USE EDDY
+  use SHADEC
+  USE EDDY
   use STRUCTURES
- use TRANS
+  use TRANS
   use TVDC
-   use SELWC
+  use SELWC
   use GDAYC
- use SCREENC
- use TDGAS
-   USE RSTART
+  use SCREENC
+  use TDGAS
+  USE RSTART
   use MACROPHYTEC
- use POROSITYC
- use ZOOPLANKTONC
- USE CEMAVars, ONLY: SD_TC, JDAY_INIT
+  use POROSITYC
+  use ZOOPLANKTONC
+  USE CEMAVars, ONLY: SD_TC, JDAY_INIT
   IMPLICIT NONE
   EXTERNAL RESTART_OUTPUT
 
@@ -95,19 +95,19 @@ use GLOBAL
             DO I=US(JB)-1,DS(JB)+1
               DO K=KT,KB(I)
                 DO JE=1,NEP
-                  IF (EPIPHYTON_CALC(JW,JE)) EPD(K,I,JE) = DMAX1(EPD(K,I,JE),0.0D0)
+                  IF (EPIPHYTON_CALC(JW,JE)) EPD(K,I,JE) = MAX(EPD(K,I,JE),0.0)
                 END DO
 
                 IF (SEDIMENT_CALC(JW))THEN
                   SED(K,I) = MAX(SED(K,I),0.0)
-                  SEDP(K,I) = DMAX1(SEDP(K,I),0.0D0)
-                  SEDN(K,I) = DMAX1(SEDN(K,I),0.0D0)
-                  SEDC(K,I) = DMAX1(SEDC(K,I),0.0D0)
+                  SEDP(K,I) = MAX(SEDP(K,I),0.0)
+                  SEDN(K,I) = MAX(SEDN(K,I),0.0)
+                  SEDC(K,I) = MAX(SEDC(K,I),0.0)
                 END IF
 
                 CSSB(K,I,CN(JC)) = 0.0D0
                 C1S(K,I,CN(JC))  = C1(K,I,CN(JC))
-                C2(K,I,CN(JC))   = DMAX1(C1(K,I,CN(JC)),0.0D0)
+                C2(K,I,CN(JC))   = MAX(C1(K,I,CN(JC)),0.0)
               END DO
             END DO
           END DO
@@ -136,7 +136,7 @@ use GLOBAL
 
   DO JW = 1,NWB
     IF (ULTIMATE(JW)) THEN   ! SR 5/15/06
-      IF(LAYERCHANGE(JW) == .TRUE.)THEN
+      IF(LAYERCHANGE(JW))THEN
       DO K=KTWB(JW),KMX    ! only need to update this for KT - if layer change then update for all variables to be safe esp for seg additions                       !DO K=2,KMX   KTWB(JW),KMX
       RATZ(K,JW)  =  AVH2(K-1,DS(BE(JW)))/AVH2(K,DS(BE(JW)))                                         ! SW 5/20/05
       CURZ1(K,JW) =  2.0D0*H(K,JW)*H(K,JW)/((AVH2(K-1,DS(BE(JW)))+AVH2(K,DS(BE(JW))))*AVH2(K-1,DS(BE(JW))))   ! SW 5/20/05   4/20/16 SPEED
@@ -160,8 +160,8 @@ use GLOBAL
     JDAY    =  ELTM/DAY
     ELTMJD  =  JDAY-TMSTRT
     END_RUN =  JDAY >= TMEND
-    DLT     =  DMAX1(DLTMIN,DLTFF*CURMAX)    ! SW 7/13/2010
-    DLT     =  DMIN1(DLT,1.1*DLTS)
+    DLT     =  MAX(DLTMIN,DLTFF*CURMAX)    ! SW 7/13/2010
+    DLT     =  MIN(DLT,1.1*DLTS)
     DLTAV   = (ELTM-TMSTRT*DAY)/NIT
     IF (DLT <  MINDLT) THEN
       MINDLT = DLTS
