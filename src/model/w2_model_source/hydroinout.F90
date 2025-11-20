@@ -50,7 +50,7 @@ use GLOBAL
             DO JS=1,NSS
               TISS(K,I) = TISS(K,I)+SS(K,I,JS)
             END DO
-            RHO(K,I) = DENSITY(T2(K,I),DMAX1(TDS(K,I),0.0D0),DMAX1(TISS(K,I),0.0D0))
+            RHO(K,I) = DENSITY(T2(K,I),MAX(TDS(K,I),0.0),MAX(TISS(K,I),0.0))
           END DO
         END DO
 ! v3.5 deleted pumpback code from v3.2

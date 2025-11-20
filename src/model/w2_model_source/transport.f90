@@ -63,7 +63,7 @@ ENTRY INTERPOLATION_MULTIPLIERS
     DO K=2,KMX-1
       DLXT = DLX(I-1)
       IF (K > KB(I-1) .OR. INTERNAL_WEIR(K,I)) DLXT = DLX(I)
-      DLXMIN       =  DMIN1(DLX(I+1),DLX(I))
+      DLXMIN       =  MIN(DLX(I+1),DLX(I))
       SF1X(K,I)    = (DLX(I+1)+DLX(I))*0.5D0
       SF2X(K,I,1)  =  DLX(I)/(DLX(I)+DLX(I+1))
       !SF3X(K,I,1)  =  DLX(I)**2
@@ -90,7 +90,7 @@ ENTRY INTERPOLATION_MULTIPLIERS
     DO K=2,KMX-1
       DLXT = DLX(I+2)
       IF (K > KB(I+2)) DLXT = DLX(I+1)
-      DLXMIN       =  DMIN1(DLX(I),DLX(I+1))
+      DLXMIN       =  MIN(DLX(I),DLX(I+1))
       SF1X(K,I)    = (DLX(I+1)+DLX(I))*0.5D0
       SF2X(K,I,2)  =  DLX(I+1)/(DLX(I)+DLX(I+1))
       !SF3X(K,I,2)  =  DLX(I+1)**2
@@ -133,7 +133,7 @@ ENTRY INTERPOLATION_MULTIPLIERS
     HT            =  H(K-1,JW)
     HM            =  H(K,JW)
     HB            =  H(K+1,JW)
-    HMIN          =  DMIN1(HB,HM)
+    HMIN          =  MIN(HB,HM)
     SF1Z(K,JW)    = (HB+HM)*0.5D0
     !SF2Z(K,1,JW)  =  HM**2
     SF2Z(K,1,JW)  =  HM*HM       ! SW 4/20/16
@@ -153,7 +153,7 @@ ENTRY INTERPOLATION_MULTIPLIERS
     HT            =  H(K,JW)
     HM            =  H(K+1,JW)
     HB            =  H(K+2,JW)
-    HMIN          =  DMIN1(HT,HM)
+    HMIN          =  MIN(HT,HM)
     SF1Z(K,JW)    = (HM+HT)*0.5D0
     !SF2Z(K,2,JW)  =  HM**2
     SF2Z(K,2,JW)  =  HM*HM      ! SW 4/20/16
@@ -289,9 +289,9 @@ ENTRY HORIZONTAL_MULTIPLIERS
         else
           RATDI = 1.0/RATS(K,I)
           DELC  = RATS(K,I)*C3X+(RATDI-RATS(K,I))*C2X-RATDI*C1X
-          DELC  = DSIGN(1.0,U(K,I))*DELC
-          ADELC = DABS(DELC)
-          ACURZ = DABS(CURS3(K,I)*C3X+CURS2(K,I)*C2X+CURS1(K,I)*C1X)
+          DELC  = SIGN(1.0,U(K,I))*DELC
+          ADELC = ABS(DELC)
+          ACURZ = ABS(CURS3(K,I)*C3X+CURS2(K,I)*C2X+CURS1(K,I)*C1X)
           IF (ACURZ <= 0.6*ADELC) THEN
             FLUX = AD1X(K,I)*C1X+AD2X(K,I)*C2X+AD3X(K,I)*C3X
           ELSE IF (ACURZ >= ADELC) THEN
@@ -300,12 +300,12 @@ ENTRY HORIZONTAL_MULTIPLIERS
             FTEMP = AD1X(K,I)*C1X+AD2X(K,I)*C2X+AD3X(K,I)*C3X
             CREF  = CALF+(C2X-CALF)/ABS(COUR)
             IF (DELC > 0.0) THEN
-              CMAX1 = DMIN1(CREF,CART)
+              CMAX1 = MIN(CREF,CART)
               IF (CREF < C2X) CMAX1 = CART
               FLUX = 0.5D0*(C2X+CMAX1)
               IF (FTEMP <= CMAX1 .AND. FTEMP >= C2X) FLUX = FTEMP
             ELSE
-              CMIN1 = DMAX1(CREF,CART)
+              CMIN1 = MAX(CREF,CART)
               IF (CREF > C2X) CMIN1 = CART
               IF (FTEMP >= CMIN1 .AND. FTEMP <= C2X) THEN
                 FLUX = FTEMP
@@ -360,7 +360,7 @@ ENTRY VERTICAL_MULTIPLIERS1    ! FIRST PASS
               CURS2Z(K,I) = -2.0D0
               CURS1Z(K,I) =  1.0D0
             END IF
-            HMIN          =  DMIN1(HB,HM)
+            HMIN          =  MIN(HB,HM)
             SF1Z(K,JW)    = (HB+HM)*0.5D0
             !SF2Z(K,1,JW)  =  HM**2
             SF2Z(K,1,JW)  =  HM*HM        ! SW 4/20/16
@@ -387,7 +387,7 @@ ENTRY VERTICAL_MULTIPLIERS1    ! FIRST PASS
             HT            =  H1(KT,I)
             HM            =  H1(KT+1,I)
             HB            =  H1(KT+2,I)
-            HMIN          =  DMIN1(HT,HM)
+            HMIN          =  MIN(HT,HM)
             RATSZ(K,I)          =  AVH1(KT,I)/AVH1(K,I)
             !CURS1Z(K,I)         =  2.0D0*HM*HM/(AVH1(KT,I)+AVH1(K,I))/AVH1(KT,I)        ! SW 4/20/16 SPEED
             CURS1Z(K,I)         =  2.0D0*HM*HM/((AVH1(KT,I)+AVH1(K,I))*AVH1(KT,I))
@@ -459,23 +459,23 @@ ENTRY VERTICAL_MULTIPLIERS
           COUR  =  W(K,I)*DLT/SF1Z(K,JW)
           RATZI = 1.0D0/RATSZ(K,I)
           DELC  = RATSZ(K,I)*C3Z+(RATZI-RATSZ(K,I))*C2Z-RATZI*C1Z
-          DELC  = DSIGN(1.0,W(K,I))*DELC
-          ADELC = DABS(DELC)
-          ACURZ = DABS(CURS3Z(K,I)*C3Z+CURS2Z(K,I)*C2Z+CURS1Z(K,I)*C1Z)
+          DELC  = SIGN(1.0,W(K,I))*DELC
+          ADELC = ABS(DELC)
+          ACURZ = ABS(CURS3Z(K,I)*C3Z+CURS2Z(K,I)*C2Z+CURS1Z(K,I)*C1Z)
           IF (ACURZ <= 0.6*ADELC) THEN
             FLUX = AD1Z(K,I)*C1Z+AD2Z(K,I)*C2Z+AD3Z(K,I)*C3Z
           ELSE IF (ACURZ >= ADELC) THEN
             FLUX = C2Z
-          ELSE IF (DABS(COUR) > 0.0) THEN
+          ELSE IF (ABS(COUR) > 0.0) THEN
             FTEMP = AD1Z(K,I)*C1Z+AD2Z(K,I)*C2Z+AD3Z(K,I)*C3Z
-            CREF  = CALF+(C2Z-CALF)/DABS(COUR)
+            CREF  = CALF+(C2Z-CALF)/ABS(COUR)
             IF (DELC > 0.0) THEN
               CMAX1 = CART
-              IF (CREF >= C2Z) CMAX1 = DMIN1(CREF,CART)
+              IF (CREF >= C2Z) CMAX1 = MIN(CREF,CART)
               FLUX = 0.5*(C2Z+CMAX1)
               IF (FTEMP <= CMAX1 .AND. FTEMP >= C2Z) FLUX = FTEMP
             ELSE
-              CMIN1 = DMAX1(CREF,CART)
+              CMIN1 = MAX(CREF,CART)
               IF (CREF > C2Z) CMIN1 = CART
               IF (FTEMP >= CMIN1 .AND. FTEMP <= C2Z) THEN
                 FLUX = FTEMP

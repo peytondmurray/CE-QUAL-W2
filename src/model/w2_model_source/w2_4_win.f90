@@ -2,43 +2,42 @@
 PROGRAM CE_QUAL_W2
 
 ! IVF/CVF specific code
-  use IFLOGM
+
  use MSCLIB
- USE DFWIN, RENAMED => DLT;   ! USE DFLOGM
 
  !DEC$ATTRIBUTES STDCALL   :: ce_qual_w2
  !DEC$ATTRIBUTES REFERENCE :: Dlg
-  USE IFPORT                 ! to get current working directory
   USE MAIN
-  use GLOBAL
-     use NAMESC
- use GEOMC
-  use LOGICC
- use PREC
-  use SURFHE
-  use KINETIC
- use SHADEC
- USE EDDY
-  use STRUCTURES
- use TRANS
-  use TVDC
-   use SELWC
-  use GDAYC
- use SCREENC
- use TDGAS
-   USE RSTART
-  use MACROPHYTEC
- use POROSITYC
- USE ZOOPLANKTONC
+  USE GLOBAL
+  USE NAMESC
+  USE GEOMC
+  USE LOGICC
+  USE PREC
+  USE SURFHE
+  USE KINETIC
+  USE SHADEC
+  USE EDDY
+  USE STRUCTURES
+  USE TRANS
+  USE TVDC
+  USE SELWC
+  USE GDAYC
+  USE SCREENC
+  USE TDGAS
+  USE RSTART
+  USE MACROPHYTEC
+  USE POROSITYC
+  USE ZOOPLANKTONC
   USE modSYSTDG, ONLY: INPUT_SYSTDG                              ! systdg
-  Use CEMAVars
+  USE CEMAVars
   USE CEMASedimentDiagenesis, only: C2SF,InitCond_SedFlux
-  use INITIALVELOCITY
- USE ENVIRPMOD
+  USE INITIALVELOCITY
+  USE ENVIRPMOD
   USE BIOENERGETICS
-  use BUILDVERSION
- use MetFileRegion
- USE HYPOAERATION
+  USE BUILDVERSION
+  USE MetFileRegion
+  USE HYPOAERATION
+  USE PATH
   IMPLICIT NONE
  ! include "omp_lib.h"      ! OPENMP directive to adjust the # of processors TOGGLE FOR DEBUG
 
@@ -60,7 +59,7 @@ PROGRAM CE_QUAL_W2
 !***********************************************************************************************************************************
 
 INTEGER(4) length,istatus
-character*255 dirc
+character(255) dirc
 !  call omp_set_num_threads(4)   ! set # of processors to NPROC  Moved to INPUT subroutine
 
 IF(END_RUN.or.ERROR_OPEN)STOP    ! SW 6/26/15 3/18/16 Added code to prevent a thread from reinitializing output files as dialog box is closing...intermittant error Updated 8/23/2017
@@ -71,7 +70,7 @@ DIRC=TRIM(DIRC)
 ! IF(ISTATUS.NE.0)WRITE(*,*)'GET_COMMAND_ARGUMENT FAILED: STATUS=',ISTATUS
 
 IF(LENGTH /= 0)THEN
-    ISTATUS=CHDIR(DIRC)
+    istatus = f_chdir(dirc)
     SELECT CASE(ISTATUS)
       CASE(2)  ! ENOENT
         WRITE(W2ERR,*)'The directory does not exist:',DIRC
@@ -446,14 +445,14 @@ CALL INIT
        If(Met_Regions)then   ! SW 12/13/2023
            DO JW=1,NMetFileRegions
                 DO I=MetRegStart(JW),MetRegEnd(JW)
-                    WIND2(I) = WIND(JW)*WSC(I)*DLOG(2.0D0/Z0(MetRegWB(JW)))/DLOG(WINDH(MetRegWB(JW))/Z0(MetRegWB(JW)))
+                    WIND2(I) = WIND(JW)*WSC(I)*LOG(2.0/Z0(MetRegWB(JW)))/LOG(WINDH(MetRegWB(JW))/Z0(MetRegWB(JW)))
                 END DO
            ENDDO
 
        else
               DO JW=1,NWB
                  DO I=CUS(BS(JW)),DS(BE(JW))
-                  WIND2(I) = WIND(JW)*WSC(I)*DLOG(2.0D0/Z0(JW))/DLOG(WINDH(JW)/Z0(JW))
+                  WIND2(I) = WIND(JW)*WSC(I)*LOG(2.0/Z0(JW))/LOG(WINDH(JW)/Z0(JW))
                  END DO
               ENDDO
 
@@ -557,11 +556,11 @@ CALL HYDROINOUT
               CALL UPSTREAM_WATERBODY
             END IF
             DO K=KT,KB(IUT)
-              RHO(K,IUT) = DENSITY(T2(K,IUT),DMAX1(TDS(K,IUT),0.0D0),DMAX1(TISS(K,IUT),0.0D0))
+              RHO(K,IUT) = DENSITY(T2(K,IUT),MAX(TDS(K,IUT),0.0),MAX(TISS(K,IUT),0.0))
             END DO
           ELSE IF (UH_EXTERNAL(JB)) THEN
             DO K=KT,KB(IUT)
-              RHO(K,IUT)           = DENSITY(TUH(K,JB),DMAX1(TDS(K,IUT),0.0D0),DMAX1(TISS(K,IUT),0.0D0))
+              RHO(K,IUT)           = DENSITY(TUH(K,JB),MAX(TDS(K,IUT),0.0),MAX(TISS(K,IUT),0.0))
               T1(K,IUT)            = TUH(K,JB)
               T2(K,IUT)            = TUH(K,JB)
               C1S(K,IUT,CN(1:NAC)) = CUH(K,CN(1:NAC),JB)
@@ -586,7 +585,7 @@ CALL HYDROINOUT
               CALL DOWNSTREAM_WATERBODY
             END IF
             DO K=KT,KB(ID)
-              RHO(K,IDT) = DENSITY(T2(K,IDT),DMAX1(TDS(K,IDT),0.0D0),DMAX1(TISS(K,IDT),0.0D0))
+              RHO(K,IDT) = DENSITY(T2(K,IDT),MAX(TDS(K,IDT),0.0,DMAX1(TISS(K,IDT),0.0D0))
             END DO
           ELSE IF (DH_EXTERNAL(JB)) THEN
             DO K=KT,KB(IDT)

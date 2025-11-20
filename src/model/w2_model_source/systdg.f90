@@ -48,7 +48,7 @@ MODULE modSYSTDG
    INTEGER      :: I, IG, N_POW, N_FLD, N_SPB
       NXTSPLIT3=TMSTRT
       open  (88888, FILE='TDG_output.csv', status='unknown')
-      WRITE (88888, '(A, <NGT>("QGT-",I2,","))')'JDAY,TDG_TDG,SUM_QGT2,',(IG, IG = 1, NGT)
+      WRITE (88888, '(A, *("QGT-",I2,","))')'JDAY,TDG_TDG,SUM_QGT2,',(IG, IG = 1, NGT)
       NRO=0
       POWNO = 0
       FLNO  = 0
@@ -227,7 +227,7 @@ IF(SYSTDGC == '     OFF')GO TO 100          ! DO NOT ALLOCATE ARRAYS IF WE ARE N
       REAL(R8)         :: Q_ROSP, QRO, QSP, QPH, QTOT, TDG_QROSP, TDG_QPH, TDG_QTOT, TDG_QENT
       REAL(R8)         :: SUM_TDG_ROS, SUM_TDG_SPS, SUM_TDG_PHS
       REAL(R8)         :: TDG_RO, TDG_SP, TDG_PH
-      INTEGER*8        :: SUM_K, IK
+      INTEGER(8)       :: SUM_K, IK
       REAL             :: SUM_QGT2
       Q_SUM = 0.0
       ! ADD QRO AND QSP
@@ -428,7 +428,7 @@ IF(SYSTDGC == '     OFF')GO TO 100          ! DO NOT ALLOCATE ARRAYS IF WE ARE N
              DO ig = 1, NGT
                 SUM_QGT2=SUM_QGT2+QGT(ig)
              END DO
-             WRITE (88888, '(A, F10.3, 2A, F10.3, A, F9.3, A, <NGT>(F9.3,","))')' ',JDAY,',  ', ', ',TDG_TDG,',  ',SUM_QGT2,',  ',(QGT(ig), ig = 1, NGT)
+             WRITE (88888, '(A, F10.3, 2A, F10.3, A, F9.3, A, *(F9.3,","))')' ',JDAY,',  ', ', ',TDG_TDG,',  ',SUM_QGT2,',  ',(QGT(ig), ig = 1, NGT)
              NXTSPLIT3 = NXTSPLIT3 + 1.0
           END IF
        END IF                                                                                                   ! END IF Q_SUM/=0.0

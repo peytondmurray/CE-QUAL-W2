@@ -424,7 +424,8 @@
     use path, only: f_mkdir
     IMPLICIT NONE
     CHARACTER(60) :: ADUMMY   ! SW 2/2019
-    LOGICAL(4) :: Status, L_Exists
+    LOGICAL(4) :: L_Exists
+    integer :: status
     !character(256) :: MODDIRtest
 
     SD_tc=DLT/DAY         ! SW 10/16/2022   For first call
@@ -515,7 +516,7 @@
                 WRITE(WRN,'(A,A)')'Creating directory for sediment diagenesis files. Directory:',TRIM(SEDFLXFOLDER)        !No sediment diagenesis subdirectory set for diagenesis output files'
                 STATUS = f_mkdir(adjustl(trim(SedFlxFolder)))             !make directory
 
-                        IF (status) THEN
+                        IF (status == 0) THEN
                            WRITE (WRN,'(A)') 'New subdirectory successfully created'
                         ELSE
                            WRITE (WRN,*) 'Failed to create subdirectory for Sediment Diagenesis output files. Just using root directory for output.'
